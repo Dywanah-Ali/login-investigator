@@ -7,7 +7,7 @@ only shrink. Pyright is the checker VS Code uses, so the editor and the check ag
 
 **Blocked by:** 20 (Rename the core's `views.py`).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Raised by: the concerns of ticket 11, decided by the author on 14 Oct (spec decisions log).
 
@@ -32,3 +32,9 @@ behaviour today. mypy, more lenient, found 14.
   - Evidence: `uv run pytest`, 14 Oct: 267 passed
 
 Out of scope: cleaning the v1 files on the list. Each is a later ticket, after Parity is proven.
+
+## Comments
+
+2026-10-14: the author approved ("approved"). Status set to `resolved`. Open, not ticketed: VS Code
+does not use `backend/.venv`, so its underlines do not match `uv run pyright` yet; Ruff runs in the
+editor but is not configured in the project; nothing runs the checks automatically.

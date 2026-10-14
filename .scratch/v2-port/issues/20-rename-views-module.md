@@ -6,7 +6,7 @@ names suggested a link that does not exist. No behaviour changes.
 
 **Blocked by:** 11 (Core: the logic that moved from the screens).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Raised by: the standards review of ticket 11 ("Mysterious Name"), taken up by the author on 14 Oct.
 
@@ -20,3 +20,7 @@ Raised by: the standards review of ticket 11 ("Mysterious Name"), taken up by th
   - Evidence: `git grep` for the old names finds only ticket 11's explaining comment, and the prompt log by design
 - [x] The full suite passes with the same count as before the rename (267)
   - Evidence: `uv run pytest`, 14 Oct: 267 passed
+
+## Comments
+
+2026-10-14: the author approved ("approved"). Status set to `resolved`.
