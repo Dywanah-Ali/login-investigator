@@ -118,3 +118,21 @@ as "today"; it now marks the log's last day, as the contract says.
 looked at it running.
 **Found by:** manual check in the browser, after the author clarified that screenshots may be used
 to look, only never as evidence. Related prompt: P-007.
+
+### B-008 · 2026-10-14 · Ticket 13 Frontend shell and the Overview screen
+
+**Symptom:** a log row whose `source_ip` was `<script>alert(1)</script>` made every dataset
+endpoint answer 500 `log_invalid` with the message `bad.csv failed validation with 1 problem(s):
+- line 2, column 'source_ip': '<script>alert(1)</script>' is not a valid IP address`.
+**Cause:** the API forwarded the loader's message, and the loader quotes each bad row's raw values.
+The contract had judged the message safe because it "names row problems, not secrets". That was
+true of secrets but not of log fields, which the contract's own ground rules keep out of sentences.
+**Fix:** by the author's ruling, the API sends fixed text for every cause (`api/services.py`,
+`start`): "The log failed validation. The server log lists the problems." The full message stays in
+the server log. The loader is unchanged. A test plants the hostile value and checks it is absent.
+The frontend already showed fixed text, so the screen was never affected.
+**Lesson:** the second time for this one message (after B-003). "Safe" was checked against one
+danger at a time. Check a message that crosses the trust boundary against every rule, including
+"log fields are data, never sentences".
+**Found by:** reading the loader while preparing ruling 2 of ticket 13's review, then reproduced by
+a test before the fix. Related prompt: P-008.

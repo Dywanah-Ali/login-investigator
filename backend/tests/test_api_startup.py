@@ -12,7 +12,9 @@ from fastapi.testclient import TestClient
 
 from api.app import create_app
 from api.settings import Settings
-from login_investigator import agent, investigations, loader, rules
+from login_investigator import agent, generator, investigations, loader, rules
+
+LOG_FAILED_VALIDATION = "The log failed validation. The server log lists the problems."
 
 SEAMS = [(loader, "load_log"), (rules, "detect_all"), (investigations, "open_memory"),
          (agent, "make_model"), (agent, "build_agent")]
@@ -71,10 +73,27 @@ def test_a_log_that_fails_validation_makes_the_dataset_endpoints_answer_log_inva
             reply = client.get(path)
             assert reply.status_code == 500
             error = reply.json()["error"]
-            assert error["code"] == "log_invalid"
-            assert error["message"].startswith("bad.csv has the wrong columns.")
+            assert error == {"code": "log_invalid", "message": LOG_FAILED_VALIDATION}
         # Fixed text needs no dataset, so the rules guide still answers.
         assert client.get("/api/rules").status_code == 200
+
+
+def test_a_bad_row_never_sends_its_log_values_back(tmp_path, memory_path):
+    """The loader quotes a bad row's raw values in its message. Log fields are data and never
+    travel inside a sentence, so the client gets fixed text (author's ruling, ticket 13; B-008)."""
+    hostile = "<script>alert(1)</script>"
+    row = {"timestamp_utc": "2026-10-01T00:00:00Z", "username": "alice", "source_ip": hostile,
+           "country": "GB", "outcome": "success", "failure_reason": "", "user_agent": "x"}
+    bad_log = tmp_path / "bad.csv"
+    bad_log.write_text(",".join(generator.COLUMNS) + "\n"
+                       + ",".join(row[column] for column in generator.COLUMNS) + "\n",
+                       encoding="utf-8")
+    settings = Settings.from_env({"LI_LOG_PATH": str(bad_log), "LI_MEMORY_PATH": str(memory_path)})
+    with TestClient(create_app(settings)) as client:
+        reply = client.get("/api/overview")
+    assert reply.status_code == 500
+    assert reply.json() == {"error": {"code": "log_invalid", "message": LOG_FAILED_VALIDATION}}
+    assert "script" not in reply.text
 
 
 def test_a_missing_log_file_does_not_reveal_where_the_server_looked(tmp_path, memory_path):

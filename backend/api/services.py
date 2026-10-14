@@ -54,9 +54,11 @@ def start(settings: Settings) -> Services:
                           facts=dataset_facts(frame))
     except loader.LogValidationError as error:
         log.error("The log failed validation: %s", error)
-        # The loader names a missing file by its full path, which can name the machine's user, so
-        # the client gets fixed text (bug log B-003). Its other messages name only the file.
-        dataset_error = (str(error) if settings.log_path.is_file()
+        # The client gets fixed text; the loader's own message stays in the server log. Its
+        # missing-file message holds the full path, which can name the machine's user (bug log
+        # B-003), and its row messages quote the bad rows' raw log values (B-008).
+        dataset_error = ("The log failed validation. The server log lists the problems."
+                         if settings.log_path.is_file()
                          else "The configured log file was not found.")
 
     memory = investigations.open_memory(settings.memory_path)

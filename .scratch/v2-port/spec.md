@@ -225,7 +225,8 @@ Each decision names the ticket that made it.
   characters after trimming.
 - A missing model key leaves every dashboard endpoint working and makes the Investigation endpoints
   answer "agent unavailable" naming the setting. A dataset that fails validation at startup makes
-  every dataset endpoint return the loader's message.
+  every dataset endpoint return fixed text; the loader's message stays in the server log (ticket
+  13).
 - Configuration by environment variables: log path, memory path, reputation directory, the two API
   keys, and the server port, so the eval runner can isolate a run. At startup the log is loaded
   once, the rules run once on the whole log, the memory opened once and the agent built once, each
@@ -278,8 +279,9 @@ Each decision names the ticket that made it.
   and numbered lists, headings, inline code and code blocks. Links and images are not on the list,
   so a link shows as plain text with its address visible and is never followed, and an image is
   dropped. Raw HTML is never rendered. This is a change from v1's plain text, agreed by the author.
-- The report card shows fixed fields as plain text. Log fields appear only in table cells and never
-  pass through any renderer that produces markup.
+- The report card shows fixed fields as plain text. Log fields appear only as plain text, in table
+  cells, chart labels and picker options, and never pass through any renderer that produces markup
+  (ticket 13).
 - Repository rules: no `dangerouslySetInnerHTML` anywhere in the frontend, and the renderer is used
   in exactly one component.
 - Accepted residual risk: an answer can use headings or bold to look like part of the page. That is
@@ -371,3 +373,6 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-14 | The contract's Errors table gains `method_not_allowed` (405), `internal_error` (500) and `http_error` (any other framework status); `not_found` also covers an unknown path (ticket 12) | "One error shape for every status" needs a code for every status the server can send, and the contract stays the full list. The author's approval |
 | 2026-10-14 | A missing log file answers `log_invalid` with fixed text, not the loader's message (ticket 12, bug log B-003) | The loader's missing-file message holds the server's full path, which can name the machine's user. Data crosses a trust boundary when it leaves the server. The author's approval |
 | 2026-10-14 | An empty filter parameter means "all", as a missing one does, for every filter, dates included (ticket 12) | One rule for every box; an empty date was a 422 while an empty user meant "all", and the frontend may send empty boxes. The author's approval |
+| 2026-10-14 | The official chart component passes its CSS as text, not raw HTML (ticket 13, bug log B-004) | The no-raw-HTML rule stays absolute, with no exception; the scan test fails if the component is reinstalled. The author's choice of three options |
+| 2026-10-14 | Log fields may appear as plain text in table cells, chart labels and picker options; the rule and the project rules reworded (ticket 13) | The danger is a log field turned into markup, not its place on screen. The agreed screens put IPs on a chart and users and countries in pickers, all as plain text. The author's approval |
+| 2026-10-14 | `log_invalid` sends fixed text for every cause, not the loader's message; done in ticket 13's branch, no new ticket (bug log B-008) | The loader's row messages quote raw log values, which broke the contract's rule that the API never formats a log field into a sentence. The change sits in the API only; the core is untouched. The author's ruling |

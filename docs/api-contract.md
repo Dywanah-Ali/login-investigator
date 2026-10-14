@@ -345,7 +345,7 @@ One shape for every error reply, including validation, replacing FastAPI's defau
 | 409 | `busy` | An ask is already streaming on this investigation |
 | 409 | `not_offered` | A report request that does not match the current offer |
 | 422 | `invalid_filter`, `invalid_question`, `invalid_request` | A parameter or body failed validation. The message names the field, never its value |
-| 500 | `log_invalid` | The dataset failed to load at startup (`LogValidationError`); every dataset endpoint returns this with the loader's message, which names row problems, not secrets. A missing file is the exception: its message would hold the server's full path, so the reply says `The configured log file was not found.` and the full message is logged on the server |
+| 500 | `log_invalid` | The dataset failed to load at startup (`LogValidationError`); every dataset endpoint returns this with fixed text: `The log failed validation. The server log lists the problems.`, or `The configured log file was not found.` for a missing file. The loader's own message is logged on the server and never sent: it quotes bad rows' raw log values, and for a missing file the server's full path (ticket 13; bug log B-003, B-008) |
 | 500 | `internal_error` | An unexpected failure. Message: `The server hit an unexpected error.` The exception is logged on the server |
 | any other | `http_error` | Any other refusal by the framework itself. Message: `The request failed.` |
 | 503 | `agent_unavailable` | `OPENROUTER_API_KEY` is not set. Message: `OPENROUTER_API_KEY is not set. Copy env.example to .env and add the key.` Dashboard endpoints keep working (author's decision, 14 Oct) |

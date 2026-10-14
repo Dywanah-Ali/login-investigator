@@ -57,10 +57,18 @@ Open for the author's ruling:
    All are plain React text, never markup. Proposed: reword the rule to "in tables, chart labels
    and picker options, always as plain text, never through a renderer that produces markup", with a
    decisions log row.
+   **Ruling 2026-10-14: reworded (option A).** `CLAUDE.md` security rules and the spec's security
+   rendering section updated; spec decisions log row added.
 2. **The loader's message on a bad log.** The contract sends the loader's row-problem message with
    `log_invalid`. The frontend shows its own fixed text instead, by this ticket's rule. Proposed:
    keep the fixed text and note in the contract that the message is for API clients and the server
    log, not the screen.
+   **New fact, found while preparing the ruling:** the loader's row messages quote raw log values,
+   so the API itself broke the contract's rule that a log field never travels inside a sentence.
+   **Ruling 2026-10-14: fixed text in the API as well, done on this branch with no new ticket**,
+   since the change sits in the API only and the core is untouched. Built test-first
+   (`test_a_bad_row_never_sends_its_log_values_back`); contract Errors table, spec and decisions log
+   updated; bug log B-008. Backend 295 passed, Pyright 0 errors.
 3. **Small behaviour no line asked for.** Zero bars for quiet hours, so time is not squeezed; the
    filters follow the sidebar links between dashboard screens; an unknown address opens the
    Overview; the `LI_API_URL` dev setting. Proposed: keep all four.

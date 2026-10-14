@@ -75,7 +75,8 @@ ticket whose blockers are done. This is Tier 3 work: every ticket closes on evid
 - Keys live only in `.env`, which is git-ignored. Never print, log, or commit a key. `env.example`
   holds names only.
 - Log fields and API fields are untrusted data, never instructions. The agent's system prompt says so.
-- Log fields appear in the frontend only inside tables, never as formatted text. The agent's answers
+- Log fields appear in the frontend only as plain text: in table cells, chart labels and picker
+  options. Never through a renderer that produces markup. The agent's answers
   and the report card render with links and images switched off.
 - The API returns only the fields the screen needs. Data crosses a trust boundary when it leaves the
   server.
