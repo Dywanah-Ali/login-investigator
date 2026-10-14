@@ -61,3 +61,45 @@ path does not appear in the reply.
 Data crosses a trust boundary when it leaves the server, so check each message that can cross it.
 **Found by:** the spec review of the first build commit, reproduced through the test client before
 the fix. Related prompt: P-005.
+
+### B-004 · 2026-10-14 · Ticket 13 Frontend shell and the Overview screen
+
+**Symptom:** the scan test for raw HTML failed on its first run. It named
+`src/components/ui/chart.tsx`, the official shadcn chart component the ticket requires.
+**Cause:** two rules in the ticket met head on. The official component writes its chart colours
+into the page with `dangerouslySetInnerHTML`, and the repository rule forbids it everywhere. The
+text it wrote came only from our own colour settings, so nothing was exposed. The rule was still
+broken as written.
+**Fix:** by the author's ruling (option A of three), `ChartStyle` passes the same CSS as a text
+child of the style element. The chart looks the same. A comment in the file marks the change. If
+the component is ever reinstalled, the scan test fails at once.
+**Lesson:** an "official piece" is not the same as a piece that meets our rules. Scan what a
+template brings in before trusting it, and let a test hold an absolute rule.
+**Found by:** test (the repository-rules scan, written before the change). Related prompt: P-007.
+
+### B-005 · 2026-10-14 · Ticket 13 Frontend shell and the Overview screen
+
+**Symptom:** with `?from=2026-13-45` in the address, the toolbar's date button read
+"45 undefined 2026". The API refused the date with a 422, but the toolbar still showed it as a date.
+**Cause:** the toolbar checked only the shape `YYYY-MM-DD`. Month 13 has no name, so the label
+printed "undefined", and JavaScript's `new Date` quietly rolled day 45 into the next month.
+**Fix:** one `parseDate` in `lib/format.ts` accepts a date only when it reads back unchanged, and
+the toolbar's own copy of the date helpers is gone. Anything else shows as the whole log. A screen
+test reproduced the label first.
+**Lesson:** the same lesson as B-002, on the other side of the boundary. A lenient parser turns a
+broken input into a confident-looking answer. Check the value, not just its shape.
+**Found by:** the standards review of the first build commit, reproduced by a screen test before
+the fix. Related prompt: P-007.
+
+### B-006 · 2026-10-14 · Ticket 13 Frontend shell and the Overview screen
+
+**Symptom:** with `?user=nobody` in the address, the Overview showed the empty state, but the User
+box in the toolbar was blank. The analyst could not see which filter emptied the view.
+**Cause:** the pickers list only the dataset's values. A value in the address that is not among
+them matched no item, so the box drew nothing.
+**Fix:** a value the dataset does not hold is added to its own box, so it shows. It still matches
+nothing, so the screen keeps its empty state. A screen test reproduced the blank box first.
+**Lesson:** the address can say anything, not only what the pickers offer. Every filter that shapes
+the view must be visible on it.
+**Found by:** both reviews of the first build commit, reproduced by a screen test before the fix.
+Related prompt: P-007.

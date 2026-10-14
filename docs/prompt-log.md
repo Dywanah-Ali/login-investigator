@@ -111,3 +111,27 @@ were written into the contract. An empty filter box now means "all" for every fi
 test-first. The agent's tools ignoring the log and reputation settings became ticket 22, which now
 blocks ticket 18. Each ruling has a row in the spec's decisions log. Full suite: 294 passed.
 **Next:** the author reviews ticket 12 for approval.
+
+### P-007 · 2026-10-14 · Ticket 13 Frontend shell and the Overview screen
+
+**Prompt:**
+> /mp-implement 13
+
+then, asked to rule on the chart component's raw HTML, the author stopped the question to ask:
+
+> what is the impact of ur recommendation for this one ?
+
+then "ok i agree with ur recommendation then".
+
+**Purpose:** build the frontier ticket. The agent proposed five test points (failed share, singular
+or plural counts, the filters in the address, the Overview drawn with a fake API reply, and a scan
+for raw HTML) and the author chose all five. Before ruling on the chart conflict, the author asked
+what the recommended option would change.
+**Result:** a new `frontend/` Vite app: React Router with four routes, the dashboard-01 shell,
+KPI cards and chart component, the filter toolbar with its state in the address, one empty state,
+fixed error text. The scan test caught the official chart component using raw HTML (B-004); the
+author chose a one-line change over an exception. The two-axis review found a date label printing
+"undefined" (B-005) and a filter value the analyst could not see (B-006), both fixed test-first. 36
+frontend tests; backend 294 passed; Pyright and the frontend type check clean. A real run proved the
+proxy path from the browser address to FastAPI.
+**Next:** the author reviews the branch and rules on the open points in ticket 13's comments.

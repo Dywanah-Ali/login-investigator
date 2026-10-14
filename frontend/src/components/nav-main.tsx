@@ -1,4 +1,3 @@
-import { BellIcon, BotIcon, LayoutDashboardIcon, TableIcon } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router'
 
 import {
@@ -11,13 +10,6 @@ import {
 import { useFilters } from '@/hooks/use-filters'
 import { SCREENS } from '@/screens'
 
-const ICONS = {
-  '/': LayoutDashboardIcon,
-  '/alerts': BellIcon,
-  '/explorer': TableIcon,
-  '/investigator': BotIcon,
-} as const
-
 export function NavMain() {
   const { pathname } = useLocation()
   const { query } = useFilters()
@@ -28,7 +20,7 @@ export function NavMain() {
         <SidebarGroupContent>
           <SidebarMenu>
             {SCREENS.map((screen) => {
-              const Icon = ICONS[screen.path]
+              const Icon = screen.icon
               // The filters follow the analyst between the dashboard screens, as in v1.
               const search = screen.filtered && query ? `?${query}` : ''
               return (

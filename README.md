@@ -66,3 +66,7 @@ npm run dev
 
 The frontend's dev server forwards every `/api` request to the API on port 8000, so the browser
 talks to one address. The dashboards work without a model key.
+
+If port 8000 is taken, start the API with another `--port`, and start the frontend with the same
+address in `LI_API_URL`, for example `LI_API_URL=http://127.0.0.1:8010 npm run dev`. This setting
+belongs to the frontend's dev server only; the API never reads it.

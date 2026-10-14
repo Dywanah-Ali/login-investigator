@@ -11,7 +11,7 @@ export function SectionCards({ overview }: { overview: OverviewReply }) {
     {
       label: 'Failed attempts',
       value: summary.failures,
-      note: `${failedShare(summary.failures, summary.total)} of attempts`,
+      note: `${failedShare(summary.failures, summary.total) ?? 'No share'} of attempts`,
     },
     { label: 'Usernames seen', value: summary.distinct_users, note: 'includes guessed names' },
     { label: 'Alerts', value: alert_count, note: `${noun(alert_count, 'finding')} in this view` },

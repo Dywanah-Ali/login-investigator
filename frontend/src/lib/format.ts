@@ -41,6 +41,23 @@ export function formatDate(date: string): string {
   return `${day} ${MONTHS[month - 1]} ${year}`
 }
 
+// The date picker works in the browser's local calendar days; the filters are plain dates. A date
+// moves between the two by its year, month and day, never through a time of day.
+
+/** A plain date (YYYY-MM-DD) as a local calendar day, or undefined when it is not a real date. */
+export function parseDate(date: string | undefined): Date | undefined {
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return undefined
+  const [year, month, day] = date.split('-').map(Number)
+  const parsed = new Date(year, month - 1, day)
+  // new Date rolls 45 October over into November; a real date reads back unchanged.
+  return toPlainDate(parsed) === date ? parsed : undefined
+}
+
+/** A local calendar day as a plain date (YYYY-MM-DD). */
+export function toPlainDate(day: Date): string {
+  return `${day.getFullYear()}-${twoDigits(day.getMonth() + 1)}-${twoDigits(day.getDate())}`
+}
+
 /** Failed sign-ins as a share of all sign-ins, one decimal place. Null when there are none. */
 export function failedShare(failures: number, total: number): string | null {
   if (total === 0) return null

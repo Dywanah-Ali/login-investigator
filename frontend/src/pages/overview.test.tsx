@@ -109,6 +109,37 @@ describe('the Overview', () => {
   })
 })
 
+describe('the filter toolbar', () => {
+  test('with no date filter, the date range shows the whole log', async () => {
+    fakeApi({ '/api/dataset': { body: DATASET }, '/api/overview': { body: OVERVIEW } })
+    openApp('/')
+
+    expect(await screen.findByRole('button', { name: 'Date range (UTC)' })).toHaveTextContent(
+      '1 Oct 2026 – 8 Oct 2026',
+    )
+  })
+
+  test('a date that does not exist is never shown back as one', async () => {
+    fakeApi({
+      '/api/dataset': { body: DATASET },
+      '/api/overview': { status: 422, body: { error: { code: 'invalid_filter', message: '' } } },
+    })
+    openApp('/?from=2026-13-45')
+
+    const dates = await screen.findByRole('button', { name: 'Date range (UTC)' })
+    expect(dates).not.toHaveTextContent('undefined')
+    expect(dates).not.toHaveTextContent('45')
+  })
+
+  test('a user the dataset does not hold still shows in the box, so the analyst sees what filters the view', async () => {
+    fakeApi({ '/api/dataset': { body: DATASET }, '/api/overview': { body: EMPTY_OVERVIEW } })
+    openApp('/?user=nobody&country=ZZ')
+
+    expect(await screen.findByRole('combobox', { name: 'User' })).toHaveTextContent('nobody')
+    expect(screen.getByRole('combobox', { name: 'Country' })).toHaveTextContent('ZZ')
+  })
+})
+
 describe('error messages are fixed text and never show what the server sent', () => {
   const LEAK = 'Traceback: KeyError at /Users/someone/secret.py'
 

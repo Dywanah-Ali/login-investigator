@@ -17,9 +17,7 @@ export function SiteHeader({ title }: { title: string }) {
         {dataset.state === 'ready' && (
           <div className="ml-auto flex items-center gap-3 text-sm text-muted-foreground">
             <Badge variant="outline">{dataset.data.label}</Badge>
-            <span className="hidden sm:inline">
-              Log captured {formatTimestamp(dataset.data.captured_at)}
-            </span>
+            <span>Log captured {formatTimestamp(dataset.data.captured_at)}</span>
           </div>
         )}
       </div>

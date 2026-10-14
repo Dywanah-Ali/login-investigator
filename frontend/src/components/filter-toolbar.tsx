@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select'
 import { useDataset } from '@/hooks/use-dataset'
 import { useFilters } from '@/hooks/use-filters'
-import { formatDate } from '@/lib/format'
+import { formatDate, parseDate, toPlainDate } from '@/lib/format'
 
 // Radix Select cannot hold an empty value, so "all" has a stand-in that never reaches the address.
 const ALL = '__all__'
@@ -84,6 +84,13 @@ function FilterSelect({
   options: { value: string; label: string }[]
   onChange: (value: string | undefined) => void
 }) {
+  // A value in the address that the dataset does not hold still shows in the box, so the analyst
+  // can see what is filtering the view. It matches nothing, so the screen shows its empty state.
+  const choices =
+    value && !options.some((option) => option.value === value)
+      ? [...options, { value, label: value }]
+      : options
+
   return (
     <Select value={value ?? ALL} onValueChange={(next) => onChange(next === ALL ? undefined : next)}>
       <SelectTrigger size="sm" aria-label={label} className="min-w-36">
@@ -92,7 +99,7 @@ function FilterSelect({
       </SelectTrigger>
       <SelectContent>
         <SelectItem value={ALL}>All</SelectItem>
-        {options.map((option) => (
+        {choices.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
           </SelectItem>
@@ -100,22 +107,6 @@ function FilterSelect({
       </SelectContent>
     </Select>
   )
-}
-
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
-
-// The picker works in the browser's local calendar days; the filters are plain UTC dates. A date
-// is moved between the two by its year, month and day, never through a time of day.
-function toDay(date: string | undefined): Date | undefined {
-  if (!date || !ISO_DATE.test(date)) return undefined
-  const [year, month, day] = date.split('-').map(Number)
-  return new Date(year, month - 1, day)
-}
-
-function fromDay(day: Date | undefined): string | undefined {
-  if (!day) return undefined
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`
 }
 
 function DateRangePicker({
@@ -131,13 +122,14 @@ function DateRangePicker({
   lastDate: string
   onChange: (from: string | undefined, to: string | undefined) => void
 }) {
-  const first = toDay(firstDate)
-  const last = toDay(lastDate)
-  const selected: DateRange = { from: toDay(from), to: toDay(to) }
+  const first = parseDate(firstDate)
+  const last = parseDate(lastDate)
+  const selected: DateRange = { from: parseDate(from), to: parseDate(to) }
 
-  // Only a date that reads as one is shown back; anything else in the address shows as "all".
+  // Only a real date is shown back. With none, the label shows the whole log, as the agreed
+  // screen does.
   const shown = [selected.from && from, selected.to && to].filter(Boolean) as string[]
-  const label = shown.length ? shown.map(formatDate).join(' – ') : 'All dates'
+  const label = (shown.length ? shown : [firstDate, lastDate]).map(formatDate).join(' – ')
 
   return (
     <Popover>
@@ -156,7 +148,12 @@ function DateRangePicker({
           startMonth={first}
           endMonth={last}
           disabled={[...(first ? [{ before: first }] : []), ...(last ? [{ after: last }] : [])]}
-          onSelect={(range) => onChange(fromDay(range?.from), fromDay(range?.to))}
+          onSelect={(range) =>
+            onChange(
+              range?.from && toPlainDate(range.from),
+              range?.to && toPlainDate(range.to),
+            )
+          }
         />
       </PopoverContent>
     </Popover>
