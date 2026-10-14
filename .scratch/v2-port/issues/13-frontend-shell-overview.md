@@ -7,7 +7,7 @@ filters, so a reload shows the same view. A filter that matches nothing shows th
 
 **Blocked by:** 12 (API foundation and the Overview endpoint).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "The frontend". Decisions: tickets 05 and 07, prototypes under `research/`.
 
@@ -96,3 +96,9 @@ Open for the author's ruling:
 
 2026-10-14: the author clarified the "no screenshots" ruling: screenshots may be used to look at a
 running screen, only never as evidence. The look found B-007, fixed.
+
+2026-10-14: ticket 19's presence check now names the prototype as the Overview's reference, by
+ruling 4.
+
+2026-10-14: the author approved ("approved"). Status set to `resolved`. Merged into `main` locally;
+nothing pushed.
