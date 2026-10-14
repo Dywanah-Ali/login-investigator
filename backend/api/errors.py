@@ -28,14 +28,6 @@ class ApiError(Exception):
         self.message = message
 
 
-# The filter parameters and the fixed message for a value that fails validation.
-FILTER_MESSAGES = {
-    "from": "from is not a date (YYYY-MM-DD).",
-    "to": "to is not a date (YYYY-MM-DD).",
-    "outcome": "outcome must be success or failure.",
-}
-
-
 def reply(status: int, code: str, message: str) -> JSONResponse:
     return JSONResponse(status_code=status, content={"error": {"code": code, "message": message}})
 
@@ -46,13 +38,9 @@ async def _api_error(request: Request, error: Exception) -> JSONResponse:
 
 
 async def _validation_error(request: Request, error: Exception) -> JSONResponse:
-    """FastAPI's own checks failed. Its default reply copies the value sent into `input`; this
-    one keeps only the name of the first failing filter."""
+    """FastAPI's own checks failed. Its default reply copies the value sent into `input`, so this
+    one sends fixed text. The filters are checked in `filters.py` and never reach here."""
     assert isinstance(error, RequestValidationError)
-    for problem in error.errors():
-        location = tuple(problem.get("loc", ()))
-        if len(location) == 2 and location[0] == "query" and location[1] in FILTER_MESSAGES:
-            return reply(422, "invalid_filter", FILTER_MESSAGES[location[1]])
     return reply(422, "invalid_request", "The request is not valid.")
 
 

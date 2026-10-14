@@ -3,8 +3,8 @@ the core's own paths, so v2 runs on v1's data with nothing set. The two API keys
 the core reads them where it uses them, as in v1.
 
 Not yet wired: the agent's tools read the core's default log and reputation folder, not
-`log_path` and `reputation_dir`. Changing that touches the core's tools, so it waits for the
-author's ruling (ticket 12, comments).
+`log_path` and `reputation_dir`. Changing that touches the core's tools, so it has its own ticket
+(22), done before the eval runner's API mode (18).
 """
 
 from __future__ import annotations

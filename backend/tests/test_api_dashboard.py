@@ -116,6 +116,12 @@ def test_a_reset_restores_the_whole_log(client, truth):
     assert overview(client)["summary"]["total"] == truth["row_count"]
 
 
+def test_an_empty_box_means_all_as_a_missing_one_does(client):
+    """The author's ruling, 14 Oct (ticket 12): one rule for every filter, dates included."""
+    empty = {"from": "", "to": " ", "outcome": "", "country": "", "user": ""}
+    assert overview(client, **empty) == overview(client)
+
+
 def test_the_date_and_user_filters_reach_the_alert_count(client, s):
     """Pinned in test_dashboard.py: S4's user has one alert; 6 October holds S2 and S4."""
     assert overview(client, user=s["S4"]["user"])["alert_count"] == 1

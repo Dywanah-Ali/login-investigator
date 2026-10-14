@@ -44,7 +44,7 @@ one place.
 ## Shared filter parameters
 
 The three dashboard endpoints and the CSV download take the same query parameters. All optional.
-Missing means "all". They mirror the URL search parameters of the frontend (ticket 07).
+Missing or empty means "all", for every parameter (author's ruling, ticket 12). They mirror the URL search parameters of the frontend (ticket 07).
 
 | Parameter | Type | Meaning | Invalid |
 |---|---|---|---|
@@ -340,11 +340,14 @@ One shape for every error reply, including validation, replacing FastAPI's defau
 
 | Status | code | When |
 |---|---|---|
-| 404 | `not_found` | Unknown investigation id or report number |
+| 404 | `not_found` | Unknown investigation id or report number, or an unknown path |
+| 405 | `method_not_allowed` | A known path called with a method it does not take |
 | 409 | `busy` | An ask is already streaming on this investigation |
 | 409 | `not_offered` | A report request that does not match the current offer |
 | 422 | `invalid_filter`, `invalid_question`, `invalid_request` | A parameter or body failed validation. The message names the field, never its value |
-| 500 | `log_invalid` | The dataset failed to load at startup (`LogValidationError`); every dataset endpoint returns this with the loader's message, which names row problems, not secrets |
+| 500 | `log_invalid` | The dataset failed to load at startup (`LogValidationError`); every dataset endpoint returns this with the loader's message, which names row problems, not secrets. A missing file is the exception: its message would hold the server's full path, so the reply says `The configured log file was not found.` and the full message is logged on the server |
+| 500 | `internal_error` | An unexpected failure. Message: `The server hit an unexpected error.` The exception is logged on the server |
+| any other | `http_error` | Any other refusal by the framework itself. Message: `The request failed.` |
 | 503 | `agent_unavailable` | `OPENROUTER_API_KEY` is not set. Message: `OPENROUTER_API_KEY is not set. Copy env.example to .env and add the key.` Dashboard endpoints keep working (author's decision, 14 Oct) |
 
 Mid-stream failures use the `error` event with the same `{code, message}` object. Messages are

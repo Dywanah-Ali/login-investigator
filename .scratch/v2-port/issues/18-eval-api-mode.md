@@ -4,7 +4,8 @@
 its own server, drives the Investigation endpoints for every question and the report, scores with
 the unchanged grader, and records the run in a results table that begins with v1's history.
 
-**Blocked by:** 16 (Investigations API).
+**Blocked by:** 16 (Investigations API), 22 (The agent's tools follow the configured log and
+reputation folder; author's ruling, 14 Oct).
 
 **Status:** ready-for-agent
 

@@ -98,3 +98,16 @@ two real bugs, both fixed test-first: a number sent as a date gave a confident e
 and a missing log file sent the server's full path to the client (B-003). 26 API tests; full suite
 293 passed; Pyright clean; the core unchanged.
 **Next:** the author reviews the branch and rules on the open points in ticket 12's comments.
+
+### P-006 · 2026-10-14 · Ticket 12 API foundation and the Overview endpoint
+
+**Prompt:**
+> ok lets go through the 4 points 1 at a time, be simple for me to understand pls
+
+**Purpose:** rule on the four open points of ticket 12, each explained in plain words with the
+options, one question at a time.
+**Result:** all four recommendations chosen. The three extra error codes and the missing-file text
+were written into the contract. An empty filter box now means "all" for every filter, built
+test-first. The agent's tools ignoring the log and reputation settings became ticket 22, which now
+blocks ticket 18. Each ruling has a row in the spec's decisions log. Full suite: 294 passed.
+**Next:** the author reviews ticket 12 for approval.
