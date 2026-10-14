@@ -6,7 +6,7 @@ the old screen test that covered it.
 
 **Blocked by:** 10 (Repository foundation).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "Where logic lives". Decisions: ticket 01.
 
@@ -30,3 +30,6 @@ review run (standards and spec). Fixed from it: two test assertions that recompu
 value, one low-value test removed, docstrings corrected, lists made tuples as elsewhere in the core.
 Kept as judgement calls for the author: the module name `views.py` sits beside `tool_views.py`.
 Status `ready-for-human` until the author reviews, as for ticket 10.
+
+2026-10-14: the author approved ("approved"). Status set to `resolved`. Two follow-ups raised by the
+author from the concerns: a type checker for the project, and the name of `views.py`.
