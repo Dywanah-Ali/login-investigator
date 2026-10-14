@@ -1,0 +1,316 @@
+<title>Template Pick v2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* PROTOTYPE for wayfinder ticket 05. Three candidates on one page, switched by the bottom bar.
+   Layout: a facts strip on top, then four screen wireframes in a 2x2 grid, then a verdict box.
+   Legend: solid = comes with the candidate, dashed = v2 must build, struck = must be deleted. */
+:root {
+  --bg: #f6f7f4; --panel: #ffffff; --fg: #1d2420; --muted: #5d6862; --line: #d6dbd4;
+  --have: #2f7a4f; --have-bg: #e4f1e8; --build: #a05a12; --build-bg: #fbeedd;
+  --drop: #8a3a3a; --drop-bg: #f6e3e3; --accent: #1f5f8b; --bar: #1d2420; --bar-fg: #f6f7f4;
+  --sans: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15191a; --panel: #1e2426; --fg: #e6ebe7; --muted: #9aa69f; --line: #334039;
+  --have: #7fc79c; --have-bg: #1f3a2b; --build: #e8a862; --build-bg: #3d2d16;
+  --drop: #e08a8a; --drop-bg: #44232a; --accent: #7fb6dd; --bar: #e6ebe7; --bar-fg: #15191a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15191a; --panel: #1e2426; --fg: #e6ebe7; --muted: #9aa69f; --line: #334039;
+  --have: #7fc79c; --have-bg: #1f3a2b; --build: #e8a862; --build-bg: #3d2d16;
+  --drop: #e08a8a; --drop-bg: #44232a; --accent: #7fb6dd; --bar: #e6ebe7; --bar-fg: #15191a; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 96px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 20px; }
+h1 { font-size: 1.5rem; font-weight: 600; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.05rem; font-weight: 600; margin: 0; }
+p { margin: 0; max-width: 68ch; }
+.lead { color: var(--muted); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 10px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
+.legend .l-have::before { background: var(--have-bg); border: 1.5px solid var(--have); }
+.legend .l-build::before { background: var(--build-bg); border: 1.5px dashed var(--build); }
+.legend .l-drop::before { background: var(--drop-bg); border: 1.5px solid var(--drop); }
+
+.cand { display: none; gap: 20px; }
+.cand.on { display: grid; }
+.head { display: grid; gap: 6px; }
+.head .tag { font-family: var(--mono); font-size: .8rem; color: var(--accent); letter-spacing: .04em; text-transform: uppercase; }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.fact { background: var(--panel); padding: 10px 12px; min-width: 0; }
+.fact b { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 500; }
+.fact span { font-family: var(--mono); font-size: .9rem; font-variant-numeric: tabular-nums; }
+
+.screens { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 760px) { .screens { grid-template-columns: 1fr; } }
+.screen { background: var(--panel); border: 1px solid var(--line); padding: 12px; display: grid; gap: 8px; min-width: 0; }
+.screen h3 { margin: 0; font-size: .9rem; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.screen h3 small { font-family: var(--mono); font-weight: 400; color: var(--muted); font-size: .72rem; }
+.wire { display: grid; grid-template-columns: 56px 1fr; gap: 6px; aspect-ratio: 16 / 10; max-width: 100%; font-size: .68rem; line-height: 1.2; }
+.wire.nosb { grid-template-columns: 1fr; }
+.box { border: 1.5px solid var(--have); background: var(--have-bg); color: var(--fg); padding: 4px 5px; border-radius: 2px; overflow: hidden; display: flex; align-items: flex-start; }
+.box.build { border-style: dashed; border-color: var(--build); background: var(--build-bg); }
+.box.drop { border-color: var(--drop); background: var(--drop-bg); text-decoration: line-through; color: var(--muted); }
+.main { display: grid; gap: 6px; min-width: 0; }
+.row { display: grid; gap: 6px; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.tall { flex: 1; }
+.notes { font-size: .82rem; color: var(--muted); }
+.notes b { color: var(--fg); font-weight: 500; }
+
+.verdict { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); padding: 14px 16px; display: grid; gap: 8px; }
+.verdict ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.verdict li { max-width: 72ch; }
+
+.table { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center;
+  padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); pointer-events: none; }
+.pill { pointer-events: auto; display: flex; align-items: center; gap: 4px; background: var(--bar); color: var(--bar-fg); border-radius: 999px; padding: 6px 8px; box-shadow: 0 6px 24px rgba(0,0,0,.25); font-size: .85rem; }
+.pill button { background: transparent; color: inherit; border: 0; font: inherit; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+.pill button:hover, .pill button:focus-visible { background: rgba(127,127,127,.3); outline: none; }
+.pill button.cur { background: var(--accent); color: #fff; }
+.pill .arrow { font-size: 1rem; }
+</style>
+
+<div class="wrap">
+  <div class="head">
+    <h1>Pick the template and framework</h1>
+    <p class="lead">Three starting points for the v2 frontend, each shown as the four screens would look on day one. Use the bar at the bottom, or the left and right arrow keys, to switch.</p>
+    <div class="legend"><span class="l-have">comes with the candidate</span><span class="l-build">v2 must build</span><span class="l-drop">must be deleted first</span></div>
+  </div>
+
+  <!-- ===================== A ===================== -->
+  <section class="cand" id="A" data-name="Official pieces on Vite">
+    <div class="head">
+      <div class="tag">Candidate A</div>
+      <h2>Official shadcn/ui pieces, composed by hand, on Vite + React Router</h2>
+      <p>Start from an empty Vite app. Pull in the official <code>dashboard-01</code> block for the shell and Overview, the official tasks table example for the two tables, and the official <code>message</code> components for the chat. Wire the pages together with React Router.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>Framework</b><span>Vite + React Router</span></div>
+      <div class="fact"><b>Code to read</b><span>~3,000 lines</span></div>
+      <div class="fact"><b>Of which kept</b><span>nearly all</span></div>
+      <div class="fact"><b>Charts</b><span>Recharts v3 via chart</span></div>
+      <div class="fact"><b>Tables</b><span>TanStack Table v9</span></div>
+      <div class="fact"><b>Licence</b><span>MIT, shadcn</span></div>
+    </div>
+    <div class="screens">
+      <div class="screen"><h3>Overview <small>dashboard-01</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="box">header</div>
+          <div class="row"><div class="box">KPI</div><div class="box">KPI</div><div class="box">KPI</div><div class="box">KPI</div></div>
+          <div class="box tall">area chart (Recharts)</div>
+          <div class="box build">v1 charts: by hour, by country, by outcome</div>
+        </div></div>
+        <p class="notes"><b>Have:</b> shell, KPI cards, one chart. <b>Build:</b> v1's other charts and the shared filter bar.</p></div>
+      <div class="screen"><h3>Alerts <small>tasks example</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row"><div class="box">text filter</div><div class="box">faceted filters</div></div>
+          <div class="box tall">sortable table, column visibility, paging</div>
+          <div class="box build">severity column, report offer</div>
+        </div></div>
+        <p class="notes"><b>Have:</b> the whole filterable table. <b>Build:</b> columns for findings, the report-card offer.</p></div>
+      <div class="screen"><h3>Log explorer <small>tasks example</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row"><div class="box">text filter</div><div class="box">faceted: outcome, country</div></div>
+          <div class="box tall">log rows table (fields only in cells)</div>
+          <div class="box build">date range, IP box, jump-from-alert route</div>
+        </div></div>
+        <p class="notes"><b>Have:</b> the table pattern. <b>Build:</b> v1's date and IP filters, the explorer jump.</p></div>
+      <div class="screen"><h3>Investigator <small>message, bubble, message-scroller</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row">
+            <div class="box build">past investigations list</div>
+            <div class="main"><div class="box tall">message list, streaming</div><div class="box build">SSE reader (ticket 06)</div><div class="box">prompt form</div></div>
+          </div>
+        </div></div>
+        <p class="notes"><b>Have:</b> message surface. <b>Build:</b> the history list, the SSE transport, the report card with links off.</p></div>
+    </div>
+    <div class="verdict">
+      <h2>What you would read and learn</h2>
+      <ul>
+        <li>About 3,000 lines, and every line ends up in v2. Nothing arrives that has to be understood only to be deleted.</li>
+        <li>One new idea to learn: React Router in its plain declarative mode, about four routes.</li>
+        <li>Risk: the pieces are assembled by hand, so the first ticket of the build is wiring, not features. The official docs cover each piece, but not the composition.</li>
+        <li>Chart library follows: Recharts v3 through the shadcn chart component. The map's "Chart library" fog closes.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== B ===================== -->
+  <section class="cand" id="B" data-name="shadcn-admin on Vite">
+    <div class="head">
+      <div class="tag">Candidate B</div>
+      <h2>satnaing/shadcn-admin, a full admin kit on Vite + TanStack Router</h2>
+      <p>Clone a community admin app that already has every screen shape, including a chat page with a conversation list. Delete the features v2 does not want, then rewire what is left to FastAPI.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>Framework</b><span>Vite + TanStack Router</span></div>
+      <div class="fact"><b>Code to read</b><span>~15,000 lines</span></div>
+      <div class="fact"><b>Of which kept</b><span>~3,000 lines</span></div>
+      <div class="fact"><b>Charts</b><span>Recharts v3 direct</span></div>
+      <div class="fact"><b>Tables</b><span>TanStack Table v8</span></div>
+      <div class="fact"><b>Licence</b><span>MIT, community</span></div>
+    </div>
+    <div class="screens">
+      <div class="screen"><h3>Overview <small>features/dashboard</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row"><div class="box">header</div><div class="box drop">search, theme, Clerk user</div></div>
+          <div class="row"><div class="box">KPI</div><div class="box">KPI</div><div class="box">KPI</div><div class="box">KPI</div></div>
+          <div class="row"><div class="box tall">bar chart</div><div class="box drop">recent sales</div></div>
+          <div class="box build">v1 charts, filter bar</div>
+        </div></div>
+        <p class="notes"><b>Have:</b> shell, KPIs, two charts. <b>Drop:</b> Clerk auth, sales mock. <b>Build:</b> v1 charts and filters.</p></div>
+      <div class="screen"><h3>Alerts <small>features/tasks</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row"><div class="box">faceted filters</div><div class="box drop">create, import, bulk delete</div></div>
+          <div class="box tall">table with row actions</div>
+          <div class="box drop">CRUD dialogs</div>
+          <div class="box build">severity column, report offer</div>
+        </div></div>
+        <p class="notes"><b>Have:</b> the table. <b>Drop:</b> every edit and delete path, since v2 is read-only.</p></div>
+      <div class="screen"><h3>Log explorer <small>features/users</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row"><div class="box">faceted filters</div><div class="box drop">invite, add user</div></div>
+          <div class="box tall">table (19 files)</div>
+          <div class="box drop">user forms, role dialogs</div>
+          <div class="box build">date range, IP box, explorer jump</div>
+        </div></div>
+        <p class="notes"><b>Have:</b> a second table. <b>Drop:</b> all user management. <b>Build:</b> v1 filters.</p></div>
+      <div class="screen"><h3>Investigator <small>features/chats</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row">
+            <div class="box">conversation list</div>
+            <div class="main"><div class="box tall">message thread (mock, person to person)</div><div class="box build">SSE reader, streaming, tool events</div><div class="box">input</div></div>
+          </div>
+        </div></div>
+        <p class="notes"><b>Have:</b> the two-pane layout. <b>Build:</b> it is a static messaging mock, so streaming and tool events are new.</p></div>
+    </div>
+    <div class="verdict">
+      <h2>What you would read and learn</h2>
+      <ul>
+        <li>About 15,000 lines to read before deciding what to keep. Roughly four fifths is deleted: apps, auth, Clerk, settings, users, errors, right-to-left support.</li>
+        <li>Two new ideas to learn: TanStack Router with file-based routes, and a community project's own conventions and folder layout.</li>
+        <li>Risk: a trimmed fork is hardest to review, because the reader cannot tell what was ours and what was theirs. The repo also lags the official guide, with TanStack Table still on v8.</li>
+        <li>The chat page looks like Investigator but is a messaging mock. Only the layout survives.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== C ===================== -->
+  <section class="cand" id="C" data-name="Official pieces on Next.js">
+    <div class="head">
+      <div class="tag">Candidate C</div>
+      <h2>Official shadcn/ui pieces plus the chatbot template, on Next.js 16</h2>
+      <p>The same official dashboard and table pieces as A, with shadcn's own chatbot template for the chat, all on Next.js. The model call that the template puts in Next.js server routes moves to FastAPI, so those routes are deleted.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>Framework</b><span>Next.js 16 App Router</span></div>
+      <div class="fact"><b>Code to read</b><span>~3,700 lines</span></div>
+      <div class="fact"><b>Of which kept</b><span>~3,000 lines</span></div>
+      <div class="fact"><b>Charts</b><span>Recharts v3 via chart</span></div>
+      <div class="fact"><b>Tables</b><span>TanStack Table v9</span></div>
+      <div class="fact"><b>Licence</b><span>MIT, shadcn</span></div>
+    </div>
+    <div class="screens">
+      <div class="screen"><h3>Overview <small>dashboard-01</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="box">header</div>
+          <div class="row"><div class="box">KPI</div><div class="box">KPI</div><div class="box">KPI</div><div class="box">KPI</div></div>
+          <div class="box tall">area chart (Recharts)</div>
+          <div class="box build">v1 charts, filter bar, "use client" boundaries</div>
+        </div></div>
+        <p class="notes">Same as A, plus the decision on every file whether it runs on the server or in the browser.</p></div>
+      <div class="screen"><h3>Alerts <small>tasks example</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row"><div class="box">text filter</div><div class="box">faceted filters</div></div>
+          <div class="box tall">sortable table</div>
+          <div class="box drop">page.tsx reads JSON with fs</div>
+          <div class="box build">fetch from FastAPI instead</div>
+        </div></div>
+        <p class="notes">Same table as A. The example's page reads a file on the Next.js server, which v2 replaces with an API call.</p></div>
+      <div class="screen"><h3>Log explorer <small>tasks example</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row"><div class="box">text filter</div><div class="box">faceted filters</div></div>
+          <div class="box tall">log rows table</div>
+          <div class="box build">date range, IP box, explorer jump</div>
+        </div></div>
+        <p class="notes">Same as A.</p></div>
+      <div class="screen"><h3>Investigator <small>shadcn-ui/chatbot-template</small></h3>
+        <div class="wire"><div class="box">sidebar</div><div class="main">
+          <div class="row">
+            <div class="box build">past investigations list</div>
+            <div class="main"><div class="box tall">chat.tsx, message parts, suggestions</div><div class="box drop">useChat + AI SDK + api/chat route</div><div class="box build">SSE reader (ticket 06)</div><div class="box">prompt form</div></div>
+          </div>
+        </div></div>
+        <p class="notes"><b>Have:</b> a polished chat surface. <b>Drop:</b> its whole transport and server route. <b>Build:</b> history list and SSE reader, same as A.</p></div>
+    </div>
+    <div class="verdict">
+      <h2>What you would read and learn</h2>
+      <ul>
+        <li>About 3,700 lines, of which the template's AI SDK transport and server route are deleted. The UI left over is the same official message components A uses.</li>
+        <li>Three new ideas to learn: the App Router's folder-as-route rule, server versus client components, and why a second server runs beside FastAPI without doing any work.</li>
+        <li>Risk: Next.js exists to run code on the server. v2 has no server-side frontend work, so every Next.js feature is a thing to switch off or avoid. For a reviewer, that is noise.</li>
+        <li>Nothing here is unavailable on Vite. shadcn/ui lists seven setups as equal and recommends none.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== side by side ===================== -->
+  <div class="verdict" style="border-left-color: var(--line)">
+    <h2>Side by side</h2>
+    <div class="table"><table>
+      <thead><tr><th>Measure</th><th>A Official on Vite</th><th>B shadcn-admin</th><th>C Official on Next.js</th></tr></thead>
+      <tbody>
+        <tr><td>Lines to read</td><td class="num">~3,000</td><td class="num">~15,000</td><td class="num">~3,700</td></tr>
+        <tr><td>Lines deleted</td><td class="num">~0</td><td class="num">~12,000</td><td class="num">~700</td></tr>
+        <tr><td>New ideas to learn</td><td>React Router</td><td>TanStack Router, a fork's conventions</td><td>App Router, server/client split, idle second server</td></tr>
+        <tr><td>Screens present on day one</td><td>Overview, two tables, chat surface</td><td>all four shapes, chat is a mock</td><td>Overview, two tables, chat surface</td></tr>
+        <tr><td>Must build in every case</td><td colspan="3">history list, SSE reader, v1 filter bar, v1 charts, report card with links off, explorer jump</td></tr>
+        <tr><td>Chart library</td><td colspan="3">Recharts v3 in all three</td></tr>
+        <tr><td>Servers to run locally</td><td class="num">2</td><td class="num">2</td><td class="num">2</td></tr>
+      </tbody>
+    </table></div>
+    <p class="notes">Sources: research file 04 (shadcn/ui docs, each repository's tree and package.json, 14 October 2026). Line counts are from that file. "Must build" rows follow ticket 01 and ticket 06.</p>
+  </div>
+</div>
+
+<div class="bar"><div class="pill">
+  <button class="arrow" id="prev" aria-label="Previous candidate">&#8592;</button>
+  <button data-v="A">A</button><button data-v="B">B</button><button data-v="C">C</button>
+  <span id="label" style="padding: 0 10px"></span>
+  <button class="arrow" id="next" aria-label="Next candidate">&#8594;</button>
+</div></div>
+
+<script>
+(function () {
+  var keys = ['A', 'B', 'C'];
+  var cur = keys.indexOf((location.hash || '').replace('#', '')); if (cur < 0) cur = 0;
+  function show(i) {
+    cur = (i + keys.length) % keys.length;
+    keys.forEach(function (k, j) {
+      document.getElementById(k).classList.toggle('on', j === cur);
+      document.querySelector('[data-v="' + k + '"]').classList.toggle('cur', j === cur);
+    });
+    document.getElementById('label').textContent = document.getElementById(keys[cur]).dataset.name;
+    try { history.replaceState(null, '', '#' + keys[cur]); } catch (e) {}
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('prev').onclick = function () { show(cur - 1); };
+  document.getElementById('next').onclick = function () { show(cur + 1); };
+  keys.forEach(function (k, j) { document.querySelector('[data-v="' + k + '"]').onclick = function () { show(j); }; });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target, tag = t && t.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+    if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1);
+  });
+  show(cur);
+})();
+</script>

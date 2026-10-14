@@ -1,0 +1,29 @@
+# Secrets: never commit
+.env
+.env.*
+
+# Agent memory: holds Investigations. The folder also holds SQLite's -wal and -shm side files.
+memory/
+*.sqlite
+*.sqlite3
+*.db
+
+# Python and tooling
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+.vite/
+
+# Local editor and agent settings (machine paths)
+.claude/settings.local.json
+
+# macOS
+.DS_Store
