@@ -6,7 +6,7 @@ moved it. The agent's tools do not call this module.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 
 import pandas as pd
 
@@ -19,7 +19,7 @@ DATA_LABEL = "Synthetic data"
 @dataclass(frozen=True)
 class DatasetFacts:
     """What the shell and the filter pickers need to know about the loaded log."""
-    captured_at: pd.Timestamp  # the app treats this as "today"
+    captured_at: datetime  # UTC; the app treats this as "today"
     label: str
     first_date: date
     last_date: date
@@ -33,7 +33,7 @@ def dataset_facts(df: pd.DataFrame) -> DatasetFacts:
     pickers' values and the row count. `df` is the whole loaded log."""
     times = df["timestamp_utc"]
     return DatasetFacts(
-        captured_at=pd.Timestamp(CAPTURED_AT),
+        captured_at=CAPTURED_AT,
         label=DATA_LABEL,
         first_date=times.min().date(),
         last_date=times.max().date(),
@@ -54,8 +54,7 @@ def alerts_for_view(findings: list[Finding], rows: pd.DataFrame) -> list[Finding
     return sorted(kept, key=lambda f: (f.last_seen, f.rule), reverse=True)
 
 
-def date_window(first: date | None, last: date | None) -> tuple[pd.Timestamp | None,
-                                                                pd.Timestamp | None]:
+def date_window(first: date | None, last: date | None) -> tuple[datetime | None, datetime | None]:
     """Turn the filter's plain dates into the half-open UTC window [start, end) the search takes.
 
     Both days are included, so the end is the day after `last`. `first` alone is that one day, as
@@ -63,6 +62,10 @@ def date_window(first: date | None, last: date | None) -> tuple[pd.Timestamp | N
     """
     if first is not None and last is None:
         last = first
-    start = None if first is None else pd.Timestamp(first, tz="UTC")
-    end = None if last is None else pd.Timestamp(last, tz="UTC") + timedelta(days=1)
+    start = None if first is None else _midnight_utc(first)
+    end = None if last is None else _midnight_utc(last) + timedelta(days=1)
     return start, end
+
+
+def _midnight_utc(day: date) -> datetime:
+    return datetime.combine(day, time(), tzinfo=timezone.utc)

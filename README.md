@@ -36,7 +36,11 @@ cp env.example .env     # then put your keys into .env, which is git-ignored
 ```bash
 cd backend
 uv run pytest
+uv run pyright          # type check; must report 0 errors
 ```
+
+Files copied from v1 that the type checker flags are on a "not yet checked" list in
+`backend/pyproject.toml`. The list only shrinks: new files never go on it.
 
 ## Run
 

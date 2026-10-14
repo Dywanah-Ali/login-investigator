@@ -16,7 +16,35 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pypdf==6.20.0",
+    "pyright==1.1.414",
     "pytest>=9.1.1",
+]
+
+[tool.pyright]
+include = ["login_investigator", "tests", "evals"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+# Not yet checked: files copied from v1 that Pyright flagged on 14 Oct 2026 (61 errors, mostly
+# pandas types it cannot follow). They stay unchanged until Parity is proven. A file leaves this
+# list only once `uv run pyright` is clean with it removed, so the list can only shrink. New files
+# never go on it. Ticket 21; spec decisions log, 14 Oct.
+ignore = [
+    "evals/run.py",
+    "login_investigator/agent.py",
+    "login_investigator/generator.py",
+    "login_investigator/loader.py",
+    "login_investigator/report_pdf.py",
+    "login_investigator/rules.py",
+    "login_investigator/search.py",
+    "login_investigator/stats.py",
+    "login_investigator/tool_views.py",
+    "login_investigator/tools.py",
+    "tests/test_agent.py",
+    "tests/test_report_pdf.py",
+    "tests/test_stats.py",
+    "tests/test_tool_views.py",
 ]
 
 [tool.pytest.ini_options]
