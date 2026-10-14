@@ -7,7 +7,7 @@ value being echoed.
 
 **Blocked by:** 11 (Core: the logic that moved from the screens).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "The API". Contract: `docs/api-contract.md` (ground rules, base path and
 configuration, shared filter parameters, dataset facts, overview, rules guide, errors).
@@ -58,4 +58,7 @@ Open for the author's ruling:
    logs. Wiring it changes a core file, which the spec keeps unchanged until Parity. Matters for
    ticket 16 and the eval runner's API mode (ticket 18), which sets only `LI_MEMORY_PATH`.
    **Ruling 2026-10-14: a new ticket, done before ticket 18.** Ticket 22 created; ticket 18 is now
-   blocked by it. The note in `api/settings.py` points to this comment until ticket 22 removes it.
+   blocked by it. The note in `api/settings.py` points to ticket 22, which removes it.
+
+2026-10-14: the author approved ("approved"). Status set to `resolved`. Merged into `main` locally;
+nothing pushed. Follow-up: ticket 22 (the agent's tools follow the configured paths), before 18.
