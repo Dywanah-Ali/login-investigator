@@ -72,12 +72,27 @@ Open for the author's ruling:
 3. **Small behaviour no line asked for.** Zero bars for quiet hours, so time is not squeezed; the
    filters follow the sidebar links between dashboard screens; an unknown address opens the
    Overview; the `LI_API_URL` dev setting. Proposed: keep all four.
+   **Ruling 2026-10-14: all four kept.** The sidebar filters are still checked against v1 under
+   point 4.
 4. **Labels not checked against v1's code.** v1 could not be read this session. The tile labels,
    the chart titles and the empty-state text come from the agreed prototype, which says its content
    is v1's. The failed share rounds a half up (6.25% shows 6.3%); Python's own formatting would show
    6.2%. The claim "as in v1" for the sidebar filters is also unchecked. Proposed: check all of it
    against `app/screens/overview.py` and `app/shared.py` in a fresh session, before ticket 19.
+   **Ruling 2026-10-14: accept the prototype as the source (option C), no check against v1's
+   code.** The recommendation was a check before closing. The agreed prototype is the reference
+   for the Overview's labels, chart titles and empty-state text; the failed share rounds a half up;
+   the sidebar links keep the filters. Spec decisions log row added, so ticket 19's presence check
+   knows the reference.
 5. **Unused fields in the Overview reply.** The Overview shows no `successes`, `distinct_ips`,
    `distinct_countries`, `first_seen`, `last_seen`, and the toolbar no `row_count`. The cause is the
    contract (ticket 12), not this ticket. Proposed: decide at ticket 15, whose count tiles may use
    some of them.
+   **Update while preparing the ruling:** the Log explorer has its own endpoint for its counts, so
+   waiting gains nothing. **Ruling 2026-10-14: trim now (option A).** The Overview summary sends
+   `total`, `failures` and `distinct_users`; the dataset facts drop `row_count`. API tests changed
+   first, then the routes, the frontend types and the contract. Backend 295 passed, frontend 36,
+   Pyright and the type check clean.
+
+2026-10-14: the author clarified the "no screenshots" ruling: screenshots may be used to look at a
+running screen, only never as evidence. The look found B-007, fixed.

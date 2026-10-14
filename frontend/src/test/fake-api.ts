@@ -12,20 +12,10 @@ export const DATASET = {
   last_date: '2026-10-08',
   countries: ['DE', 'GB', 'RU'],
   users: ['alice.k', 'bob.m'],
-  row_count: 1856,
 }
 
 export const OVERVIEW = {
-  summary: {
-    total: 1856,
-    successes: 1700,
-    failures: 156,
-    distinct_users: 41,
-    distinct_ips: 37,
-    distinct_countries: 6,
-    first_seen: '2026-10-01T09:02:57Z',
-    last_seen: '2026-10-08T08:59:40Z',
-  },
+  summary: { total: 1856, failures: 156, distinct_users: 41 },
   alert_count: 5,
   hourly: [
     { hour: '2026-10-07T23:00:00Z', outcome: 'failure', events: 88 },
@@ -35,16 +25,7 @@ export const OVERVIEW = {
 }
 
 export const EMPTY_OVERVIEW = {
-  summary: {
-    total: 0,
-    successes: 0,
-    failures: 0,
-    distinct_users: 0,
-    distinct_ips: 0,
-    distinct_countries: 0,
-    first_seen: null,
-    last_seen: null,
-  },
+  summary: { total: 0, failures: 0, distinct_users: 0 },
   alert_count: 0,
   hourly: [],
   top_failed_ips: [],

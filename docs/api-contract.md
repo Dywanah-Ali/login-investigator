@@ -74,12 +74,12 @@ The facts the shell and the filter toolbar need. The frontend never hard-codes t
   "first_date": "2026-10-01",               // Date: earliest log day
   "last_date": "2026-10-08",                // Date: latest log day
   "countries": ["DE", "GB", "RU"],          // sorted, distinct
-  "users": ["alice.k", "bob.m"],            // sorted, distinct usernames as they appear in the log
-  "row_count": 1856                         // int
+  "users": ["alice.k", "bob.m"]             // sorted, distinct usernames as they appear in the log
 }
 ```
 
 Core: a new `dataset_facts(df)` function (ticket 01). `captured_at` is `generator.CAPTURED_AT`.
+The core's facts also hold a row count, which no screen shows, so it is not sent (ticket 13).
 
 ### Overview
 
@@ -87,10 +87,8 @@ Core: a new `dataset_facts(df)` function (ticket 01). `captured_at` is `generato
 
 ```json
 {
-  "summary": {                               // from search.summarize(rows)
-    "total": 1856, "successes": 1700, "failures": 156,
-    "distinct_users": 41, "distinct_ips": 37, "distinct_countries": 6,
-    "first_seen": "2026-10-01T09:02:57Z", "last_seen": "2026-10-08T08:59:40Z"
+  "summary": {                               // three fields of search.summarize(rows)
+    "total": 1856, "failures": 156, "distinct_users": 41
   },
   "alert_count": 5,                          // len(alerts_for_view)
   "hourly": [                                // stats.hourly_counts(rows); hours with no events are absent
@@ -102,8 +100,9 @@ Core: a new `dataset_facts(df)` function (ticket 01). `captured_at` is `generato
 }
 ```
 
-Not sent: the summary's `sample` and `truncated` (agent-only fields). Failed share is computed in
-the frontend from `failures` and `total`.
+Not sent: the summary's `sample` and `truncated` (agent-only fields), and its `successes`,
+`distinct_ips`, `distinct_countries`, `first_seen` and `last_seen`, which the Overview does not show
+(ticket 13). Failed share is computed in the frontend from `failures` and `total`.
 
 Empty view (no rows match): `summary.total` is 0, `hourly` and `top_failed_ips` are `[]`,
 `alert_count` is 0. The frontend shows the empty state. Not an error.

@@ -26,8 +26,8 @@ def test_dataset_facts_match_the_ground_truth(client, truth, s):
     reply = client.get("/api/dataset")
     assert reply.status_code == 200
     body = reply.json()
-    assert set(body) == {"captured_at", "label", "first_date", "last_date", "countries", "users",
-                         "row_count"}
+    # Only what the screens show leaves the server (author's ruling, ticket 13): no row count.
+    assert set(body) == {"captured_at", "label", "first_date", "last_date", "countries", "users"}
     assert body["captured_at"] == truth["captured_at"]
     assert body["label"] == "Synthetic data"
     assert body["first_date"] == "2026-10-01"
@@ -36,7 +36,6 @@ def test_dataset_facts_match_the_ground_truth(client, truth, s):
     assert len(body["users"]) == 57
     assert body["users"] == sorted(body["users"])
     assert {s["S1"]["target_user"], s["S4"]["user"]} <= set(body["users"])
-    assert body["row_count"] == truth["row_count"]
 
 
 # --- Rules guide ---------------------------------------------------------------------------------
@@ -62,8 +61,8 @@ def test_the_rules_guide_names_every_rule_with_its_title_and_reasons(client, s):
 
 # --- Overview ------------------------------------------------------------------------------------
 
-SUMMARY_FIELDS = {"total", "successes", "failures", "distinct_users", "distinct_ips",
-                  "distinct_countries", "first_seen", "last_seen"}
+# The three figures the Overview's tiles show (author's ruling, ticket 13).
+SUMMARY_FIELDS = {"total", "failures", "distinct_users"}
 
 
 def overview(client, **filters):
@@ -79,7 +78,8 @@ def test_the_overview_of_the_whole_log_has_the_contract_shape_and_nothing_more(c
     assert set(body) == {"summary", "alert_count", "hourly", "top_failed_ips"}
     assert set(body["summary"]) == SUMMARY_FIELDS
     assert body["summary"]["total"] == truth["row_count"]
-    assert body["summary"]["successes"] + body["summary"]["failures"] == truth["row_count"]
+    assert 0 < body["summary"]["failures"] < truth["row_count"]
+    assert body["summary"]["distinct_users"] == 57
     assert body["alert_count"] == 5  # S1 to S4, plus the new-country alert of S3's sign-in
     assert body["top_failed_ips"][:2] == [
         {"source_ip": s["S1"]["attacker_ip"], "failures": s["S1"]["failures"], "accounts": 1},
@@ -102,10 +102,12 @@ def test_a_filter_changes_every_part_of_the_overview_consistently(client, s):
     activity from Romania, and its country matches without regard to case, as the core does."""
     body = overview(client, country="ro")
     assert body["summary"]["total"] == s["S2"]["attempts"]
-    assert body["summary"]["successes"] == s["S2"]["successes"]
-    assert body["summary"]["first_seen"] == s["S2"]["first_seen"]
-    assert body["summary"]["last_seen"] == s["S2"]["last_seen"]
+    assert body["summary"]["failures"] == s["S2"]["attempts"] - s["S2"]["successes"]
     assert sum(h["events"] for h in body["hourly"]) == s["S2"]["attempts"]
+    hours = [h["hour"] for h in body["hourly"]]
+    # The view's first and last hours are the hours of S2's first and last attempts.
+    assert min(hours) == s["S2"]["first_seen"][:13] + ":00:00Z"
+    assert max(hours) == s["S2"]["last_seen"][:13] + ":00:00Z"
     assert [ip["source_ip"] for ip in body["top_failed_ips"]] == [s["S2"]["attacker_ip"]]
     assert body["alert_count"] == 1
 
@@ -130,9 +132,9 @@ def test_the_date_and_user_filters_reach_the_alert_count(client, s):
 
 
 def test_an_outcome_filter_keeps_only_that_outcome(client):
-    summary = overview(client, outcome="failure")["summary"]
-    assert summary["successes"] == 0
-    assert summary["failures"] == summary["total"] > 0
+    body = overview(client, outcome="failure")
+    assert body["summary"]["failures"] == body["summary"]["total"] > 0
+    assert {h["outcome"] for h in body["hourly"]} == {"failure"}
 
 
 def test_an_empty_view_is_not_an_error(client, s):
@@ -140,9 +142,7 @@ def test_an_empty_view_is_not_an_error(client, s):
     usernames never signed in."""
     body = overview(client, user=s["S2"]["unknown_usernames"][0], outcome="success")
     assert body == {
-        "summary": {"total": 0, "successes": 0, "failures": 0, "distinct_users": 0,
-                    "distinct_ips": 0, "distinct_countries": 0,
-                    "first_seen": None, "last_seen": None},
+        "summary": {"total": 0, "failures": 0, "distinct_users": 0},
         "alert_count": 0,
         "hourly": [],
         "top_failed_ips": [],

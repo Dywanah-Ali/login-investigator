@@ -135,3 +135,26 @@ author chose a one-line change over an exception. The two-axis review found a da
 frontend tests; backend 294 passed; Pyright and the frontend type check clean. A real run proved the
 proxy path from the browser address to FastAPI.
 **Next:** the author reviews the branch and rules on the open points in ticket 13's comments.
+
+### P-008 · 2026-10-14 · Ticket 13 Frontend shell and the Overview screen
+
+**Prompt:**
+> HERE "I didn't look at the screen in a browser, because of your no-screenshots ruling" u can take screenshots to analyse and verify no problem, that rule just meant for not keeping screenshots as evidences
+>
+> pls run the open rulling one at a time
+
+then, while ruling 2 was being asked:
+
+> can u apply ur recommendation now? i guess there is no need to a new ticket. what do u think ?
+
+**Purpose:** correct the agent's reading of the screenshots ruling, look at the running screen,
+and rule on ticket 13's five open points one question at a time.
+**Result:** the look found the top IPs chart hiding every second label, the top IP included
+(B-007), and the date picker marking the reader's date as today; both fixed and looked at again.
+Rulings: (1) the log-field rule reworded to "plain text in tables, chart labels and picker
+options"; (2) reading the loader showed the API quoting raw log values into its `log_invalid`
+message (B-008); the agent agreed no new ticket was needed, since only the API changes, and fixed
+it test-first; (3) four unasked behaviours kept; (4) the prototype accepted as the label reference,
+against the recommendation to check v1's code; (5) six unused fields trimmed from the replies.
+Backend 295 passed, frontend 36, both type checks clean.
+**Next:** the author reviews ticket 13 for approval.

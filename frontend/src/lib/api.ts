@@ -8,22 +8,12 @@ export type DatasetFacts = {
   last_date: string
   countries: string[]
   users: string[]
-  row_count: number
 }
 
 export type Outcome = 'success' | 'failure'
 
 export type OverviewReply = {
-  summary: {
-    total: number
-    successes: number
-    failures: number
-    distinct_users: number
-    distinct_ips: number
-    distinct_countries: number
-    first_seen: string | null
-    last_seen: string | null
-  }
+  summary: { total: number; failures: number; distinct_users: number }
   alert_count: number
   hourly: { hour: string; outcome: Outcome; events: number }[]
   top_failed_ips: { source_ip: string; failures: number; accounts: number }[]

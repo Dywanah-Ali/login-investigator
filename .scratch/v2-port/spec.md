@@ -207,7 +207,7 @@ Each decision names the ticket that made it.
   `country`, `user`, plus `ip` on the explorer and the CSV download. Plain dates in; the core
   resolves the window. Validation at the boundary, before the core is called.
 - A dataset-facts endpoint and a rules-guide endpoint serve the facts the frontend must never
-  hard-code: capture time, the "Synthetic data" label, date bounds, countries, users, row count,
+  hard-code: capture time, the "Synthetic data" label, date bounds, countries, users,
   rule titles, when each fires, and the general assumptions.
 - Alerts carry the core's finding dictionary unchanged, evidence included (at most twenty rows), so
   the side panel makes no second request. The explorer returns every matching row, newest first, with
@@ -376,3 +376,5 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-14 | The official chart component passes its CSS as text, not raw HTML (ticket 13, bug log B-004) | The no-raw-HTML rule stays absolute, with no exception; the scan test fails if the component is reinstalled. The author's choice of three options |
 | 2026-10-14 | Log fields may appear as plain text in table cells, chart labels and picker options; the rule and the project rules reworded (ticket 13) | The danger is a log field turned into markup, not its place on screen. The agreed screens put IPs on a chart and users and countries in pickers, all as plain text. The author's approval |
 | 2026-10-14 | `log_invalid` sends fixed text for every cause, not the loader's message; done in ticket 13's branch, no new ticket (bug log B-008) | The loader's row messages quote raw log values, which broke the contract's rule that the API never formats a log field into a sentence. The change sits in the API only; the core is untouched. The author's ruling |
+| 2026-10-14 | The agreed screens prototype (ticket 07) is the reference for the Overview's labels, chart titles and empty-state text, not v1's code; the failed share rounds a half up; the sidebar links keep the filters (ticket 13) | v1 could not be read in that session, and the prototype was agreed as v1's content. The author chose this over a check against v1's code; ticket 19's presence check uses this reference |
+| 2026-10-14 | The Overview summary sends only `total`, `failures` and `distinct_users`; the dataset facts drop `row_count` (ticket 13) | Only the fields the screen needs leave the server. No screen showed the other six, and the Log explorer has its own endpoint for its counts. The author's approval |

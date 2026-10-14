@@ -23,9 +23,9 @@ router = APIRouter()
 LoadedDataset = Annotated[Dataset, Depends(dataset)]
 QueryFilters = Annotated[Filters, Depends(filters)]
 
-# The search summary's counts. Its `sample`, `sample_shown` and `truncated` are for the agent only.
-SUMMARY_FIELDS = ("total", "successes", "failures", "distinct_users", "distinct_ips",
-                  "distinct_countries", "first_seen", "last_seen")
+# The three figures the Overview's tiles show. The search summary holds more, but only what the
+# screen needs leaves the server (author's ruling, ticket 13).
+SUMMARY_FIELDS = ("total", "failures", "distinct_users")
 
 
 @router.get("/dataset")
@@ -38,7 +38,6 @@ def get_dataset(data: LoadedDataset) -> dict:
         "last_date": facts.last_date.isoformat(),
         "countries": list(facts.countries),
         "users": list(facts.users),
-        "row_count": facts.row_count,
     }
 
 
