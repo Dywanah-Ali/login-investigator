@@ -103,3 +103,18 @@ nothing, so the screen keeps its empty state. A screen test reproduced the blank
 the view must be visible on it.
 **Found by:** both reviews of the first build commit, reproduced by a screen test before the fix.
 Related prompt: P-007.
+
+### B-007 · 2026-10-14 · Ticket 13 Frontend shell and the Overview screen
+
+**Symptom:** on the running Overview, the top source IPs chart named only every second bar. The
+top IP of all, with 150 failed sign-ins, had no label.
+**Cause:** Recharts drops axis labels it judges too crowded, by default. Ten bars in a short chart
+were enough to trigger it. The screen tests could not see it, because the test browser draws no
+charts.
+**Fix:** the IP axis shows every label (`interval={0}` in `top-ips-chart.tsx`). Checked on the
+running screen: all ten IPs named. In the same look, the date picker marked the reader's own date
+as "today"; it now marks the log's last day, as the contract says.
+**Lesson:** a test that reads text cannot judge a picture. A screen is not done until someone has
+looked at it running.
+**Found by:** manual check in the browser, after the author clarified that screenshots may be used
+to look, only never as evidence. Related prompt: P-007.

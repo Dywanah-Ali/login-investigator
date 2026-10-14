@@ -34,6 +34,9 @@ export function TopIpsChart({ ips }: { ips: OverviewReply['top_failed_ips'] }) {
               tickLine={false}
               axisLine={false}
               width={110}
+              // Every bar keeps its IP. By default Recharts drops labels it finds crowded, which
+              // hid the top IP of all (bug log B-007).
+              interval={0}
             />
             <ChartTooltip
               content={

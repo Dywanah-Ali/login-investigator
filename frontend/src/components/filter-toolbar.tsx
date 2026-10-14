@@ -145,6 +145,9 @@ function DateRangePicker({
           mode="range"
           selected={selected}
           defaultMonth={selected.from ?? last}
+          // The app treats the log's last day as "today" (contract, dataset facts), not the
+          // reader's clock.
+          today={last}
           startMonth={first}
           endMonth={last}
           disabled={[...(first ? [{ before: first }] : []), ...(last ? [{ after: last }] : [])]}
