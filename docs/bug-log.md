@@ -26,9 +26,8 @@ counts collected tests, and `test_app.py` is parametrised: its 13 functions coll
 subtraction mixed functions with collected tests. Collected per file, the screen files hold 36 (18
 and 18), which leaves 254. Rechecked on a fresh export of v1's last commit: 290 collected, 254 outside
 the two screen files.
-**Fix:** none to the code. The evidence on ticket 10 names 254, and a spec correction is proposed to
-the author, since spec changes go through the author. The same 259 appears in ticket 08, ticket 11
-and the map, so the correction covers all four.
+**Fix:** none to the code. The author approved the correction on 2026-10-14. 259 became 254 in the
+spec, tickets 08, 10 and 11 and the map, with a row in the spec's decisions log.
 **Lesson:** subtract like from like. A count that becomes an acceptance gate should come from the
 tool's own output for exactly the set it describes.
 **Found by:** test run of the copied suite, checked against a collect-only run of a scratch copy of

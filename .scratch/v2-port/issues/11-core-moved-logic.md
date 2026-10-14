@@ -14,5 +14,5 @@ Spec: [spec.md](../spec.md), "Where logic lives". Decisions: ticket 01.
 - [ ] Dataset facts: capture time, the "Synthetic data" label, first and last log day, sorted distinct countries, sorted distinct users, row count. Test
 - [ ] Alerts for a view: rules on the whole log, kept when at least one event is among the filtered rows, sorted newest first by last seen then rule. Tests adapted from "alerts are listed newest first" and "overview counts match the core"
 - [ ] Report offer: the core decides "Write", "Update" or nothing from the Turns. Test adapted from "the report button waits for something new"
-- [ ] The agent, its tools and every existing core function are unchanged; the 259 copied tests still pass
+- [ ] The agent, its tools and every existing core function are unchanged; the 254 copied tests still pass
 - [ ] The core boundary test still passes

@@ -10,7 +10,7 @@ Map: [map.md](../map.md)
 Parity (see `GLOSSARY.md`) is the acceptance gate for the Port. Decide exactly what evidence closes
 it.
 
-Facts to start from ([v1-facts.md](../v1-facts.md), "Proof"): the copied core tests (259 of 290)
+Facts to start from ([v1-facts.md](../v1-facts.md), "Proof"): the copied core tests (254 of 290)
 and the eval set call the Python core directly. Copied unchanged, they pass even when the API or the
 screens are broken. The 31 screen tests (`test_app.py`, `test_investigator_screen.py`) test
 Streamlit and cannot be copied.
@@ -45,7 +45,7 @@ Automated checks run first; the manual run comes last, on a build where every au
 
 | Layer | Evidence | What it proves |
 |---|---|---|
-| Core | The 259 v1 core and agent tests, copied unchanged | The core did not change |
+| Core | The 254 v1 core and agent tests, copied unchanged | The core did not change |
 | Core, moved logic | New pytest tests, adapted from the screen tests, for every piece ticket 01 moved into the core: date resolution, dataset facts, alerts for a view, report offer | The logic that left the screens still means the same |
 | Core boundary | `test_core_boundary.py` extended: no Streamlit and no FastAPI import in the core | The core stays independent of both shells |
 | API | pytest with FastAPI's test client, replaying the data-checking screen tests: filters change every screen consistently, an empty filter gives a clear message, S1 to S4 appear in alerts, alerts newest first, reset restores the whole log, a bad IP is refused without echoing it, memory opened once and agent built once per process | The contract behaves as v1's screens did |

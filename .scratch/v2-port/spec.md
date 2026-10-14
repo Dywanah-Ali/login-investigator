@@ -310,7 +310,7 @@ last, on a build where every automated check passes.
 
 | Layer | Evidence | What it proves |
 |---|---|---|
-| Core | The 259 v1 core and agent tests, copied unchanged | The core did not change |
+| Core | The 254 v1 core and agent tests, copied unchanged | The core did not change |
 | Core, moved logic | New pytest tests, adapted from the screen tests, for every piece moved into the core: date resolution, dataset facts, alerts for a view, Report offer | The logic that left the screens still means the same |
 | Core boundary | The boundary test extended: no Streamlit and no FastAPI import in the core | The core stays independent of both shells |
 | API | pytest with FastAPI's test client, replaying the data-checking screen tests: filters change every screen consistently, an empty filter gives a clear message, S1 to S4 appear in alerts, alerts newest first, reset restores the whole log, a bad IP is refused without echoing it, memory opened once and agent built once per process | The contract behaves as v1's screens did |
@@ -364,3 +364,4 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-14 | Agent answers render through an allowlist markdown renderer instead of plain text | "Nothing that fetches or navigates", not "no formatting"; guarded by a test |
 | 2026-10-14 | No screenshots and no browser test tool in the gate | The author's ruling; manual items close on a dated ruling |
 | 2026-10-14 | Missing model key: dashboards keep working, Investigation endpoints answer 503 | A failure stays inside the part it belongs to |
+| 2026-10-14 | The copied core and agent tests number 254, not 259; corrected here, in tickets 08, 10 and 11 and in the map | 259 subtracted 31 screen test functions from 290 collected tests; collected, the screen files hold 36 (bug log B-001). The author's approval |
