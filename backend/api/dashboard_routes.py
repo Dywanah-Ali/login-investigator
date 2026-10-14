@@ -19,8 +19,9 @@ from login_investigator.stats import hourly_counts, top_failed_ips
 
 router = APIRouter()
 
-Data = Annotated[Dataset, Depends(dataset)]
-Chosen = Annotated[Filters, Depends(filters)]
+# What a route declares to receive the loaded dataset, or the filters read from the query string.
+LoadedDataset = Annotated[Dataset, Depends(dataset)]
+QueryFilters = Annotated[Filters, Depends(filters)]
 
 # The search summary's counts. Its `sample`, `sample_shown` and `truncated` are for the agent only.
 SUMMARY_FIELDS = ("total", "successes", "failures", "distinct_users", "distinct_ips",
@@ -28,7 +29,7 @@ SUMMARY_FIELDS = ("total", "successes", "failures", "distinct_users", "distinct_
 
 
 @router.get("/dataset")
-def get_dataset(data: Data) -> dict:
+def get_dataset(data: LoadedDataset) -> dict:
     facts = data.facts
     return {
         "captured_at": facts.captured_at.strftime(TIMESTAMP_FORMAT),
@@ -42,7 +43,7 @@ def get_dataset(data: Data) -> dict:
 
 
 @router.get("/overview")
-def get_overview(data: Data, chosen: Chosen) -> dict:
+def get_overview(data: LoadedDataset, chosen: QueryFilters) -> dict:
     rows = chosen.rows(data.frame)
     summary = summarize(rows).to_dict()
     return {

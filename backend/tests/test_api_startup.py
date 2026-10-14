@@ -77,6 +77,18 @@ def test_a_log_that_fails_validation_makes_the_dataset_endpoints_answer_log_inva
         assert client.get("/api/rules").status_code == 200
 
 
+def test_a_missing_log_file_does_not_reveal_where_the_server_looked(tmp_path, memory_path):
+    """The loader's own message holds the full path, which can name the machine's user (B-003)."""
+    missing = tmp_path / "private-folder" / "logins.csv"
+    settings = Settings.from_env({"LI_LOG_PATH": str(missing), "LI_MEMORY_PATH": str(memory_path)})
+    with TestClient(create_app(settings)) as client:
+        reply = client.get("/api/dataset")
+    assert reply.status_code == 500
+    assert reply.json() == {"error": {"code": "log_invalid",
+                                      "message": "The configured log file was not found."}}
+    assert "private-folder" not in reply.text
+
+
 def test_the_settings_default_to_the_paths_in_the_contract():
     settings = Settings.from_env({})
     assert settings.log_path.parts[-3:] == ("backend", "data", "logins.csv")

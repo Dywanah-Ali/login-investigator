@@ -1,6 +1,10 @@
 """Configuration from environment variables, so the eval runner can isolate a run. The defaults are
 the core's own paths, so v2 runs on v1's data with nothing set. The two API keys are not read here:
 the core reads them where it uses them, as in v1.
+
+Not yet wired: the agent's tools read the core's default log and reputation folder, not
+`log_path` and `reputation_dir`. Changing that touches the core's tools, so it waits for the
+author's ruling (ticket 12, comments).
 """
 
 from __future__ import annotations

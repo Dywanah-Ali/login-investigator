@@ -37,12 +37,12 @@ class Dataset:
 @dataclass(frozen=True)
 class Services:
     """Everything a request needs, built once at startup."""
-    settings: Settings
+    settings: Settings  # the Investigation endpoints need the memory path (ticket 16)
     dataset: Dataset | None  # None when the log failed validation
     dataset_error: str | None  # the loader's message, which names row problems, not secrets
     memory: SqliteSaver
-    model: Any | None  # None when the model key is missing
-    agent: Any | None
+    model: Any | None  # None when the model key is missing; the report writer needs it (ticket 16)
+    agent: Any | None  # None when the model key is missing
 
 
 def start(settings: Settings) -> Services:
@@ -54,15 +54,19 @@ def start(settings: Settings) -> Services:
                           facts=dataset_facts(frame))
     except loader.LogValidationError as error:
         log.error("The log failed validation: %s", error)
-        dataset_error = str(error)
+        # The loader names a missing file by its full path, which can name the machine's user, so
+        # the client gets fixed text (bug log B-003). Its other messages name only the file.
+        dataset_error = (str(error) if settings.log_path.is_file()
+                         else "The configured log file was not found.")
 
     memory = investigations.open_memory(settings.memory_path)
     model, built = None, None
     try:
         model = agent.make_model()
-        built = agent.build_agent(model, memory)
     except RuntimeError as error:  # the model key is not set; the message names the setting
         log.warning("The agent is unavailable: %s", error)
+    if model is not None:
+        built = agent.build_agent(model, memory)
 
     return Services(settings=settings, dataset=dataset, dataset_error=dataset_error,
                     memory=memory, model=model, agent=built)

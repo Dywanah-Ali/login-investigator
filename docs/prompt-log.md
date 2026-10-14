@@ -76,3 +76,25 @@ Ticket 20 renamed `views.py` to `dashboard.py`. Ticket 21 added Pyright, listed 
 not yet checked, and fixed the new module. Pyright: 0 errors; a deliberate error fails it. Full
 suite: 267 passed.
 **Next:** the author reviews tickets 20 and 21; then ticket 12, the API foundation.
+
+### P-005 · 2026-10-14 · Ticket 12 API foundation and the Overview endpoint
+
+**Prompt:**
+> /mp-implement 12
+
+then, before approving the test points, a question on one of them:
+
+> explain to me this pls "For seam 2, the test counts calls to the core's open_memory and build_agent while sending several requests. This is the one place a test watches a collaborator, because "exactly once" is the requirement itself."
+
+then "yes go ahead".
+
+**Purpose:** build the frontier ticket. The agent proposed a branch and two seams to test at (the
+HTTP API, and startup seen from outside); the author asked why one test watches the core's
+functions before approving.
+**Result:** a new `backend/api/` package with settings, startup, the one error shape, the shared
+filters and three endpoints, built test-first in six slices. FastAPI's default 422 was shown to copy
+a hostile value back to the client before the custom handler replaced it. The two-axis review found
+two real bugs, both fixed test-first: a number sent as a date gave a confident empty view (B-002),
+and a missing log file sent the server's full path to the client (B-003). 26 API tests; full suite
+293 passed; Pyright clean; the core unchanged.
+**Next:** the author reviews the branch and rules on the open points in ticket 12's comments.

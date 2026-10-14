@@ -4,6 +4,7 @@ is called. All optional; missing means "all". The core resolves the dates into a
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Annotated, Literal
@@ -11,9 +12,11 @@ from typing import Annotated, Literal
 import pandas as pd
 from fastapi import Query
 
-from api.errors import ApiError
+from api.errors import FILTER_MESSAGES, ApiError
 from login_investigator.dashboard import date_window
 from login_investigator.search import filter_logins
+
+_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 
 @dataclass(frozen=True)
@@ -37,14 +40,28 @@ def _given(value: str | None) -> str | None:
     return value
 
 
+def _date(value: str | None, name: str) -> date | None:
+    """A plain YYYY-MM-DD date, and nothing a lenient parser would also take: a number read as a
+    Unix time, or a date with a time, would quietly filter the wrong days (bug log B-002)."""
+    if value is None:
+        return None
+    try:
+        if not _DATE.fullmatch(value):
+            raise ValueError
+        return date.fromisoformat(value)
+    except ValueError:
+        raise ApiError(422, "invalid_filter", FILTER_MESSAGES[name]) from None
+
+
 def filters(
-    first: Annotated[date | None, Query(alias="from")] = None,
-    last: Annotated[date | None, Query(alias="to")] = None,
+    from_: Annotated[str | None, Query(alias="from")] = None,
+    to: str | None = None,
     outcome: Literal["success", "failure"] | None = None,
     country: str | None = None,
     user: str | None = None,
 ) -> Filters:
     """A route's dependency: the shared filters, read from the query string."""
+    first, last = _date(from_, "from"), _date(to, "to")
     if first is not None and last is not None and first > last:
         raise ApiError(422, "invalid_filter", "from is after to.")
     start, end = date_window(first, last)

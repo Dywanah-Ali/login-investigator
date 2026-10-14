@@ -110,6 +110,12 @@ def test_a_filter_changes_every_part_of_the_overview_consistently(client, s):
     assert body["alert_count"] == 1
 
 
+def test_a_reset_restores_the_whole_log(client, truth):
+    """Adapted from v1's "reset restores the whole log": the server keeps no filter between calls."""
+    assert overview(client, country="ro", outcome="failure")["summary"]["total"] < truth["row_count"]
+    assert overview(client)["summary"]["total"] == truth["row_count"]
+
+
 def test_the_date_and_user_filters_reach_the_alert_count(client, s):
     """Pinned in test_dashboard.py: S4's user has one alert; 6 October holds S2 and S4."""
     assert overview(client, user=s["S4"]["user"])["alert_count"] == 1
@@ -147,6 +153,11 @@ HOSTILE = "<script>alert(1)</script>"
     ({"from": HOSTILE}, "from is not a date (YYYY-MM-DD)."),
     ({"to": HOSTILE}, "to is not a date (YYYY-MM-DD)."),
     ({"from": "2026-02-30"}, "from is not a date (YYYY-MM-DD)."),  # the right form, no such day
+    # Forms a lenient parser accepts. A number read as a Unix time would give a confident empty
+    # view of 2025 (bug log B-002).
+    ({"from": "1759708800"}, "from is not a date (YYYY-MM-DD)."),
+    ({"to": "2026-10-06T00:00:00"}, "to is not a date (YYYY-MM-DD)."),
+    ({"to": "20261006"}, "to is not a date (YYYY-MM-DD)."),
     ({"from": "2026-10-07", "to": "2026-10-05"}, "from is after to."),
     ({"outcome": HOSTILE}, "outcome must be success or failure."),
 ])
