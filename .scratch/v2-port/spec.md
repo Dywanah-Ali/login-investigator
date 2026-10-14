@@ -365,3 +365,4 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-14 | No screenshots and no browser test tool in the gate | The author's ruling; manual items close on a dated ruling |
 | 2026-10-14 | Missing model key: dashboards keep working, Investigation endpoints answer 503 | A failure stays inside the part it belongs to |
 | 2026-10-14 | The copied core and agent tests number 254, not 259; corrected here, in tickets 08, 10 and 11 and in the map | 259 subtracted 31 screen test functions from 290 collected tests; collected, the screen files hold 36 (bug log B-001). The author's approval |
+| 2026-10-14 | `to` without `from` runs from the start of the log to the end of that day; added to the contract | The contract left it open; an absent bound means "all", as for every other filter. The author's approval (ticket 11) |

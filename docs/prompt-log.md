@@ -43,3 +43,19 @@ files. The 259 was traced to a subtraction of screen test functions from collect
 bug log entry had the wrong cause and was corrected. The author then approved the change ("approved").
 **Next:** 259 became 254 in the spec, tickets 08, 10 and 11 and the map, with a decisions log row.
 Ticket 10 closed with all nine boxes ticked.
+
+### P-003 · 2026-10-14 · Ticket 11 Core: the logic that moved from the screens
+
+**Prompt:**
+> /mp-implement
+
+then "go" to the proposed branch, and "ok go ahead" to the proposed test points.
+
+**Purpose:** build the frontier ticket. No ticket was named, so the agent picked ticket 11, stated it,
+proposed a branch and the three test points, and waited for the author each time.
+**Result:** a new core module `views.py` with `date_window`, `dataset_facts` and `alerts_for_view`,
+built test-first with ten tests. The Report offer needed no work: v1 had already moved it into the
+core, with tests. The contract left `to` alone undefined; it now runs from the start of the log,
+with a decisions log row. A two-axis review found two tests recomputing their expected values; both
+fixed. Full suite: 267 passed.
+**Next:** the author reviews ticket 11; then ticket 12, the API foundation.
