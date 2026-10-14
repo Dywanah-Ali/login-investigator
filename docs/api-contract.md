@@ -57,7 +57,7 @@ Missing means "all". They mirror the URL search parameters of the frontend (tick
 
 Validation lives at the boundary: a bad value is a 422 before the core is called. A single date
 (`from` without `to`, or equal values) means that one day, as v1's picker did. `to` without `from`
-runs from the start of the log to the end of that day (ticket 11). Core: `views.date_window`.
+runs from the start of the log to the end of that day (ticket 11). Core: `dashboard.date_window`.
 
 ## Endpoints
 
