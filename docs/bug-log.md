@@ -136,3 +136,19 @@ danger at a time. Check a message that crosses the trust boundary against every 
 "log fields are data, never sentences".
 **Found by:** reading the loader while preparing ruling 2 of ticket 13's review, then reproduced by
 a test before the fix. Related prompt: P-008.
+
+### B-009 · 2026-10-15 · Ticket 14 Alerts, end to end
+
+**Symptom:** with an alert's side panel open, a change of address under it (the browser's Back or
+Forward button) reloaded the list for the new filters, but the panel stayed open on the old alert,
+which might not be in the new view at all.
+**Cause:** the selected alert was kept as page state and nothing cleared it when the filters
+changed. v1 had guarded this on purpose by giving its table a key that changed with the list.
+**Fix:** a selection now remembers the filters it was made under, and counts only while they still
+hold (`pages/alerts.tsx`). A screen test opens the panel, changes the address and checks the panel
+has closed; it failed before the fix.
+**Lesson:** when a v1 line carries a comment saying why it exists, the reason travels with the port
+even when the mechanism does not. Streamlit's widget key was dropped as an artefact; the guard it
+gave was not an artefact.
+**Found by:** the Spec axis of the two-axis review, which quoted v1's comment. Reproduced by a test
+before the fix. Related prompt: P-009.

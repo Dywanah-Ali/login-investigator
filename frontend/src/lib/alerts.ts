@@ -4,15 +4,18 @@
 import type { Alert, RuleGuide } from '@/lib/api'
 import { countOf, formatCount, formatLogTime } from '@/lib/format'
 
+/** Looks up a rule key's title, such as "brute_force" to "Brute force". */
+export type TitleOf = (rule: string) => string
+
 /** Each rule key's title, from the rules endpoint. A key the guide lacks shows as itself. */
-export function ruleTitles(rules: RuleGuide[]): (rule: string) => string {
+export function ruleTitles(rules: RuleGuide[]): TitleOf {
   const titles = new Map(rules.map((guide) => [guide.rule, guide.title]))
   return (rule) => titles.get(rule) ?? rule
 }
 
 /** The line above the table: "5 alerts in the selected period", then a count per rule title,
  * in title order, as v1 wrote it. */
-export function countsLine(alerts: Alert[], titleOf: (rule: string) => string) {
+export function countsLine(alerts: Alert[], titleOf: TitleOf) {
   const perTitle = new Map<string, number>()
   for (const alert of alerts) {
     const title = titleOf(alert.rule)

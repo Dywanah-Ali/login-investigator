@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { countOf, failedShare, noun } from '@/lib/format'
+import { countOf, failedShare, formatLogMinute, formatLogTime, noun } from '@/lib/format'
 
 describe('singular or plural counts', () => {
   test.each([
@@ -20,6 +20,16 @@ describe('singular or plural counts', () => {
   test('the word alone follows the count, for labels that show the number elsewhere', () => {
     expect(noun(1, 'finding')).toBe('finding')
     expect(noun(7, 'finding')).toBe('findings')
+  })
+})
+
+describe('log times in tables', () => {
+  test('to the second, as the evidence table shows them', () => {
+    expect(formatLogTime('2026-10-07T23:10:05Z')).toBe('2026-10-07 23:10:05')
+  })
+
+  test("to the minute, as v1's Alerts table showed them", () => {
+    expect(formatLogMinute('2026-10-07T23:10:59Z')).toBe('2026-10-07 23:10')
   })
 })
 

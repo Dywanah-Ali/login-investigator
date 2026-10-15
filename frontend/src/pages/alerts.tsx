@@ -9,16 +9,20 @@ import { RulesGuide } from '@/components/rules-guide'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useApi } from '@/hooks/use-api'
 import { useFilters } from '@/hooks/use-filters'
-import { countsLine, ruleTitles } from '@/lib/alerts'
+import { type TitleOf, countsLine, ruleTitles } from '@/lib/alerts'
 import type { Alert, AlertsReply, RulesReply } from '@/lib/api'
 
-export const NO_ALERTS = 'No alerts match these filters. Widen the date range or reset the filters.'
+const NO_ALERTS = 'No alerts match these filters. Widen the date range or reset the filters.'
 
 export function AlertsPage() {
   const { query } = useFilters()
   const alerts = useApi<AlertsReply>('/api/alerts', query)
   const guide = useApi<RulesReply>('/api/rules', '')
-  const [selected, setSelected] = useState<Alert | null>(null)
+  // A selection belongs to the view it was made in. When the address changes under an open panel
+  // (Back or Forward), the list is reloaded and the old selection no longer applies (bug log B-009).
+  const [picked, setPicked] = useState<{ query: string; alert: Alert } | null>(null)
+  const selected = picked?.query === query ? picked.alert : null
+  const setSelected = (alert: Alert | null) => setPicked(alert && { query, alert })
   const titleOf = useMemo(
     () => ruleTitles(guide.state === 'ready' ? guide.data.rules : []),
     [guide],
@@ -45,6 +49,7 @@ export function AlertsPage() {
             selected={selected}
             onSelect={setSelected}
           />
+          <p className="-mt-2 text-sm text-muted-foreground">Select an alert to see its evidence.</p>
           <AlertSheet
             alert={selected}
             title={selected ? titleOf(selected.rule) : ''}
@@ -57,7 +62,7 @@ export function AlertsPage() {
   )
 }
 
-function AlertsCounts({ alerts, titleOf }: { alerts: Alert[]; titleOf: (rule: string) => string }) {
+function AlertsCounts({ alerts, titleOf }: { alerts: Alert[]; titleOf: TitleOf }) {
   const line = countsLine(alerts, titleOf)
   return (
     <p className="text-sm">

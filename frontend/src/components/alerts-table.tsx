@@ -2,12 +2,12 @@ import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tan
 import { useMemo } from 'react'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { cutNames } from '@/lib/alerts'
+import { type TitleOf, cutNames } from '@/lib/alerts'
 import type { Alert } from '@/lib/api'
 import { formatCount, formatLogMinute } from '@/lib/format'
 
-// The tasks example's table (TanStack Table) with v1's seven columns. The rows come sorted newest
-// first by the core. Log fields appear only as plain text in these cells.
+/** The tasks example's table (TanStack Table) with v1's seven columns. The rows come sorted
+ * newest first by the core. Log fields appear only as plain text in these cells. */
 export function AlertsTable({
   alerts,
   titleOf,
@@ -15,7 +15,7 @@ export function AlertsTable({
   onSelect,
 }: {
   alerts: Alert[]
-  titleOf: (rule: string) => string
+  titleOf: TitleOf
   selected: Alert | null
   onSelect: (alert: Alert) => void
 }) {

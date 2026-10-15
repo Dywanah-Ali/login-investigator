@@ -15,9 +15,10 @@ import { evidenceCaption, explorerLink, investigateLink } from '@/lib/alerts'
 import type { Alert, LogRow } from '@/lib/api'
 import { formatLogTime } from '@/lib/format'
 
-// The log fields in the order the log holds them. Each value shows as plain text in a cell.
-const EVIDENCE_COLUMNS: { key: keyof LogRow; label: string }[] = [
-  { key: 'timestamp_utc', label: 'Time (UTC)' },
+// The log fields in the order the log holds them. Each value shows as plain text in a cell, raw
+// unless its column says how to format it.
+const EVIDENCE_COLUMNS: { key: keyof LogRow; label: string; format?: (value: string) => string }[] = [
+  { key: 'timestamp_utc', label: 'Time (UTC)', format: formatLogTime },
   { key: 'username', label: 'User' },
   { key: 'source_ip', label: 'Source IP' },
   { key: 'country', label: 'Country' },
@@ -59,7 +60,7 @@ export function AlertSheet({
                     <TableRow key={index}>
                       {EVIDENCE_COLUMNS.map((column) => (
                         <TableCell key={column.key} className="tabular-nums">
-                          {column.key === 'timestamp_utc' ? formatLogTime(row[column.key]) : row[column.key]}
+                          {column.format ? column.format(row[column.key]) : row[column.key]}
                         </TableCell>
                       ))}
                     </TableRow>

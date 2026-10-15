@@ -1,6 +1,7 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
+import { useEffect } from 'react'
+import { MemoryRouter, type NavigateFunction, useNavigate } from 'react-router'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { AppRoutes } from '@/App'
@@ -60,6 +61,7 @@ describe('the Alerts table', () => {
         '2026-10-06 00:17',
       ],
     ])
+    expect(screen.getByText('Select an alert to see its evidence.')).toBeInTheDocument() // v1's hint
   })
 
   test('the counts line gives the total and a count per rule title, in title order', async () => {
@@ -138,6 +140,36 @@ describe('the side panel', () => {
     await userEvent.keyboard('{Enter}')
 
     expect(await screen.findByRole('dialog', { name: 'Sign-in from a new country' })).toBeInTheDocument()
+  })
+})
+
+describe('the side panel and the filters', () => {
+  test('a filter change while the panel is open closes it, so no stale alert stays selected', async () => {
+    // The panel covers the toolbar, so the way in is the browser's Back or Forward button, which
+    // changes the address under the open panel. v1 cleared its selection when the list changed.
+    let navigate: NavigateFunction = () => {}
+    function Navigator() {
+      const go = useNavigate()
+      useEffect(() => {
+        navigate = go
+      }, [go])
+      return null
+    }
+    const api = fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
+    render(
+      <MemoryRouter initialEntries={['/alerts']}>
+        <AppRoutes />
+        <Navigator />
+      </MemoryRouter>,
+    )
+    await userEvent.click(await screen.findByText('Sign-in from a new country'))
+    await screen.findByRole('dialog', { name: 'Sign-in from a new country' })
+
+    act(() => navigate('/alerts?country=RO'))
+
+    await vi.waitFor(() => expect(api.requests()).toContain('/api/alerts?country=RO'))
+    await screen.findByText('2.57.122.53 failed on 4 accounts within an hour.')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 })
 

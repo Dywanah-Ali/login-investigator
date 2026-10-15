@@ -158,3 +158,20 @@ it test-first; (3) four unasked behaviours kept; (4) the prototype accepted as t
 against the recommendation to check v1's code; (5) six unused fields trimmed from the replies.
 Backend 295 passed, frontend 36, both type checks clean.
 **Next:** the author reviews ticket 13 for approval.
+
+### P-009 · 2026-10-15 · Ticket 14 Alerts, end to end
+
+**Prompt:**
+> good morning
+> /mp-implement  14
+
+**Purpose:** build the frontier ticket: the alerts endpoint and the Alerts screen.
+**Result:** before any test, the author agreed five test points and ruled severity out of the
+ticket, since v1's alerts carry none. `GET /api/alerts` sends the core's findings unchanged. The
+screen has v1's seven columns on the tasks example's table, the counts line, the side panel with
+evidence, "Open in Log explorer" and "Investigate", and "How these rules work". TanStack Table was
+pinned to version 8, the version the official example uses. A look at the running screen confirmed
+the table, the panel and the guide. The two-axis review found a selection that outlived a filter
+change (B-009), fixed test-first, and v1's "Select an alert" hint missing, restored. Backend 304
+passed, frontend 57, both type checks clean.
+**Next:** the author rules on the open points in ticket 14's comments, then reviews for approval.
