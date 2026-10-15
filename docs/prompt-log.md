@@ -175,3 +175,31 @@ the table, the panel and the guide. The two-axis review found a selection that o
 change (B-009), fixed test-first, and v1's "Select an alert" hint missing, restored. Backend 304
 passed, frontend 57, both type checks clean.
 **Next:** the author rules on the open points in ticket 14's comments, then reviews for approval.
+
+### P-010 · 2026-10-15 · Ticket 14 Alerts, end to end
+
+**Prompt:**
+> lets me see the live alerts page first before i answer the 3 open point
+
+then, on the pager question:
+
+> why u recommend that? what will happen when have 1000s of alerts ?
+
+then, with a screenshot of the agreed prototype:
+
+> u know what i hopped? i hoped the alerts page layout look exactly like the prototype. the alert details page is set. not sliding from the side. i hopped it will be there by default populated with the alert details when the user clicks the alert in the main alerts table. then i asked myself how that alerts details blocks would look when the whole page loads for the first time. then i thought maybe the most recent alert details by default populate it
+
+and
+
+> yes and before go. pls make the the populate of the alert's details side block with the details of the alert smooth. like a bit of progesional animation.
+
+**Purpose:** look at the live screen before ruling, test the reasoning behind a recommendation,
+and bring the screen in line with the prototype the author had in mind.
+**Result:** three rulings: severity is checked on the report card; the Alerts table reuses ticket
+15's pager; the glossary gains Finding. The author's question about thousands of alerts changed the
+agent's recommendation from "leave the pager out" to "reuse ticket 15's": a pager fixes the drawing,
+while the reply's size needs server paging, which stays out of scope. After seeing the screen, the
+author replaced the sliding panel with a fixed details panel showing the newest alert by default,
+with a short entry animation. Built test-first: five screen tests changed before the code. Looked at
+in the browser. Frontend 58 passed, type check clean.
+**Next:** the author looks at the new panel, then reviews ticket 14 for approval.

@@ -61,7 +61,6 @@ describe('the Alerts table', () => {
         '2026-10-06 00:17',
       ],
     ])
-    expect(screen.getByText('Select an alert to see its evidence.')).toBeInTheDocument() // v1's hint
   })
 
   test('the counts line gives the total and a count per rule title, in title order', async () => {
@@ -78,14 +77,29 @@ describe('the Alerts table', () => {
   })
 })
 
-describe('the side panel', () => {
-  test('a row click opens its evidence, the explorer link and the Investigate link', async () => {
+/** The details panel, named by the rule title of the alert it shows. */
+const details = (title: string) => screen.findByRole('region', { name: title })
+
+describe('the details panel', () => {
+  test('on first load it shows the newest alert, and its row is marked as selected', async () => {
     fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
-    openApp('/alerts?country=RO')
+    openApp('/alerts')
 
-    await userEvent.click(await screen.findByText('2.57.122.53 failed on 4 accounts within an hour.'))
+    const panel = await details('Sign-in from a new country')
+    expect(within(panel).getByText('Showing 1 of 1 event.')).toBeInTheDocument() // singular
+    const rows = within(screen.getByRole('table', { name: 'Alerts' })).getAllByRole('row').slice(1)
+    expect(rows.map((tr) => tr.getAttribute('aria-selected'))).toEqual(['true', 'false'])
+  })
 
-    const panel = await screen.findByRole('dialog', { name: 'Password spraying' })
+  test('a row click swaps in its evidence, the explorer link and the Investigate link', async () => {
+    fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
+    openApp('/alerts')
+    await details('Sign-in from a new country')
+
+    await userEvent.click(screen.getByText('2.57.122.53 failed on 4 accounts within an hour.'))
+
+    const panel = await details('Password spraying')
+    expect(screen.queryByRole('region', { name: 'Sign-in from a new country' })).not.toBeInTheDocument()
     expect(
       within(panel).getByText('Showing 2 of 23 events: the first and the last ones.'),
     ).toBeInTheDocument()
@@ -121,32 +135,20 @@ describe('the side panel', () => {
     )
   })
 
-  test('an alert with every event shown says so, in the singular for one event', async () => {
+  test('a row can be chosen from the keyboard too', async () => {
     fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
     openApp('/alerts')
+    await details('Sign-in from a new country')
 
-    await userEvent.click(await screen.findByText('Sign-in from a new country'))
-
-    const panel = await screen.findByRole('dialog', { name: 'Sign-in from a new country' })
-    expect(within(panel).getByText('Showing 1 of 1 event.')).toBeInTheDocument()
-  })
-
-  test('the panel opens from the keyboard too', async () => {
-    fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
-    openApp('/alerts')
-    await screen.findByRole('table', { name: 'Alerts' })
-
-    screen.getByText('Sign-in from a new country').closest('tr')?.focus()
+    screen.getByText('Password spraying').closest('tr')?.focus()
     await userEvent.keyboard('{Enter}')
 
-    expect(await screen.findByRole('dialog', { name: 'Sign-in from a new country' })).toBeInTheDocument()
+    expect(await details('Password spraying')).toBeInTheDocument()
   })
-})
 
-describe('the side panel and the filters', () => {
-  test('a filter change while the panel is open closes it, so no stale alert stays selected', async () => {
-    // The panel covers the toolbar, so the way in is the browser's Back or Forward button, which
-    // changes the address under the open panel. v1 cleared its selection when the list changed.
+  test('a filter change shows the newest alert of the new view, never a stale choice', async () => {
+    // v1 cleared its selection when the list changed (B-009). The new view here holds the same
+    // two alerts, so a kept choice would still show spraying.
     let navigate: NavigateFunction = () => {}
     function Navigator() {
       const go = useNavigate()
@@ -162,14 +164,22 @@ describe('the side panel and the filters', () => {
         <Navigator />
       </MemoryRouter>,
     )
-    await userEvent.click(await screen.findByText('Sign-in from a new country'))
-    await screen.findByRole('dialog', { name: 'Sign-in from a new country' })
+    await details('Sign-in from a new country')
+    await userEvent.click(screen.getByText('Password spraying'))
+    await details('Password spraying')
 
-    act(() => navigate('/alerts?country=RO'))
+    act(() => navigate('/alerts?from=2026-10-01'))
 
-    await vi.waitFor(() => expect(api.requests()).toContain('/api/alerts?country=RO'))
-    await screen.findByText('2.57.122.53 failed on 4 accounts within an hour.')
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await vi.waitFor(() => expect(api.requests()).toContain('/api/alerts?from=2026-10-01'))
+    expect(await details('Sign-in from a new country')).toBeInTheDocument()
+  })
+
+  test('no alert matching means no panel, only the empty message', async () => {
+    fakeApi({ ...API, '/api/alerts': { body: { alerts: [] } } })
+    openApp('/alerts?user=nobody')
+
+    await screen.findByText('No alerts match these filters. Widen the date range or reset the filters.')
+    expect(screen.queryByRole('region')).not.toBeInTheDocument()
   })
 })
 
@@ -257,8 +267,9 @@ describe('log fields appear only in table cells', () => {
     openApp('/alerts')
 
     const table = await screen.findByRole('table', { name: 'Alerts' })
-    await userEvent.click(within(table).getAllByText(hostile)[0])
-    const panel = await screen.findByRole('dialog')
+    // The only alert is the newest, so the panel already shows it.
+    expect(within(table).getAllByText(hostile)).toHaveLength(3)
+    const panel = await details('Sign-in from a new country')
 
     // Nothing in the value became markup: no image, no bold, no link.
     expect(document.body.querySelector('img')).toBeNull()

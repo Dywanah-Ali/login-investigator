@@ -29,6 +29,13 @@ export function countsLine(alerts: Alert[], titleOf: TitleOf) {
   }
 }
 
+/** What tells one alert from another in a list: its rule, window, IPs and users. The core gives
+ * findings no ID, and two rules can fire on the same events, so the rule is part of it. */
+export function alertKey(alert: Alert): string {
+  return [alert.rule, alert.first_seen, alert.last_seen, alert.ips.join(','), alert.users.join(',')]
+    .join('|')
+}
+
 /** The caption above the evidence: every event, or the first and last ones when it was cut. */
 export function evidenceCaption(alert: Alert): string {
   const shown = `Showing ${formatCount(alert.evidence_shown)} of ${countOf(alert.event_count, 'event')}`

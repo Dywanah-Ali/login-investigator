@@ -258,8 +258,10 @@ Each decision names the ticket that made it.
   navigation only. The Investigator has no toolbar and is visibly unfiltered.
 - Filter state lives in the URL as search parameters and travels on every request. "Open in Log
   explorer" is therefore a plain link built from the alert's first IP and its first and last dates.
-- Alert evidence opens in a side panel on row click, with the evidence table, "Open in Log
-  explorer" and "Investigate". "How these rules work" is a collapsible fed by the rules endpoint.
+- Alert evidence shows in a fixed details panel beside the table, below it on narrow screens, with
+  the evidence table, "Open in Log explorer" and "Investigate". The newest alert is shown on first
+  load and after a filter change; a row click swaps the panel's content with a short fade (ticket
+  14). "How these rules work" is a collapsible fed by the rules endpoint.
 - Overview: four KPI cards, sign-ins per hour as stacked bars, top source IPs as horizontal bars.
   The block's interactive area chart and its period toggle are removed, since the toolbar holds the
   date range.
@@ -381,3 +383,4 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-14 | The Overview summary sends only `total`, `failures` and `distinct_users`; the dataset facts drop `row_count` (ticket 13) | Only the fields the screen needs leave the server. No screen showed the other six, and the Log explorer has its own endpoint for its counts. The author's approval |
 | 2026-10-15 | "Severity labels and colours" are checked on the report card; the Alerts screen has none (ticket 14); spec, ticket 17 and ticket 19 name the card | v1's alerts carry no severity; only the incident report does. Naming the screen lets the presence check look in the right place. The author's ruling |
 | 2026-10-15 | The Alerts table pages with the Log explorer's pager, one shared piece built in ticket 15; no columns menu | v1 had no pager and the log yields five alerts, but a pager keeps the screen usable if alerts grow, and reusing ticket 15's costs almost nothing. The reply's size at scale still needs server paging, which stays out of scope. The author's ruling (ticket 14) |
+| 2026-10-15 | Alert evidence moves from a sliding panel (ticket 07, decision 2) to a fixed details panel beside the table, showing the newest alert by default; its content fades in on change, with no motion when the system asks for reduced motion | The author saw the live screen and wanted the prototype's drawing: the details always in view, never covering the list. v1's "Select an alert" hint goes, since an alert is always selected. The author's ruling (ticket 14) |

@@ -16,7 +16,7 @@ export function AlertsTable({
 }: {
   alerts: Alert[]
   titleOf: TitleOf
-  selected: Alert | null
+  selected: Alert
   onSelect: (alert: Alert) => void
 }) {
   const columns = useMemo<ColumnDef<Alert>[]>(
@@ -77,6 +77,7 @@ export function AlertsTable({
             <TableRow
               key={row.id}
               data-state={row.original === selected ? 'selected' : undefined}
+              aria-selected={row.original === selected}
               tabIndex={0}
               className="cursor-pointer"
               onClick={() => onSelect(row.original)}
