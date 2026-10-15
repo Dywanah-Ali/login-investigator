@@ -62,7 +62,17 @@ v1's hint (restored). Open points for the author are below.
 
 1. The spec's Presence row and ticket 19 still list "severity labels and colours" with no screen
    named. Proposal: name the report card (ticket 17) there, with a row in the spec's decisions log.
+   - **Ruling, 15 Oct: on the report card.** Spec (two places and a decisions-log row), ticket 17
+     and ticket 19 now name the card.
 2. The agreed prototype showed a pager and a columns menu on the Alerts table. v1 has neither, and
    the log yields five alerts, so neither was built. Ticket 15 builds paging for the explorer.
+   - **Ruling, 15 Oct: option A.** The author asked what thousands of alerts would do. The screen
+     would draw every row, which a pager fixes; the reply would carry up to 20 evidence rows per
+     alert, which only server paging fixes. Thousands cannot occur until log upload exists. So
+     ticket 15's pager is built as one shared piece and also placed under the Alerts table; a line
+     was added to ticket 15. Server paging stays out of scope, as the spec says, and is the fix if
+     a dataset ever grows. No columns menu: it hides columns and does nothing for size.
 3. "Alert" in the screens and the API and "finding" in the core name the same thing. Neither is in
    the glossary.
+   - **Ruling, 15 Oct: option A.** `GLOSSARY.md` gains **Finding**, naming Alert as the screens'
+     word for it. No code renamed: the core is v1's, untouched until Parity is proven.

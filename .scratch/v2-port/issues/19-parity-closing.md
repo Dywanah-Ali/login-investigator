@@ -15,7 +15,7 @@ Decisions: ticket 08.
 - [ ] Full automated set green: pytest (copied, adapted, boundary, API), Vitest, the eval API mode run from ticket 18
 - [ ] Fresh clone: both servers start from the README's two commands in a clean folder
 - [ ] A scan of every git object finds no key value and no key pattern; no personal name or email in any file
-- [ ] The manual presence checklist ticked by the author with a dated ruling: synthetic label, metric labels, empty-state messages, scope note, AI note, progress words per tool, locked input, severity labels and colours, charts per theme, error messages hide exception text
+- [ ] The manual presence checklist ticked by the author with a dated ruling: synthetic label, metric labels, empty-state messages, scope note, AI note, progress words per tool, locked input, severity labels and colours on the report card, charts per theme, error messages hide exception text
   - Reference for the Overview (author's ruling 2026-10-14, ticket 13, point 4; spec decisions log): its metric labels, chart titles and empty-state text are checked against the agreed screens prototype (`research/07-screens-prototype.html`), not v1's code. A wording that differs from v1 but matches the prototype passes. The failed share rounds a half up, and the sidebar links keep the filters, both as decided. Every other item is checked against v1, as the gate says
 - [ ] The eight-step scenario run end to end in the live app by the author, closed with a dated ruling
 - [ ] The gate table in the spec rewritten as a ticked list with the evidence named beside each box, in v1's style

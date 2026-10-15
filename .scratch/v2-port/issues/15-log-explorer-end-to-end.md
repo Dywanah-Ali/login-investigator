@@ -17,3 +17,4 @@ Spec: [spec.md](../spec.md), "The API" and "The frontend". Contract: log explore
 - [ ] Five count tiles from the summary; the table paged in the frontend; the CSV link carries the same filters
 - [ ] Empty view shows the shared empty state
 - [ ] Vitest: the bad IP message, paging
+- [ ] The pager is one shared piece, also placed under the Alerts table (author's ruling, ticket 14, 15 Oct); the Alerts screen test checks it is there

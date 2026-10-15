@@ -17,3 +17,9 @@ _Avoid_: Same behaviour, behaves like v1
 One line of inquiry by the analyst: their questions, the agent's answers and tool calls, and any
 incident report, kept under one ID so it can be reopened. v1 shows it on screen as a "case".
 _Avoid_: Conversation, thread, chat, session
+
+**Finding**:
+One suspicious pattern a detection rule caught in the log, with its IPs, users, counts, time window
+and evidence rows. The core and the agent call it a finding; the screens and the API call the same
+thing an **Alert**, as v1's screen did. The two words never name different things.
+_Avoid_: Incident, detection, event

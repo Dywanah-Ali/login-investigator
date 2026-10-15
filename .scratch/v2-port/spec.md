@@ -194,7 +194,8 @@ Each decision names the ticket that made it.
 - Moved into the frontend: cutting names to three plus "and N more", singular or plural counts, the
   failed share percentage, time formats, the per-rule counts line, paging of past Investigations,
   the "Open in Log explorer" route, charts, colours per theme, empty states, locked input, progress
-  words per tool, starter questions, the scope and AI notes, severity labels and colours.
+  words per tool, starter questions, the scope and AI notes, severity labels and colours on the
+  report card.
 - IP validation at both ends: the frontend checks before sending, the API refuses a bad IP with a
   422, and neither echoes the value.
 - Agent tools (signatures, timestamp inputs, time-window matching) are unchanged from v1.
@@ -320,7 +321,7 @@ last, on a build where every automated check passes.
 | Pass bar | Unchanged from v1: 90% overall, 100% for injection and refusal, 19 questions times 3 runs. Parity means meeting the target, not reproducing v1's 98% | A stable gate under model variance |
 | Eval history | v1's results summary rows are copied into v2 as the first rows; v2 runs continue the table | A regression against v1 is visible at a glance |
 | Frontend logic | Vitest with React Testing Library for the pieces placed in the frontend: three names then "N more", singular or plural counts, failed share, paging of past Investigations, the explorer jump route, the "Investigate" question, the bad IP message, and the allowlist renderer fed the S5 injection strings and crafted answers (markdown links, image tags, raw HTML, javascript: URLs), asserting no anchor, image, script, iframe or raw HTML in the output | The logic that left Python still means the same, and the renderer cannot leak |
-| Presence | A manual checklist, ticked by the author with a dated ruling: synthetic label, metric labels, empty-state messages, scope note, AI note, progress words per tool, locked input while answering, severity labels and colours, charts per theme, error messages hide exception text | What v1's presence tests checked is still on screen |
+| Presence | A manual checklist, ticked by the author with a dated ruling: synthetic label, metric labels, empty-state messages, scope note, AI note, progress words per tool, locked input while answering, severity labels and colours on the report card, charts per theme, error messages hide exception text | What v1's presence tests checked is still on screen |
 | Core scenario | v1's eight-step scenario run end to end in the live v2 app by the author, closed with a dated ruling | Browser, API, agent, memory, report and PDF work together |
 | Engineering | Fresh-clone start of both servers from the README; no key in git history; the core boundary test | A reviewer's first ten minutes succeed |
 
@@ -378,3 +379,5 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-14 | `log_invalid` sends fixed text for every cause, not the loader's message; done in ticket 13's branch, no new ticket (bug log B-008) | The loader's row messages quote raw log values, which broke the contract's rule that the API never formats a log field into a sentence. The change sits in the API only; the core is untouched. The author's ruling |
 | 2026-10-14 | The agreed screens prototype (ticket 07) is the reference for the Overview's labels, chart titles and empty-state text, not v1's code; the failed share rounds a half up; the sidebar links keep the filters (ticket 13) | v1 could not be read in that session, and the prototype was agreed as v1's content. The author chose this over a check against v1's code; ticket 19's presence check uses this reference |
 | 2026-10-14 | The Overview summary sends only `total`, `failures` and `distinct_users`; the dataset facts drop `row_count` (ticket 13) | Only the fields the screen needs leave the server. No screen showed the other six, and the Log explorer has its own endpoint for its counts. The author's approval |
+| 2026-10-15 | "Severity labels and colours" are checked on the report card; the Alerts screen has none (ticket 14); spec, ticket 17 and ticket 19 name the card | v1's alerts carry no severity; only the incident report does. Naming the screen lets the presence check look in the right place. The author's ruling |
+| 2026-10-15 | The Alerts table pages with the Log explorer's pager, one shared piece built in ticket 15; no columns menu | v1 had no pager and the log yields five alerts, but a pager keeps the screen usable if alerts grow, and reusing ticket 15's costs almost nothing. The reply's size at scale still needs server paging, which stays out of scope. The author's ruling (ticket 14) |
