@@ -68,8 +68,8 @@ function AlertsView({
   return (
     <>
       <AlertsCounts alerts={alerts} titleOf={titleOf} />
-      {/* The panel takes 32% of the width: 20% narrower than an even 60/40 split (author, 15 Oct). */}
-      <div className="grid items-start gap-4 @5xl/main:grid-cols-[minmax(0,17fr)_minmax(0,8fr)]">
+      {/* The panel takes 28% of the content width, the table 72% (author, 15 Oct). */}
+      <div className="grid items-start gap-4 @5xl/main:grid-cols-[minmax(0,18fr)_minmax(0,7fr)]">
         <AlertsTable alerts={alerts} titleOf={titleOf} selected={selected} onSelect={onChoose} />
         <AlertDetails alert={selected} title={titleOf(selected.rule)} />
       </div>
