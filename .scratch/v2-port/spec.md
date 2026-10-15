@@ -275,6 +275,17 @@ Each decision names the ticket that made it.
 - "Investigate" on an alert links to the Investigator with a prepared question built from the
   alert's rule title, first IP, first user and time window. The user presses send.
 - The frontend never reaches past the API.
+- **Visual hierarchy: one element leads each screen** (ticket 14). The element the analyst works in
+  keeps full contrast: normal text size, full-strength text, a shaded table header, the card
+  surface. Everything that supports it steps back one level: a quieter background with no shadow,
+  smaller and softer text, plain headers, fainter lines. A selection in the leading element is tied
+  to its supporting panel by an accent bar on the selected row. The change is in surface and
+  contrast only, never in meaning: no colour stands for a severity or an outcome by this rule.
+  First use: the Alerts table leads its details panel. Planned: in the Log explorer the rows table
+  leads the count tiles (ticket 15); in the Investigator the chat leads the past-Investigations
+  column and the "Tools used" panels (ticket 17); the Overview is checked by eye in ticket 19. The
+  quiet styling becomes one shared piece at its second use, in ticket 15. Each screen's look in the
+  browser confirms that one element leads.
 
 **Security rendering (ticket 07)**
 
@@ -384,3 +395,4 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-15 | "Severity labels and colours" are checked on the report card; the Alerts screen has none (ticket 14); spec, ticket 17 and ticket 19 name the card | v1's alerts carry no severity; only the incident report does. Naming the screen lets the presence check look in the right place. The author's ruling |
 | 2026-10-15 | The Alerts table pages with the Log explorer's pager, one shared piece built in ticket 15; no columns menu | v1 had no pager and the log yields five alerts, but a pager keeps the screen usable if alerts grow, and reusing ticket 15's costs almost nothing. The reply's size at scale still needs server paging, which stays out of scope. The author's ruling (ticket 14) |
 | 2026-10-15 | Alert evidence moves from a sliding panel (ticket 07, decision 2) to a fixed details panel beside the table, showing the newest alert by default; its content fades in on change, with no motion when the system asks for reduced motion | The author saw the live screen and wanted the prototype's drawing: the details always in view, never covering the list. v1's "Select an alert" hint goes, since an alert is always selected. The author's ruling (ticket 14) |
+| 2026-10-15 | A visual-hierarchy rule for every screen: one element leads at full contrast, supporting elements step back one level; the quiet styling is shared from its second use (ticket 15) | On the Alerts screen the table and the details panel read as equally important; stepping the panel back fixed it, and the author asked for it as practice across the app. Writing it down means each screen inherits it instead of deciding again. The author's ruling (ticket 14) |

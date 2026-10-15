@@ -17,4 +17,5 @@ Spec: [spec.md](../spec.md), "The API" and "The frontend". Contract: log explore
 - [ ] Five count tiles from the summary; the table paged in the frontend; the CSV link carries the same filters
 - [ ] Empty view shows the shared empty state
 - [ ] Vitest: the bad IP message, paging
+- [ ] Visual hierarchy (spec, "The frontend"): the rows table leads, the count tiles step back; the quiet styling from the Alerts details panel becomes one shared piece used by both screens
 - [ ] The pager is one shared piece, also placed under the Alerts table (author's ruling, ticket 14, 15 Oct); the Alerts screen test checks it is there
