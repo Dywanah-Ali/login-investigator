@@ -7,7 +7,7 @@ work" explains each rule from the API's text.
 
 **Blocked by:** 13 (Frontend shell and the Overview screen).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "The API" and "The frontend". Contract: alerts, rules guide.
 
@@ -94,3 +94,6 @@ width, the table 72%.
 The panel now steps back: a quieter background with no shadow, and an evidence table in smaller,
 softer text with a plain header. The alerts table keeps full contrast and its shaded header. Its
 selected row gains an accent bar on the left edge, tying it to the panel. Looked at in dark mode.
+
+2026-10-15: the author approved ("APPROVED"). Status set to `resolved`. Merged into `main` locally;
+nothing pushed.
