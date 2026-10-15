@@ -89,3 +89,8 @@ look. Spec updated with a decisions-log row.
 **2026-10-15, the author after a look: the details panel 20% narrower.** It went from 40% of the
 width to 32%; the table now takes 68%. Then, at the author's request, set to 28% of the content
 width, the table 72%.
+
+**2026-10-15, the author: the alerts table must lead.** The two tables read as equally important.
+The panel now steps back: a quieter background with no shadow, and an evidence table in smaller,
+softer text with a plain header. The alerts table keeps full contrast and its shaded header. Its
+selected row gains an accent bar on the left edge, tying it to the panel. Looked at in dark mode.

@@ -79,7 +79,8 @@ export function AlertsTable({
               data-state={row.original === selected ? 'selected' : undefined}
               aria-selected={row.original === selected}
               tabIndex={0}
-              className="cursor-pointer"
+              // The chosen row carries an accent bar on its left edge, tying it to the panel.
+              className="cursor-pointer data-[state=selected]:shadow-[inset_3px_0_0_var(--primary)]"
               onClick={() => onSelect(row.original)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {

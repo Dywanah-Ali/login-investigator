@@ -35,7 +35,9 @@ export function AlertDetails({ alert, title }: { alert: Alert; title: string }) 
   const titleId = useId()
 
   return (
-    <Card role="region" aria-labelledby={titleId} className="min-w-0 gap-0 py-0">
+    // A quieter surface than the alerts table: the list is where the analyst works, the panel
+    // supports it (author, 15 Oct).
+    <Card role="region" aria-labelledby={titleId} className="min-w-0 gap-0 bg-muted/40 py-0 ring-foreground/5">
       {/* A new key per alert remounts the content, which replays the entry animation. */}
       <div
         key={alertKey(alert)}
@@ -46,20 +48,22 @@ export function AlertDetails({ alert, title }: { alert: Alert; title: string }) 
           <CardDescription>{evidenceCaption(alert)}</CardDescription>
         </CardHeader>
         <CardContent className="px-4">
-          <div className="overflow-hidden rounded-lg border">
-            <Table aria-label="Evidence">
-              <TableHeader className="bg-muted">
-                <TableRow>
+          <div className="overflow-hidden rounded-lg border border-foreground/5">
+            <Table aria-label="Evidence" className="text-xs">
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
                   {EVIDENCE_COLUMNS.map((column) => (
-                    <TableHead key={column.key}>{column.label}</TableHead>
+                    <TableHead key={column.key} className="h-8 text-muted-foreground">
+                      {column.label}
+                    </TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {alert.evidence.map((row, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} className="border-foreground/5">
                     {EVIDENCE_COLUMNS.map((column) => (
-                      <TableCell key={column.key} className="tabular-nums">
+                      <TableCell key={column.key} className="py-1.5 text-muted-foreground tabular-nums">
                         {column.format ? column.format(row[column.key]) : row[column.key]}
                       </TableCell>
                     ))}
