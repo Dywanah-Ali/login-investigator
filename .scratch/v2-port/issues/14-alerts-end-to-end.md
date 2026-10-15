@@ -85,3 +85,6 @@ filter change; a row click swaps the content. The content fades and slides a few
 is dropped, since an alert is always selected. Known trade-off: the table gets about half the width
 and scrolls sideways for its last columns; the evidence table scrolls too. To be judged after a
 look. Spec updated with a decisions-log row.
+
+**2026-10-15, the author after a look: the details panel 20% narrower.** It went from 40% of the
+width to 32%; the table now takes 68%.
