@@ -31,6 +31,49 @@ export const EMPTY_OVERVIEW = {
   top_failed_ips: [],
 }
 
+const row = (timestamp_utc: string, username: string, source_ip: string, country: string,
+  outcome: 'success' | 'failure', failure_reason = '') => ({
+  timestamp_utc, username, source_ip, country, outcome, failure_reason, user_agent: 'curl/8.4.0',
+})
+
+// Two alerts, newest first as the core sorts them. The spraying alert is cut: 2 of 23 events.
+export const ALERTS = {
+  alerts: [
+    {
+      rule: 'new_country',
+      summary: 'olivia.bennett signed in from RU for the first time.',
+      ips: ['91.142.73.116'],
+      users: ['olivia.bennett'],
+      event_count: 1, failure_count: 0, success_count: 1,
+      first_seen: '2026-10-06T13:47:12Z', last_seen: '2026-10-06T13:47:12Z',
+      evidence: [row('2026-10-06T13:47:12Z', 'olivia.bennett', '91.142.73.116', 'RU', 'success')],
+      evidence_shown: 1,
+    },
+    {
+      rule: 'password_spraying',
+      summary: '2.57.122.53 failed on 4 accounts within an hour.',
+      ips: ['2.57.122.53'],
+      users: ['admin', 'backup', 'helpdesk', 'test'],
+      event_count: 23, failure_count: 23, success_count: 0,
+      first_seen: '2026-10-05T23:04:00Z', last_seen: '2026-10-06T00:17:29Z',
+      evidence: [
+        row('2026-10-05T23:04:00Z', 'admin', '2.57.122.53', 'RO', 'failure', 'unknown_user'),
+        row('2026-10-06T00:17:29Z', 'test', '2.57.122.53', 'RO', 'failure', 'unknown_user'),
+      ],
+      evidence_shown: 2,
+    },
+  ],
+}
+
+export const RULES = {
+  rules: [
+    { rule: 'brute_force', title: 'Brute force', fires_when: 'Twenty failures.', assumption: 'Staff mistype less.' },
+    { rule: 'password_spraying', title: 'Password spraying', fires_when: 'Ten accounts.', assumption: 'A list is worked through.' },
+    { rule: 'new_country', title: 'Sign-in from a new country', fires_when: 'A new country.', assumption: 'Five sign-ins are enough.' },
+  ],
+  general_assumptions: ['Thresholds fit this dataset.', 'Usernames ignore case.'],
+}
+
 export function fakeApi(replies: Record<string, Reply>) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(String(input), 'http://localhost')

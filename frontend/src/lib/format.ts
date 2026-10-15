@@ -29,6 +29,16 @@ export function formatTimestamp(timestamp: string): string {
   )
 }
 
+/** A log timestamp (UTC) to the second, as tables show it: "2026-10-07 23:10:05". */
+export function formatLogTime(timestamp: string): string {
+  return timestamp.slice(0, 19).replace('T', ' ')
+}
+
+/** A log timestamp (UTC) to the minute, as v1's Alerts table showed it: "2026-10-07 23:10". */
+export function formatLogMinute(timestamp: string): string {
+  return formatLogTime(timestamp).slice(0, 16)
+}
+
 /** An hour bucket (UTC) as "7 Oct 23:00", for chart axes. */
 export function formatHour(timestamp: string): string {
   const t = new Date(timestamp)

@@ -149,6 +149,91 @@ def test_an_empty_view_is_not_an_error(client, s):
     }
 
 
+# --- Alerts --------------------------------------------------------------------------------------
+
+# The fields of the core's finding dictionary, which the contract sends unchanged.
+ALERT_FIELDS = {"rule", "summary", "ips", "users", "event_count", "failure_count", "success_count",
+                "first_seen", "last_seen", "evidence", "evidence_shown"}
+LOG_FIELDS = {"timestamp_utc", "username", "source_ip", "country", "outcome", "failure_reason",
+              "user_agent"}
+
+
+def alerts(client, **filters):
+    reply = client.get("/api/alerts", params=filters)
+    assert reply.status_code == 200, reply.text
+    body = reply.json()
+    assert set(body) == {"alerts"}
+    return body["alerts"]
+
+
+def test_s1_to_s4_appear_in_alerts_newest_first(client, s):
+    """Adapted from v1's "S1 to S4 appear in alerts" and "alerts newest first". The order is
+    written out by hand from the ground truth's times: S3's success and its sign-in from a new
+    country share the last second, and the core breaks that tie by rule, newest first."""
+    found = alerts(client)
+    assert [(a["rule"], a["last_seen"]) for a in found] == [
+        (s["S3"]["type"], s["S3"]["time"]),
+        (s["S4"]["type"], s["S3"]["time"]),  # S3's sign-in is also the user's first from NL
+        (s["S1"]["type"], s["S1"]["last_seen"]),
+        (s["S4"]["type"], s["S4"]["time"]),
+        (s["S2"]["type"], s["S2"]["last_seen"]),
+    ]
+    brute = found[2]
+    assert brute["ips"] == [s["S1"]["attacker_ip"]]
+    assert brute["users"] == [s["S1"]["target_user"]]
+    assert brute["first_seen"] == s["S1"]["first_seen"]
+    assert brute["event_count"] == brute["failure_count"] == s["S1"]["failures"]
+    assert found[3]["users"] == [s["S4"]["user"]] and found[3]["ips"] == [s["S4"]["ip"]]
+    assert found[4]["ips"] == [s["S2"]["attacker_ip"]]
+    assert len(found[4]["users"]) == s["S2"]["accounts_tried"]
+
+
+def test_every_alert_has_the_contract_shape_with_its_evidence(client):
+    """The side panel makes no second request, so the evidence travels with the list: at most 20
+    log rows, each with the seven log fields, and the count of rows shown."""
+    for alert in alerts(client):
+        assert set(alert) == ALERT_FIELDS
+        assert 0 < alert["evidence_shown"] == len(alert["evidence"]) <= 20
+        assert alert["evidence_shown"] <= alert["event_count"]
+        assert all(set(row) == LOG_FIELDS for row in alert["evidence"])
+        assert alert["evidence"][0]["timestamp_utc"] == alert["first_seen"]
+        assert alert["evidence"][-1]["timestamp_utc"] == alert["last_seen"]
+
+
+def test_a_cut_alert_shows_its_first_and_last_events(client, s):
+    """S1 has 150 events, so its evidence is cut to 20: the first ten and the last ten."""
+    brute = next(a for a in alerts(client) if a["rule"] == s["S1"]["type"])
+    assert brute["evidence_shown"] == 20 < brute["event_count"]
+
+
+@pytest.mark.parametrize(("filters", "expected"), [
+    # Pinned in test_dashboard.py and by hand from the ground truth, as for the alert count.
+    ({"country": "ro"}, ["S2"]),
+    ({"from": "2026-10-06", "to": "2026-10-06"}, ["S4", "S2"]),
+    ({"user": "OLIVIA.BENNETT"}, ["S4"]),  # usernames match without regard to case
+    ({"outcome": "success", "from": "2026-10-08"}, ["S3", "S3-new-country"]),
+])
+def test_filters_narrow_the_alerts(client, s, filters, expected):
+    """Adapted from v1's "a filter change updates every screen consistently": an alert stays when
+    at least one of its events is in the view. The success filter keeps S3, whose last event is
+    the success, and drops S1, which has none."""
+    rules = {"S1": s["S1"]["type"], "S2": s["S2"]["type"], "S3": s["S3"]["type"],
+             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"]}
+    assert [a["rule"] for a in alerts(client, **filters)] == [rules[key] for key in expected]
+
+
+def test_the_alerts_of_an_empty_view_are_an_empty_list(client, s):
+    assert alerts(client, user=s["S2"]["unknown_usernames"][0], outcome="success") == []
+
+
+def test_the_alerts_endpoint_refuses_a_bad_filter_without_echoing_it(client):
+    reply = client.get("/api/alerts", params={"outcome": HOSTILE})
+    assert reply.status_code == 422
+    assert reply.json() == {"error": {"code": "invalid_filter",
+                                      "message": "outcome must be success or failure."}}
+    assert HOSTILE not in reply.text
+
+
 # --- Filter validation ---------------------------------------------------------------------------
 
 # Looks like an attack, so an echo of it would be easy to spot and harmful if it happened.

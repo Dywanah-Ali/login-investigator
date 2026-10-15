@@ -19,6 +19,38 @@ export type OverviewReply = {
   top_failed_ips: { source_ip: string; failures: number; accounts: number }[]
 }
 
+/** One log row, raw values as the log holds them. Shown only as plain text in table cells. */
+export type LogRow = {
+  timestamp_utc: string
+  username: string
+  source_ip: string
+  country: string
+  outcome: Outcome
+  failure_reason: string
+  user_agent: string
+}
+
+/** One finding, the core's dictionary unchanged. */
+export type Alert = {
+  rule: string
+  summary: string
+  ips: string[]
+  users: string[]
+  event_count: number
+  failure_count: number
+  success_count: number
+  first_seen: string
+  last_seen: string
+  evidence: LogRow[]
+  evidence_shown: number
+}
+
+export type AlertsReply = { alerts: Alert[] }
+
+export type RuleGuide = { rule: string; title: string; fires_when: string; assumption: string }
+
+export type RulesReply = { rules: RuleGuide[]; general_assumptions: string[] }
+
 /** What went wrong, in the few kinds the screen tells apart. */
 export type FailureKind = 'invalid_filter' | 'log_invalid' | 'unreachable' | 'failed'
 

@@ -1,4 +1,4 @@
-"""The dashboard endpoints: dataset facts, the rules guide and the Overview. Each validates input,
+"""The dashboard endpoints: dataset facts, the rules guide, the Overview and Alerts. Each validates input,
 calls the core and shapes the reply with only the fields the contract lists.
 """
 
@@ -59,6 +59,14 @@ def get_overview(data: LoadedDataset, chosen: QueryFilters) -> dict:
             for row in top_failed_ips(rows).to_dict("records")
         ],
     }
+
+
+@router.get("/alerts")
+def get_alerts(data: LoadedDataset, chosen: QueryFilters) -> dict:
+    # The core's finding dictionary unchanged, evidence included, so the side panel makes no
+    # second request. The core sorts it newest first.
+    rows = chosen.rows(data.frame)
+    return {"alerts": [finding.to_dict() for finding in alerts_for_view(data.findings, rows)]}
 
 
 @router.get("/rules")

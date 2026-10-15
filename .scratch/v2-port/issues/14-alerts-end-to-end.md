@@ -19,3 +19,14 @@ Spec: [spec.md](../spec.md), "The API" and "The frontend". Contract: alerts, rul
 - [ ] "How these rules work" as a collapsible fed by the rules endpoint
 - [ ] Log fields appear only in table cells
 - [ ] Vitest: name cutting, the explorer link, the "Investigate" question
+
+## Comments
+
+**2026-10-15, the author's rulings before the build.**
+
+- Test points: all five. The API through the test client; three frontend helpers (name cutting, the
+  explorer link, the "Investigate" question); and the Alerts screen drawn with a fake API reply, as
+  ticket 13 did for the Overview.
+- "Severity labels and colours" is left out of this ticket. v1's Alerts screen shows no severity and
+  no finding carries one; severity exists only on the incident report card, ticket 17. Inventing one
+  per rule would be new behaviour the spec rules out.
