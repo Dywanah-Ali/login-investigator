@@ -433,3 +433,8 @@ DOM geometry correction needed to reproduce it. Test-first work stays at the agr
 only the six existing warnings. Full frontend checks and review evidence are recorded in T17.
 **Next:** author checks the count and automatic report reveal on the port 5173 preview. T17
 remains ready-for-human. No `.env` access, paid model call or push for these corrections.
+
+**Final evidence for P-020:** all 105 frontend tests pass, TypeScript is clean, lint retains the
+six existing warnings and the production build passes with its existing bundle warning. Standards
+and Spec reviews are clear. The correction is committed locally as `a75d1a6`. The author checks
+actual browser scrolling next. Nothing pushed.

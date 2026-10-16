@@ -162,3 +162,12 @@ and automatic scrolling to the end of a generated report. B-025/B-026 and P-020 
   `.env` access. Visual acceptance remains with the author; no browser automation was used.
 
 Final validation and review evidence follows.
+
+Response-correction evidence:
+
+- Full frontend suite: **105 passed**. TypeScript clean. Lint has no errors and only the six
+  existing warnings. Production build passed with the existing main-chunk warning.
+- Standards review: clear. Spec review: clear for the count and explicit report-reveal request.
+- Correction committed locally as `a75d1a6`. `git diff --check` passed. Nothing pushed.
+- The scroll regression uses the real component with supplied DOM geometry. Browser scrolling
+  and overall visual approval remain the author's review step on port 5173.
