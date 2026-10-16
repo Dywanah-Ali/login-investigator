@@ -299,3 +299,32 @@ refusal cases preserve genuine failures. Frontend unchanged. Committed locally; 
 **Validation:** documentation diff checked; the existing 351 passing backend tests, clean Pyright
 and independent reviews remain the evidence. No test rerun needed for this status-only update.
 **Next:** ticket 17, Investigator screen, when the author gives the go. Nothing pushed.
+
+### P-016 · 2026-10-16 · Ticket 17 Investigator screen
+
+**Prompt:**
+> [$implement](<local implement skill>) T17
+
+The local skill path above is redacted to avoid recording a personal filesystem path.
+
+**Purpose:** implement the agreed Investigator screen using test-first slices at T17's frontend
+seams, independent Standards and Spec reviews, and local commits.
+**Result:** the Investigator route now has saved Investigation selection, paged history,
+prepared questions, create-then-ask streaming, progress words, locked input, saved-history redraw,
+plain tool evidence with optional raw JSON, report offers, fixed-field reports and numbered PDF
+links. Official shadcn message components were fetched from its registry. `react-markdown` is
+used in one allowlist component, with visible non-clickable link addresses and no images or HTML.
+**Iterations:** B-016 records fixture corrections, B-017 existing dependency advisories, and B-018
+the derived-state correction. The core, API contract and frozen v1 are unchanged.
+**Review:** Standards flagged the initially missing prompt record and repeated lifecycle cleanup.
+Both were corrected. Both reviewers identified the browser-navigation race, now logged as B-019
+and fixed with answer/report regressions. Standards and Spec re-reviews are clear.
+**Validation:** backend 351 passed and Pyright clean. Final frontend suite 103 passed; TypeScript
+clean; production build passed. Lint reports only six existing warnings. The large bundle warning
+and seven existing dependency advisories remain separate work. No existing dependency versions
+changed. `git diff --check` clean.
+**Preview:** the older local API lacked the Investigation routes. A fresh isolated preview at
+http://127.0.0.1:5174/investigator serves the screen and fixed missing-key response. Live agent
+review needs `OPENROUTER_API_KEY` configured in `.env`. B-020 records the stale-preview iteration.
+**Next:** T17 is ready for the author's live screen and visual hierarchy review before resolution.
+Work committed locally. Nothing pushed.

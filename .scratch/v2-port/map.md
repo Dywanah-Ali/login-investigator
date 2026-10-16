@@ -78,7 +78,9 @@ contract, and the seams.
   `issues/19` written by `/mp-to-tickets`. Tickets 10–16 are resolved. The build frontier is ticket 17, Investigator screen.
   The targeted B-014 disconnect follow-up, [ticket 23](issues/23-disconnect-handling.md), is also
   resolved following the author's approval on 16 October 2026. Frontend warnings stay separate.
-  Ticket 17 has not been started.
+  Ticket 17 is implemented and `ready-for-human` following passing automated checks and clear
+  Standards and Spec re-reviews on 16 October 2026. Its visual hierarchy and live flow await
+  the author’s review. The frontier remains ticket 17 until approval.
 
 ## Out of scope
 

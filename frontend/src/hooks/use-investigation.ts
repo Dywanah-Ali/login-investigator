@@ -26,7 +26,7 @@ export function useInvestigation() {
   const [busy, setBusy] = useState(false)
   const [progress, setProgress] = useState('')
   const [draft, setDraft] = useState<{ question: string; answer: string } | null>(null)
-  const operation = useRef<AbortController | null>(null)
+  const operation = useRef<{ id: string | null; controller: AbortController } | null>(null)
   const historyRequest = useRef<AbortController | null>(null)
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function useInvestigation() {
     getJson<{ investigations: InvestigationEntry[] }>('/api/investigations', '', controller.signal)
       .then((reply) => setEntries(reply.investigations))
       .catch((error) => { if (!controller.signal.aborted) setFailure(message(error)) })
-    return () => { controller.abort(); operation.current?.abort() }
+    return () => { controller.abort(); operation.current?.controller.abort() }
   }, [])
 
   useEffect(() => {
@@ -45,7 +45,18 @@ export function useInvestigation() {
       .catch((error) => {
         if (!controller.signal.aborted) { setFailure(message(error)); setHistory({ id, data: null }) }
       })
-    return () => controller.abort()
+    return () => {
+      controller.abort()
+      // Browser Back/Forward bypasses disabled controls. A newly created ID has already
+      // taken ownership before its URL changes, so that intentional transition continues.
+      if (operation.current?.id === id) {
+        operation.current.controller.abort()
+        operation.current = null
+        setBusy(false)
+        setProgress('')
+        setDraft(null)
+      }
+    }
   }, [id])
 
   async function refresh(currentId: string, signal: AbortSignal) {
@@ -54,14 +65,34 @@ export function useInvestigation() {
     if (!signal.aborted) { setHistory({ id: currentId, data: reply }); setDraft(null) }
   }
 
+  function begin(progressText: string) {
+    const controller = new AbortController()
+    const active = { id, controller }
+    operation.current = active
+    setBusy(true)
+    setFailure(null)
+    setProgress(progressText)
+    return active
+  }
+
+  async function finish(currentId: string | null, controller: AbortController) {
+    if (controller.signal.aborted) return
+    if (currentId) {
+      try { await refresh(currentId, controller.signal) }
+      catch (error) { if (!controller.signal.aborted) setFailure(message(error)) }
+    }
+    if (!controller.signal.aborted && operation.current?.controller === controller) {
+      setBusy(false)
+      setProgress('')
+      operation.current = null
+    }
+  }
+
   async function send() {
     const text = question.trim()
     if (operation.current || loading || !text || text.length > 2000) return
-    const controller = new AbortController()
-    operation.current = controller
-    setBusy(true)
-    setFailure(null)
-    setProgress('Thinking…')
+    const active = begin('Thinking…')
+    const { controller } = active
     setDraft({ question: text, answer: '' })
     setQuestion('')
     let currentId = id
@@ -70,6 +101,7 @@ export function useInvestigation() {
         const created = await postJson<InvestigationEntry>('/api/investigations', { question: text }, controller.signal)
         if (controller.signal.aborted) return
         currentId = created.id
+        active.id = currentId
         setEntries((old) => [created, ...old.filter((entry) => entry.id !== created.id)])
         setParams({ id: currentId }, { replace: true })
       }
@@ -81,13 +113,8 @@ export function useInvestigation() {
     } catch (error) {
       if (!controller.signal.aborted) setFailure(message(error))
     } finally {
-      if (!controller.signal.aborted) {
-        if (currentId) {
-          try { await refresh(currentId, controller.signal) }
-          catch (error) { if (!controller.signal.aborted) setFailure(message(error)) }
-        } else { setDraft(null); setQuestion(text) }
-        if (!controller.signal.aborted) { setBusy(false); setProgress(''); operation.current = null }
-      }
+      if (!controller.signal.aborted && !currentId) { setDraft(null); setQuestion(text) }
+      await finish(currentId, controller)
     }
   }
 
@@ -101,21 +128,13 @@ export function useInvestigation() {
 
   async function writeReport() {
     if (!id || !data?.report_offer || operation.current || loading) return
-    const controller = new AbortController()
-    operation.current = controller
-    setBusy(true)
-    setFailure(null)
-    setProgress('Writing the incident report…')
+    const { controller } = begin('Writing the incident report…')
     try {
       await postJson(`${investigationPath(id)}/report`, { request: data.report_offer }, controller.signal)
     } catch (error) {
       if (!controller.signal.aborted) setFailure(message(error))
     } finally {
-      if (!controller.signal.aborted) {
-        try { await refresh(id, controller.signal) }
-        catch (error) { if (!controller.signal.aborted) setFailure(message(error)) }
-        if (!controller.signal.aborted) { setBusy(false); setProgress(''); operation.current = null }
-      }
+      await finish(id, controller)
     }
   }
 

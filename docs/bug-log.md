@@ -256,3 +256,44 @@ change was made in T17. The new renderer is not listed in this audit finding.
 **Lesson:** package installation can reveal existing dependency risks. Check their origin before
 changing versions, especially when the suggested fix crosses major versions.
 **Found by:** npm installation and audit during T17. Related prompt: P-016.
+
+### B-018 · 2026-10-16 · Ticket 17 derived screen state
+
+**Symptom:** the first full lint run found two new state-setting-effect warnings in the
+Investigator hook.
+**Cause:** the hook reset history and copied the prepared question inside effects. This added
+extra renders and made it harder to tell which address a result belonged to.
+**Fix:** tag history with its Investigation ID and derive loading from that match, as the
+existing API hook does. Tag the input with its prepared question and derive its initial text.
+The focused screen tests, TypeScript and lint pass with only the six existing warnings.
+**Lesson:** tie asynchronous results to their request identity instead of clearing them later.
+**Found by:** T17 full validation. Related prompt: P-016.
+
+### B-019 · 2026-10-16 · Ticket 17 navigation during an active operation
+
+**Symptom:** browser history could switch Investigation IDs during an answer or report. The old
+operation could then replace the selected history and leave the new screen loading indefinitely.
+**Cause:** disabled screen buttons prevented normal selection, but request ownership followed the
+component lifetime only. Changing a query parameter does not unmount that component.
+**Fix:** bind the active controller to the Investigation ID and cancel it when that ID is left.
+Creation transfers ownership to the new ID before changing the address, preserving create-then-ask.
+Asks and reports share the same begin/finish lifecycle. Aborted operations cannot redraw history.
+**Lesson:** asynchronous work belongs to the selected resource as well as to the screen lifetime.
+**Found by:** both independent reviews. The new browser-navigation regression failed before the fix.
+Related prompt: P-016.
+
+**B-019 validation iteration:** after extracting shared lifecycle handling, TypeScript correctly
+rejected mutation of a ref it had already narrowed to null before the helper call. The helper now
+returns the active operation object. Creation transfers ownership through that object directly.
+Focused screen tests, TypeScript and lint then passed.
+
+### B-020 · 2026-10-16 · Ticket 17 stale local preview
+
+**Symptom:** the existing frontend served the new screen, but `/api/investigations` returned 404.
+**Cause:** the API behind that preview was started before the Investigation routes were built.
+Frontend hot reload does not refresh a separately running backend process.
+**Fix:** started an isolated API on port 8002 with temporary memory and a Vite preview on 5174.
+Existing servers were left alone. The current API returns the expected 503 missing-model-key
+response, confirming the route exists and the failure is configuration rather than routing.
+**Lesson:** verify both sides of the frontend/API boundary when preparing a review preview.
+**Found by:** read-only local preview smoke checks. Related prompt: P-016.

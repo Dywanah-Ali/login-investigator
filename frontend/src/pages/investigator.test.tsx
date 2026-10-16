@@ -1,13 +1,19 @@
 import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
+import { useEffect } from 'react'
+import { MemoryRouter, useNavigate, type NavigateFunction } from 'react-router'
 import { afterEach, expect, test, vi } from 'vitest'
 import { InvestigatorPage } from '@/pages/investigator'
 
 const entries = Array.from({ length: 8 }, (_, i) => ({ id: `case-${i}`, started_at: '2026-10-16T09:00:00Z', first_question: `Question ${i}` }))
 const empty = { ...entries[0], turns: [], report_offer: null }
-function open(address = '/investigator') {
-  return render(<MemoryRouter initialEntries={[address]}><InvestigatorPage /></MemoryRouter>)
+function open(address = '/investigator', onNavigate?: (navigate: NavigateFunction) => void) {
+  function Navigator() {
+    const navigate = useNavigate()
+    useEffect(() => onNavigate?.(navigate), [navigate])
+    return null
+  }
+  return render(<MemoryRouter initialEntries={[address]}><InvestigatorPage /><Navigator /></MemoryRouter>)
 }
 function api(detail: object = empty) {
   const fetcher = vi.fn(async (url: string, _options?: RequestInit) => Response.json(url === '/api/investigations' ? { investigations: entries } : detail))
@@ -181,4 +187,31 @@ test('text frames survive split delimiters and UTF-8 bytes; a missing done event
   await act(async () => stream.close())
   expect(screen.getByRole('alert')).toHaveTextContent('The agent stopped before it finished.')
   expect(screen.getByRole('textbox', { name: 'Question' })).toBeEnabled()
+})
+
+test.each(['answer', 'report'])('browser navigation during an %s aborts the old operation and opens usable saved history', async (kind) => {
+  let navigate!: NavigateFunction
+  let askSignal!: AbortSignal
+  vi.stubGlobal('fetch', vi.fn(async (url: string, options?: RequestInit) => {
+    if (url.endsWith('/report')) {
+      askSignal = options?.signal as AbortSignal
+      return new Promise<Response>((_resolve, reject) => { askSignal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError'))) })
+    }
+    if (url.endsWith('/ask')) {
+      askSignal = options?.signal as AbortSignal
+      return new Response(new ReadableStream({ start(controller) { askSignal.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError'))) } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    }
+    if (url === '/api/investigations') return Response.json({ investigations: entries })
+    return Response.json(url.endsWith('case-1') ? { ...empty, id: 'case-1', turns: [{ ...turn, answer: 'Reopened investigation answer' }] } : { ...empty, report_offer: kind === 'report' ? 'Write the incident report' : null })
+  }))
+  open('/investigator?id=case-0&ask=Investigate', (go) => { navigate = go })
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Send question' })).toBeEnabled())
+  await userEvent.click(screen.getByRole('button', { name: kind === 'report' ? 'Write the incident report' : 'Send question' }))
+  await vi.waitFor(() => expect(askSignal).toBeDefined())
+  await act(async () => { await navigate('/investigator?id=case-1') })
+  expect(askSignal.aborted).toBe(true)
+  expect(await screen.findByText('Reopened investigation answer')).toBeInTheDocument()
+  expect(screen.getByRole('textbox', { name: 'Question' })).toBeEnabled()
+  expect(screen.queryByText('Investigate')).not.toBeInTheDocument()
+  expect(screen.queryByRole('status')).not.toBeInTheDocument()
 })
