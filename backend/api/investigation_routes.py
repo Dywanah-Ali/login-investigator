@@ -14,6 +14,7 @@ from starlette.concurrency import run_in_threadpool
 
 from api.errors import ApiError
 from api.services import Services, services
+from api.sse_disconnect import DisconnectSafeRoute
 from login_investigator import agent, investigations, report_pdf, tool_views
 from login_investigator.loader import TIMESTAMP_FORMAT
 
@@ -166,7 +167,6 @@ def question_stream(body: Question, case: KnownCase, svc: Available,
 QuestionStream = Annotated[Generator[agent.Stream, None, None], Depends(question_stream)]
 
 
-@router.post("/investigations/{id}/ask", response_class=EventSourceResponse)
 async def ask_question(stream: QuestionStream) -> AsyncIterator[ServerSentEvent]:
     try:
         while True:
@@ -183,3 +183,8 @@ async def ask_question(stream: QuestionStream) -> AsyncIterator[ServerSentEvent]
         yield ServerSentEvent(event="error", data={
             "code": "agent_failed", "message": "The agent stopped before it finished.",
         })
+
+
+# Opt in only this route; the guard must include ASGI delivery and request cleanup.
+router.add_api_route("/investigations/{id}/ask", ask_question, methods=["POST"],
+                     response_class=EventSourceResponse, route_class_override=DisconnectSafeRoute)

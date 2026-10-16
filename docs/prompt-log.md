@@ -266,3 +266,22 @@ passed. Standards and Spec reviewers confirmed the fixes. B-013 and B-015 record
 and lifetime fixes; B-014 records the FastAPI disconnect limitation. Existing frontend warnings
 remain. Work committed locally; nothing pushed.
 **Next:** ticket 16 is ready for the author's review. Ticket 17 follows approval.
+
+### P-014 · 2026-10-16 · T16 approval and targeted disconnect follow-up
+
+**Prompts, in order:**
+> "FastAPI can log an internal error after a slow-reader disconnect. Cleanup still passes. Existing frontend warnings remain." should we fix that for completnes ? or maybe it has some kind of impact ?
+
+> T16 is reviewed and approved.
+> u can go with Investigating a targeted disconnect fix first. Keep frontend cleanup as separate work
+
+**Purpose:** assess the warnings' impact, record the author's T16 approval and investigate a
+narrow B-014 fix before building the Investigator screen. Frontend cleanup remains separate.
+**Result:** T16 resolved and the map updated. Ticket 23 records upstream research and the fix.
+No released fix was identified in the latest listed patch notes. A guard on the ask route handles
+only known FastAPI keepalive queue closure after confirmed disconnection from a successful SSE
+response. It leaves unknown failures visible, including unexpected exception-group siblings.
+**Iterations:** strengthening the real disconnect test reproduced B-014 before implementation;
+afterward it requires clean completion and no error log instead of accepting the exception.
+**Validation:** pending full backend regression and review. Frontend unchanged.
+**Next:** finish evidence for ticket 23, then return to the T17 frontier after review.

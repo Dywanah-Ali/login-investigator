@@ -7,7 +7,7 @@ download the PDF. The dashboards keep working when the model key is missing.
 
 **Blocked by:** 12 (API foundation and the Overview endpoint).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "The API" and "The stream". Contract: investigations (list, start, reopen,
 ask, report, PDF), errors. Decisions: ticket 06, findings under `research/`.
@@ -71,3 +71,10 @@ Concerns/gaps:
 
 Next: the author reviews T16. The ticket remains `ready-for-human` until that review; ticket 17
 is the next build ticket after approval. Nothing pushed.
+
+
+## Answer
+
+2026-10-16: the author reviewed and approved T16: "T16 is reviewed and approved."
+The automated evidence above closes its acceptance checks. B-014 continues as a separately
+authorised disconnect follow-up in ticket 23. Frontend warning cleanup stays separate.

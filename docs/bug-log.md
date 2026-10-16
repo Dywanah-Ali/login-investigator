@@ -211,6 +211,15 @@ successful follow-up. The limitation remains recorded for dependency maintenance
 **Lesson:** disconnects must also be checked when the delivery queues are full.
 **Found by:** the added backpressure case during review. Related prompt: P-013.
 
+
+**Follow-up, 16 October 2026:** after the author's approval of T16, ticket 23 addresses the
+remaining noise. The stricter disconnect test failed with the original framework exception.
+A route-specific guard now recognises that exception's framework origin only after an observed
+HTTP disconnect and a successful SSE response. Other exceptions continue to propagate. The guard
+wraps delivery and request cleanup, so it acts before the application-wide error logger. No
+third-party files, dependency versions or global log filters are changed. Remove it once an
+upstream fix passes the strict regression without it. Validation evidence lives in ticket 23.
+
 ### B-015 · 2026-10-16 · Ticket 16 stream ownership
 
 **Symptom:** review found that core closure could depend on finalization if cancellation landed

@@ -299,7 +299,7 @@ def test_failure_after_partial_text_ends_with_error_and_never_done(client, monke
 
 
 @pytest.mark.parametrize("slow_reader", [False, True])
-def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monkeypatch, slow_reader):
+def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monkeypatch, slow_reader, caplog):
     """Drive HTTP disconnect through ASGI: TestClient's normal calls buffer the whole stream."""
     advanced = []
     closed = Event()
@@ -355,18 +355,14 @@ def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monke
                  "headers": [(b"content-type", b"application/json")],
                  "client": ("testclient", 1234), "server": ("testserver", 80)}
         with anyio.fail_after(10):
-            try:
-                await client.app(scope, receive, send)
-            except* anyio.BrokenResourceError:
-                # FastAPI's built-in keepalive task can send into the closed delivery queue.
-                # This happens after HTTP disconnect; cleanup must still finish (bug B-014).
-                assert disconnected.is_set()
+            await client.app(scope, receive, send)
         assert disconnected.is_set()
         assert not any(b"event: done" in message.get("body", b"") for message in sent)
         assert closed.is_set(), "core cleanup must precede releasing the request"
 
     assert client.portal is not None
     client.portal.call(disconnect_after_text)
+    assert not [record for record in caplog.records if record.levelname in {"ERROR", "CRITICAL"}]
     assert 0 < len(advanced) < 1000
     assert closed.wait(1), "the core generator was not closed"
     monkeypatch.undo()
