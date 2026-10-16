@@ -1,6 +1,6 @@
 # 23: Clean disconnect handling for streamed answers
 
-**Status:** ready-for-human
+**Status:** resolved
 **Blocked by:** 16 (resolved)
 
 ## Scope
@@ -87,3 +87,11 @@ Review totals: Standards 0 findings; Spec 0 findings.
 - Implementation committed locally as `105596c`; evidence recorded in a follow-up commit.
 
 Next: author reviews ticket 23, then T17 is the build frontier. Nothing pushed.
+
+
+## Answer
+
+2026-10-16: the author approved the completed work: "ok T23 is approved".
+The passing checks and independent reviews above, together with this approval, close ticket 23.
+T17, Investigator screen, is next. The temporary guard's removal condition remains documented.
+Nothing pushed.

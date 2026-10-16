@@ -287,3 +287,15 @@ afterward it requires clean completion and no error log instead of accepting the
 no issues. Strict disconnect cases pass without accepted exceptions or error logs; eight guard
 refusal cases preserve genuine failures. Frontend unchanged. Committed locally; nothing pushed.
 **Next:** finish evidence for ticket 23, then return to the T17 frontier after review.
+
+
+### P-015 · 2026-10-16 · Ticket 23 approval
+
+**Prompt:**
+> ok T23 is approved
+
+**Purpose:** record the author's approval of the targeted disconnect fix.
+**Result:** ticket 23 marked resolved and the wayfinder map updated. No application code changed.
+**Validation:** documentation diff checked; the existing 351 passing backend tests, clean Pyright
+and independent reviews remain the evidence. No test rerun needed for this status-only update.
+**Next:** ticket 17, Investigator screen, when the author gives the go. Nothing pushed.

@@ -69,15 +69,16 @@ contract, and the seams.
 
 - [Investigations API](issues/16-investigations-api.md): persisted Investigations, streamed answers, readable tool evidence, numbered reports and offline PDF downloads. Author reviewed and approved on 16 October 2026. B-014 is tracked separately in ticket 23.
 
+- [Clean disconnect handling](issues/23-disconnect-handling.md): the ask route handles the known FastAPI queue-close error after a confirmed disconnect while preserving genuine failures. 351 backend tests and Pyright passed; both reviews found no issues. Author approved on 16 October 2026.
+
 ## Not yet specified
 
 - Nothing. The map is complete (14 October 2026): every decision the spec needs is recorded.
   Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
   `issues/19` written by `/mp-to-tickets`. Tickets 10–16 are resolved. The build frontier is ticket 17, Investigator screen.
-  Before starting it, the author authorised [ticket 23](issues/23-disconnect-handling.md), the targeted
-  B-014 disconnect follow-up, on 16 October 2026. It is implemented and `ready-for-human`:
-  351 backend tests and Pyright passed; both review axes found no issues. Frontend warnings stay
-  separate. Ticket 17 has not been started.
+  The targeted B-014 disconnect follow-up, [ticket 23](issues/23-disconnect-handling.md), is also
+  resolved following the author's approval on 16 October 2026. Frontend warnings stay separate.
+  Ticket 17 has not been started.
 
 ## Out of scope
 
