@@ -95,3 +95,23 @@ This supersedes the earlier missing-key preview limitation and "no live model ru
 The preview is ready at http://127.0.0.1:5174/investigator. AbuseIPDB, report generation and PDFs
 were not exercised in this narrow smoke. Comprehensive evaluations remain T18 work and final
 live acceptance remains T19 work. Author visual approval for T17 is still pending.
+
+### Follow-up: restore the approved layout, 16 October 2026
+
+The author supplied the approved artifact and screenshot, showing that history belongs on the
+**left inside the page**, with chat on its right. Compared the implementation with ticket 07's
+saved `research/07-screens-prototype.html`. This is a correction to the existing approval, not a
+spec change. B-023 and P-018 record the finding and iteration.
+
+- Restored the narrow left history column, quiet entries and selected-entry outline/tint.
+- Removed the outer chat card and visible repeated first-question heading. Compact message bubbles
+  align analyst questions right and agent answers left. The official bubble and message-scroller
+  components now accompany the existing official message components as agreed in ticket 07.
+- The composer keeps the question and Send button together. The AI note is directly below it.
+- Tool evidence uses a quiet left rule and compact spacing; report cards have compact fields and
+  a severity accent. Security rendering, report offers, input locking and API requests are unchanged.
+- Message scrolling follows the active answer, allows reading earlier turns, and offers a
+  scroll-to-end control. Provider state resets when selecting another Investigation.
+
+The visual hierarchy checkbox remains open for the author's review. Existing screen and renderer
+checks pass; final build and review evidence follows. No browser automation or screenshot capture.

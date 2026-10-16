@@ -1,12 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
+import { Plus } from 'lucide-react'
 
 import { Answer } from '@/components/answer'
 import { IncidentReport } from '@/components/incident-report'
 import { QuietCard } from '@/components/quiet-card'
 import { ToolsUsed } from '@/components/tools-used'
+import { Bubble, BubbleContent } from '@/components/ui/bubble'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Message, MessageContent, MessageGroup, MessageHeader } from '@/components/ui/message'
+import { CardContent } from '@/components/ui/card'
+import { Message, MessageContent, MessageGroup } from '@/components/ui/message'
+import {
+  MessageScroller, MessageScrollerButton, MessageScrollerContent,
+  MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport,
+} from '@/components/ui/message-scroller'
 import { useInvestigation } from '@/hooks/use-investigation'
 import { formatTimestamp } from '@/lib/format'
 
@@ -18,17 +24,19 @@ const STARTERS = [
 
 function QuestionAnswer({ question, answer }: { question: string; answer: string }) {
   return (
-    <MessageGroup>
-      <Message align="end">
+    <MessageGroup className="gap-3">
+      <Message align="end" aria-label="Your question">
         <MessageContent>
-          <MessageHeader>You</MessageHeader>
-          <p className="rounded-lg bg-muted p-3 whitespace-pre-wrap">{question}</p>
+          <Bubble variant="tinted" align="end" className="max-w-[95%] sm:max-w-[80%]">
+            <BubbleContent className="border-primary/10 whitespace-pre-wrap">{question}</BubbleContent>
+          </Bubble>
         </MessageContent>
       </Message>
-      {answer && <Message>
+      {answer && <Message aria-label="Investigator answer">
         <MessageContent>
-          <MessageHeader>Investigator</MessageHeader>
-          <Answer text={answer} />
+          <Bubble variant="muted" className="max-w-[95%] sm:max-w-[85%]">
+            <BubbleContent className="border-border/60"><Answer text={answer} /></BubbleContent>
+          </Bubble>
         </MessageContent>
       </Message>}
     </MessageGroup>
@@ -41,94 +49,106 @@ export function InvestigatorPage() {
     progress, draft, send, select, writeReport,
   } = useInvestigation()
   const [limit, setLimit] = useState(3)
-  const bottom = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    bottom.current?.scrollIntoView?.({ block: 'nearest' })
-  }, [draft?.answer, data?.turns.length])
-
   const shown = entries.filter((entry, index) => index < limit || entry.id === id)
+  const empty = !loading && !busy && !data?.turns.length
+
   return (
     <>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         Investigations use the whole log. Dashboard filters do not apply.
       </p>
       {failure && <p role="alert">{failure}</p>}
-      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_18rem]">
-        <Card className="min-w-0">
-          <CardContent className="space-y-6">
-            <h2 className="text-lg font-semibold">{data?.first_question || 'New investigation'}</h2>
-            {!loading && !busy && !data?.turns.length && <div className="space-y-4">
-              <p>
-                I search the sign-in log, run the detection rules and look up IP reputation,
-                and I can write an incident report. I only read: I cannot block, change or delete anything.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {STARTERS.map((starter) => (
-                  <Button key={starter} variant="outline" onClick={() => setQuestion(starter)}>
-                    {starter}
-                  </Button>
-                ))}
-              </div>
-            </div>}
-            {loading && !busy && <p role="status">Loading investigation…</p>}
-            <div role="region" aria-label="Investigation messages" className="max-h-[60vh] space-y-6 overflow-y-auto pr-2">
-              {data?.turns.map((turn, index) => (
-                <div key={index} className="space-y-4">
-                  <QuestionAnswer question={turn.question} answer={turn.answer} />
-                  <ToolsUsed tools={turn.tools} />
-                  {turn.report && id && <IncidentReport id={id} report={turn.report} />}
-                </div>
-              ))}
-              {draft && <QuestionAnswer question={draft.question} answer={draft.answer} />}
-              <div ref={bottom} />
-            </div>
-            {busy && <p role="status" className="text-sm text-muted-foreground">{progress}</p>}
-            {data?.report_offer && (
-              <Button disabled={busy || loading} onClick={() => void writeReport()}>
-                {data.report_offer}
-              </Button>
-            )}
-            <form onSubmit={(event) => { event.preventDefault(); void send() }} className="space-y-3">
-              <label htmlFor="question" className="text-sm font-medium">Question</label>
-              <textarea
-                id="question"
-                disabled={busy || loading}
-                className="min-h-24 w-full rounded-md border bg-background p-3"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                maxLength={2000}
-              />
-              <Button type="submit" disabled={busy || loading || !question.trim()}>Send question</Button>
-              <p className="text-xs text-muted-foreground">
-                Answers are AI-generated and can be wrong. Check them against the tool calls under each answer.
-              </p>
-            </form>
-          </CardContent>
-        </Card>
-        <QuietCard className="h-fit min-w-0 text-sm text-muted-foreground">
-          <CardContent className="space-y-4">
-            <Button variant="outline" disabled={busy} onClick={() => select()}>New investigation</Button>
+      <div className="grid min-h-0 min-w-0 gap-4 lg:grid-cols-[15rem_minmax(0,1fr)]">
+        <QuietCard className="h-fit min-w-0 gap-0 rounded-lg py-3 text-sm text-muted-foreground">
+          <CardContent className="space-y-3 px-3">
+            <Button className="w-full justify-start" disabled={busy} onClick={() => select()}>
+              <Plus aria-hidden="true" />New investigation
+            </Button>
             <nav aria-label="Past investigations" className="space-y-2">
-              <h2 className="font-medium">Past investigations</h2>
-              {!entries.length && <p>No past investigations yet.</p>}
+              <h2 className="sr-only">Past investigations</h2>
+              {!entries.length && <p className="px-2 py-3 text-xs">No past investigations yet.</p>}
               {shown.map((entry) => (
                 <button
                   key={entry.id}
                   aria-current={entry.id === id ? 'true' : undefined}
-                  className="block w-full rounded-md border-l-2 border-transparent p-2 text-left hover:bg-muted aria-[current=true]:border-primary aria-[current=true]:bg-muted"
+                  className="block w-full rounded-md border border-border/60 p-2.5 text-left transition-colors hover:bg-muted aria-[current=true]:border-primary/60 aria-[current=true]:bg-primary/10 aria-[current=true]:text-foreground disabled:opacity-50"
                   disabled={busy}
                   onClick={() => select(entry.id)}
                 >
-                  <span className="block break-words">{entry.first_question}</span>
-                  <span className="text-xs">{formatTimestamp(entry.started_at)}</span>
+                  <span className="block text-xs leading-relaxed break-words">{entry.first_question}</span>
+                  <span className="mt-1 block text-[0.6875rem] text-muted-foreground">{formatTimestamp(entry.started_at)}</span>
                 </button>
               ))}
               {entries.length > limit && (
-                <Button variant="ghost" size="sm" onClick={() => setLimit(limit + 3)}>Show three more</Button>
+                <Button className="w-full" variant="ghost" size="sm" onClick={() => setLimit(limit + 3)}>
+                  Show three more
+                </Button>
               )}
             </nav>
           </CardContent>
         </QuietCard>
+
+        <section aria-label="Investigation" className="flex min-h-0 min-w-0 flex-col gap-3 lg:max-w-[54rem]">
+          <h2 className="sr-only">{data?.first_question || 'New investigation'}</h2>
+          {loading && !busy && <p role="status">Loading investigation…</p>}
+          <MessageScrollerProvider key={id ?? 'new'} autoScroll>
+            <MessageScroller className={empty ? 'h-auto' : 'h-[55vh] min-h-48'}>
+              <MessageScrollerViewport role="region" aria-label="Investigation messages" className="pr-2">
+                <MessageScrollerContent className="gap-5 pb-3">
+                  {data?.turns.map((turn, index) => (
+                    <MessageScrollerItem key={`${id}-${index}`} messageId={`${id}-${index}`} className="space-y-3">
+                      <QuestionAnswer question={turn.question} answer={turn.answer} />
+                      <div className="sm:max-w-[85%]"><ToolsUsed tools={turn.tools} /></div>
+                      {turn.report && id && <div className="sm:max-w-[85%]">
+                        <IncidentReport id={id} report={turn.report} />
+                      </div>}
+                    </MessageScrollerItem>
+                  ))}
+                  {draft && <MessageScrollerItem messageId="draft" scrollAnchor>
+                    <QuestionAnswer question={draft.question} answer={draft.answer} />
+                  </MessageScrollerItem>}
+                </MessageScrollerContent>
+              </MessageScrollerViewport>
+              <MessageScrollerButton />
+            </MessageScroller>
+          </MessageScrollerProvider>
+          {empty && <div className="space-y-3 py-3">
+            <p className="text-sm text-muted-foreground">
+              I search the sign-in log, run the detection rules and look up IP reputation,
+              and I can write an incident report. I only read: I cannot block, change or delete anything.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {STARTERS.map((starter) => (
+                <Button key={starter} variant="outline" size="sm" onClick={() => setQuestion(starter)}>
+                  {starter}
+                </Button>
+              ))}
+            </div>
+          </div>}
+          {busy && <p role="status" className="text-xs text-muted-foreground">{progress}</p>}
+          {data?.report_offer && (
+            <div><Button variant="outline" size="sm" disabled={busy || loading} onClick={() => void writeReport()}>
+              {data.report_offer}
+            </Button></div>
+          )}
+          <form onSubmit={(event) => { event.preventDefault(); void send() }} className="flex items-end gap-2 rounded-lg border bg-background p-2">
+            <label htmlFor="question" className="sr-only">Question</label>
+            <textarea
+              id="question"
+              rows={1}
+              disabled={busy || loading}
+              placeholder="Ask about the sign-in log…"
+              className="field-sizing-content max-h-40 min-h-9 min-w-0 flex-1 resize-none rounded-md px-2 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              value={question}
+              onChange={(event) => setQuestion(event.target.value)}
+              maxLength={2000}
+            />
+            <Button type="submit" size="sm" aria-label="Send question" disabled={busy || loading || !question.trim()}>Send</Button>
+          </form>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            Answers are AI-generated and can be wrong. Check them against the tool calls under each answer.
+          </p>
+        </section>
       </div>
     </>
   )

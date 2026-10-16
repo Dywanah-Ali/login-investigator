@@ -9,7 +9,7 @@ import type { ToolView } from '@/lib/investigations'
 function ToolResult({ tool }: { tool: ToolView }) {
   const [raw, setRaw] = useState(false)
   return (
-    <section className="space-y-3 border-t border-foreground/5 pt-3">
+    <section className="space-y-2 border-t border-foreground/5 pt-2">
       <h3 className="font-medium">{tool.title}</h3>
       <div><p className="text-xs font-medium">Asked</p><p className="whitespace-pre-wrap">{tool.asked}</p></div>
       <div><p className="text-xs font-medium">Found</p><p className="whitespace-pre-wrap">{tool.found}</p></div>
@@ -26,7 +26,7 @@ function ToolResult({ tool }: { tool: ToolView }) {
 export function ToolsUsed({ tools }: { tools: ToolView[] }) {
   if (!tools.length) return null
   return (
-    <QuietCard className="text-sm text-muted-foreground"><CardContent>
+    <QuietCard className="gap-0 rounded-none border-l-2 border-border/60 bg-transparent py-1 text-xs text-muted-foreground ring-0"><CardContent className="px-3">
       <Collapsible>
         <CollapsibleTrigger className="flex w-full items-center justify-between text-left text-xs font-medium">Tools used<ChevronDown className="size-4" aria-hidden="true" /></CollapsibleTrigger>
         <CollapsibleContent className="mt-3 space-y-4">{tools.map((tool, index) => <ToolResult key={index} tool={tool} />)}</CollapsibleContent>

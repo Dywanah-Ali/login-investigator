@@ -319,3 +319,23 @@ successful and failed sign-ins separately. The live answer and saved-history red
 panel and reopening checks, without another model request. The corrected smoke passed.
 **Lesson:** agent smoke tests should check observable capabilities without fixing the tool count.
 **Found by:** the basic live frontend smoke. Related prompt: P-017.
+
+### B-023 · 2026-10-16 · T17 differed from the approved Investigator layout
+
+**Symptom:** the author compared the built Investigator with the approved ticket 07 prototype.
+History was on the right, the question and answer occupied full-width rows, the composer was a
+large stacked form, and the whole chat was enclosed in a card. The approved design places history
+on the left inside the page, compact chat bubbles to its right, and Send beside the question.
+**Cause:** implementation and review checked the textual "second column" requirement without
+checking its placement in the approved prototype. Only the message components were used, omitting
+the bubble and message-scroller components named in ticket 07.
+**Fix:** restored the 240-pixel left history column, compact selected history entries, right-side
+chat, speaker-aligned bubbles, inline composer and AI note below it. Added the official bubble
+and message-scroller components, with the required provider, automatic scrolling and a scroll-to-end
+control. Tool panels and report cards now use compact spacing. Behaviour, safe rendering and the
+API contract remain unchanged.
+**Iteration:** the first focused run caught a missing MessageScroller provider. Added its provider
+keyed by Investigation ID and stable message IDs; all focused screen/renderer tests then passed.
+**Lesson:** a visual approval includes placement and proportions. Compare the saved prototype
+alongside the written spec before claiming a screen is ready for review.
+**Found by:** the author's screenshot and approved artifact link. Related prompt: P-018.

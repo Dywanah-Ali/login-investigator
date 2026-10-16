@@ -356,3 +356,29 @@ The temporary smoke file was moved out of the normal suite after testing so rout
 make paid calls. The smoke Investigation remains in temporary preview memory for author review.
 **Next:** author reviews T17's live layout at http://127.0.0.1:5174/investigator. T17 remains
 ready-for-human. No comprehensive evaluation or visual approval is claimed. Nothing pushed.
+
+### P-018 · 2026-10-16 · Restore the approved Investigator layout
+
+**Prompt:**
+> "Concerns/gaps: Visual layout" exactly! :)
+>
+> [https://claude.ai/artifact/XLhRJSY2pXJ4Jz94DJzpff](https://claude.ai/artifact/XLhRJSY2pXJ4Jz94DJzpff)
+>
+> check the approved layout for the investigator screen (Second Column (Recommended))
+
+The prompt included a screenshot of the approved Investigator prototype.
+
+**Purpose:** compare the implemented screen with the approved ticket 07 layout and correct the
+mismatch within T17.
+**Result:** compared the supplied screenshot and the saved `07-screens-prototype.html`. The
+artifact URL was inaccessible through the web tool; its identical saved source was available.
+History is now the left in-page column. The chat to its right uses the official message, bubble
+and message-scroller components; the outer chat card and repeated question heading are removed.
+The input and Send button share one compact composer. Tool evidence and report cards use compact
+spacing, with labelled severity and its accent retained. Existing behaviour and safe rendering
+remain unchanged. B-023 records the mismatch and provider integration iteration.
+**Validation:** focused screen/renderer tests passed. Full frontend suite: 103 passed; TypeScript
+clean; lint retains only the six existing warnings. Production build and final review evidence
+are recorded in T17 after completion. No model call, `.env` access or backend change was needed.
+**Next:** review the corrected preview at http://127.0.0.1:5174/investigator. The author still owns
+visual acceptance. Nothing pushed.
