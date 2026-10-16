@@ -427,3 +427,32 @@ Existing tests still verify the scope disappears after answering and report scro
 find. The supporting first-party research is saved in `research/17-chat-empty-state.md` under the
 v2-port effort.
 **Found by:** the author's request to research and apply a better layout. Related prompt: P-021.
+
+### B-029 · 2026-10-16 · Initial question briefly appeared twice
+
+**Symptom:** starting a new Investigation from a starter question or typed text briefly showed
+two user-question bubbles. The duplication disappeared after the answer finished.
+**Cause:** create-then-ask updates the URL with the new Investigation ID. The ID-loading effect
+then reopened that Investigation while its first ask was streaming. The core may already have
+saved the human question, so the screen rendered it from both saved history and the live draft.
+The final refresh removed the draft, explaining why the duplicate later disappeared.
+**Fix:** the ID-loading effect skips reopening an Investigation already owned by the active
+operation. The new Investigation's live draft remains the source during the answer. The existing
+finish/error refresh then loads saved history and replaces the draft together. Genuine repeated
+questions are not filtered or deduplicated by their text.
+**Validation:** typed and starter screen regressions reproduced two bubbles before the fix and
+pass afterward, checking one question during streaming and one after the saved-history handover.
+Live partial answer rendering is retained. Existing navigation, error, report-scroll and rendering
+guards pass in the focused screen suite.
+**Iteration:** the initial regression held a viewport node across the provider's ID-keyed remount,
+which tested detached DOM. It now waits for the selected Investigation and queries the current
+viewport, reproducing the actual duplicate before implementation.
+**Lesson:** do not mix a live draft with a checkpoint read of the same unfinished work. Creating
+and reopening an Investigation are different lifecycle events, even when both change the address.
+**Found by:** the author's T17 screenshot and review. Related prompt: P-022.
+
+**B-029 handover safeguard:** an additional failing regression found that skipping the early read
+could leave a newly created record loading if its final history refresh failed. The create reply
+now seeds the record's contractually empty history locally. A retained draft also prevents the
+welcome screen from reappearing over it. The regression verifies one visible question/answer, a
+fixed failure message, no empty-state welcome and an unlocked input after that failure.

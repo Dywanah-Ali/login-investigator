@@ -68,7 +68,7 @@ export function InvestigatorPage() {
   } = useInvestigation()
   const [limit, setLimit] = useState(3)
   const shown = entries.filter((entry, index) => index < limit || entry.id === id)
-  const empty = !loading && !busy && !data?.turns.length
+  const empty = !loading && !busy && !data?.turns.length && !draft
 
   return (
     <>

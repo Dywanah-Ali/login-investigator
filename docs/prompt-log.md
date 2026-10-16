@@ -472,3 +472,29 @@ and review evidence follows in T17. The author still owns visual acceptance.
 six existing warnings and production build passes with its existing bundle warning. Standards
 and Spec reviews are clear, including class precedence and empty/active scrolling transitions.
 Changes committed locally as `db4df51`. The author reviews the appearance next. Nothing pushed.
+
+### P-022 · 2026-10-16 · Duplicate initial user question
+
+**Prompt:**
+> way better thanks codex.
+> one comment through, one i start new chat through the pre-set 3 questions or even by typing in the prompt field. the intial query in the chat is dupicated. the duplications disappears later but still. not good for UX
+
+The prompt included a screenshot with the same initial question in two user bubbles.
+
+**Purpose:** reproduce and fix the temporary duplicate for both typed and preset questions.
+**Result:** creating the record changes its URL, which triggered a saved-history read during the
+first stream. The saved human question and live draft were both displayed. The ID-loading effect
+now skips this read while that Investigation belongs to the active operation. The existing terminal
+refresh hands over to saved history. No text-based filtering, API or agent change was needed.
+**Iterations:** B-029 records the race, regression correction for a remounted viewport and fix.
+**Validation so far:** both regressions failed with two bubbles before the fix and pass afterward.
+All seventeen focused screen tests pass; TypeScript is clean and lint retains only six existing
+warnings. Full frontend validation and review evidence follows in T17. No `.env` access or paid
+model call was needed.
+**Next:** author checks a new typed or starter question on port 5173. T17 remains ready-for-human.
+Nothing pushed.
+
+**Handover safeguard for P-022:** a further failing test reproduced a stuck loading state when
+final history reload failed after skipping the initial read. The create reply now seeds the
+known empty record, and a retained draft prevents the welcome from appearing over it. The test
+passes with the question/answer visible once, the fixed error message and an unlocked input.

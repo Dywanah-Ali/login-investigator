@@ -40,7 +40,10 @@ export function useInvestigation() {
   useEffect(() => {
     const controller = new AbortController()
     historyRequest.current = controller
-    if (id) getJson<Investigation>(investigationPath(id), '', controller.signal)
+    // Creating an Investigation changes its URL while the first ask is running. Its saved
+    // human question can already exist, so loading history now would duplicate the draft.
+    // finish() loads that history and replaces the draft when the operation ends.
+    if (id && operation.current?.id !== id) getJson<Investigation>(investigationPath(id), '', controller.signal)
       .then((reply) => { if (!controller.signal.aborted) setHistory({ id, data: reply }) })
       .catch((error) => {
         if (!controller.signal.aborted) { setFailure(message(error)); setHistory({ id, data: null }) }
@@ -102,6 +105,9 @@ export function useInvestigation() {
         if (controller.signal.aborted) return
         currentId = created.id
         active.id = currentId
+        // Create returns an empty record. Keep that known state without reading an in-flight
+        // checkpoint, and avoid leaving loading stuck if the final history refresh fails.
+        setHistory({ id: currentId, data: { ...created, turns: [], report_offer: null } })
         setEntries((old) => [created, ...old.filter((entry) => entry.id !== created.id)])
         setParams({ id: currentId }, { replace: true })
       }

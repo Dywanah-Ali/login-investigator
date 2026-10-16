@@ -108,6 +108,56 @@ test('typing a question in a new Investigation and clicking Send immediately sho
   })
 })
 
+test.each(['typed', 'starter'])('a new %s question appears once even when memory already contains the unfinished Turn', async (source) => {
+  const question = 'Was any account compromised this week?'
+  let stream!: ReadableStreamDefaultController<Uint8Array>
+  let complete = false
+  vi.stubGlobal('fetch', vi.fn(async (url: string, options?: RequestInit) => {
+    if (url.endsWith('/ask')) return new Response(new ReadableStream({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    if (options?.method === 'POST') return Response.json({ ...empty, first_question: question })
+    if (url === '/api/investigations') return Response.json({ investigations: [] })
+    // The core saves the human question before the answer finishes. Reopening mid-stream
+    // can therefore return that question even though its streamed draft is still on screen.
+    return Response.json({ ...empty, first_question: question, turns: [{ question, answer: complete ? 'Saved final answer' : '', tools: [], report: null }], report_offer: null })
+  }))
+  open()
+  if (source === 'starter') await userEvent.click(screen.getByRole('button', { name: question }))
+  else await userEvent.type(screen.getByRole('textbox', { name: 'Question' }), question)
+  await userEvent.click(screen.getByRole('button', { name: 'Send question' }))
+  await vi.waitFor(() => expect(stream).toBeDefined())
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: /Was any account compromised this week/ })).toHaveAttribute('aria-current', 'true'))
+  const chat = () => within(screen.getByRole('region', { name: 'Investigation messages' }))
+  expect(chat().getAllByText(question)).toHaveLength(1)
+  await act(async () => { stream.enqueue(new TextEncoder().encode('event: text\ndata: {"text":"Live partial answer"}\n\n')) })
+  expect(chat().getByText('Live partial answer')).toBeInTheDocument()
+  expect(chat().getAllByText(question)).toHaveLength(1)
+  complete = true
+  await act(async () => { stream.enqueue(new TextEncoder().encode('event: done\ndata: {}\n\n')); stream.close() })
+  expect(await chat().findByText('Saved final answer')).toBeInTheDocument()
+  expect(chat().getAllByText(question)).toHaveLength(1)
+  expect(chat().queryByText('Live partial answer')).not.toBeInTheDocument()
+})
+
+test('a failed final history reload keeps the single draft visible and unlocks a newly created Investigation', async () => {
+  let stream!: ReadableStreamDefaultController<Uint8Array>
+  vi.stubGlobal('fetch', vi.fn(async (url: string, options?: RequestInit) => {
+    if (url.endsWith('/ask')) return new Response(new ReadableStream({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    if (options?.method === 'POST') return Response.json({ ...empty, first_question: 'Check the log' })
+    if (url === '/api/investigations') return Response.json({ investigations: [] })
+    return Response.json({ error: { code: 'internal_error' } }, { status: 500 })
+  }))
+  open('/investigator?ask=Check+the+log')
+  await userEvent.click(screen.getByRole('button', { name: 'Send question' }))
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: /Check the log/ })).toHaveAttribute('aria-current', 'true'))
+  await act(async () => { stream.enqueue(new TextEncoder().encode('event: text\ndata: {"text":"Live answer"}\n\nevent: done\ndata: {}\n\n')); stream.close() })
+  expect(await screen.findByRole('alert')).toHaveTextContent('The server could not answer. Try again in a moment.')
+  await vi.waitFor(() => expect(screen.getByRole('textbox', { name: 'Question' })).toBeEnabled())
+  const chat = within(screen.getByRole('region', { name: 'Investigation messages' }))
+  expect(chat.getAllByText('Check the log')).toHaveLength(1)
+  expect(chat.getByText('Live answer')).toBeInTheDocument()
+  expect(chat.queryByText('Start an investigation')).not.toBeInTheDocument()
+})
+
 const report = { title: 'Incident <img src=x>', severity: 'high', summary: '**Plain summary**', attacker_ips: ['203.0.113.2'], affected_users: ['alice'], timeline: [{ time_utc: '2026-10-16T08:00:00Z', event: '<script>attack</script>' }], evidence: ['10 failures'], recommended_next_steps: ['Review the account'], number: 1 }
 const turn = { question: 'Find attacks', answer: 'There were attacks.', report: null, tools: [{ title: 'Sign-in log', asked: 'User: <b>alice</b>', found: '10 rows found', columns: ['User', 'Outcome'], rows: [{ User: '<img src=x>', Outcome: 'failure' }], raw: '{"hostile":"<iframe>"}' }] }
 

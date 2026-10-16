@@ -203,3 +203,26 @@ Chat-refinement evidence:
   [17-chat-empty-state.md](../research/17-chat-empty-state.md).
 - Implementation committed locally as `db4df51`. `git diff --check` clean. Nothing pushed.
 - The author checks the resulting colours, proportions and empty-state feel on port 5173 next.
+
+### Initial-question duplication review, 16 October 2026
+
+The author found the revised chat layout much better, then reported the initial question briefly
+appearing twice for both typed and starter questions. B-029 and P-022 record the finding and fix.
+
+The creation URL change previously triggered a concurrent reopen request. That reply could contain
+the human question already checkpointed by the running ask, duplicating the live draft. The
+ID-loading effect now skips reopening a record already owned by the active operation. Existing
+completion/error refresh still replaces the draft with saved history. Genuine repeated questions
+remain intact; no question-text filtering is used.
+
+Two screen regressions reproduce the saved unfinished Turn for typed and starter input. Both
+failed before the fix and now confirm one question during streaming and one after history takes
+over. Existing navigation, stream failures, report reveal and rendering checks remain passing.
+No backend, API contract, model prompt, security rendering or `.env` change.
+
+Final validation and review evidence follows. Overall visual acceptance remains with the author.
+
+The failure-path safeguard retains the empty record returned by create and excludes a retained
+draft from the empty-chat condition. If the final history refresh fails, the single live draft
+stays visible with the fixed error message and the input unlocks. This additional regression
+failed before the safeguard and passes afterward. The focused screen suite now has 17 tests.
