@@ -2,9 +2,9 @@
 
 import json
 import logging
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Generator, Iterator
 from datetime import datetime, timezone
-from typing import Annotated, Literal, cast
+from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
@@ -119,7 +119,14 @@ Writing = Annotated[None, Depends(writing)]
 
 
 class ReportRequest(BaseModel):
-    request: Literal["Write the incident report", "Update the incident report"]
+    request: str
+
+    @field_validator("request")
+    @classmethod
+    def valid_request(cls, value: str) -> str:
+        if value not in agent.REPORT_REQUESTS:
+            raise ApiError(422, "invalid_request", "request is not valid.")
+        return value
 
 
 @router.post("/investigations/{id}/report")
@@ -146,10 +153,21 @@ def download_report(number: int, case: KnownCase, svc: Server) -> Response:
                     headers={"Content-Disposition": f'attachment; filename="{name}"'})
 
 
-@router.post("/investigations/{id}/ask", response_class=EventSourceResponse)
-async def ask_question(body: Question, case: KnownCase, svc: Available,
-                       reserved: Writing) -> AsyncIterator[ServerSentEvent]:
+def question_stream(body: Question, case: KnownCase, svc: Available,
+                    reserved: Writing) -> Iterator[Generator[agent.Stream, None, None]]:
+    """Close the core before releasing the writer, even when delivery is cancelled at a yield."""
     stream = agent.ask(svc.agent, case.thread_id, body.question)
+    try:
+        yield stream
+    finally:
+        stream.close()
+
+
+QuestionStream = Annotated[Generator[agent.Stream, None, None], Depends(question_stream)]
+
+
+@router.post("/investigations/{id}/ask", response_class=EventSourceResponse)
+async def ask_question(stream: QuestionStream) -> AsyncIterator[ServerSentEvent]:
     try:
         while True:
             # The synchronous core runs in a worker. Cancellation waits for this step, then
@@ -165,5 +183,3 @@ async def ask_question(body: Question, case: KnownCase, svc: Available,
         yield ServerSentEvent(event="error", data={
             "code": "agent_failed", "message": "The agent stopped before it finished.",
         })
-    finally:
-        stream.close()

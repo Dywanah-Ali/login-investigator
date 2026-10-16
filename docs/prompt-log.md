@@ -261,5 +261,8 @@ work without a model. Per-Investigation writer reservations prevent overlapping 
 Validation and failures return fixed messages. No UI, spec changes or pushes.
 **Iterations:** B-012 records the sample-size and disconnect-test corrections. The sandbox blocked
 uv's default cache; checks use a temporary cache directory instead.
-**Validation:** pending final checks and the two-axis review.
-**Next:** record the evidence in ticket 16 and hand off for the author's review.
+**Validation:** backend 343 passed; frontend 90 passed; both type checks clean; production build
+passed. Standards and Spec reviewers confirmed the fixes. B-013 and B-015 record the validation
+and lifetime fixes; B-014 records the FastAPI disconnect limitation. Existing frontend warnings
+remain. Work committed locally; nothing pushed.
+**Next:** ticket 16 is ready for the author's review. Ticket 17 follows approval.

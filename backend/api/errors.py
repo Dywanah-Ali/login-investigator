@@ -41,6 +41,11 @@ async def _validation_error(request: Request, error: Exception) -> JSONResponse:
     """FastAPI's own checks failed. Its default reply copies the value sent into `input`, so this
     one sends fixed text. The filters are checked in `filters.py` and never reach here."""
     assert isinstance(error, RequestValidationError)
+    # Only known body-field names are used, never validation input or arbitrary client keys.
+    for problem in error.errors():
+        if problem["loc"] in (("body", "question"), ("body", "request")):
+            field = problem["loc"][1]
+            return reply(422, "invalid_request", f"{field} is not valid.")
     return reply(422, "invalid_request", "The request is not valid.")
 
 

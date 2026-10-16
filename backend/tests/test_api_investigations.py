@@ -175,6 +175,8 @@ def test_invalid_questions_are_refused_before_streaming_without_echo(client, bod
         assert response.headers["content-type"] == "application/json"
         assert set(response.json()) == {"error"}
         assert response.json()["error"]["code"] in {"invalid_question", "invalid_request"}
+        if isinstance(body, dict) and not isinstance(body.get("question"), str):
+            assert response.json()["error"]["message"] == "question is not valid."
         assert "x" * 100 not in response.text
     assert client.get(f"/api/investigations/{case['id']}").json()["turns"] == []
 
@@ -202,7 +204,7 @@ def test_unknown_cases_and_invalid_report_requests_return_fixed_json(client):
     response = client.post(f"/api/investigations/{case['id']}/report",
                            json={"request": "<script>hostile</script>"})
     assert response.status_code == 422
-    assert response.json() == {"error": {"code": "invalid_request", "message": "The request is not valid."}}
+    assert response.json() == {"error": {"code": "invalid_request", "message": "request is not valid."}}
 
 
 def test_missing_key_refuses_investigations_but_leaves_all_dashboards_working(settings, monkeypatch):
@@ -296,10 +298,12 @@ def test_failure_after_partial_text_ends_with_error_and_never_done(client, monke
     assert "private failure" not in response.text
 
 
-def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monkeypatch):
+@pytest.mark.parametrize("slow_reader", [False, True])
+def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monkeypatch, slow_reader):
     """Drive HTTP disconnect through ASGI: TestClient's normal calls buffer the whole stream."""
     advanced = []
     closed = Event()
+    buffered = Event()
     real_ask = agent.ask
 
     def tracked_ask(*args, **kwargs):
@@ -308,6 +312,8 @@ def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monke
         try:
             for item in stream:
                 advanced.append(item)
+                if len(advanced) >= 5:
+                    buffered.set()
                 yield item
         finally:
             stream.close()
@@ -338,6 +344,8 @@ def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monke
         async def send(message):
             sent.append(message)
             if b"event: text" in message.get("body", b""):
+                if slow_reader:
+                    assert await anyio.to_thread.run_sync(buffered.wait, 5)
                 disconnected.set()
             await anyio.sleep(0)
 
@@ -347,9 +355,15 @@ def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monke
                  "headers": [(b"content-type", b"application/json")],
                  "client": ("testclient", 1234), "server": ("testserver", 80)}
         with anyio.fail_after(10):
-            await client.app(scope, receive, send)
+            try:
+                await client.app(scope, receive, send)
+            except* anyio.BrokenResourceError:
+                # FastAPI's built-in keepalive task can send into the closed delivery queue.
+                # This happens after HTTP disconnect; cleanup must still finish (bug B-014).
+                assert disconnected.is_set()
         assert disconnected.is_set()
         assert not any(b"event: done" in message.get("body", b"") for message in sent)
+        assert closed.is_set(), "core cleanup must precede releasing the request"
 
     assert client.portal is not None
     client.portal.call(disconnect_after_text)

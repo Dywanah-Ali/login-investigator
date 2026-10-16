@@ -71,7 +71,9 @@ contract, and the seams.
 
 - Nothing. The map is complete (14 October 2026): every decision the spec needs is recorded.
   Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
-  `issues/19` written by `/mp-to-tickets`. Tickets 10–15 are resolved. The frontier is ticket 16, Investigations API (16 October 2026).
+  `issues/19` written by `/mp-to-tickets`. Tickets 10–15 are resolved. The frontier is ticket 16, Investigations API, implemented and `ready-for-human` on 16 October
+  2026. API tests and both reviews passed; B-014 records the FastAPI post-disconnect limitation.
+  Ticket 17 follows the author's review.
 
 ## Out of scope
 

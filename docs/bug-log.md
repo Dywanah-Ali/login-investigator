@@ -189,3 +189,37 @@ to prove the busy reservation is released. The model and core still run in the t
 **Lesson:** test the boundary the requirement names. A library's internal buffering is a different
 boundary from HTTP delivery and core-generator advancement.
 **Found by:** the new API tests during implementation. Related prompt: P-013.
+
+### B-013 · 2026-10-16 · Ticket 16 validation messages
+
+**Symptom:** missing or incorrectly typed question fields and invalid report requests returned a
+generic validation message instead of identifying the field.
+**Cause:** the existing validation handler had no mapping for the new Investigation body fields.
+**Fix:** known `question` and `request` field failures get fixed field-specific messages. No input
+values or arbitrary client keys are echoed. Invalid report wording uses the core's allowed requests.
+**Lesson:** a safe generic error can still miss a usability requirement. Check each new body field.
+**Found by:** the Spec review, then reproduced by API tests. Related prompt: P-013.
+
+### B-014 · 2026-10-16 · FastAPI disconnect under backpressure
+
+**Symptom:** a slow-reader disconnect can raise `BrokenResourceError` inside FastAPI's keepalive
+task after the HTTP connection is already closed. The existing error handler logs the exception.
+**Cause:** FastAPI 0.143.1's SSE delivery queue closes while its keepalive task is sending a buffered event.
+**Fix:** no third-party patch or unrelated handler change. The regression test recognises only this
+specific post-disconnect exception and still requires core closure, stopped advancement and a
+successful follow-up. The limitation remains recorded for dependency maintenance.
+**Lesson:** disconnects must also be checked when the delivery queues are full.
+**Found by:** the added backpressure case during review. Related prompt: P-013.
+
+### B-015 · 2026-10-16 · Ticket 16 stream ownership
+
+**Symptom:** review found that core closure could depend on finalization if cancellation landed
+while FastAPI was delivering a yielded event, instead of awaiting the next core step.
+**Cause:** the core was closed in the endpoint generator's `finally`, but FastAPI's SSE producer
+does not explicitly close that generator when cancelled during queue delivery.
+**Fix:** a request-scoped dependency owns the core generator. It closes before the writer
+reservation is released, regardless of delivery outcome. Fast and backpressured disconnect tests
+require closure before the request returns and verify a follow-up is accepted.
+**Lesson:** resource ownership belongs to a guaranteed request lifetime, not to eventual cleanup
+of a paused generator.
+**Found by:** Standards review follow-up and inspection of installed FastAPI. Related prompt: P-013.
