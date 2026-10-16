@@ -163,7 +163,7 @@ export function InvestigatorPage() {
               {data.report_offer}
             </Button></div>
           )}
-          <form onSubmit={(event) => { event.preventDefault(); void send() }} className="flex items-end gap-2 rounded-lg border bg-background p-2">
+          <form onSubmit={(event) => { event.preventDefault(); void send() }} className="flex items-center gap-2 rounded-lg border bg-background p-2">
             <label htmlFor="question" className="sr-only">Question</label>
             <textarea
               id="question"

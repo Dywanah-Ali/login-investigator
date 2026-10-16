@@ -503,3 +503,17 @@ passes with the question/answer visible once, the fixed error message and an unl
 six existing warnings; production build passes with its existing bundle warning. Standards and
 Spec reviews are clear. Fix committed locally as `a829f31`. The author confirms the browser
 behaviour next. Nothing pushed.
+
+### P-023 · 2026-10-16 · Centre the Send button
+
+**Prompt:**
+> perfect thanks codes.
+> now the last minor change we need. the send button is not vertically centered in the chat prompt. pls fix that
+
+The prompt included a screenshot showing Send near the bottom edge of the composer.
+
+**Purpose:** correct vertical alignment as a small, reversible presentation change.
+**Result:** composer alignment changed from `items-end` to `items-center`. No behaviour or
+security change. B-030 records the cause and fix. No new tests or broad rerun for a CSS alignment
+change; TypeScript and diff checks provide the routine verification. Visual confirmation remains
+with the author on port 5173. Nothing pushed.

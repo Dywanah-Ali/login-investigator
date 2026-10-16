@@ -456,3 +456,11 @@ could leave a newly created record loading if its final history refresh failed. 
 now seeds the record's contractually empty history locally. A retained draft also prevents the
 welcome screen from reappearing over it. The regression verifies one visible question/answer, a
 fixed failure message, no empty-state welcome and an unlocked input after that failure.
+
+### B-030 · 2026-10-16 · Send button sat below the prompt's centre
+
+**Symptom:** the author saw Send aligned toward the bottom of the prompt box.
+**Cause:** the composer used `items-end` to align its textarea and shorter button.
+**Fix:** changed that alignment to `items-center`. Send is vertically centred beside the input.
+**Lesson:** controls of different heights need explicit cross-axis alignment.
+**Found by:** the author's final minor T17 review comment and screenshot. Related prompt: P-023.

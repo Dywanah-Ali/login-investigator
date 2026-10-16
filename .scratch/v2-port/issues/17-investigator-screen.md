@@ -235,3 +235,11 @@ Duplication-fix evidence:
   navigation cancellation and retained-draft recovery when history cannot be reloaded.
 - Fix committed locally as `a829f31`. `git diff --check` clean. Nothing pushed.
 - Author to confirm a new question appears once in the browser. T17 remains ready-for-human.
+
+### Final minor alignment comment, 16 October 2026
+
+The author confirmed the duplicate-question fix, then requested vertical centring for Send.
+Changed the composer's alignment from `items-end` to `items-center`. B-030 and P-023 record the
+one-class presentation fix. No behaviour, API or security change. TypeScript and diff checks
+provide verification; no new CSS assertion or broad test rerun was needed. Visual confirmation
+and final T17 approval remain with the author.
