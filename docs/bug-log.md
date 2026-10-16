@@ -232,3 +232,27 @@ require closure before the request returns and verify a follow-up is accepted.
 **Lesson:** resource ownership belongs to a guaranteed request lifetime, not to eventual cleanup
 of a paused generator.
 **Found by:** Standards review follow-up and inspection of installed FastAPI. Related prompt: P-013.
+
+### B-016 · 2026-10-16 · Ticket 17 test fixtures
+
+**Symptom:** the first renderer tests failed on list whitespace and on reading the S5 fixture.
+The first arrival test mistook a GET with an abort signal for a write. The report test expected
+the timeline event without its displayed timestamp.
+**Cause:** test expectations did not match the browser test environment or the agreed display.
+Vite rewrites module URLs, so a filesystem fixture needs `import.meta.dirname` and a resolved path.
+**Fix:** corrected the independent expectations, used a resolved fixture path and checked HTTP
+methods explicitly. The tests retain their security and user behaviour assertions.
+**Lesson:** assert what the user sees and what crosses the boundary, including normal formatting.
+**Found by:** incremental Vitest runs for T17. Related prompt: P-016.
+
+### B-017 · 2026-10-16 · Existing frontend dependency advisories
+
+**Symptom:** installing the T17 markdown renderer reported seven high severity package advisories.
+**Cause:** `npm audit --json` traces a braces stack-exhaustion advisory
+(GHSA-vfj7-8cjw-p6xm) through micromatch, fast-glob, @shadcn/registry,
+@ts-morph/common, ts-morph and shadcn. All seven installed versions match the pre-T17 lockfile.
+**Fix:** pending separate dependency maintenance. No automatic audit fix or unrelated version
+change was made in T17. The new renderer is not listed in this audit finding.
+**Lesson:** package installation can reveal existing dependency risks. Check their origin before
+changing versions, especially when the suggested fix crosses major versions.
+**Found by:** npm installation and audit during T17. Related prompt: P-016.

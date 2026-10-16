@@ -7,7 +7,7 @@ or image in an answer never becomes a link or an image.
 
 **Blocked by:** 13 (Frontend shell and the Overview screen), 16 (Investigations API).
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Spec: [spec.md](../spec.md), "The frontend", "The stream", "Security rendering". Decisions: ticket 07.
 
