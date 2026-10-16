@@ -7,14 +7,14 @@ or image in an answer never becomes a link or an image.
 
 **Blocked by:** 13 (Frontend shell and the Overview screen), 16 (Investigations API).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "The frontend", "The stream", "Security rendering". Decisions: ticket 07.
 
 - [x] Second column: "New investigation" and the list, newest three, three more per click, the open one always shown; the API sends the full list
 - [x] Chat with the official message components; the stream read with fetch and a stream reader, aborted on unmount; `tool` events drive the progress words per tool; input locked while answering; after `done` or `error` the Investigation is fetched again and the Turn redrawn from memory
 - [x] "Tools used" collapsible under each answer: asked and found lines, rows in a table, raw JSON behind a switch
-- [ ] Visual hierarchy (spec, "The frontend"): the chat leads; the past-Investigations column and the "Tools used" panels step back, with the shared quiet styling from ticket 15
+- [x] Visual hierarchy (spec, "The frontend"): the chat leads; the past-Investigations column and the "Tools used" panels step back, with the shared quiet styling from ticket 15
 - [x] Report button only when the Report offer says so, with its wording; "Writing the incident report…" while waiting; the report as a card with fixed fields as plain text, its severity with its label and colour, and a "Download PDF" link to the API
 - [x] Starter questions and the scope line only in an empty Investigation; the AI note by the input; "Investigate" arrival puts the prepared question in the input box without sending
 - [x] A missing model key shows the fixed 503 message on this screen only
@@ -278,3 +278,12 @@ Gradual-reveal final evidence:
 - Implementation committed locally as `3ba596c`. `git diff --check` clean. Nothing pushed.
 - No backend change, `.env` access or paid model call. Author checks the pace and appearance
   at http://127.0.0.1:5173/investigator. T17 remains ready-for-human.
+
+
+### Author acceptance, 16 October 2026
+
+The author confirmed: "it is perfect. thanks codex :)" after testing the gradual report reveal.
+This completes the iterative live screen review and the remaining visual-hierarchy acceptance.
+T17 is resolved. The full automated evidence and each review iteration remain above. No new
+application change or test run was needed for this acceptance record. Comprehensive API-mode
+evaluations remain T18; the final acceptance checklist and scenario remain T19.

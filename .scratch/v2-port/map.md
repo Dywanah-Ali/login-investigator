@@ -71,16 +71,17 @@ contract, and the seams.
 
 - [Clean disconnect handling](issues/23-disconnect-handling.md): the ask route handles the known FastAPI queue-close error after a confirmed disconnect while preserving genuine failures. 351 backend tests and Pyright passed; both reviews found no issues. Author approved on 16 October 2026.
 
+- [Investigator screen](issues/17-investigator-screen.md): approved second-column layout, distinct user messages, in-chat welcome and starters, tool-call counts, stable first-question handover, centred Send and gradual report reveal matched to observed answer pace. All 114 frontend tests pass; Standards and Spec reviews clear. Author accepted the live screen on 16 October 2026.
+
 ## Not yet specified
 
 - Nothing. The map is complete (14 October 2026): every decision the spec needs is recorded.
   Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
-  `issues/19` written by `/mp-to-tickets`. Tickets 10–16 are resolved. The build frontier is ticket 17, Investigator screen.
+  `issues/19` written by `/mp-to-tickets`. Tickets 10–17 are resolved. The build frontier is ticket 18, Eval runner in API mode.
   The targeted B-014 disconnect follow-up, [ticket 23](issues/23-disconnect-handling.md), is also
   resolved following the author's approval on 16 October 2026. Frontend warnings stay separate.
-  Ticket 17 is implemented and `ready-for-human` following passing automated checks and clear
-  Standards and Spec re-reviews on 16 October 2026. Its visual hierarchy and live flow await
-  the author’s review. The frontier remains ticket 17 until approval.
+  Ticket 17 is resolved following the author’s live screen acceptance on 16 October 2026.
+  The next build work is ticket 18; it has not started.
 
 ## Out of scope
 

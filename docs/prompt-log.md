@@ -567,3 +567,15 @@ Standards review: clear. Spec review: clear. Both reviewed `22e9113...3ba596c` i
 Implementation committed locally as `3ba596c`; diff checks clean. Nothing pushed.
 **Next:** the author refreshes port 5173 and generates a report to judge actual pacing and feel.
 The initial generation wait remains. T17 stays ready-for-human until author acceptance.
+
+
+### P-025 · 2026-10-16 · Accept the Investigator screen
+
+**Prompt:**
+> it is perfect. thanks codex :)
+
+**Purpose:** confirm acceptance after the iterative live screen review, including gradual report reveal.
+**Result:** marked T17 resolved and its visual-hierarchy checkbox complete. Updated the map to
+record the dated author acceptance and move the build frontier to T18. No application edits,
+new model calls or test rerun for this documentation update. T18 is not started; comprehensive
+evaluations and final acceptance remain with T18 and T19 respectively. Nothing pushed.
