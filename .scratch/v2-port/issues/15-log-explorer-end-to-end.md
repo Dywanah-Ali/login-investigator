@@ -7,7 +7,7 @@ never shown back.
 
 **Blocked by:** 13 (Frontend shell and the Overview screen).
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "The API" and "The frontend". Contract: log explorer, CSV download.
 
@@ -27,7 +27,7 @@ Spec: [spec.md](../spec.md), "The API" and "The frontend". Contract: log explore
 
 ## Answer
 
-Implemented 16 October 2026. Awaiting the author's live visual review before resolution.
+Implemented and visually approved by the author on 16 October 2026.
 
 - `backend/api/dashboard_routes.py`: Explorer JSON and CSV share `explorer_rows`, calling the
   existing core search. Full matching rows are newest first. CSV keeps the core's formula protection.
@@ -50,8 +50,8 @@ Evidence:
 - Pyright and TypeScript checks: clean. Production build: passed. `git diff --check`: clean.
 - Standards review: no documented breaches. One low-priority duplication concern fixed: pager's
   page-size label now reads the table's setting. Spec review: no findings.
-- Shared quiet surface is implemented; the author still needs to judge visual hierarchy in the
-  live screen. No browser automation or screenshots were used, in line with the spec.
+- Shared quiet surface is implemented; the author approved the visual hierarchy in the
+  live screen on 16 October 2026 ("the layout is very good"). No browser automation or screenshots were used, in line with the spec.
 
 Concerns recorded without unrelated fixes:
 
@@ -63,3 +63,7 @@ Concerns recorded without unrelated fixes:
 - The existing API on port 8000 returned 404 for the new route. An isolated API on port 8001 with
   temporary memory serves the preview through Vite on port 5173. The existing server was left alone.
 - The existing Pyright ignore list for frozen v1 files remains in place.
+
+
+2026-10-16: the author reviewed the live layout and said, "the layout is very good". This closes
+the remaining visual acceptance check. Status set to `resolved`. Nothing pushed.

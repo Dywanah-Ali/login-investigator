@@ -65,11 +65,13 @@ contract, and the seams.
 
 - [What proves Parity](issues/08-parity.md): the 254 core tests copied unchanged plus adapted tests for moved logic and a boundary test that also forbids FastAPI; API tests replaying the data-checking screen tests; the eval set in a new API mode (runner starts its own server, isolated memory, no key) with the v1 target unchanged (90%, 100% security, 19 x 3) and v1's results history carried over; Vitest for the frontend logic and the allowlist renderer; a manual checklist and the eight-step scenario closed by the author's dated ruling, no screenshots and no browser tool; the three engineering checks kept. Written into the PRD as the acceptance criteria.
 
+- [Log explorer, end to end](issues/15-log-explorer-end-to-end.md): full filtered rows and CSV share one core search; five explicit counts, IP validation at both boundaries, shared table pager and quiet supporting surface. Automated checks passed and the author approved the live layout on 16 October 2026.
+
 ## Not yet specified
 
 - Nothing. The map is complete (14 October 2026): every decision the spec needs is recorded.
   Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
-  `issues/19` written by `/mp-to-tickets`. Tickets 10–14 are resolved. Ticket 15 is implemented and awaiting the author’s visual review (16 October 2026); see [its evidence](issues/15-log-explorer-end-to-end.md).
+  `issues/19` written by `/mp-to-tickets`. Tickets 10–15 are resolved. The frontier is ticket 16, Investigations API (16 October 2026).
 
 ## Out of scope
 

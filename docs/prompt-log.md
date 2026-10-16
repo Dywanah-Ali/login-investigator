@@ -230,3 +230,14 @@ contract correction was approved before being recorded. Tests caught and fixed t
 in B-011.
 **Validation:** backend 323 passed, frontend 90 passed, both type checks clean, production build passed. Standards review found one small pager-label duplication, fixed; Spec review found no gaps. Lint and bundle-size warnings are recorded in ticket 15.
 **Next:** the author reviews the live screen before ticket 15 is resolved. Nothing pushed.
+
+
+### P-012 · 2026-10-16 · Ticket 15 visual approval
+
+**Prompt:**
+> the layout is very good
+
+**Purpose:** the author's review of the live Explorer layout, the remaining acceptance check.
+**Result:** visual approval recorded in ticket 15. Ticket resolved and the map updated. No
+application code changed. The passing automated checks from P-011 remain the evidence.
+**Next:** ticket 16, Investigations API, when the author gives the go. Nothing pushed.
