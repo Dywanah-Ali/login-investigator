@@ -467,3 +467,8 @@ answer renderer or `.env` change. No extra paid model calls.
 the six existing warnings. Calculated palette contrast exceeds 4.5:1 in both themes. Full frontend
 and review evidence follows in T17. The author still owns visual acceptance.
 **Next:** review the updated chat at http://127.0.0.1:5173/investigator. Nothing pushed.
+
+**Final evidence for P-021:** all 106 frontend tests pass, TypeScript is clean, lint retains the
+six existing warnings and production build passes with its existing bundle warning. Standards
+and Spec reviews are clear, including class precedence and empty/active scrolling transitions.
+Changes committed locally as `db4df51`. The author reviews the appearance next. Nothing pushed.

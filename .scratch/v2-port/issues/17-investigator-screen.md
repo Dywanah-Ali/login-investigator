@@ -192,3 +192,14 @@ findings, direct author instruction and resulting design choices.
   No browser automation or screenshot capture. Visual acceptance remains pending.
 
 Final validation and review evidence follows.
+
+Chat-refinement evidence:
+
+- Full frontend suite: **106 passed**. TypeScript clean. Lint has no errors and only the six
+  existing warnings. Production build passed with its existing main-chunk warning.
+- Standards review: clear, including bubble class precedence and scrolling lifecycle.
+- Spec review: clear for the author's requested speaker distinction and inside-chat welcome.
+- Primary-source research and the applied colour/contrast calculation are recorded in
+  [17-chat-empty-state.md](../research/17-chat-empty-state.md).
+- Implementation committed locally as `db4df51`. `git diff --check` clean. Nothing pushed.
+- The author checks the resulting colours, proportions and empty-state feel on port 5173 next.
