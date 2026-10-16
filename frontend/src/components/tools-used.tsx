@@ -28,7 +28,7 @@ export function ToolsUsed({ tools }: { tools: ToolView[] }) {
   return (
     <QuietCard className="gap-0 rounded-none border-l-2 border-border/60 bg-transparent py-1 text-xs text-muted-foreground ring-0"><CardContent className="px-3">
       <Collapsible>
-        <CollapsibleTrigger className="flex w-full items-center justify-between text-left text-xs font-medium">Tools used<ChevronDown className="size-4" aria-hidden="true" /></CollapsibleTrigger>
+        <CollapsibleTrigger className="flex w-full items-center justify-between text-left text-xs font-medium">Tools used ({tools.length})<ChevronDown className="size-4" aria-hidden="true" /></CollapsibleTrigger>
         <CollapsibleContent className="mt-3 space-y-4">{tools.map((tool, index) => <ToolResult key={index} tool={tool} />)}</CollapsibleContent>
       </Collapsible>
     </CardContent></QuietCard>

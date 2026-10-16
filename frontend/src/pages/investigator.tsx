@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { Plus } from 'lucide-react'
+import { useMessageScroller } from '@shadcn/react/message-scroller'
 
 import { Answer } from '@/components/answer'
 import { IncidentReport } from '@/components/incident-report'
@@ -21,6 +22,17 @@ const STARTERS = [
   'Was any account compromised this week?',
   'Which IP addresses attacked us, and how bad are they?',
 ]
+
+/** A newly saved report explicitly returns the reader to the end, even after scrolling up. */
+function RevealNewReport({ count }: { count: number }) {
+  const previous = useRef(count)
+  const { scrollToEnd } = useMessageScroller()
+  useLayoutEffect(() => {
+    if (count > previous.current) scrollToEnd({ behavior: 'auto' })
+    previous.current = count
+  }, [count, scrollToEnd])
+  return null
+}
 
 function QuestionAnswer({ question, answer }: { question: string; answer: string }) {
   return (
@@ -109,6 +121,7 @@ export function InvestigatorPage() {
                   </MessageScrollerItem>}
                 </MessageScrollerContent>
               </MessageScrollerViewport>
+              <RevealNewReport count={data?.turns.filter((turn) => turn.report !== null).length ?? 0} />
               <MessageScrollerButton />
             </MessageScroller>
           </MessageScrollerProvider>

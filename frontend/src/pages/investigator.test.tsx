@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { StrictMode, useEffect } from 'react'
 import { MemoryRouter, useNavigate, type NavigateFunction } from 'react-router'
@@ -20,7 +20,7 @@ function api(detail: object = empty) {
   vi.stubGlobal('fetch', fetcher)
   return fetcher
 }
-afterEach(() => vi.unstubAllGlobals())
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
 
 test('past Investigations show three, three more per click, and always the open one', async () => {
   api({ ...empty, id: 'case-7' })
@@ -103,7 +103,7 @@ const turn = { question: 'Find attacks', answer: 'There were attacks.', report: 
 test('reopened tools show asked and found, ordered table cells, and optional raw JSON', async () => {
   api({ ...empty, turns: [turn] })
   const { container } = open('/investigator?id=case-0')
-  const toggle = await screen.findByRole('button', { name: 'Tools used' })
+  const toggle = await screen.findByRole('button', { name: 'Tools used (1)' })
   expect(screen.queryByText('10 rows found')).not.toBeInTheDocument()
   await userEvent.click(toggle)
   expect(screen.getByText('User: <b>alice</b>')).toBeInTheDocument()
@@ -116,6 +116,12 @@ test('reopened tools show asked and found, ordered table cells, and optional raw
   expect(container.querySelector('img,iframe,b')).toBeNull()
 })
 
+test('Tools used counts calls, including repeated calls to the same tool', async () => {
+  api({ ...empty, turns: [{ ...turn, tools: [turn.tools[0], turn.tools[0]] }] })
+  open('/investigator?id=case-0')
+  expect(await screen.findByRole('button', { name: 'Tools used (2)' })).toHaveAttribute('aria-expanded', 'false')
+})
+
 test('the core offer controls report wording, waiting, saved fields and numbered PDF download', async () => {
   let finish!: (response: Response) => void
   let written = false
@@ -126,7 +132,28 @@ test('the core offer controls report wording, waiting, saved fields and numbered
   })
   vi.stubGlobal('fetch', fetcher)
   const { container } = open('/investigator?id=case-0')
-  await userEvent.click(await screen.findByRole('button', { name: 'Update the incident report' }))
+  const writeButton = await screen.findByRole('button', { name: 'Update the incident report' })
+  const viewport = screen.getByRole('region', { name: 'Investigation messages' })
+  // Supply browser geometry at the DOM boundary. The DOM test environment has no layout engine.
+  Object.defineProperties(viewport, {
+    clientHeight: { configurable: true, get: () => 300 },
+    scrollHeight: { configurable: true, get: () => written ? 1600 : 800 },
+    scrollTo: { configurable: true, value: (options: ScrollToOptions) => { viewport.scrollTop = options.top ?? 0 } },
+  })
+  vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+    if (this === viewport) return new DOMRect(0, 0, 600, 300)
+    if (this.dataset.slot === 'message-scroller-item') {
+      const top = this.dataset.messageId === 'case-0-1' ? 800 : 0
+      return new DOMRect(0, top - viewport.scrollTop, 600, 800)
+    }
+    return new DOMRect()
+  })
+  await act(async () => { await new Promise((resolve) => requestAnimationFrame(resolve)) })
+  // The reader has left the bottom. The explicit report request must still reveal its result.
+  fireEvent.wheel(viewport, { deltaY: -100 })
+  viewport.scrollTop = 0
+  fireEvent.scroll(viewport)
+  await userEvent.click(writeButton)
   expect(screen.getByRole('status')).toHaveTextContent('Writing the incident report…')
   expect(screen.getByRole('textbox', { name: 'Question' })).toBeDisabled()
   const sent = fetcher.mock.calls.find(([url]) => url.endsWith('/report'))
@@ -137,8 +164,15 @@ test('the core offer controls report wording, waiting, saved fields and numbered
   expect(screen.getByText('**Plain summary**')).toBeInTheDocument()
   expect(screen.getByText('2026-10-16T08:00:00Z: <script>attack</script>')).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Download PDF' })).toHaveAttribute('href', '/api/investigations/case-0/reports/1.pdf')
+  expect(viewport.scrollTop).toBe(1300)
   expect(screen.queryByRole('button', { name: 'Update the incident report' })).not.toBeInTheDocument()
   expect(container.querySelector('img,script')).toBeNull()
+  // Automatic report reveal does not prevent the reader from scrolling back afterward.
+  fireEvent.wheel(viewport, { deltaY: -100 })
+  viewport.scrollTop = 0
+  fireEvent.scroll(viewport)
+  await userEvent.click(screen.getByRole('button', { name: 'Tools used (1)' }))
+  expect(viewport.scrollTop).toBe(0)
 })
 
 test('missing model configuration shows fixed text without leaking the server message', async () => {

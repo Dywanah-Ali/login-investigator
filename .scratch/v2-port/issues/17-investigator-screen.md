@@ -145,3 +145,20 @@ so normal tests do not make paid calls. No browser or visual acceptance is claim
 
 Current author preview: http://127.0.0.1:5173/investigator. Port 5174 remains available and uses
 the same current API. Further review comments are handled one at a time; T17 remains ready-for-human.
+
+### Response review: tool count and report reveal, 16 October 2026
+
+The author confirmed the repaired port 5173 preview works, then requested a count on Tools used
+and automatic scrolling to the end of a generated report. B-025/B-026 and P-020 record both.
+
+- The toggle now reads `Tools used (N)` for that answer. N counts calls, including repeated calls
+  to the same tool. Reopened history uses the same component and count.
+- A newly saved report requests the existing scroller's scroll-to-end action even if the reader
+  has moved upward. The component resets with the Investigation's scroller provider. It does not
+  repeatedly jump after later evidence toggles or manual scrolling.
+- Screen regressions cover one/two calls and overflowing report content. The report test failed
+  before the fix, passes afterward, and verifies that scrolling back still works.
+- Backend, API contract and rendering boundary are unchanged. No extra live model request or
+  `.env` access. Visual acceptance remains with the author; no browser automation was used.
+
+Final validation and review evidence follows.

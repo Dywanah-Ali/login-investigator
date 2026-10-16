@@ -359,3 +359,37 @@ one short question. Temporary live tests were removed from the normal suite afte
 **Lesson:** repair and verify the address the author is actually using. A second working preview
 is not a fix for the first one.
 **Found by:** the author's first T17 review comment. Related prompt: P-019.
+
+### B-025 · 2026-10-16 · Missing tool-call count
+
+**Symptom:** the author saw "Tools used" without the number of calls for that answer.
+**Cause:** the collapsible trigger omitted the length of the answer's ToolView list, although the
+approved prototype includes a count.
+**Fix:** the trigger now says `Tools used (N)`. It counts calls, including repeated calls to the
+same tool, rather than distinct tool names. The existing no-tools behaviour is unchanged.
+**Validation:** the one-call evidence test and new repeated-call test failed before the fix and
+passed afterward. Counts come from saved history, so they also appear when reopening an Investigation.
+**Lesson:** evidence summaries should expose the amount of work behind the answer before opening
+its details.
+**Found by:** the author's next T17 review comments and screenshot. Related prompt: P-020.
+
+### B-026 · 2026-10-16 · New report did not scroll to its end
+
+**Symptom:** generating a report could leave the viewport at an earlier answer. The author had
+to scroll down or use the central scroll-to-end arrow to see the report.
+**Cause:** the scroller's automatic following respects manual scrolling. Report completion did
+not explicitly request the end of the content, so a reader who had left the bottom could miss it.
+**Fix:** a component inside the existing scroller provider observes the number of saved reports.
+When it increases, it calls the scroller's public `scrollToEnd` action. This also restores normal
+bottom-following while the new report settles in layout. The observation resets per Investigation.
+Later unrelated renders and opening tool evidence do not repeatedly force the reader downward.
+**Validation:** the report-flow screen test supplies overflowing DOM geometry, scrolls upward,
+then completes the report request. It reproduced a scroll position of 0 before the fix and reaches
+1300 afterward for 1600 pixels of content in a 300-pixel viewport. Scrolling up afterward and
+opening evidence keeps the reader's chosen position.
+**Iteration:** scroll heights alone initially produced a false green because other rectangles
+remained zero in the DOM test environment. Supplying matching item and viewport rectangles made
+the test reproduce the real overflow and fail before implementation.
+**Lesson:** explicit actions should reveal their results. Scroll tests need consistent layout
+geometry to distinguish automatic following from deliberate result reveal.
+**Found by:** the author's report-generation review. Related prompt: P-020.

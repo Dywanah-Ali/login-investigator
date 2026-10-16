@@ -412,3 +412,24 @@ test environment, not a browser or visual assertion. No `.env` read, screenshot 
 evaluation. Temporary paid-call tests were removed from the normal suite.
 **Next:** author refreshes the original port 5173 page, then provides the next review comment.
 B-024 records the cause and fix. T17 remains ready-for-human. Nothing pushed.
+
+### P-020 · 2026-10-16 · Tool count and automatic report reveal
+
+**Prompt:**
+> Ok it works now, but two issues about the agent responses:
+> 1- the count of the tools user for the query is not stated.
+> 2- when i trigger "Write the incident report" the report is generated but i have to scroll downto see it, or click the middle scrolling arrow. it should scoll all the way to the end of the report to be fully visible automatically.
+
+The prompt included a screenshot of the answer and its unnumbered Tools used toggle.
+
+**Purpose:** record that the preview connection now works, then handle the two requested T17
+response-display corrections.
+**Result:** Tools used now includes its call count. A new saved report explicitly invokes the
+existing scroller's public scroll-to-end action, including when the reader had scrolled upward.
+Later manual scrolling remains possible. No backend, API contract or safe-renderer change.
+**Iterations:** B-025 records the count omission. B-026 records the report scroll failure and the
+DOM geometry correction needed to reproduce it. Test-first work stays at the agreed screen seam.
+**Validation so far:** thirteen focused screen tests pass, TypeScript is clean, and lint retains
+only the six existing warnings. Full frontend checks and review evidence are recorded in T17.
+**Next:** author checks the count and automatic report reveal on the port 5173 preview. T17
+remains ready-for-human. No `.env` access, paid model call or push for these corrections.
