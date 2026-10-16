@@ -267,3 +267,14 @@ its decisions log; the report endpoint remains non-streamed.
   the type/lint/test iterations. No `.env` access or paid model call for implementation checks.
 
 Final full-suite, build and review evidence follows. Author checks actual pace and feel afterward.
+
+
+Gradual-reveal final evidence:
+
+- Full frontend suite: **114 passed** across 11 test files. TypeScript clean. Lint has no errors
+  and only the six existing warnings. Production build passes with the existing main-chunk warning.
+- Standards review: clear. Spec review: clear. Both independently reviewed
+  `git diff 22e9113...3ba596c`, including timing, cleanup, saved-data boundaries and approved scope.
+- Implementation committed locally as `3ba596c`. `git diff --check` clean. Nothing pushed.
+- No backend change, `.env` access or paid model call. Author checks the pace and appearance
+  at http://127.0.0.1:5173/investigator. T17 remains ready-for-human.

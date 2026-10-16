@@ -559,3 +559,11 @@ older-report visibility and immediate display on reopening. Component checks cov
 fields, skip, reduced motion, hostile text, empty lists and cancellation on unmount.
 **Next:** full frontend checks and independent reviews, then the author's pace/appearance review
 at http://127.0.0.1:5173/investigator. No `.env` access, backend change, paid model call or push.
+
+
+**Final evidence for P-024:** all 114 frontend tests pass across 11 files. TypeScript is clean.
+Lint retains the six existing warnings; production build passes with its existing bundle warning.
+Standards review: clear. Spec review: clear. Both reviewed `22e9113...3ba596c` independently.
+Implementation committed locally as `3ba596c`; diff checks clean. Nothing pushed.
+**Next:** the author refreshes port 5173 and generates a report to judge actual pacing and feel.
+The initial generation wait remains. T17 stays ready-for-human until author acceptance.

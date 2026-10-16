@@ -483,3 +483,8 @@ are covered. Final full-suite and review evidence is recorded in ticket 17.
 **Lesson:** keep animation state separate from saved data, and verify timing through user-visible
 behaviour while retaining deterministic checks for the complete content.
 **Found by:** TDD, TypeScript and lint during P-024's authorised gradual-report reveal.
+
+
+**B-031 documentation check:** the final evidence append initially used an unavailable `python`
+command. It made no edit. Retried with the installed `python3`; documentation and diff checks
+completed. This was a local tooling invocation issue, with no application impact.
