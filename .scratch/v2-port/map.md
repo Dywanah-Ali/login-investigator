@@ -75,7 +75,9 @@ contract, and the seams.
   Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
   `issues/19` written by `/mp-to-tickets`. Tickets 10–16 are resolved. The build frontier is ticket 17, Investigator screen.
   Before starting it, the author authorised [ticket 23](issues/23-disconnect-handling.md), the targeted
-  B-014 disconnect follow-up, on 16 October 2026. Frontend warnings stay separate.
+  B-014 disconnect follow-up, on 16 October 2026. It is implemented and `ready-for-human`:
+  351 backend tests and Pyright passed; both review axes found no issues. Frontend warnings stay
+  separate. Ticket 17 has not been started.
 
 ## Out of scope
 

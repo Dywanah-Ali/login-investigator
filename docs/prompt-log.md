@@ -283,5 +283,7 @@ only known FastAPI keepalive queue closure after confirmed disconnection from a 
 response. It leaves unknown failures visible, including unexpected exception-group siblings.
 **Iterations:** strengthening the real disconnect test reproduced B-014 before implementation;
 afterward it requires clean completion and no error log instead of accepting the exception.
-**Validation:** pending full backend regression and review. Frontend unchanged.
+**Validation:** full backend suite 351 passed, Pyright clean. Both independent review axes found
+no issues. Strict disconnect cases pass without accepted exceptions or error logs; eight guard
+refusal cases preserve genuine failures. Frontend unchanged. Committed locally; nothing pushed.
 **Next:** finish evidence for ticket 23, then return to the T17 frontier after review.
