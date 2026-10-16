@@ -2,7 +2,7 @@
 // parameters travel on every API request, so the address describes the screen and a reload shows
 // the same view. Names and meanings follow the API contract's "Shared filter parameters".
 
-export const FILTER_KEYS = ['from', 'to', 'outcome', 'country', 'user'] as const
+export const FILTER_KEYS = ['from', 'to', 'outcome', 'country', 'user', 'ip'] as const
 
 export type FilterKey = (typeof FILTER_KEYS)[number]
 

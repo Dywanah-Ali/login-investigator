@@ -1,4 +1,4 @@
-"""The dashboard endpoints: dataset facts, the rules guide, the Overview and Alerts. Each validates input,
+"""The dashboard endpoints: dataset facts, the rules guide, the Overview, Alerts and Explorer. Each validates input,
 calls the core and shapes the reply with only the fields the contract lists.
 """
 
@@ -7,14 +7,16 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import Annotated
 
+import pandas as pd
 from fastapi import APIRouter, Depends
+from fastapi.responses import Response
 
-from api.filters import Filters, filters
+from api.filters import Filters, explorer_ip, filters
 from api.services import Dataset, dataset
 from login_investigator.dashboard import alerts_for_view
-from login_investigator.loader import TIMESTAMP_FORMAT
+from login_investigator.loader import TIMESTAMP_FORMAT, to_records
 from login_investigator.rules import GENERAL_ASSUMPTIONS, RULE_GUIDE
-from login_investigator.search import summarize
+from login_investigator.search import export_csv, summarize
 from login_investigator.stats import hourly_counts, top_failed_ips
 
 router = APIRouter()
@@ -26,6 +28,7 @@ QueryFilters = Annotated[Filters, Depends(filters)]
 # The three figures the Overview's tiles show. The search summary holds more, but only what the
 # screen needs leaves the server (author's ruling, ticket 13).
 SUMMARY_FIELDS = ("total", "failures", "distinct_users")
+EXPLORER_SUMMARY_FIELDS = ("total", "successes", "failures", "distinct_users", "distinct_ips")
 
 
 @router.get("/dataset")
@@ -75,3 +78,25 @@ def get_rules() -> dict:
         "rules": [asdict(guide) for guide in RULE_GUIDE],
         "general_assumptions": list(GENERAL_ASSUMPTIONS),
     }
+
+
+# Explorer and CSV share this dependency so filters and row order cannot drift apart.
+def explorer_rows(data: LoadedDataset, chosen: QueryFilters,
+                  ip: Annotated[str | None, Depends(explorer_ip)]) -> pd.DataFrame:
+    return chosen.rows(data.frame, ip=ip).iloc[::-1]
+
+
+ExplorerRows = Annotated[pd.DataFrame, Depends(explorer_rows)]
+
+
+@router.get("/explorer")
+def get_explorer(rows: ExplorerRows) -> dict:
+    summary = summarize(rows.iloc[::-1]).to_dict()
+    return {"summary": {field: summary[field] for field in EXPLORER_SUMMARY_FIELDS},
+            "rows": to_records(rows)}
+
+
+@router.get("/explorer.csv")
+def get_explorer_csv(rows: ExplorerRows) -> Response:
+    return Response(export_csv(rows), media_type="text/csv",
+                    headers={"Content-Disposition": 'attachment; filename="login-investigator-rows.csv"'})

@@ -2,9 +2,9 @@ import { BotIcon, TableIcon } from 'lucide-react'
 import { useId } from 'react'
 import { Link } from 'react-router'
 
+import { QuietCard } from '@/components/quiet-card'
 import { Button } from '@/components/ui/button'
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -37,7 +37,7 @@ export function AlertDetails({ alert, title }: { alert: Alert; title: string }) 
   return (
     // A quieter surface than the alerts table: the list is where the analyst works, the panel
     // supports it (author, 15 Oct).
-    <Card role="region" aria-labelledby={titleId} className="min-w-0 gap-0 bg-muted/40 py-0 ring-foreground/5">
+    <QuietCard role="region" aria-labelledby={titleId} className="min-w-0 gap-0 py-0">
       {/* A new key per alert remounts the content, which replays the entry animation. */}
       <div
         key={alertKey(alert)}
@@ -88,6 +88,6 @@ export function AlertDetails({ alert, title }: { alert: Alert; title: string }) 
           </Button>
         </CardFooter>
       </div>
-    </Card>
+    </QuietCard>
   )
 }

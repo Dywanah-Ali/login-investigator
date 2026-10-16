@@ -1,6 +1,7 @@
-import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { type ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table'
 import { useMemo } from 'react'
 
+import { TablePager } from '@/components/table-pager'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { type TitleOf, cutNames } from '@/lib/alerts'
 import type { Alert } from '@/lib/api'
@@ -56,48 +57,57 @@ export function AlertsTable({
     [titleOf],
   )
 
-  const table = useReactTable({ data: alerts, columns, getCoreRowModel: getCoreRowModel() })
+  const table = useReactTable({
+    data: alerts,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: { pagination: { pageIndex: 0, pageSize: 20 } },
+  })
 
   return (
-    <div className="overflow-hidden rounded-lg border">
-      <Table aria-label="Alerts">
-        <TableHeader className="bg-muted">
-          {table.getHeaderGroups().map((group) => (
-            <TableRow key={group.id}>
-              {group.headers.map((header) => (
-                <TableHead key={header.id} className={cellClass(header.column.columnDef)}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              data-state={row.original === selected ? 'selected' : undefined}
-              aria-selected={row.original === selected}
-              tabIndex={0}
-              // The chosen row carries an accent bar on its left edge, tying it to the panel.
-              className="cursor-pointer data-[state=selected]:shadow-[inset_3px_0_0_var(--primary)]"
-              onClick={() => onSelect(row.original)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  onSelect(row.original)
-                }
-              }}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} className={cellClass(cell.column.columnDef)}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="min-w-0 space-y-3">
+      <div className="overflow-hidden rounded-lg border">
+        <Table aria-label="Alerts">
+          <TableHeader className="bg-muted">
+            {table.getHeaderGroups().map((group) => (
+              <TableRow key={group.id}>
+                {group.headers.map((header) => (
+                  <TableHead key={header.id} className={cellClass(header.column.columnDef)}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.original === selected ? 'selected' : undefined}
+                aria-selected={row.original === selected}
+                tabIndex={0}
+                // The chosen row carries an accent bar on its left edge, tying it to the panel.
+                className="cursor-pointer data-[state=selected]:shadow-[inset_3px_0_0_var(--primary)]"
+                onClick={() => onSelect(row.original)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    onSelect(row.original)
+                  }
+                }}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className={cellClass(cell.column.columnDef)}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <TablePager table={table} />
     </div>
   )
 }

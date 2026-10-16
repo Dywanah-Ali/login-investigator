@@ -170,7 +170,8 @@ session.
 
 ```json
 {
-  "summary": { "...": "as in /api/overview" },
+  "summary": { "total": 151, "successes": 1, "failures": 150,
+               "distinct_users": 1, "distinct_ips": 1 },
   "rows": [                                  // every matching row, newest first; no cap, no paging
     {"timestamp_utc": "...", "username": "...", "source_ip": "...", "country": "...",
      "outcome": "...", "failure_reason": "", "user_agent": "..."}

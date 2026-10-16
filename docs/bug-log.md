@@ -152,3 +152,27 @@ even when the mechanism does not. Streamlit's widget key was dropped as an artef
 gave was not an artefact.
 **Found by:** the Spec axis of the two-axis review, which quoted v1's comment. Reproduced by a test
 before the fix. Related prompt: P-009.
+
+### B-010 · 2026-10-16 · Ticket 15 Explorer contract summary
+
+**Symptom:** the Explorer contract said its summary was the same as Overview, which now exposes
+three fields. The agreed Explorer design needs five count tiles.
+**Cause:** ticket 13 narrowed Overview's summary without expanding Explorer's shorthand reference.
+**Fix:** the author approved listing Explorer's five fields explicitly in the contract. Overview
+keeps its three fields. The API test pins Explorer's exact summary, including the empty view.
+**Lesson:** when a contract reuses another endpoint's shape, changing that endpoint can silently
+change its dependants. Spell out independently owned response shapes.
+**Found by:** reading the contract against the agreed prototype before building ticket 15.
+Related prompt: P-011.
+
+### B-011 · 2026-10-16 · Ticket 15 Reset after an invalid IP draft
+
+**Symptom:** submitting a malformed IP hid the results, then Reset left the error visible and the
+table hidden. A regression test reproduced it during implementation.
+**Cause:** the draft error lived across URL filter changes. Also, Reset only considered applied
+filters, so an invalid draft on an otherwise unfiltered page could not enable it.
+**Fix:** draft state belongs to a view keyed by its filter query. The shared toolbar accepts a draft
+reset callback and treats a changed draft as a reason to enable Reset. Tests cover Reset with and
+without applied filters.
+**Lesson:** resetting a form must clear both applied filters and unsubmitted input errors.
+**Found by:** the Explorer screen test before the fix. Related prompt: P-011.

@@ -1,4 +1,5 @@
 import { CalendarIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
 import type { DateRange } from 'react-day-picker'
 
 import { FailureMessage } from '@/components/failure-message'
@@ -25,7 +26,11 @@ const OUTCOMES = [
 ]
 
 /** The shared filters, under the page title on the three dashboard screens. */
-export function FilterToolbar() {
+export function FilterToolbar({ children, dirty = false, onReset }: {
+  children?: ReactNode
+  dirty?: boolean
+  onReset?: () => void
+}) {
   const dataset = useDataset()
   const { filters, setFilters, reset } = useFilters()
 
@@ -61,11 +66,12 @@ export function FilterToolbar() {
         options={users.map((user) => ({ value: user, label: user }))}
         onChange={(value) => setFilters({ user: value })}
       />
+      {children}
       <Button
         variant="ghost"
         size="sm"
-        onClick={reset}
-        disabled={Object.keys(filters).length === 0}
+        onClick={() => { reset(); onReset?.() }}
+        disabled={Object.keys(filters).length === 0 && !dirty}
       >
         Reset
       </Button>

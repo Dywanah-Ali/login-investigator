@@ -22,7 +22,9 @@ export function NavMain() {
             {SCREENS.map((screen) => {
               const Icon = screen.icon
               // The filters follow the analyst between the dashboard screens, as in v1.
-              const search = screen.filtered && query ? `?${query}` : ''
+              const target = new URLSearchParams(query)
+              if (screen.path !== '/explorer') target.delete('ip')
+              const search = screen.filtered && target.size ? `?${target}` : ''
               return (
                 <SidebarMenuItem key={screen.path}>
                   <SidebarMenuButton

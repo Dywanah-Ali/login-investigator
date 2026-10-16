@@ -69,7 +69,7 @@ contract, and the seams.
 
 - Nothing. The map is complete (14 October 2026): every decision the spec needs is recorded.
   Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
-  `issues/19` written by `/mp-to-tickets`. The frontier is ticket 10 (`git init`).
+  `issues/19` written by `/mp-to-tickets`. Tickets 10–14 are resolved. Ticket 15 is implemented and awaiting the author’s visual review (16 October 2026); see [its evidence](issues/15-log-explorer-end-to-end.md).
 
 ## Out of scope
 

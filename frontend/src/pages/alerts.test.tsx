@@ -284,3 +284,20 @@ describe('log fields appear only in table cells', () => {
     expect(within(panel).getAllByText(hostile)).toHaveLength(2)
   })
 })
+
+test('Alerts uses the shared pager and can reach alerts beyond the first twenty', async () => {
+  const alerts = Array.from({ length: 21 }, (_, index) => ({
+    ...ALERTS.alerts[0], summary: `Finding ${index + 1}`, ips: [`203.0.113.${index + 1}`],
+  }))
+  fakeApi({ ...API, '/api/alerts': { body: { alerts } } })
+  openApp('/alerts')
+  const table = await screen.findByRole('table', { name: 'Alerts' })
+  const pager = screen.getByRole('navigation', { name: 'Table pages' })
+  expect(within(table).getAllByRole('row')).toHaveLength(21)
+  expect(within(table).queryByText('Finding 21')).not.toBeInTheDocument()
+  await userEvent.click(within(pager).getByRole('button', { name: 'Next page' }))
+  expect(within(table).getByText('Finding 21')).toBeInTheDocument()
+  await userEvent.click(within(table).getByText('Finding 21'))
+  expect(within(table).getByRole('row', { selected: true })).toHaveTextContent('Finding 21')
+  expect(within(pager).getByRole('button', { name: 'Next page' })).toBeDisabled()
+})

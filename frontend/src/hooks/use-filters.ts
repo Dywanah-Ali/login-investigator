@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router'
+import { useLocation, useSearchParams } from 'react-router'
 
 import { type FilterKey, clearFilters, filterQuery, readFilters, withFilter } from '@/lib/filters'
 
@@ -6,6 +6,8 @@ import { type FilterKey, clearFilters, filterQuery, readFilters, withFilter } fr
 export function useFilters() {
   const [search, setSearch] = useSearchParams()
   const filters = readFilters(search)
+  const { pathname } = useLocation()
+  if (pathname !== '/explorer') delete filters.ip
 
   return {
     filters,

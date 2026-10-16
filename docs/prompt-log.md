@@ -203,3 +203,30 @@ author replaced the sliding panel with a fixed details panel showing the newest 
 with a short entry animation. Built test-first: five screen tests changed before the code. Looked at
 in the browser. Frontend 58 passed, type check clean.
 **Next:** the author looks at the new panel, then reviews ticket 14 for approval.
+
+### P-011 · 2026-10-16 · Ticket 15 Log explorer, end to end
+
+**Prompts, in order:**
+> hello codex [$implement](<local implement skill>) 15
+
+The local skill path above is redacted to avoid recording a personal filesystem path.
+
+> tell me what is T15 is about pls first
+
+> do u have access to the design of the layout ?
+
+> OK u can start
+
+Asked whether to correct the Explorer contract to list its five count fields, the author answered:
+
+> Yes, list the five Explorer counts (Recommended)
+
+**Purpose:** implement ticket 15 using the agreed layout, first explaining its scope and confirming
+access to the design reference.
+**Result:** implemented. The Explorer and CSV routes share one filtered core search;
+IP validation runs at both boundaries. The screen has five supporting tiles, a paged log table and
+CSV download. Alerts reuses the pager and its quiet surface is shared with the count tiles. The
+contract correction was approved before being recorded. Tests caught and fixed the Reset iteration
+in B-011.
+**Validation:** backend 323 passed, frontend 90 passed, both type checks clean, production build passed. Standards review found one small pager-label duplication, fixed; Spec review found no gaps. Lint and bundle-size warnings are recorded in ticket 15.
+**Next:** the author reviews the live screen before ticket 15 is resolved. Nothing pushed.

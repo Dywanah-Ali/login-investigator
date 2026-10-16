@@ -45,6 +45,11 @@ export type Alert = {
   evidence_shown: number
 }
 
+export type ExplorerReply = {
+  summary: { total: number; successes: number; failures: number; distinct_users: number; distinct_ips: number }
+  rows: LogRow[]
+}
+
 export type AlertsReply = { alerts: Alert[] }
 
 export type RuleGuide = { rule: string; title: string; fires_when: string; assumption: string }

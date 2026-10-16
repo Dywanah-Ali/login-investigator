@@ -8,6 +8,7 @@ field and never the value.
 from __future__ import annotations
 
 import re
+from ipaddress import ip_address
 from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Annotated
@@ -31,9 +32,9 @@ class Filters:
     country: str | None
     user: str | None
 
-    def rows(self, frame: pd.DataFrame) -> pd.DataFrame:
+    def rows(self, frame: pd.DataFrame, ip: str | None = None) -> pd.DataFrame:
         """The log rows these filters keep, in time order, from the core's one search."""
-        return filter_logins(frame, user=self.user, start=self.start, end=self.end,
+        return filter_logins(frame, user=self.user, ip=ip, start=self.start, end=self.end,
                              outcome=self.outcome, country=self.country)
 
 
@@ -79,3 +80,19 @@ def filters(
     start, end = date_window(first, last)
     return Filters(start=start, end=end, outcome=outcome, country=_given(country),
                    user=_given(user))
+
+
+def explorer_ip(ip: str | None = None) -> str | None:
+    """An optional IPv4 or IPv6 address, refused without echoing untrusted input."""
+    value = _given(ip)
+    if value is None:
+        return None
+    value = value.strip()
+    try:
+        if "%" in value:
+            raise ValueError
+        ip_address(value)
+    except ValueError:
+        raise _refuse("ip is not a valid IP address.") from None
+    # Validation must not normalise the spelling: the core matches the stored IP exactly.
+    return value

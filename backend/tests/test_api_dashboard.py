@@ -3,6 +3,9 @@ from docs/api-contract.md. Expected values come from evals/ground_truth.json or 
 hand, never recomputed the way the code does.
 """
 
+import csv
+import io
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -258,3 +261,72 @@ def test_a_bad_filter_is_refused_naming_the_field_never_the_value(client, params
     assert reply.json() == {"error": {"code": "invalid_filter", "message": message}}
     for value in params.values():
         assert value not in reply.text
+
+# --- Explorer ------------------------------------------------------------------------------------
+
+def test_explorer_returns_every_matching_row_newest_first(client, s):
+    attack = s["S1"]
+    reply = client.get("/api/explorer", params={"ip": attack["attacker_ip"],
+                                             "user": attack["target_user"], "outcome": "failure"})
+    assert reply.status_code == 200
+    body = reply.json()
+    assert set(body) == {"summary", "rows"}
+    assert len(body["rows"]) == attack["failures"] == 150
+    assert all(set(row) == LOG_FIELDS for row in body["rows"])
+    assert {row["source_ip"] for row in body["rows"]} == {attack["attacker_ip"]}
+    assert {row["username"] for row in body["rows"]} == {attack["target_user"]}
+    assert {row["outcome"] for row in body["rows"]} == {"failure"}
+    times = [row["timestamp_utc"] for row in body["rows"]]
+    assert times == sorted(times, reverse=True)
+    assert times[0] == attack["last_seen"]
+    assert times[-1] == attack["first_seen"]
+
+
+def test_explorer_summary_and_empty_view(client, s):
+    body = client.get('/api/explorer', params={'ip': s['S1']['attacker_ip']}).json()
+    assert body['summary'] == {'total': 151, 'successes': 1, 'failures': 150,
+                               'distinct_users': 1, 'distinct_ips': 1}
+    assert client.get('/api/explorer', params={'user': 'no-such-user'}).json() == {
+        'summary': {'total': 0, 'successes': 0, 'failures': 0, 'distinct_users': 0, 'distinct_ips': 0},
+        'rows': [],
+    }
+
+
+@pytest.mark.parametrize('path', ['/api/explorer', '/api/explorer.csv'])
+@pytest.mark.parametrize('ip', [HOSTILE, '999.1.2.3', '01.2.3.4', '1', '::1%eth0'])
+def test_explorer_refuses_bad_ips_without_echoing(client, path, ip):
+    reply = client.get(path, params={'ip': ip})
+    assert reply.status_code == 422
+    assert reply.json() == {'error': {'code': 'invalid_filter', 'message': 'ip is not a valid IP address.'}}
+    assert ip not in reply.text
+
+
+def test_csv_contains_the_same_filtered_rows_in_the_same_order(client):
+    params = {'from': '2026-10-06', 'to': '2026-10-06', 'country': 'ro', 'outcome': 'failure'}
+    rows = client.get('/api/explorer', params=params).json()['rows']
+    reply = client.get('/api/explorer.csv', params=params)
+    assert reply.status_code == 200
+    assert reply.headers['content-type'] == 'text/csv; charset=utf-8'
+    assert reply.headers['content-disposition'] == 'attachment; filename="login-investigator-rows.csv"'
+    assert len(rows) > 0
+    assert list(csv.DictReader(io.StringIO(reply.text))) == rows
+    empty = client.get('/api/explorer.csv', params={'user': 'no-such-user'})
+    assert empty.text == 'timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent\n'
+
+
+def test_csv_keeps_formula_protection_at_the_http_boundary(tmp_path):
+    path = tmp_path / 'log.csv'
+    path.write_text('timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent\n'
+                    '2026-10-01T00:00:00Z,=1+1,203.0.113.10,GB,failure,bad_password,+cmd\n')
+    settings = Settings.from_env({'LI_LOG_PATH': str(path), 'LI_MEMORY_PATH': str(tmp_path / 'm.sqlite')})
+    with TestClient(create_app(settings)) as api:
+        raw = api.get('/api/explorer').json()['rows'][0]
+        downloaded = list(csv.DictReader(io.StringIO(api.get('/api/explorer.csv').text)))[0]
+    assert raw['username'] == '=1+1'
+    assert downloaded['username'] == "'=1+1"
+    assert downloaded['user_agent'] == "'+cmd"
+
+
+@pytest.mark.parametrize('ip', ['2001:db8::1', '::1', '::ffff:192.0.2.1', '', '  '])
+def test_explorer_accepts_ipv6_and_empty_ip_filters(client, ip):
+    assert client.get('/api/explorer', params={'ip': ip}).status_code == 200

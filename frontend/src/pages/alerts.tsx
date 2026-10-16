@@ -40,6 +40,7 @@ export function AlertsPage() {
         <EmptyState message={NO_ALERTS} />
       ) : (
         <AlertsView
+          key={query}
           alerts={alerts.data.alerts}
           titleOf={titleOf}
           chosenKey={picked?.query === query ? picked.key : null}
