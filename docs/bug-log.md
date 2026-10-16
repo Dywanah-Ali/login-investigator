@@ -176,3 +176,16 @@ reset callback and treats a changed draft as a reason to enable Reset. Tests cov
 without applied filters.
 **Lesson:** resetting a form must clear both applied filters and unsubmitted input errors.
 **Found by:** the Explorer screen test before the fix. Related prompt: P-011.
+
+### B-012 · 2026-10-16 · Ticket 16 test expectations
+
+**Symptom:** the first streamed-answer test expected 50 evidence rows but received 20. Later,
+the disconnect test counted all 1,000 model chunks even though HTTP delivery had stopped.
+**Cause:** the tests confused the tool's maximum sample size (50) with its default (20), and
+model-library buffering with the API advancing the core generator.
+**Fix:** pin the default at 20 from the existing core's documented behaviour. Count advancement
+of the real core generator, verify it closes after disconnect, and send a follow-up through HTTP
+to prove the busy reservation is released. The model and core still run in the test.
+**Lesson:** test the boundary the requirement names. A library's internal buffering is a different
+boundary from HTTP delivery and core-generator advancement.
+**Found by:** the new API tests during implementation. Related prompt: P-013.

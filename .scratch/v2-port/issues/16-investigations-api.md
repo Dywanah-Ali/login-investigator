@@ -7,7 +7,7 @@ download the PDF. The dashboards keep working when the model key is missing.
 
 **Blocked by:** 12 (API foundation and the Overview endpoint).
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Spec: [spec.md](../spec.md), "The API" and "The stream". Contract: investigations (list, start, reopen,
 ask, report, PDF), errors. Decisions: ticket 06, findings under `research/`.
@@ -21,3 +21,9 @@ ask, report, PDF), errors. Decisions: ticket 06, findings under `research/`.
 - [ ] One agent per process; memory per Investigation ID in the one SQLite file at the configured path; an Investigation survives a server restart
 - [ ] Mid-stream failure sends the `error` event with fixed text; exception text is logged, never sent
 - [ ] API tests for every point above, using the copied agent test fixtures for the model
+
+## Comments
+
+2026-10-16: implementation started with the implement and tdd skills. The agreed seam is
+the HTTP API, using the copied fake model and a temporary real SQLite file. Review baseline:
+`cc3c113`. No UI work or spec changes.

@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 import os
 import re
-from collections.abc import Iterator
+from collections.abc import Generator
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -153,7 +153,7 @@ class Stream:
     value: str
 
 
-def ask(agent, thread_id: str, question: str) -> Iterator[Stream]:
+def ask(agent, thread_id: str, question: str) -> Generator[Stream, None, None]:
     """Ask a question in a case and stream the answer as it is written. The case's memory holds
     the full answer once the stream ends."""
     messages = {"messages": [HumanMessage(question)]}
@@ -288,6 +288,14 @@ class Turn:
 
 def history(agent, thread_id: str) -> list[Turn]:
     return turns(agent.get_state(_config(thread_id)).values.get("messages", []))
+
+
+def saved_history(checkpointer, thread_id: str) -> list[Turn]:
+    """Read saved Turns without a model, so existing reports remain downloadable offline."""
+    saved = checkpointer.get_tuple(_config(thread_id))
+    if saved is None:
+        return []
+    return turns(saved.checkpoint["channel_values"].get("messages", []))
 
 
 def turns(messages) -> list[Turn]:

@@ -241,3 +241,25 @@ in B-011.
 **Result:** visual approval recorded in ticket 15. Ticket resolved and the map updated. No
 application code changed. The passing automated checks from P-011 remain the evidence.
 **Next:** ticket 16, Investigations API, when the author gives the go. Nothing pushed.
+
+### P-013 · 2026-10-16 · Ticket 16 Investigations API
+
+**Prompts, in order:**
+> what is T16 is about?
+
+> ok Go
+
+> [$implement](<local implement skill>) 16
+
+The local skill path above is redacted to avoid recording a personal filesystem path.
+
+**Purpose:** explain ticket 16, then implement its server endpoints using the implement skill,
+with test-first work at the agreed HTTP seam, code review and a local commit.
+**Result:** Investigation list, create, reopen, streamed ask, report and PDF endpoints built.
+History is kept in the configured SQLite file. A saved-history core reader lets PDF downloads
+work without a model. Per-Investigation writer reservations prevent overlapping asks and reports.
+Validation and failures return fixed messages. No UI, spec changes or pushes.
+**Iterations:** B-012 records the sample-size and disconnect-test corrections. The sandbox blocked
+uv's default cache; checks use a temporary cache directory instead.
+**Validation:** pending final checks and the two-axis review.
+**Next:** record the evidence in ticket 16 and hand off for the author's review.

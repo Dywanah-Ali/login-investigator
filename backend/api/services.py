@@ -11,7 +11,8 @@ endpoints only, and a missing model key stops the Investigation endpoints only.
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from threading import Lock
 from typing import Any
 
 import pandas as pd
@@ -43,6 +44,8 @@ class Services:
     memory: SqliteSaver
     model: Any | None  # None when the model key is missing; the report writer needs it (ticket 16)
     agent: Any | None  # None when the model key is missing
+    active_investigations: set[str] = field(default_factory=set)
+    activity_lock: Lock = field(default_factory=Lock)
 
 
 def start(settings: Settings) -> Services:
