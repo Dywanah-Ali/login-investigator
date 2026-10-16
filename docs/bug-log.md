@@ -464,3 +464,22 @@ fixed failure message, no empty-state welcome and an unlocked input after that f
 **Fix:** changed that alignment to `items-center`. Send is vertically centred beside the input.
 **Lesson:** controls of different heights need explicit cross-axis alignment.
 **Found by:** the author's final minor T17 review comment and screenshot. Related prompt: P-023.
+
+### B-031 · 2026-10-16 · Gradual report reveal implementation checks
+
+**Symptom:** early checks found a possibly undefined animation rate, a React immutability warning
+for the text-budget closure in render, and an existing report-flow assertion expecting all text
+immediately. The new reveal tests initially failed against the old instantaneous report card.
+**Cause:** the animation frame callback needed a concrete numeric rate. The text-budget closure
+was local but opaque to the React checker. The old assertion predated the author's gradual-reveal
+choice. A first file-write command also used the wrong working directory and made no source edit.
+**Fix:** default the optional rate before creating the frame callback; build the plain-text
+preview in a separate pure helper; use the new "Show full report" control before the existing
+full-field/PDF assertions. Corrected the file-write path. No checker suppression or API change.
+**Validation:** progressive card tests and the measured-pace screen regression failed before
+implementation and pass afterward. Text completion preserves the report's fixed fields and PDF
+identity. Skip, reduced motion, plain hostile text, empty lists, old reports and unmount cleanup
+are covered. Final full-suite and review evidence is recorded in ticket 17.
+**Lesson:** keep animation state separate from saved data, and verify timing through user-visible
+behaviour while retaining deterministic checks for the complete content.
+**Found by:** TDD, TypeScript and lint during P-024's authorised gradual-report reveal.

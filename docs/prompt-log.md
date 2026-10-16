@@ -517,3 +517,45 @@ The prompt included a screenshot showing Send near the bottom edge of the compos
 security change. B-030 records the cause and fix. No new tests or broad rerun for a CSS alignment
 change; TypeScript and diff checks provide the routine verification. Visual confirmation remains
 with the author on port 5173. Nothing pushed.
+
+### P-024 · 2026-10-16 · Requested progressive report delivery
+
+**Prompt:**
+> great thanks. i am sorry one last thing when the report is generated in just appears suddeny. would pls make it stream on the same pace as when the agent typically response to the user prompt. why it would better? it is good for the user experience. by the end of the day the report itself is an agent response
+
+**Purpose:** make report delivery feel progressive rather than sudden.
+**Inspection:** the agreed report endpoint currently returns one completed structured report.
+The core invokes a structured-output chain and saves its validated result before replying. The
+report card renders that saved result as fixed plain-text fields. The API contract explicitly
+says reports are not streamed. Installed LangChain parsers and official reference docs were
+checked to distinguish full validated output from partial structured drafts.
+**Choice presented:** gradual reveal of the completed report, keeping the initial generation
+wait, or genuine live structured-report streaming with an API/core flow change. Gradual reveal
+was recommended for the requested UX refinement. At this inspection the author's choice was pending; no application,
+API or spec change had been made yet.
+
+
+**Author's choice, verbatim:**
+> ok i agree with ur recommendation. however when need to keep that reveal as similar to the pace of the streaming of the agent typicall responses as possible. pls confirm first if u understand and agree with me before u take any actions.
+
+**Author's go:**
+> Go
+
+**Decision:** confirmed understanding before making changes. The author approved gradual reveal
+of a completed validated report, with a pace close to normal streamed answers. This is recorded
+in the spec's frontend section and decisions log. No API/core streaming change.
+**Result:** report text reveals in field order. Recent text chunk timing supplies an approximate
+characters-per-second rate, excluding initial latency, tools and long pauses. Without a sufficient
+sample the default is 200 characters/second; observed rates are bounded to 40–600 to avoid extreme
+network bursts or stalls. This timing is local presentation state and is not persisted.
+Only the report just generated animates. Past reports open fully; leaving the Investigation or
+starting another action ends the visual reveal. "Show full report" skips it, and reduced-motion
+preference disables it. Severity and the validated report's PDF link remain available. Saved
+report data is never clipped or changed. Reveal remains plain text and respects report scrolling.
+**Iterations:** B-031 records implementation/type/lint corrections and updated full-field checks.
+**Validation so far:** twenty-two focused screen/report-card tests pass; TypeScript clean; lint
+has only the six existing warnings. The clock-controlled screen test verifies measured pace,
+older-report visibility and immediate display on reopening. Component checks cover progressive
+fields, skip, reduced motion, hostile text, empty lists and cancellation on unmount.
+**Next:** full frontend checks and independent reviews, then the author's pace/appearance review
+at http://127.0.0.1:5173/investigator. No `.env` access, backend change, paid model call or push.

@@ -222,6 +222,7 @@ test('the core offer controls report wording, waiting, saved fields and numbered
   written = true
   await act(async () => finish(Response.json(report)))
   expect(await screen.findByText('High severity')).toBeInTheDocument()
+  await userEvent.click(screen.getByRole('button', { name: 'Show full report' }))
   expect(screen.getByText('**Plain summary**')).toBeInTheDocument()
   expect(screen.getByText('2026-10-16T08:00:00Z: <script>attack</script>')).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Download PDF' })).toHaveAttribute('href', '/api/investigations/case-0/reports/1.pdf')
@@ -234,6 +235,50 @@ test('the core offer controls report wording, waiting, saved fields and numbered
   fireEvent.scroll(viewport)
   await userEvent.click(screen.getByRole('button', { name: 'Tools used (1)' }))
   expect(viewport.scrollTop).toBe(0)
+})
+
+test('only the new report reveals at the observed answer pace; reopening shows the full saved report', async () => {
+  vi.useFakeTimers()
+  let stream!: ReadableStreamDefaultController<Uint8Array>
+  let answered = false
+  let written = false
+  const oldReport = { ...report, title: 'Earlier saved report', summary: 'Earlier saved summary' }
+  const newReport = { ...report, number: 2, title: 'A newly generated incident report with a detailed descriptive title' }
+  vi.stubGlobal('fetch', vi.fn(async (url: string, options?: RequestInit) => {
+    if (url.endsWith('/ask')) return new Response(new ReadableStream({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    if (url.endsWith('/report') && options?.method === 'POST') { written = true; return Response.json(newReport) }
+    if (url === '/api/investigations') return Response.json({ investigations: entries })
+    return Response.json({ ...empty, turns: [
+      { ...turn, report: oldReport },
+      ...(answered ? [{ ...turn, question: 'Follow-up', answer: 'Follow-up answer' }] : []),
+      ...(written ? [{ question: 'Update the incident report', answer: '', tools: [], report: newReport }] : []),
+    ], report_offer: answered && !written ? 'Update the incident report' : null })
+  }))
+  try {
+    await act(async () => { open('/investigator?id=case-0') })
+    expect(screen.getByText('Earlier saved summary')).toBeInTheDocument()
+    await act(async () => {
+      fireEvent.change(screen.getByRole('textbox', { name: 'Question' }), { target: { value: 'Follow-up' } })
+    })
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Send question' })) })
+    await act(async () => { stream.enqueue(new TextEncoder().encode('event: text\ndata: {"text":"First chunk"}\n\n')) })
+    act(() => vi.advanceTimersByTime(500))
+    // 200 characters over 0.5 seconds gives a measured delivery pace of 400 characters/second.
+    await act(async () => { stream.enqueue(new TextEncoder().encode(`event: text\ndata: ${JSON.stringify({ text: 'a'.repeat(200) })}\n\n`)) })
+    answered = true
+    await act(async () => { stream.enqueue(new TextEncoder().encode('event: done\ndata: {}\n\n')); stream.close() })
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Update the incident report' })) })
+    expect(screen.queryByText(newReport.title)).not.toBeInTheDocument()
+    expect(screen.getByText('Earlier saved summary')).toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(160))
+    const partialTitle = screen.getByText(/^A newly generated/).textContent ?? ''
+    expect(partialTitle.length).toBeGreaterThan(50)
+    expect(partialTitle.length).toBeLessThan(newReport.title.length)
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'New investigation' })) })
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: /Question 0/ })) })
+    expect(screen.getByText(newReport.title)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Show full report' })).not.toBeInTheDocument()
+  } finally { vi.useRealTimers() }
 })
 
 test('missing model configuration shows fixed text without leaking the server message', async () => {

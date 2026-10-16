@@ -243,3 +243,27 @@ Changed the composer's alignment from `items-end` to `items-center`. B-030 and P
 one-class presentation fix. No behaviour, API or security change. TypeScript and diff checks
 provide verification; no new CSS assertion or broad test rerun was needed. Visual confirmation
 and final T17 approval remain with the author.
+
+### Approved gradual report reveal, 16 October 2026
+
+The author requested streaming-like report presentation. After comparing genuine API streaming
+with gradual reveal of a completed report, the author chose gradual reveal, required a pace close
+to typical agent answers, asked for confirmation first, and then gave "Go". P-024 records the
+exchange verbatim. The agreed presentation refinement is in the spec's frontend section and
+its decisions log; the report endpoint remains non-streamed.
+
+- Generation/validation/saving finish before reveal begins. The initial generation wait remains.
+- New report text reveals in fixed-field order. Observed answer-text delivery supplies the pace,
+  excluding initial waits, tools and gaps over 1.5 seconds. At least 250 milliseconds of timing
+  is required; otherwise use 200 characters/second. Rates are bounded to 40–600 characters/second.
+- Only the newly generated report animates. Past reports open in full. Navigation or a new action
+  clears transient reveal state. "Show full report" skips the reveal; reduced motion shows it all.
+- Severity is shown immediately, the PDF link still downloads the complete saved report, and
+  partial text remains plain text. Reveal never mutates saved report fields or changes the API.
+- Existing report auto-scroll engages on report arrival and follows content growth through the
+  scroller's own resize handling, while retaining manual scrolling back.
+- Twenty-two focused tests pass, including measured pace, past-report reopening, partial/full
+  fields, skip, reduced motion, hostile text, empty lists and unmount cancellation. B-031 retains
+  the type/lint/test iterations. No `.env` access or paid model call for implementation checks.
+
+Final full-suite, build and review evidence follows. Author checks actual pace and feel afterward.

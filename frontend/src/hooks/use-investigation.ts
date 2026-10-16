@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { ApiFailure, FAILURE_TEXT, getJson } from '@/lib/api'
-import { ask, investigationPath, postJson, type Investigation, type InvestigationEntry } from '@/lib/investigations'
+import { ask, investigationPath, postJson, type IncidentReport, type Investigation, type InvestigationEntry } from '@/lib/investigations'
 
 const PROGRESS: Record<string, string> = {
   find_suspicious_activity: 'Checking the detection rules…',
@@ -26,6 +26,9 @@ export function useInvestigation() {
   const [busy, setBusy] = useState(false)
   const [progress, setProgress] = useState('')
   const [draft, setDraft] = useState<{ question: string; answer: string } | null>(null)
+  const [reportReveal, setReportReveal] = useState<{ id: string; number: number; charactersPerSecond: number } | null>(null)
+  // Used when no sufficiently long streamed text sample has been observed on this page yet.
+  const answerPace = useRef(200)
   const operation = useRef<{ id: string | null; controller: AbortController } | null>(null)
   const historyRequest = useRef<AbortController | null>(null)
 
@@ -50,6 +53,7 @@ export function useInvestigation() {
       })
     return () => {
       controller.abort()
+      setReportReveal(null)
       // Browser Back/Forward bypasses disabled controls. A newly created ID has already
       // taken ownership before its URL changes, so that intentional transition continues.
       if (operation.current?.id === id) {
@@ -75,6 +79,7 @@ export function useInvestigation() {
     setBusy(true)
     setFailure(null)
     setProgress(progressText)
+    setReportReveal(null)
     return active
   }
 
@@ -99,6 +104,9 @@ export function useInvestigation() {
     setDraft({ question: text, answer: '' })
     setQuestion('')
     let currentId = id
+    let lastTextAt: number | null = null
+    let textMilliseconds = 0
+    let textCharacters = 0
     try {
       if (!currentId) {
         const created = await postJson<InvestigationEntry>('/api/investigations', { question: text }, controller.signal)
@@ -112,8 +120,22 @@ export function useInvestigation() {
         setParams({ id: currentId }, { replace: true })
       }
       await ask(currentId, text, controller.signal, (event) => {
-        if (event.kind === 'tool') setProgress(PROGRESS[event.name] ?? 'Running an investigation tool…')
-        if (event.kind === 'text') setDraft((old) => old ? { ...old, answer: old.answer + event.text } : old)
+        if (event.kind === 'tool') {
+          lastTextAt = null
+          setProgress(PROGRESS[event.name] ?? 'Running an investigation tool…')
+        }
+        if (event.kind === 'text') {
+          const now = performance.now()
+          const elapsed = lastTextAt === null ? 0 : now - lastTextAt
+          // Measure text delivery, excluding the initial wait, tools and long network pauses.
+          if (elapsed > 0 && elapsed <= 1500) {
+            textMilliseconds += elapsed
+            textCharacters += Array.from(event.text).length
+            if (textMilliseconds >= 250) answerPace.current = Math.max(40, Math.min(600, textCharacters * 1000 / textMilliseconds))
+          }
+          lastTextAt = now
+          setDraft((old) => old ? { ...old, answer: old.answer + event.text } : old)
+        }
         if (event.kind === 'error') setFailure(FAILURE_TEXT.agent_failed)
       })
     } catch (error) {
@@ -129,6 +151,7 @@ export function useInvestigation() {
     setParams(nextId ? { id: nextId } : {})
     setQuestion('')
     setDraft(null)
+    setReportReveal(null)
     setFailure(null)
   }
 
@@ -136,7 +159,8 @@ export function useInvestigation() {
     if (!id || !data?.report_offer || operation.current || loading) return
     const { controller } = begin('Writing the incident report…')
     try {
-      await postJson(`${investigationPath(id)}/report`, { request: data.report_offer }, controller.signal)
+      const report = await postJson<IncidentReport>(`${investigationPath(id)}/report`, { request: data.report_offer }, controller.signal)
+      if (!controller.signal.aborted) setReportReveal({ id, number: report.number, charactersPerSecond: answerPace.current })
     } catch (error) {
       if (!controller.signal.aborted) setFailure(message(error))
     } finally {
@@ -144,5 +168,9 @@ export function useInvestigation() {
     }
   }
 
-  return { id, question, setQuestion, entries, data, failure, loading, busy, progress, draft, send, select, writeReport }
+  const completeReportReveal = useCallback((id: string, number: number) => {
+    setReportReveal((current) => current?.id === id && current.number === number ? null : current)
+  }, [])
+
+  return { id, question, setQuestion, entries, data, failure, loading, busy, progress, draft, send, select, writeReport, reportReveal, completeReportReveal }
 }

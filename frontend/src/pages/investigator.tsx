@@ -65,6 +65,7 @@ export function InvestigatorPage() {
   const {
     id, question, setQuestion, entries, data, failure, loading, busy,
     progress, draft, send, select, writeReport,
+    reportReveal, completeReportReveal,
   } = useInvestigation()
   const [limit, setLimit] = useState(3)
   const shown = entries.filter((entry, index) => index < limit || entry.id === id)
@@ -144,7 +145,12 @@ export function InvestigatorPage() {
                       <QuestionAnswer question={turn.question} answer={turn.answer} />
                       <div className="sm:max-w-[85%]"><ToolsUsed tools={turn.tools} /></div>
                       {turn.report && id && <div className="sm:max-w-[85%]">
-                        <IncidentReport id={id} report={turn.report} />
+                        <IncidentReport
+                          id={id}
+                          report={turn.report}
+                          revealCharactersPerSecond={reportReveal?.id === id && reportReveal.number === turn.report.number ? reportReveal.charactersPerSecond : undefined}
+                          onRevealComplete={completeReportReveal}
+                        />
                       </div>}
                     </MessageScrollerItem>
                   ))}

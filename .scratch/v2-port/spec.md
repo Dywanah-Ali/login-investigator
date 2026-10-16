@@ -272,6 +272,11 @@ Each decision names the ticket that made it.
   fields and a PDF link; the report button only when the Report offer says so, with its wording;
   starters and the scope line only in an empty Investigation; input locked and a progress line while
   answering; the AI note by the input.
+- Newly generated reports reveal their fixed-field text gradually after validation and saving,
+  at a pace approximating the latest observed answer text delivery. Use a steady fallback when
+  timing is unavailable. Previously saved reports open in full. A skip control and reduced-motion
+  preference show the full report immediately. This is frontend presentation; report generation
+  and its API remain non-streamed, and the initial generation wait remains.
 - "Investigate" on an alert links to the Investigator with a prepared question built from the
   alert's rule title, first IP, first user and time window. The user presses send.
 - The frontend never reaches past the API.
@@ -397,3 +402,4 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-15 | Alert evidence moves from a sliding panel (ticket 07, decision 2) to a fixed details panel beside the table, showing the newest alert by default; its content fades in on change, with no motion when the system asks for reduced motion | The author saw the live screen and wanted the prototype's drawing: the details always in view, never covering the list. v1's "Select an alert" hint goes, since an alert is always selected. The author's ruling (ticket 14) |
 | 2026-10-15 | A visual-hierarchy rule for every screen: one element leads at full contrast, supporting elements step back one level; the quiet styling is shared from its second use (ticket 15) | On the Alerts screen the table and the details panel read as equally important; stepping the panel back fixed it, and the author asked for it as practice across the app. Writing it down means each screen inherits it instead of deciding again. The author's ruling (ticket 14) |
 | 2026-10-16 | Explorer summary explicitly lists `total`, `successes`, `failures`, `distinct_users` and `distinct_ips`; Overview keeps three fields | The Explorer design needs five counts. The contract still pointed to Overview after ticket 13 narrowed its summary. The author approved the correction |
+| 2026-10-16 | Newly generated reports use gradual text reveal after validation and saving, approximating observed answer-delivery pace; saved reports open immediately, with skip and reduced-motion support | The author chose gradual reveal over genuine API streaming, confirmed the pace requirement, then gave "Go". Generation, saved data and the API contract stay unchanged. Ticket 17, prompt P-024 |
