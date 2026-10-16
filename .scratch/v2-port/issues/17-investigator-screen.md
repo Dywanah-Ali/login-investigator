@@ -226,3 +226,12 @@ The failure-path safeguard retains the empty record returned by create and exclu
 draft from the empty-chat condition. If the final history refresh fails, the single live draft
 stays visible with the fixed error message and the input unlocks. This additional regression
 failed before the safeguard and passes afterward. The focused screen suite now has 17 tests.
+
+Duplication-fix evidence:
+
+- Full frontend suite: **109 passed**. TypeScript clean. Lint has no errors and only the six
+  existing warnings. Production build passed with its existing main-chunk warning.
+- Standards review: clear. Spec review: clear, including create-only state, terminal refresh,
+  navigation cancellation and retained-draft recovery when history cannot be reloaded.
+- Fix committed locally as `a829f31`. `git diff --check` clean. Nothing pushed.
+- Author to confirm a new question appears once in the browser. T17 remains ready-for-human.

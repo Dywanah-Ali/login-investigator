@@ -498,3 +498,8 @@ Nothing pushed.
 final history reload failed after skipping the initial read. The create reply now seeds the
 known empty record, and a retained draft prevents the welcome from appearing over it. The test
 passes with the question/answer visible once, the fixed error message and an unlocked input.
+
+**Final evidence for P-022:** all 109 frontend tests pass; TypeScript is clean; lint retains the
+six existing warnings; production build passes with its existing bundle warning. Standards and
+Spec reviews are clear. Fix committed locally as `a829f31`. The author confirms the browser
+behaviour next. Nothing pushed.
