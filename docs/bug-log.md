@@ -297,3 +297,25 @@ Existing servers were left alone. The current API returns the expected 503 missi
 response, confirming the route exists and the failure is configuration rather than routing.
 **Lesson:** verify both sides of the frontend/API boundary when preparing a review preview.
 **Found by:** read-only local preview smoke checks. Related prompt: P-016.
+
+### B-021 · 2026-10-16 · Interrupted preview shutdown
+
+**Symptom:** interrupting the old T17 preview with the terminal stop signal logged
+`KeyboardInterrupt` and a lifespan `CancelledError` during shutdown.
+**Cause:** the stop interrupted Uvicorn's running event loop and its lifespan receiver. This
+occurred during the explicit preview restart, not during an Investigation request.
+**Fix:** no application change. The preview restarted successfully on the same port and completed
+its live request. A separate shutdown investigation is warranted only if normal shutdown also
+fails or leaves resources behind; neither was established by this interrupted stop.
+**Lesson:** distinguish forced process interruption noise from failures in serving requests.
+**Found by:** the requested T17 configuration check and basic live smoke. Related prompt: P-017.
+
+### B-022 · 2026-10-16 · Live smoke tool-count assumption
+
+**Symptom:** the temporary live frontend test stopped on multiple elements labelled "Asked".
+**Cause:** the test assumed exactly one tool call. The agent correctly used two calls to examine
+successful and failed sign-ins separately. The live answer and saved-history redraw had passed.
+**Fix:** accept one or more evidence entries. Reused the saved Investigation to finish the tool
+panel and reopening checks, without another model request. The corrected smoke passed.
+**Lesson:** agent smoke tests should check observable capabilities without fixing the tool count.
+**Found by:** the basic live frontend smoke. Related prompt: P-017.

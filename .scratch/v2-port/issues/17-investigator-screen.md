@@ -76,3 +76,22 @@ Concerns and remaining acceptance:
   button and sidebar, and the mobile hook's state-setting effect. The production build still
   warns about the main JavaScript chunk, now approximately 1,050 kB minified.
 - Seven existing dependency advisories remain separate maintenance work, recorded in B-017.
+
+### Follow-up: basic live smoke, 16 October 2026
+
+The author configured `.env` and requested a basic live frontend test without opening that file.
+The file was not opened, printed or edited. Git confirms it is ignored. After restarting the
+isolated API, its Investigation list returns 200 through the frontend preview.
+
+One live question was submitted through the real React screen in Vitest's DOM environment,
+using real HTTP through the Vite proxy and the configured model. The input locked; the answer
+arrived and was saved; the report offer appeared. The agent used two sign-in-log tool calls.
+Tool evidence tables displayed and the saved Investigation reopened with identical answer and
+evidence. An initial temporary-test assumption about one tool call was corrected; the corrected
+smoke passed against the saved answer, without another model request. See B-021/B-022 and P-017.
+The temporary test was removed from the regular suite after the smoke run.
+
+This supersedes the earlier missing-key preview limitation and "no live model run" note.
+The preview is ready at http://127.0.0.1:5174/investigator. AbuseIPDB, report generation and PDFs
+were not exercised in this narrow smoke. Comprehensive evaluations remain T18 work and final
+live acceptance remains T19 work. Author visual approval for T17 is still pending.

@@ -328,3 +328,31 @@ http://127.0.0.1:5174/investigator serves the screen and fixed missing-key respo
 review needs `OPENROUTER_API_KEY` configured in `.env`. B-020 records the stale-preview iteration.
 **Next:** T17 is ready for the author's live screen and visual hierarchy review before resolution.
 Work committed locally. Nothing pushed.
+
+### P-017 · 2026-10-16 · Key setup verification and basic live frontend smoke
+
+**Prompt:**
+> done.
+> pls check without openning the .env file.
+> then do basic agent fronend test. as i guess comprehensive test will be executed later anyways
+
+**Purpose:** verify configuration through application behaviour without opening `.env`, then
+exercise the frontend with one live question. Keep comprehensive evaluations for T18 and final
+acceptance for T19.
+**Result:** `.env` was not opened, printed or edited. `git check-ignore backend/.env` confirms it
+is ignored. Restarted the isolated preview API on 8002. Through Vite on 5174, the Investigation
+list changed from the known missing-key 503 to a valid 200 response. The live model accepted the
+configuration and answered one question about sign-ins from the synthetic attack IP.
+**Validation:** the real React Investigator screen ran in Vitest's DOM environment with real
+HTTP through the Vite proxy and real agent/model responses. Verified input locking, an answer,
+a report offer, tool evidence tables, New investigation, and reopening with identical saved
+answer/evidence. No browser automation or screenshot was used. The first run's single-tool
+assumption failed after the live answer succeeded; B-022 records the correction. The corrected
+smoke passed using the saved answer, with no second live question. B-021 records interruption
+noise when stopping the old preview. No application code changed.
+**Scope:** no report generation, PDF download or reputation-service request was made. The
+OpenRouter configuration is proven by the live response; the AbuseIPDB key has not been checked.
+The temporary smoke file was moved out of the normal suite after testing so routine tests never
+make paid calls. The smoke Investigation remains in temporary preview memory for author review.
+**Next:** author reviews T17's live layout at http://127.0.0.1:5174/investigator. T17 remains
+ready-for-human. No comprehensive evaluation or visual approval is claimed. Nothing pushed.
