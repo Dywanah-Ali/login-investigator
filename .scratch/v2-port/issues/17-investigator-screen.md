@@ -115,3 +115,16 @@ spec change. B-023 and P-018 record the finding and iteration.
 
 The visual hierarchy checkbox remains open for the author's review. Existing screen and renderer
 checks pass; final build and review evidence follows. No browser automation or screenshot capture.
+
+Correction evidence:
+
+- Full frontend suite: **103 passed**. TypeScript clean. Lint has no errors and only the six
+  existing warnings. Production build passed; the existing bundle warning remains, with the main
+  JavaScript chunk approximately 1,076 kB minified after adding the official scroller.
+- Standards review: clear. Spec review: clear after explicitly comparing the saved approved
+  prototype's left-column arrangement, message proportions and composer structure.
+- Read-only preview smoke: the Investigator route and transformed page, bubble and scroller
+  modules all return 200 on port 5174. No additional model request was made.
+- `git diff --check`: clean. Layout correction committed locally as `f016aa4`. Nothing pushed.
+- Source review and component checks do not establish final pixel proportions or scrolling feel.
+  The author's visual acceptance remains pending.

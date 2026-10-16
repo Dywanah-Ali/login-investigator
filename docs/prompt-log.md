@@ -382,3 +382,10 @@ clean; lint retains only the six existing warnings. Production build and final r
 are recorded in T17 after completion. No model call, `.env` access or backend change was needed.
 **Next:** review the corrected preview at http://127.0.0.1:5174/investigator. The author still owns
 visual acceptance. Nothing pushed.
+
+**Final evidence for P-018:** 103 frontend tests passed; TypeScript clean; lint has only the six
+existing warnings; production build passed with the existing bundle warning. Standards and Spec
+reviews are clear. Spec review explicitly checked the saved approved prototype this time. The
+preview serves the corrected route and all new chat modules with 200 responses. No additional
+model request was made. Correction committed locally as `f016aa4`. Visual acceptance remains
+with the author.
