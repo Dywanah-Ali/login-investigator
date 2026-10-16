@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { Plus } from 'lucide-react'
+import { ArrowUpRight, Plus } from 'lucide-react'
 import { useMessageScroller } from '@shadcn/react/message-scroller'
 
 import { Answer } from '@/components/answer'
@@ -9,7 +9,7 @@ import { ToolsUsed } from '@/components/tools-used'
 import { Bubble, BubbleContent } from '@/components/ui/bubble'
 import { Button } from '@/components/ui/button'
 import { CardContent } from '@/components/ui/card'
-import { Message, MessageContent, MessageGroup } from '@/components/ui/message'
+import { Message, MessageContent, MessageGroup, MessageHeader } from '@/components/ui/message'
 import {
   MessageScroller, MessageScrollerButton, MessageScrollerContent,
   MessageScrollerItem, MessageScrollerProvider, MessageScrollerViewport,
@@ -37,15 +37,21 @@ function RevealNewReport({ count }: { count: number }) {
 function QuestionAnswer({ question, answer }: { question: string; answer: string }) {
   return (
     <MessageGroup className="gap-3">
-      <Message align="end" aria-label="Your question">
+      <Message align="end" role="group" aria-label="Your question">
         <MessageContent>
-          <Bubble variant="tinted" align="end" className="max-w-[95%] sm:max-w-[80%]">
-            <BubbleContent className="border-primary/10 whitespace-pre-wrap">{question}</BubbleContent>
+          <MessageHeader className="self-end">You</MessageHeader>
+          <Bubble
+            variant="secondary"
+            align="end"
+            className="max-w-[95%] *:data-[slot=bubble-content]:bg-rose-100 *:data-[slot=bubble-content]:text-rose-950 sm:max-w-[80%] dark:*:data-[slot=bubble-content]:bg-rose-300/20 dark:*:data-[slot=bubble-content]:text-rose-50"
+          >
+            <BubbleContent className="border-rose-300/50 whitespace-pre-wrap dark:border-rose-300/25">{question}</BubbleContent>
           </Bubble>
         </MessageContent>
       </Message>
-      {answer && <Message aria-label="Investigator answer">
+      {answer && <Message role="group" aria-label="Investigator answer">
         <MessageContent>
+          <MessageHeader>Investigator</MessageHeader>
           <Bubble variant="muted" className="max-w-[95%] sm:max-w-[85%]">
             <BubbleContent className="border-border/60"><Answer text={answer} /></BubbleContent>
           </Bubble>
@@ -103,10 +109,36 @@ export function InvestigatorPage() {
         <section aria-label="Investigation" className="flex min-h-0 min-w-0 flex-col gap-3 lg:max-w-[54rem]">
           <h2 className="sr-only">{data?.first_question || 'New investigation'}</h2>
           {loading && !busy && <p role="status">Loading investigation…</p>}
-          <MessageScrollerProvider key={id ?? 'new'} autoScroll>
-            <MessageScroller className={empty ? 'h-auto' : 'h-[55vh] min-h-48'}>
-              <MessageScrollerViewport role="region" aria-label="Investigation messages" className="pr-2">
+          <MessageScrollerProvider key={id ?? 'new'} autoScroll={!empty} defaultScrollPosition={empty ? 'start' : 'end'}>
+            <MessageScroller className="h-[55vh] min-h-80 rounded-xl border border-border/60 bg-card/30">
+              <MessageScrollerViewport role="region" aria-label="Investigation messages" className="p-3 sm:p-4">
                 <MessageScrollerContent className="gap-5 pb-3">
+                  {empty && <MessageScrollerItem messageId="welcome" className="my-auto">
+                    <section aria-labelledby="investigation-welcome" className="mx-auto max-w-lg space-y-5 py-5 sm:py-8">
+                      <div className="space-y-2">
+                        <h2 id="investigation-welcome" className="text-lg font-semibold">Start an investigation</h2>
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                          I search the sign-in log, run the detection rules and look up IP reputation,
+                          and I can write an incident report. I only read: I cannot block, change or delete anything.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-xs font-medium text-muted-foreground">Try a question</p>
+                        <div className="grid gap-2">
+                          {STARTERS.map((starter) => (
+                            <Button
+                              key={starter}
+                              variant="outline"
+                              className="h-auto min-h-10 w-full justify-between gap-3 px-3 py-2.5 text-left text-sm font-normal whitespace-normal"
+                              onClick={() => setQuestion(starter)}
+                            >
+                              {starter}<ArrowUpRight className="shrink-0 text-muted-foreground" aria-hidden="true" />
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    </section>
+                  </MessageScrollerItem>}
                   {data?.turns.map((turn, index) => (
                     <MessageScrollerItem key={`${id}-${index}`} messageId={`${id}-${index}`} className="space-y-3">
                       <QuestionAnswer question={turn.question} answer={turn.answer} />
@@ -125,19 +157,6 @@ export function InvestigatorPage() {
               <MessageScrollerButton />
             </MessageScroller>
           </MessageScrollerProvider>
-          {empty && <div className="space-y-3 py-3">
-            <p className="text-sm text-muted-foreground">
-              I search the sign-in log, run the detection rules and look up IP reputation,
-              and I can write an incident report. I only read: I cannot block, change or delete anything.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {STARTERS.map((starter) => (
-                <Button key={starter} variant="outline" size="sm" onClick={() => setQuestion(starter)}>
-                  {starter}
-                </Button>
-              ))}
-            </div>
-          </div>}
           {busy && <p role="status" className="text-xs text-muted-foreground">{progress}</p>}
           {data?.report_offer && (
             <div><Button variant="outline" size="sm" disabled={busy || loading} onClick={() => void writeReport()}>

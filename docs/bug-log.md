@@ -393,3 +393,37 @@ the test reproduce the real overflow and fail before implementation.
 **Lesson:** explicit actions should reveal their results. Scroll tests need consistent layout
 geometry to distinguish automatic following from deliberate result reveal.
 **Found by:** the author's report-generation review. Related prompt: P-020.
+
+### B-027 · 2026-10-16 · User and agent messages looked too similar
+
+**Symptom:** the author could not clearly distinguish the user's prompt from the agent's answer
+by its background. Both appeared grey in the dark-theme screenshot.
+**Cause:** the user bubble's tinted variant derives its colour from the primary token. Both
+primary theme values have zero chroma, so tinting them still produces grey.
+**Fix:** user messages now have a dedicated soft rose background and contrasting text for each
+theme. Agent messages retain their neutral surface. Visible "You" and "Investigator" labels,
+accessible group names and existing right/left alignment also distinguish speakers.
+**Validation:** focused screen tests pass. Calculated normal-text contrast using the installed
+Tailwind palette and default composited surfaces is about 13.02:1 light and 11.97:1 dark, above
+WCAG's 4.5:1 threshold. Browser appearance remains for the author's review.
+**Lesson:** a tint cannot add a hue to a neutral token. Message roles need deliberate, readable
+surfaces and cues beyond colour alone.
+**Found by:** the author's next T17 visual review comments. Related prompt: P-021.
+
+### B-028 · 2026-10-16 · Empty-chat guidance sat outside the chat window
+
+**Symptom:** the role description and preset prompts sat above the input outside the message
+viewport. The empty viewport collapsed, so there was no clear place to begin an Investigation.
+**Cause:** the guidance was rendered after the scroller instead of within its empty content, and
+the empty scroller used automatic height.
+**Fix:** a single welcome region inside the stable-height viewport groups a heading, the original
+read-only scope description and three wrapping starter cards. It disappears on Send. The composer
+and AI note remain directly below. Empty-state scrolling starts at the top; active chat retains
+end-following and the explicit report-reveal behaviour.
+**Validation:** a new screen regression failed before the change because the scope and starters
+were absent from the viewport. It now passes and confirms starter selection only fills the input.
+Existing tests still verify the scope disappears after answering and report scrolling is preserved.
+**Lesson:** put empty-state guidance where the future content belongs, keeping the input easy to
+find. The supporting first-party research is saved in `research/17-chat-empty-state.md` under the
+v2-port effort.
+**Found by:** the author's request to research and apply a better layout. Related prompt: P-021.

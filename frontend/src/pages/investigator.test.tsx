@@ -45,6 +45,17 @@ test('Investigate arrival prepares the question without creating or asking', asy
   expect(screen.getByText(/I only read: I cannot block/)).toBeInTheDocument()
 })
 
+test('an empty chat contains its introduction and starter questions; choosing one only fills the input', async () => {
+  const fetcher = api()
+  open()
+  const chat = screen.getByRole('region', { name: 'Investigation messages' })
+  expect(within(chat).getByText(/I search the sign-in log/)).toBeInTheDocument()
+  const starter = within(chat).getByRole('button', { name: 'Anything suspicious last night?' })
+  await userEvent.click(starter)
+  expect(screen.getByRole('textbox', { name: 'Question' })).toHaveValue('Anything suspicious last night?')
+  expect(fetcher.mock.calls.every(([, options]) => !options?.method || options.method === 'GET')).toBe(true)
+})
+
 test('create then ask locks input, streams tool progress and text, then redraws saved memory', async () => {
   let stream!: ReadableStreamDefaultController<Uint8Array>
   let saved = false

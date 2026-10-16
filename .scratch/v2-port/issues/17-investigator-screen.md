@@ -171,3 +171,24 @@ Response-correction evidence:
 - Correction committed locally as `a75d1a6`. `git diff --check` passed. Nothing pushed.
 - The scroll regression uses the real component with supplied DOM geometry. Browser scrolling
   and overall visual approval remain the author's review step on port 5173.
+
+### Chat styling and empty-state review, 16 October 2026
+
+The author requested distinct pink user messages and research-led improvement of scope/starter
+placement. The research skill saved a primary-source note at
+[17-chat-empty-state.md](../research/17-chat-empty-state.md). B-027/B-028 and P-021 record the
+findings, direct author instruction and resulting design choices.
+
+- Soft rose user bubbles differ from neutral agent answers in both themes. Visible speaker
+  labels and existing alignment provide additional cues. Calculated normal-text contrast exceeds
+  4.5:1 in both themes. No error/severity meaning is attached to the user-message surface.
+- A stable-height chat viewport contains the empty-state welcome, original read-only scope and
+  three starter cards. Cards wrap on narrow screens and still populate the input without sending.
+- The welcome disappears after Send. Empty-state scrolling starts at the top; ordinary chat and
+  explicit new-report scrolling keep their established behaviour. Composer and AI note remain below.
+- The approved left history column, API contract, security rendering and agent behaviour are unchanged.
+  These are refinements requested directly during the author's T17 review; no new feature scope.
+- Focused component checks pass, including the new inside-viewport starter interaction regression.
+  No browser automation or screenshot capture. Visual acceptance remains pending.
+
+Final validation and review evidence follows.

@@ -438,3 +438,32 @@ remains ready-for-human. No `.env` access, paid model call or push for these cor
 six existing warnings and the production build passes with its existing bundle warning. Standards
 and Spec reviews are clear. The correction is committed locally as `a75d1a6`. The author checks
 actual browser scrolling next. Nothing pushed.
+
+### P-021 · 2026-10-16 · Speaker distinction and researched empty chat layout
+
+**Prompt:**
+> ok thanks.
+> few more comments about the chat part:
+> 1- The user prompt and agent response should be distingueshed visually. give the user prompt query inside the chat window diff background color. for example a lighter version of the pinkesh color with are using in different parts of the app.
+> 2- the note of the agent role and the pre-set prompts are sitting ourside the chat window. i guess there is a better layout. pls research the best practive and apply it.
+
+The prompt included a screenshot of the scope note, starter chips and composer outside the empty
+message viewport. This records the final message after the author's interrupted draft.
+
+**Purpose:** research first-party chat/empty-state guidance, then improve the existing T17 screen
+with pink user messages and better-integrated role guidance and starter questions.
+**Research:** the research skill delegated a primary-source investigation. Findings and links
+are saved at `.scratch/v2-port/research/17-chat-empty-state.md`: Carbon empty states and Carbon AI
+Chat home-screen guidance, plus WCAG colour/contrast guidance. The chosen layout is a project
+application of that guidance, not a claimed universal rule.
+**Result:** user bubbles use dedicated soft rose colours for both themes, with visible speaker
+labels and existing alignment. One welcome region now sits inside the stable-height empty chat
+viewport with the original scope text and three wrapping starter cards. Selecting a starter still
+only fills the input. The welcome disappears on Send; the composer and AI caution stay below.
+**Iterations:** B-027 records the neutral-primary tint issue. B-028 records the outside-viewport
+empty state and its failing-then-passing screen regression. No backend, model prompt, API contract,
+answer renderer or `.env` change. No extra paid model calls.
+**Validation so far:** fourteen focused screen tests pass, TypeScript is clean and lint has only
+the six existing warnings. Calculated palette contrast exceeds 4.5:1 in both themes. Full frontend
+and review evidence follows in T17. The author still owns visual acceptance.
+**Next:** review the updated chat at http://127.0.0.1:5173/investigator. Nothing pushed.
