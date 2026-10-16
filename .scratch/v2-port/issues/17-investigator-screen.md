@@ -128,3 +128,20 @@ Correction evidence:
 - `git diff --check`: clean. Layout correction committed locally as `f016aa4`. Nothing pushed.
 - Source review and component checks do not establish final pixel proportions or scrolling feel.
   The author's visual acceptance remains pending.
+
+### First author review comment: Send on port 5173, 16 October 2026
+
+The author reported that typing enabled Send but sending did not start a new Investigation.
+Confirmed the author was using the original port 5173 preview, whose proxy target lacked the
+Investigation routes (404). Port 5174 already worked. Restarted the workspace's Vite process on
+5173 with `LI_API_URL=http://127.0.0.1:8002`, preserving the existing API and temporary memory.
+The author's original address now works. See B-024 and P-019.
+
+A full React screen smoke, using real HTTP and a short live model question, passed at the exact
+port 5173 address: typed question appears, input locks, answer is saved, report offer appears and
+input unlocks. No application-code or `.env` change. The normal screen test suite now uses
+StrictMode and includes a manually typed new-question check. Temporary live tests were removed
+so normal tests do not make paid calls. No browser or visual acceptance is claimed.
+
+Current author preview: http://127.0.0.1:5173/investigator. Port 5174 remains available and uses
+the same current API. Further review comments are handled one at a time; T17 remains ready-for-human.

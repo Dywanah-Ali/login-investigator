@@ -339,3 +339,23 @@ keyed by Investigation ID and stable message IDs; all focused screen/renderer te
 **Lesson:** a visual approval includes placement and proportions. Compare the saved prototype
 alongside the written spec before claiming a screen is ready for review.
 **Found by:** the author's screenshot and approved artifact link. Related prompt: P-018.
+
+### B-024 · 2026-10-16 · Send appeared inactive on the original preview address
+
+**Symptom:** the author could type a new question and enable Send on port 5173, but clicking did
+not start an Investigation. The author confirmed the address was `/investigator` on port 5173.
+**Cause:** the old Vite process on 5173 still proxied to an API without the Investigation routes.
+A read-only check returned 404 `not_found` on 5173 and a valid list on 5174. The newer preview was
+working, but supplying a second address had left the original author-facing address broken.
+This is the same preview-version issue observed in B-020, now confirmed on the author's path.
+**Fix:** verified the 5173 process belonged to this workspace, stopped only that Vite process,
+and restarted it with `LI_API_URL=http://127.0.0.1:8002`. Both previews now use the current API.
+No application or secret-file change. Added a permanent component regression for manually typing
+into a new Investigation; this screen suite now runs under StrictMode like the real app.
+**Validation:** typed-question component regression passed before any application change. A live
+full React screen smoke passed through 5174, then passed through repaired 5173: question displayed,
+input locked, live answer saved, report offer appeared and input unlocked. Each live smoke used
+one short question. Temporary live tests were removed from the normal suite afterward.
+**Lesson:** repair and verify the address the author is actually using. A second working preview
+is not a fix for the first one.
+**Found by:** the author's first T17 review comment. Related prompt: P-019.

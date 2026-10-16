@@ -1,6 +1,6 @@
 import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { MemoryRouter, useNavigate, type NavigateFunction } from 'react-router'
 import { afterEach, expect, test, vi } from 'vitest'
 import { InvestigatorPage } from '@/pages/investigator'
@@ -13,7 +13,7 @@ function open(address = '/investigator', onNavigate?: (navigate: NavigateFunctio
     useEffect(() => onNavigate?.(navigate), [navigate])
     return null
   }
-  return render(<MemoryRouter initialEntries={[address]}><InvestigatorPage /><Navigator /></MemoryRouter>)
+  return render(<StrictMode><MemoryRouter initialEntries={[address]}><InvestigatorPage /><Navigator /></MemoryRouter></StrictMode>)
 }
 function api(detail: object = empty) {
   const fetcher = vi.fn(async (url: string, _options?: RequestInit) => Response.json(url === '/api/investigations' ? { investigations: entries } : detail))
@@ -75,6 +75,26 @@ test('create then ask locks input, streams tool progress and text, then redraws 
   expect(screen.getByRole('button', { name: 'Write the incident report' })).toBeInTheDocument()
   expect(screen.queryByText(/I only read:/)).not.toBeInTheDocument()
   view.unmount()
+})
+
+test('typing a question in a new Investigation and clicking Send immediately shows the question', async () => {
+  let stream!: ReadableStreamDefaultController<Uint8Array>
+  vi.stubGlobal('fetch', vi.fn(async (url: string, options?: RequestInit) => {
+    if (url.endsWith('/ask')) return new Response(new ReadableStream({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    if (options?.method === 'POST') return Response.json(empty)
+    if (url === '/api/investigations') return Response.json({ investigations: entries })
+    return Response.json(empty)
+  }))
+  open('/investigator')
+  await userEvent.click(screen.getByRole('button', { name: 'New investigation' }))
+  await userEvent.type(screen.getByRole('textbox', { name: 'Question' }), 'Check the log')
+  await userEvent.click(screen.getByRole('button', { name: 'Send question' }))
+  expect(within(screen.getByRole('region', { name: 'Investigation messages' })).getByText('Check the log')).toBeInTheDocument()
+  await vi.waitFor(() => expect(stream).toBeDefined())
+  await act(async () => {
+    stream.enqueue(new TextEncoder().encode('event: done\ndata: {}\n\n'))
+    stream.close()
+  })
 })
 
 const report = { title: 'Incident <img src=x>', severity: 'high', summary: '**Plain summary**', attacker_ips: ['203.0.113.2'], affected_users: ['alice'], timeline: [{ time_utc: '2026-10-16T08:00:00Z', event: '<script>attack</script>' }], evidence: ['10 failures'], recommended_next_steps: ['Review the account'], number: 1 }

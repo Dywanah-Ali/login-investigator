@@ -389,3 +389,26 @@ reviews are clear. Spec review explicitly checked the saved approved prototype t
 preview serves the corrected route and all new chat modules with 200 responses. No additional
 model request was made. Correction committed locally as `f016aa4`. Visual acceptance remains
 with the author.
+
+### P-019 · 2026-10-16 · First review comment: new Investigation Send
+
+**Prompts, in order:**
+> first of all i cannot really start a new chat with the agent. is that expected ?
+
+> i can write to the prompt field, send button switch to be active. but when i click nothing happens,. the prompt does not even move to the chat
+
+> [http://127.0.0.1:5173/investigator](http://127.0.0.1:5173/investigator)
+
+**Purpose:** handle this first review comment on its own. Diagnose and restore manually typing
+and sending a new Investigation. Do not open `.env`.
+**Result:** reproduced the preview mismatch through HTTP: port 5173's Investigation API returned
+404, while 5174 worked. The user confirmed using 5173. Restarted only this workspace's Vite process
+on 5173, pointing it at the current API on 8002. No application-code change was required.
+**Validation:** component screen suite runs under the real app's StrictMode, with an added typed
+question regression. The full React app with real HTTP and a short live model request passed
+through 5174 before the fix, then passed at the user's repaired 5173 address. Verified immediate
+question display, input locking, saved answer, report offer and unlock. Live checks use the DOM
+test environment, not a browser or visual assertion. No `.env` read, screenshot or comprehensive
+evaluation. Temporary paid-call tests were removed from the normal suite.
+**Next:** author refreshes the original port 5173 page, then provides the next review comment.
+B-024 records the cause and fix. T17 remains ready-for-human. Nothing pushed.
