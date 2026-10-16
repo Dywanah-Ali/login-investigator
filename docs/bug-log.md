@@ -488,3 +488,13 @@ behaviour while retaining deterministic checks for the complete content.
 **B-031 documentation check:** the final evidence append initially used an unavailable `python`
 command. It made no edit. Retried with the installed `python3`; documentation and diff checks
 completed. This was a local tooling invocation issue, with no application impact.
+
+
+### B-032 · 2026-10-16 · Skill validator used Python without PyYAML
+
+**Symptom:** the global skill validator stopped with `ModuleNotFoundError: No module named yaml`.
+**Cause:** system Python did not have the validator's PyYAML dependency.
+**Fix:** ran the same validator with `backend/.venv/bin/python`; it passed. No dependency changes.
+**Lesson:** use an existing environment containing a tooling script's dependencies.
+**Found by:** Context Hub setup, P-026. A documentation patch also failed its context check
+before applying changes; retried with a separate new-file patch and explicit log appends.

@@ -579,3 +579,50 @@ The initial generation wait remains. T17 stays ready-for-human until author acce
 record the dated author acceptance and move the build frontier to T18. No application edits,
 new model calls or test rerun for this documentation update. T18 is not started; comprehensive
 evaluations and final acceptance remain with T18 and T19 respectively. Nothing pushed.
+
+
+### P-026 · 2026-10-16 · Context Hub for Codex
+
+**Initial prompt:**
+> ok install chub locally for this project environment. and install the skill for u and claude globally pls
+
+**Verification prompt:**
+> yes verify first pls
+
+**Final scope, verbatim:**
+> ok install the MCP, and the skill just for codex. claude will handle his part
+
+**Purpose:** give Codex access to Context Hub documentation through MCP and a global companion skill.
+**Result:** installed `@aisuite/chub` 0.1.4 under `tools/context-hub` with a lockfile, separate
+from the application dependencies. Registered the project-local MCP entry point as `chub` in
+Codex's user configuration. Installed the upstream `get-api-docs` skill globally for Codex
+and adapted it to prefer MCP, use the local CLI as fallback, and respect specialized
+official-documentation skills. Telemetry and external feedback are disabled.
+Claude setup remains with the author. No application or spec changes.
+**Evidence:** the published npm archive includes the MCP implementation, correcting the
+initial README-only answer that no official server was documented. A live MCP client
+connected, discovered five tools, searched public documentation (15 matches), and fetched
+`openai/chat` (11,688 characters). The global skill passed the validator with the project's
+Python environment after system Python lacked PyYAML. Codex reports the server enabled.
+**Next:** reload Codex to expose the tools in a new session. Build frontier remains T18.
+Nothing pushed.
+
+
+### P-027 · 2026-10-16 · Share Context Hub across projects
+
+**Prompt:**
+> do it
+
+**Purpose:** accept the recommendation to move Context Hub to a global installation
+and update Codex's MCP registration once for all projects.
+**Result:** installed `@aisuite/chub@0.1.4` globally through npm, updated Codex's
+user MCP registration to the global entry point, and revised the global companion
+skill to use the shared CLI fallback. Telemetry and external feedback stay disabled.
+Removed the superseded project-local package and replaced its setup notes with
+`docs/context-hub.md`. Claude setup remains separately managed.
+**Evidence:** a live client launched the global server from a temporary directory
+outside the project, discovered all five tools, searched documentation (15 matches),
+and fetched `openai/chat` (11,688 characters). Skill validation passed and Codex's
+registration points to the global package. No application changes or push.
+**Next:** reload Codex. No per-project installation is needed. A future Node.js
+version change may require reinstalling the global package and updating registration.
