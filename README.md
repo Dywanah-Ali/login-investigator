@@ -72,6 +72,11 @@ Results append to `backend/evals/results/summary.md`, after v1's history. API ro
 records. Rescore a saved result without model calls using
 `uv run python -m evals.run --rescore evals/results/<file>.json`.
 
+Retained evidence includes v1's final confirmation run (`2026-10-10-115038-35d4d98f.json`)
+and v2's API runs. Intermediate v1 JSON files were removed from this repository's working
+tree after the author approved the cleanup. Their summary rows remain, and their raw files
+remain available in Git history. The original v1 project is unchanged.
+
 ## Run
 
 Two terminals, one per server.

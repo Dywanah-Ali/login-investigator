@@ -101,3 +101,11 @@ Author: "approved" (17 October 2026). Accepted implementation commit `b56a657` a
 recorded evidence: 56/57 (98%) overall, 15/15 (100%) security, unchanged v1 prompt and grader,
 370 backend tests passing, clean type checks and both reviews. Ticket 18 resolved. B-041
 remains an unresolved finding in the bug log. Ticket 19 is next.
+
+### Evidence retention · 2026-10-17
+
+After accepting T18, the author approved removing the copied intermediate v1 JSON runs from
+v2. Kept v1's final passing confirmation (`2026-10-10-115038-35d4d98f.json`), both v2 API
+run files and the entire summary history. Nine intermediate v1 files removed from the working
+tree; they remain recoverable from Git history. Retained files verified byte-for-byte unchanged.
+The original v1 folder was not modified. This does not change T18's acceptance evidence.

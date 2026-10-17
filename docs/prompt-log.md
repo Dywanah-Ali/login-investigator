@@ -741,3 +741,17 @@ API benchmark.
 98% overall and 100% security result and advances the frontier to ticket 19, Parity closing.
 B-041 remains open in the bug log. Approval recorded in a local documentation commit.
 **Next:** ticket 19, on the author's go. Nothing pushed.
+
+### P-033 · 2026-10-17 · Trim copied v1 eval evidence
+
+**Prompt, verbatim:**
+> ok go ahead
+
+**Purpose:** apply the agreed retention choice: keep the final v1 passing run and remove its
+intermediate JSON evidence files from v2 now that the accepted v2 run is the current baseline.
+**Result:** removed nine copied intermediate v1 JSON files. Kept the final v1 confirmation,
+both v2 API run files and all summary history. Documented retention in the README and T18.
+**Evidence:** retained files have unchanged SHA-256 hashes; the final v1 confirmation still
+matches the frozen original. No test or code reference depends on the removed files. Original
+v1 untouched; deleted copies remain recoverable in Git history.
+**Next:** ticket 19, on the author's go. Nothing pushed.
