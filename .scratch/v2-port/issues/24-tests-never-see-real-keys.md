@@ -1,6 +1,6 @@
 # 24: Tests never see the real keys
 
-**Status:** ready-for-human (build done 2026-10-17, waiting for the author's review)
+**Status:** resolved
 **Blocked by:** none
 
 ## Scope
@@ -52,3 +52,7 @@ no key there to leak. Bug log B-036, prompt P-029.
 2026-10-17: two-axis review. Standards: no rule broken; it asked that the boolean-only assertions
 be explained, now in the test file's docstring. Spec: the module-scope hole above, fixed and
 re-tested. The author chose to review and merge the ticket ("1").
+
+2026-10-17: status set to `resolved` on that choice. Replayed on top of ticket 22 and merged into
+`main` locally. With both tickets together: 359 backend tests pass, Pyright 0 errors, eval prompt
+fingerprint `35d4d98f`. Nothing pushed.

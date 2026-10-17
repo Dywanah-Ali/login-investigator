@@ -73,6 +73,8 @@ contract, and the seams.
 
 - [The agent's tools follow the settings](issues/22-agent-tools-follow-settings.md): startup hands the loaded log, findings and reputation folder to the agent's tools, so the screens and the agent read the same data; a log that fails validation makes the log tools refuse instead of falling back. Design chosen on researched evidence; 356 backend tests and Pyright passed; two-axis review fixes applied. Author approved on 17 October 2026.
 
+- [Tests never see the real keys](issues/24-tests-never-see-real-keys.md): found during ticket 22. One guard for the whole test run switches off `.env` loading and removes both key names, so no test can spend real quota or send log IPs out; the app and eval runner still load `.env`. A spec-review hole for apps shared by a module was fixed. 359 backend tests and Pyright passed. Author chose review and merge on 17 October 2026.
+
 - [Investigator screen](issues/17-investigator-screen.md): approved second-column layout, distinct user messages, in-chat welcome and starters, tool-call counts, stable first-question handover, centred Send and gradual report reveal matched to observed answer pace. All 114 frontend tests pass; Standards and Spec reviews clear. Author accepted the live screen on 16 October 2026.
 
 ## Not yet specified
@@ -84,7 +86,7 @@ contract, and the seams.
   resolved following the author's approval on 16 October 2026. Frontend warnings stay separate.
   Ticket 17 is resolved following the author’s live screen acceptance on 16 October 2026.
   Ticket 22, which blocked ticket 18, is resolved following the author's approval on 17 October
-  2026. Ticket 24, real keys kept out of test runs, waits for its review.
+  2026. Ticket 24, real keys kept out of test runs, is resolved the same day.
   The next build work is ticket 18; it has not started.
 
 ## Out of scope
