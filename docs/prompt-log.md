@@ -648,6 +648,22 @@ recommended fixes. Bugs B-033, B-034 and B-035.
 **Next:** the author reviews ticket 22. Ticket 18 follows.
 
 
+### P-029 · 2026-10-17 · Tests never see the real keys
+
+**Prompt, verbatim:**
+> "Noticed, out of scope. During the reputation test, an AbuseIPDB key appeared in the test environment even though the test had removed it. Startup most likely loads it from .env. The test guard blocked the live call. But tests can see your real key, so this deserves its own ticket." fix it pls
+
+**Purpose:** seal the test run from the real keys in `.env`, raised as an out-of-scope finding
+during ticket 22.
+**Result:** ticket 24 on branch `ticket-24-tests-never-see-real-keys`, from `main`. Reproduced
+first: after one app start, both key names were set. One automatic guard in a new
+`backend/conftest.py`; the copied v1 files unchanged. Bug B-036. Numbered P-029 because ticket
+22's branch holds P-028.
+**Evidence:** the reproduction test fails before the fix and passes after; 352 backend tests
+pass; Pyright 0 errors with the new file checked (47 files instead of 46).
+**Next:** the author reviews ticket 24.
+
+
 ### P-030 · 2026-10-17 · Approve ticket 22
 
 **Prompt:**

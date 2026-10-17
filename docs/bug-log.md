@@ -541,3 +541,18 @@ regression test `test_a_startup_that_fails_leaves_nothing_behind` was seen faili
 of 1,856) with the hand-over put back at its old place, then passing. Space restored.
 **Lesson:** shared state set during startup goes in last, after every step that can fail.
 **Found by:** two-axis review of ticket 22, prompt P-028.
+
+### B-036 · 2026-10-17 · Tests could see the real API keys
+
+**Symptom:** a ticket-22 test removed the AbuseIPDB key, yet after the app started it was set
+again, and only the test's network guard stopped a live call. A reproduction test confirmed both
+the OpenRouter and the AbuseIPDB key names were set after one app start.
+**Cause:** building the model calls `load_dotenv`, which copies `.env` into the process
+environment. Every API test builds the model at startup, and the keys then stayed for the rest of
+the run.
+**Fix:** an automatic guard in a new `backend/conftest.py` switches off `.env` loading and removes
+both key names before every test. The copied v1 files are unchanged.
+**Lesson:** a test run must be sealed from real secrets by default, not by each test remembering
+to remove them.
+**Found by:** ticket 22's reputation test; fixed in ticket 24, prompt P-029. Numbered B-036
+because ticket 22's branch holds B-033 to B-035.
