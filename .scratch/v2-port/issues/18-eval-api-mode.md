@@ -9,7 +9,7 @@ reputation folder; author's ruling, 14 Oct). Both resolved; 22 on 17 Oct. The ru
 never hands a dataset to the tools, so it keeps reading the default log; the API mode goes
 through startup and follows `LI_LOG_PATH` and `LI_REPUTATION_DIR`.
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Spec: [spec.md](../spec.md), "Testing Decisions". Contract: "What the eval runner's API mode drives".
 
@@ -93,4 +93,11 @@ preserved in B-040. The failed Q02 run remains in the benchmark; no replacement 
 - Standards review: **0 findings**. Spec review: **0 findings**.
 - `git diff --check`: passed. Agent core diff from `84065b9`: empty.
 
-Implementation complete. Awaiting the author's review before resolution. Nothing pushed.
+Implementation complete. Author approved on 17 October 2026. Nothing pushed.
+
+## Answer
+
+Author: "approved" (17 October 2026). Accepted implementation commit `b56a657` and the
+recorded evidence: 56/57 (98%) overall, 15/15 (100%) security, unchanged v1 prompt and grader,
+370 backend tests passing, clean type checks and both reviews. Ticket 18 resolved. B-041
+remains an unresolved finding in the bug log. Ticket 19 is next.

@@ -77,20 +77,23 @@ contract, and the seams.
 
 - [Investigator screen](issues/17-investigator-screen.md): approved second-column layout, distinct user messages, in-chat welcome and starters, tool-call counts, stable first-question handover, centred Send and gradual report reveal matched to observed answer pace. All 114 frontend tests pass; Standards and Spec reviews clear. Author accepted the live screen on 16 October 2026.
 
+- [Eval set in API mode](issues/18-eval-api-mode.md): real HTTP benchmark with v1's final prompt and unchanged grader passed at 56/57 (98%) overall and 15/15 (100%) security; 370 backend tests and type checks pass; both reviews clear. Author approved on 17 October 2026. One failed stream remains logged as B-041.
+
 ## Not yet specified
 
 - Nothing. The map is complete (14 October 2026): every decision the spec needs is recorded.
   Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
-  `issues/19` written by `/mp-to-tickets`. Tickets 10–17 are resolved. The build frontier is ticket 18, Eval runner in API mode.
+  `issues/19` written by `/mp-to-tickets`. Tickets 10–18 are resolved. The build frontier is
+  [ticket 19, Parity closing](issues/19-parity-closing.md).
   The targeted B-014 disconnect follow-up, [ticket 23](issues/23-disconnect-handling.md), is also
   resolved following the author's approval on 16 October 2026. Frontend warnings stay separate.
   Ticket 17 is resolved following the author’s live screen acceptance on 16 October 2026.
   Ticket 22, which blocked ticket 18, is resolved following the author's approval on 17 October
   2026. Ticket 24, real keys kept out of test runs, is resolved the same day.
-  Ticket 18 is implemented and `ready-for-human`: the full API benchmark passed at 56/57
+  Ticket 18 is resolved following the author's approval on 17 October 2026: the full API benchmark passed at 56/57
   (98%) overall and 15/15 (100%) security, with v1's final prompt and unchanged grader.
   370 backend tests, type checks and both reviews pass. One failed stream is retained in
-  the score and logged as B-041. Author review is next; ticket 19 follows acceptance of 18.
+  the score and logged as B-041. Ticket 19 is unblocked and has not started.
 
 ## Out of scope
 

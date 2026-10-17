@@ -729,3 +729,15 @@ No substitute run, prompt change or grader change. Verified unchanged v1 benchma
 unchanged agent core, preserved summary history and absence of loaded keys from run files.
 Ticket 18 is `ready-for-human`; map updated. Local commit follows, as requested by implement.
 **Next:** author review of ticket 18, then ticket 19. Nothing pushed.
+
+### P-032 · 2026-10-17 · Approve ticket 18
+
+**Prompt, verbatim:**
+> approved
+
+**Purpose:** accept ticket 18 after implementation, automated checks, reviews and the full
+API benchmark.
+**Result:** author accepted `b56a657`. Ticket 18 set to `resolved`; the map records the
+98% overall and 100% security result and advances the frontier to ticket 19, Parity closing.
+B-041 remains open in the bug log. Approval recorded in a local documentation commit.
+**Next:** ticket 19, on the author's go. Nothing pushed.
