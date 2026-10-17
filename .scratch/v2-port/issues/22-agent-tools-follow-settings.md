@@ -6,7 +6,7 @@ those settings. The screens and the agent can never answer about different logs.
 
 **Blocked by:** 12 (API foundation and the Overview endpoint).
 
-**Status:** ready-for-human (build done 2026-10-17, waiting for the author's review)
+**Status:** resolved
 
 Raised by: the review of ticket 12, decided by the author on 14 Oct: a ticket of its own, done
 before ticket 18 (the eval runner's API mode), which is now blocked by this one.
@@ -62,3 +62,7 @@ tool calls (low risk under a graceful shutdown); with a broken log and a bad tim
 window error is returned first. `tools.py` stays on Pyright's "not yet checked" list; checked
 alone, it shows only v1's three old errors, none in the new code. Status `ready-for-human` until
 the author reviews.
+
+2026-10-17: the author approved ("ok T22 is approved"). Status set to `resolved`. Merged into
+`main` locally; nothing pushed. Ticket 18 is unblocked. The follow-up found during this ticket,
+real keys visible to tests, is ticket 24.

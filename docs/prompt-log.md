@@ -646,3 +646,16 @@ recommended fixes. Bugs B-033, B-034 and B-035.
 **Evidence:** 356 backend tests pass; Pyright 0 errors; the eval prompt fingerprint is
 `35d4d98f` before and after, so the model sees the same tools.
 **Next:** the author reviews ticket 22. Ticket 18 follows.
+
+
+### P-030 · 2026-10-17 · Approve ticket 22
+
+**Prompt:**
+> ok T22 is approved
+
+**Purpose:** accept ticket 22 after the build, the review fixes, and the check that ticket 24's
+review is not needed first.
+**Result:** ticket 22 set to `resolved`, ticket 18's blocker noted as cleared, the map updated,
+and the branch merged into `main` locally. Numbered P-030 because ticket 24's branch holds P-029.
+Nothing pushed.
+**Next:** the two-axis review of ticket 24, then its merge. Ticket 18 after that.

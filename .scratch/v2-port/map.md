@@ -71,6 +71,8 @@ contract, and the seams.
 
 - [Clean disconnect handling](issues/23-disconnect-handling.md): the ask route handles the known FastAPI queue-close error after a confirmed disconnect while preserving genuine failures. 351 backend tests and Pyright passed; both reviews found no issues. Author approved on 16 October 2026.
 
+- [The agent's tools follow the settings](issues/22-agent-tools-follow-settings.md): startup hands the loaded log, findings and reputation folder to the agent's tools, so the screens and the agent read the same data; a log that fails validation makes the log tools refuse instead of falling back. Design chosen on researched evidence; 356 backend tests and Pyright passed; two-axis review fixes applied. Author approved on 17 October 2026.
+
 - [Investigator screen](issues/17-investigator-screen.md): approved second-column layout, distinct user messages, in-chat welcome and starters, tool-call counts, stable first-question handover, centred Send and gradual report reveal matched to observed answer pace. All 114 frontend tests pass; Standards and Spec reviews clear. Author accepted the live screen on 16 October 2026.
 
 ## Not yet specified
@@ -81,6 +83,8 @@ contract, and the seams.
   The targeted B-014 disconnect follow-up, [ticket 23](issues/23-disconnect-handling.md), is also
   resolved following the author's approval on 16 October 2026. Frontend warnings stay separate.
   Ticket 17 is resolved following the author’s live screen acceptance on 16 October 2026.
+  Ticket 22, which blocked ticket 18, is resolved following the author's approval on 17 October
+  2026. Ticket 24, real keys kept out of test runs, waits for its review.
   The next build work is ticket 18; it has not started.
 
 ## Out of scope

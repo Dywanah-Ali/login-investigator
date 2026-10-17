@@ -5,7 +5,9 @@ its own server, drives the Investigation endpoints for every question and the re
 the unchanged grader, and records the run in a results table that begins with v1's history.
 
 **Blocked by:** 16 (Investigations API), 22 (The agent's tools follow the configured log and
-reputation folder; author's ruling, 14 Oct).
+reputation folder; author's ruling, 14 Oct). Both resolved; 22 on 17 Oct. The runner's direct mode
+never hands a dataset to the tools, so it keeps reading the default log; the API mode goes
+through startup and follows `LI_LOG_PATH` and `LI_REPUTATION_DIR`.
 
 **Status:** ready-for-agent
 
