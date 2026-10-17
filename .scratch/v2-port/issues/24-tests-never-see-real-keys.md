@@ -18,23 +18,37 @@ core and `tests/conftest.py` stay unchanged.
 
 ## Approach
 
-One automatic guard for every test, in a new `backend/conftest.py` beside the copied v1
-`tests/conftest.py`: `.env` loading is switched off and both key names are removed before each
-test. A test that needs a key sets a fake one itself, as the existing tests already do.
+One guard for the whole test run, in a new `backend/conftest.py` beside the copied v1
+`tests/conftest.py`. It starts when pytest starts, before any fixture of any scope and before any
+test module is imported: `.env` loading is switched off and both key names are removed. It is
+undone when pytest ends. A test that needs a key sets a fake one itself, as the existing tests
+already do.
+
+The first version guarded each test only. The spec review found that apps shared by a whole test
+module start before such a guard, so they still built a model with the real OpenRouter key
+(B-036). The guard moved to pytest's start.
 
 ## Acceptance
 
 - [x] Reproduced before the fix: after one app start in a test, both key names were set
   - Evidence: `tests/test_no_real_keys.py` failed with `(True, True) == (False, False)`. Only
     whether each name is set was checked; no value was printed
-- [x] After the fix, starting the app puts no key into the test environment. Test
-  - Evidence: the same test passes
+- [x] After the fix, no app started by the tests gets a key, including apps shared by a module,
+  and building the model finds no key. Test
+  - Evidence: `test_an_app_shared_by_a_module_gets_no_model_key` failed against the per-test
+    guard (the shared app had a model) and passes with the run-wide guard. The other two tests in
+    the file pass. With fake keys set in the terminal before pytest starts, all three still pass
 - [x] Every existing test passes unchanged; the copied v1 files are untouched
-  - Evidence: full backend suite 352 passed (351 on `main` plus the new test); `tests/conftest.py`
-    and `login_investigator/agent.py` unchanged in the diff
+  - Evidence: full backend suite 354 passed (351 on `main` before ticket 22, plus three new
+    tests); `tests/conftest.py` and `login_investigator/agent.py` unchanged in the diff
 - [x] The new file is type-checked
   - Evidence: `conftest.py` added to Pyright's `include`; Pyright checks 47 files instead of 46,
     0 errors
 
 Notes: the AbuseIPDB-key removals inside individual tests stay; they now repeat the guard, which
-is harmless. Bug log B-036, prompt P-029.
+is harmless. On a machine without `.env`, as in a fresh clone, the tests pass either way: there is
+no key there to leak. Bug log B-036, prompt P-029.
+
+2026-10-17: two-axis review. Standards: no rule broken; it asked that the boolean-only assertions
+be explained, now in the test file's docstring. Spec: the module-scope hole above, fixed and
+re-tested. The author chose to review and merge the ticket ("1").

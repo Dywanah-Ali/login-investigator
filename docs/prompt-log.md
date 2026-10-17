@@ -661,7 +661,11 @@ first: after one app start, both key names were set. One automatic guard in a ne
 22's branch holds P-028.
 **Evidence:** the reproduction test fails before the fix and passes after; 352 backend tests
 pass; Pyright 0 errors with the new file checked (47 files instead of 46).
-**Next:** the author reviews ticket 24.
+**Follow-up prompts:** after approving ticket 22 (P-030), the author asked what ticket 24 was for
+and to be told in plain English, then chose "1": review and merge it now. The spec review found
+the module-scope hole (B-036); the guard moved to pytest's start. 354 backend tests pass; Pyright
+0 errors.
+**Next:** merged into `main` locally after the review. Ticket 18 next.
 
 
 ### P-030 · 2026-10-17 · Approve ticket 22

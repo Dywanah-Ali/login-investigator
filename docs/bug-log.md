@@ -550,9 +550,17 @@ the OpenRouter and the AbuseIPDB key names were set after one app start.
 **Cause:** building the model calls `load_dotenv`, which copies `.env` into the process
 environment. Every API test builds the model at startup, and the keys then stayed for the rest of
 the run.
-**Fix:** an automatic guard in a new `backend/conftest.py` switches off `.env` loading and removes
-both key names before every test. The copied v1 files are unchanged.
+**Fix, first attempt:** an automatic guard in a new `backend/conftest.py` switched off `.env`
+loading and removed both key names before every test.
+**Review finding:** apps shared by a whole test module (the dashboard and error tests) start
+before a per-test guard. They still built a model with the real OpenRouter key and put both keys
+back into the environment between tests. A probe by the spec reviewer showed it, and a new test
+failed on it.
+**Fix:** the guard now starts when pytest starts, before any fixture or test module, and is undone
+when pytest ends. Checked again with fake keys set in the terminal. The copied v1 files are
+unchanged.
 **Lesson:** a test run must be sealed from real secrets by default, not by each test remembering
-to remove them.
+to remove them. A guard must start before the earliest thing it guards: in pytest, the widest
+fixture scope runs first.
 **Found by:** ticket 22's reputation test; fixed in ticket 24, prompt P-029. Numbered B-036
 because ticket 22's branch holds B-033 to B-035.
