@@ -498,3 +498,46 @@ completed. This was a local tooling invocation issue, with no application impact
 **Lesson:** use an existing environment containing a tooling script's dependencies.
 **Found by:** Context Hub setup, P-026. A documentation patch also failed its context check
 before applying changes; retried with a separate new-file patch and explicit log appends.
+
+
+### B-033 · 2026-10-17 · The agent's tools ignored the log and reputation settings
+
+**Symptom:** with `LI_LOG_PATH` pointing at a three-row log, the Overview counted 3 sign-ins while
+the agent's `search_logins` tool counted 1,856, the default log. Reproduced end to end by the first
+ticket-22 test, before any fix.
+**Cause:** `tools.py` loaded its own copy of the default log and called the reputation lookup with
+its default folder. Only the dashboards followed the settings. Known since the ticket-12 review.
+**Fix:** startup hands the loaded frame, findings and reputation folder to the tools through
+`tools.use_dataset`; a failed log makes the log tools refuse instead of falling back.
+**Lesson:** two readers of one dataset must receive it from one place, or nothing guarantees they
+agree.
+**Found by:** ticket-12 review; fixed in ticket 22, prompt P-028.
+
+### B-034 · 2026-10-17 · Ticket 22 build: a name collision and a test-order leak
+
+**Symptom 1:** after the first change, 14 copied tool tests failed even when run alone, with
+`'function' object has no attribute 'findings'`.
+**Cause 1:** the new module variable was named `_given`. `tools.py` already defines a helper
+function `_given` further down, which silently replaced the variable when the module loaded.
+**Fix 1:** renamed the variable `_loaded`. All 23 copied tool tests pass alone.
+**Symptom 2:** run after the new test, 6 copied tool tests still failed: they saw the new test's
+three-row log.
+**Cause 2:** the dataset handed to the tools outlived the app that handed it over. The research
+note predicted this risk of design A.
+**Fix 2:** `tools.forget_dataset()` runs when the app shuts down, guarded by its own test.
+**Lesson:** module-level state needs a name search before it is added, and a reset tied to the
+lifetime of whatever set it.
+**Found by:** TDD, ticket 22, prompt P-028.
+
+### B-035 · 2026-10-17 · A failed startup could leave its log with the tools
+
+**Symptom:** none seen yet; found by the spec review. If startup failed after the hand-over, for
+example when the memory file could not open, the tools kept that run's log for every later test.
+A second slip: an edit removed a space, leaving `memory =investigations.open_memory(...)`.
+**Cause:** the hand-over sat before the memory and agent steps. A startup that fails never
+reaches shutdown, so `forget_dataset` never ran. The space was lost in an exact-text edit.
+**Fix:** the hand-over is now the last step of `start()`, and `services.stop()` undoes it. The
+regression test `test_a_startup_that_fails_leaves_nothing_behind` was seen failing (3 rows instead
+of 1,856) with the hand-over put back at its old place, then passing. Space restored.
+**Lesson:** shared state set during startup goes in last, after every step that can fail.
+**Found by:** two-axis review of ticket 22, prompt P-028.

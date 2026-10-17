@@ -626,3 +626,23 @@ and fetched `openai/chat` (11,688 characters). Skill validation passed and Codex
 registration points to the global package. No application changes or push.
 **Next:** reload Codex. No per-project installation is needed. A future Node.js
 version change may require reinstalling the global package and updating registration.
+
+
+### P-028 · 2026-10-17 · Ticket 22: the agent's tools follow the settings
+
+**Prompts, verbatim:**
+> /mp-implement T22
+
+> i lean toward option A as well, but this ticket is very critical so i want to do a lil research for tyhe best practice first pls
+
+**Purpose:** close the gap where the agent's tools read the default log and reputation folder
+while the dashboards follow the settings, with the design chosen on researched evidence.
+**Result:** a background research agent compared five designs against the official LangChain,
+LangGraph and FastAPI docs and the installed library code (`research/22-tool-data-injection.md`).
+The author chose design A with guards, ruled that a failed log makes the log tools refuse, and
+approved five test points. Built test-first in four slices on branch
+`ticket-22-tools-follow-settings`. A two-axis review followed; the author chose to apply all six
+recommended fixes. Bugs B-033, B-034 and B-035.
+**Evidence:** 356 backend tests pass; Pyright 0 errors; the eval prompt fingerprint is
+`35d4d98f` before and after, so the model sees the same tools.
+**Next:** the author reviews ticket 22. Ticket 18 follows.
