@@ -1,7 +1,7 @@
 import { ApiFailure, request } from '@/lib/api'
 
 export type InvestigationEntry = { id: string; started_at: string; first_question: string }
-export type ToolView = { title: string; asked: string; found: string; columns: string[]; rows: Record<string, unknown>[] | null; raw: string }
+export type ToolView = { name: string; args: Record<string, unknown>; title: string; asked: string; found: string; columns: string[]; rows: Record<string, unknown>[] | null; raw: string }
 export type IncidentReport = {
   title: string; severity: 'none' | 'low' | 'medium' | 'high' | 'critical'; summary: string
   attacker_ips: string[]; affected_users: string[]; timeline: { time_utc: string; event: string }[]

@@ -67,7 +67,8 @@ def turn_views(turns: list[agent.Turn]) -> list[dict]:
         tools = []
         for use in turn.tools:
             view = tool_views.describe(use.name, use.args, use.result)
-            tools.append({"title": view.title, "asked": view.asked, "found": view.found,
+            tools.append({"name": use.name, "args": use.args,
+                          "title": view.title, "asked": view.asked, "found": view.found,
                           "columns": list(view.rows.columns) if view.rows is not None else [],
                           "rows": json.loads(cast(str, view.rows.to_json(orient="records")))
                           if view.rows is not None else None,

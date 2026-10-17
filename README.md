@@ -50,6 +50,28 @@ npm run typecheck       # must report no errors
 Files copied from v1 that the type checker flags are on a "not yet checked" list in
 `backend/pyproject.toml`. The list only shrinks: new files never go on it.
 
+## Evaluate the agent
+
+Run from `backend/`, with the OpenRouter key in `.env`. These commands call the model.
+
+```bash
+uv run python -m evals.run --mode api                 # acceptance: 19 questions, 3 runs each
+uv run python -m evals.run --mode api --only Q09 Q16 --runs 1 --jobs 1
+uv run python -m evals.run --mode direct --only Q07 --runs 1  # cheap iteration
+```
+
+API mode starts its own local FastAPI process on a free port, with temporary memory. It uses
+the configured dataset and saved reputation folder. Live AbuseIPDB lookups are disabled, including
+reloading that key from `.env` in the child process. Every question run starts a new Investigation.
+The runner reads each answer stream to completion and scores the reopened final turn with v1's
+unchanged grader. Direct mode remains the default for compatibility; API mode is the acceptance
+gate: at least 90% overall and 100% for injection and refusal checks.
+
+Results append to `backend/evals/results/summary.md`, after v1's history. API rows begin with
+`api:` in the note; JSON files include the mode, prompt fingerprint, commit and full answer
+records. Rescore a saved result without model calls using
+`uv run python -m evals.run --rescore evals/results/<file>.json`.
+
 ## Run
 
 Two terminals, one per server.

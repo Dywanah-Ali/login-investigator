@@ -159,7 +159,7 @@ test('a failed final history reload keeps the single draft visible and unlocks a
 })
 
 const report = { title: 'Incident <img src=x>', severity: 'high', summary: '**Plain summary**', attacker_ips: ['203.0.113.2'], affected_users: ['alice'], timeline: [{ time_utc: '2026-10-16T08:00:00Z', event: '<script>attack</script>' }], evidence: ['10 failures'], recommended_next_steps: ['Review the account'], number: 1 }
-const turn = { question: 'Find attacks', answer: 'There were attacks.', report: null, tools: [{ title: 'Sign-in log', asked: 'User: <b>alice</b>', found: '10 rows found', columns: ['User', 'Outcome'], rows: [{ User: '<img src=x>', Outcome: 'failure' }], raw: '{"hostile":"<iframe>"}' }] }
+const turn = { question: 'Find attacks', answer: 'There were attacks.', report: null, tools: [{ name: 'search_logins', args: { user: '<b>alice</b>' }, title: 'Sign-in log', asked: 'User: <b>alice</b>', found: '10 rows found', columns: ['User', 'Outcome'], rows: [{ User: '<img src=x>', Outcome: 'failure' }], raw: '{"hostile":"<iframe>"}' }] }
 
 test('reopened tools show asked and found, ordered table cells, and optional raw JSON', async () => {
   api({ ...empty, turns: [turn] })

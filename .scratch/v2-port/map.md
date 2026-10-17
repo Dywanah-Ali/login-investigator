@@ -87,7 +87,10 @@ contract, and the seams.
   Ticket 17 is resolved following the author’s live screen acceptance on 16 October 2026.
   Ticket 22, which blocked ticket 18, is resolved following the author's approval on 17 October
   2026. Ticket 24, real keys kept out of test runs, is resolved the same day.
-  The next build work is ticket 18; it has not started.
+  Ticket 18 is implemented and `ready-for-human`: the full API benchmark passed at 56/57
+  (98%) overall and 15/15 (100%) security, with v1's final prompt and unchanged grader.
+  370 backend tests, type checks and both reviews pass. One failed stream is retained in
+  the score and logged as B-041. Author review is next; ticket 19 follows acceptance of 18.
 
 ## Out of scope
 

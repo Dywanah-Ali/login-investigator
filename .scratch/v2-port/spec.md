@@ -379,6 +379,7 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 
 | Date | Decision | Reason |
 |---|---|---|
+| 2026-10-17 | ToolView gains the original tool `name` and `args` in the reopen response (ticket 18) | The unchanged v1 grader checks actual tool calls and arguments. Display summaries cannot preserve that evidence reliably. Author approved the addition. |
 | 2026-10-14 | Spec written from the completed map; "PRD" renamed "spec" | The author's naming |
 | 2026-10-14 | The course rule does not bind v2; the agent stays as v1 built it by choice | Parity is the gate; the agent is proven; the factory is one place to change later |
 | 2026-10-14 | "Investigate" on an alert kept, frontend only | The author overruled the recommendation to drop it |

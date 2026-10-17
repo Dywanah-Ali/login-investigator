@@ -564,3 +564,70 @@ to remove them. A guard must start before the earliest thing it guards: in pytes
 fixture scope runs first.
 **Found by:** ticket 22's reputation test; fixed in ticket 24, prompt P-029. Numbered B-036
 because ticket 22's branch holds B-033 to B-035.
+
+### B-037 · 2026-10-17 · API tool evidence cannot feed the unchanged grader
+
+**Symptom:** ticket 18 requires the unchanged grader to check tool names and exact arguments,
+but the reopen endpoint returns only the ToolView presentation fields.
+**Cause:** the API contract preserved readable evidence but omitted the original call metadata.
+Display strings cannot reliably reconstruct arguments, especially failed calls and date filters.
+**Fix:** author approved adding `name` and `args` to ToolView. Recorded in the contract and spec
+before the route change. The HTTP evidence test failed without these fields, then passed with
+the original call metadata returned. The API runner now feeds those fields to the unchanged grader.
+**Lesson:** preserve original evidence when a consumer must verify exact actions. A readable
+summary is not a replacement for the source call.
+**Found by:** ticket 18 implementation, prompt P-031.
+
+### B-038 · 2026-10-17 · First eval mode label broke the copied rescore test
+
+**Symptom:** the copied rescore test failed because `| test |` became `| direct: test |`.
+**Cause:** the first implementation prefixed every summary note with its transport mode.
+**Fix:** preserve direct-mode notes exactly; prefix only API notes with `api:`. JSON records carry
+an explicit `mode`, and rescore preserves that mode. All 36 unchanged scoring tests plus the
+new saved-result security test pass.
+**Lesson:** check compatibility through the existing interface before broadening a saved format.
+**Found by:** focused tests, ticket 18, prompt P-031.
+
+### B-039 · 2026-10-17 · Eval tests and runner use different HTTP client types
+
+**Symptom:** Pyright reported four errors when the API runner tests passed Starlette's
+TestClient to a parameter annotated as `httpx.Client`, even though the HTTP tests passed.
+**Cause:** the installed Starlette test client uses HTTPX2. It is no longer a subclass of
+HTTPX's Client, but provides the same HTTP operations the runner needs.
+**Fix:** a small `HttpClient` protocol describes only post, get and stream. Production uses
+HTTPX; HTTP API tests use Starlette's test client. Pyright passes without suppressing errors
+or introducing test dependencies into production.
+**Lesson:** describe the interface a boundary needs rather than claiming one specific client
+implementation when multiple clients supply it.
+**Found by:** type checking, ticket 18, prompt P-031.
+
+### B-040 · 2026-10-17 · Eval startup deadline too short on a busy host
+
+**Symptom:** the first full API benchmark stopped before any question with a readiness timeout;
+the preceding two-question smoke passed. No score or result file was produced for this attempt.
+**Cause:** readiness was capped at 30 seconds while backend tests and type checking were also
+running. The host load average was 28.18, and both Python processes were competing for CPU.
+Startup imports the model stack and runs the detection rules before accepting requests.
+**Fix:** allow a bounded 120 seconds for startup, still fail immediately if the child exits,
+and retry the full benchmark after the competing checks finish. The same prompt and grader
+remain in use. Full benchmark evidence recorded in ticket 18.
+**Lesson:** account for measured startup work and host contention in readiness deadlines; do
+not confuse failure to start with an agent answer that failed its checks.
+**Found by:** full API benchmark attempt, ticket 18, prompt P-031.
+
+### B-041 · 2026-10-17 · One failed stream in the full API benchmark
+
+**Symptom:** Q02 run 2 in the full 19 x 3 API benchmark failed with
+`RuntimeError: The agent stream failed or ended without done.` The other two Q02 runs passed.
+The complete benchmark met the gate at 56/57 (98%) overall and 15/15 (100%) security.
+**Cause:** not established. This message covers an explicit API stream error or an incomplete
+stream. The child server's raw error logs are suppressed to keep provider details and keys
+out of eval artifacts, so this run cannot identify the underlying exception. It is not evidence
+that the model gave a wrong password-spraying answer.
+**Fix/status:** unresolved. The runner correctly counted the entire run as failed; it did not
+score an older saved answer or substitute a retry. No application or prompt change made for
+this finding. Any follow-up needs safe diagnostics and reproduction.
+**Lesson:** report transport failures separately from wrong answers while keeping both in the
+overall reliability score. A passing aggregate gate does not mean every request succeeded.
+**Evidence:** `backend/evals/results/2026-10-17-185622-35d4d98f.json`, Q02 run 2.
+**Found by:** full API benchmark, ticket 18, prompt P-031.

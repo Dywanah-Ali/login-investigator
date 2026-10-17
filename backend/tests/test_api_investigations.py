@@ -85,7 +85,9 @@ def test_ask_streams_then_reopen_shows_the_saved_answer_and_tool_evidence(client
     assert turn["answer"] == "**150** failures, then one success."
     assert turn["report"] is None
     [tool] = turn["tools"]
-    assert set(tool) == {"title", "asked", "found", "columns", "rows", "raw"}
+    assert set(tool) == {"name", "args", "title", "asked", "found", "columns", "rows", "raw"}
+    assert tool["name"] == "search_logins"
+    assert tool["args"] == {"ip": "185.218.86.24"}
     assert tool["title"] == "Sign-in search"
     assert tool["asked"] == "IP 185.218.86.24, all times"
     assert tool["found"].startswith("151 events: 150 failed, 1 succeeded")

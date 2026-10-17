@@ -256,6 +256,8 @@ reaches the core):
 
 ```json
 {
+  "name": "search_logins",                  // original tool name, for eval evidence
+  "args": {"ip": "185.218.86.24"},           // original arguments, unchanged
   "title": "Detection rules",               // fixed text from the core's TITLES
   "asked": "…",                             // written by the core from the call's arguments
   "found": "…",                             // written by the core from the result
@@ -268,6 +270,9 @@ reaches the core):
 `columns` keeps the table's column order. `rows` is the pandas table as records; `null` when the
 core gives none. Log values inside `asked`, `found` and `rows` are shown as text content or table
 cells only.
+
+`name` and `args` preserve the original tool call so the eval runner can use v1's unchanged
+grader without reconstructing arguments from display text (author approved, ticket 18).
 
 **IncidentReport** is `agent.IncidentReport` as JSON, unchanged:
 

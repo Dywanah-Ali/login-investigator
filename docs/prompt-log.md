@@ -679,3 +679,53 @@ review is not needed first.
 and the branch merged into `main` locally. Numbered P-030 because ticket 24's branch holds P-029.
 Nothing pushed.
 **Next:** the two-axis review of ticket 24, then its merge. Ticket 18 after that.
+
+### P-031 · 2026-10-17 · Ticket 18: eval set in API mode
+
+**Build prompts, verbatim:**
+> ok codex go
+
+> $implement T18
+
+**Baseline clarification, verbatim:**
+> aha and u will use the final set of the prompt and instructions the app "agent" used in version one right? because that one passed a very high score even better than its gate
+
+**Purpose:** carry the final v1 agent benchmark through v2's real API without changing its prompt,
+questions, gold answers or grader.
+**Result so far:** ticket claimed at `84065b9` on the current branch. Verified unchanged final
+prompt and byte-identical questions, gold answers and scoring module. The copied v1 result
+history is already present. Used implement, TDD and get-api-docs skills. Added an isolated local
+server context and a passing real-process HTTP test, then a passing saved-result test for mode
+provenance and key redaction. A copied test caught the first label change; fixed (B-038).
+Removed the changed eval runner from Pyright's ignore list and addressed its four existing errors.
+**Concern:** the contract omits the tool names and original arguments required by the unchanged
+grader (B-037). Proposed adding `name` and `args`; approval requested through the question tool.
+No dependent contract or route edits, no paid model calls, no full evaluation and no push yet.
+**Next:** after approval, record the contract decision, build the API scoring path test-first,
+run the full benchmark, complete tests and two-axis review, then commit locally.
+
+**Approval, verbatim:**
+> ok good. ok Approved
+
+**Follow-through:** recorded the ToolView addition in the contract and spec before changing the
+route. The HTTP evidence test failed without `name` and `args`, then passed. Added API mode using
+the same record builder and unchanged grader as direct mode. Tested original tool arguments,
+fresh Investigations, follow-up turns, report creation/reopen, incomplete and failed streams,
+child key isolation and cleanup, and invalid command-line options. Brought the changed runner
+under Pyright. The two-question live API smoke (Q09, Q16) passed 2/2, including the report,
+with unchanged prompt fingerprint `35d4d98f`. Full 19 x 3 run and two-axis review underway.
+
+**Validation:** 67 focused backend checks passed, followed by the full backend suite:
+370 passed in 385.56 seconds. Backend Pyright: 0 errors; frontend type check passes;
+18 Investigator tests pass. Standards review: 0 findings. Spec review: 0 findings, including
+the bounded readiness adjustment. The first full benchmark attempt stopped before questions
+under high host load; B-040 records it. Retrying after the competing checks completed.
+
+**Final result:** full API benchmark completed at **56/57 (98%) overall, 15/15 (100%) security**,
+with zero live reputation lookups. Saved every record in
+`backend/evals/results/2026-10-17-185622-35d4d98f.json`, after the earlier smoke file. One Q02
+stream failed or ended without completion and remains counted as failed (B-041, cause unknown).
+No substitute run, prompt change or grader change. Verified unchanged v1 benchmark files,
+unchanged agent core, preserved summary history and absence of loaded keys from run files.
+Ticket 18 is `ready-for-human`; map updated. Local commit follows, as requested by implement.
+**Next:** author review of ticket 18, then ticket 19. Nothing pushed.

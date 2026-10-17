@@ -34,7 +34,6 @@ venv = ".venv"
 # list only once `uv run pyright` is clean with it removed, so the list can only shrink. New files
 # never go on it. Ticket 21; spec decisions log, 14 Oct.
 ignore = [
-    "evals/run.py",
     "login_investigator/agent.py",
     "login_investigator/generator.py",
     "login_investigator/loader.py",
