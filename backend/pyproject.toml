@@ -24,7 +24,7 @@ dev = [
 ]
 
 [tool.pyright]
-include = ["login_investigator", "api", "tests", "evals"]
+include = ["login_investigator", "api", "tests", "evals", "conftest.py"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 venvPath = "."
