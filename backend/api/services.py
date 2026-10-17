@@ -21,7 +21,7 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 
 from api.errors import ApiError
 from api.settings import Settings
-from login_investigator import agent, investigations, loader, rules
+from login_investigator import agent, investigations, loader, rules, tools
 from login_investigator.dashboard import DatasetFacts, dataset_facts
 
 log = logging.getLogger(__name__)
@@ -73,8 +73,21 @@ def start(settings: Settings) -> Services:
     if model is not None:
         built = agent.build_agent(model, memory)
 
+    # Last, so a startup that fails earlier hands nothing over that `stop` would never clear. The
+    # agent's tools then read the very frame and findings the dashboards read; with no dataset
+    # they refuse, never falling back to the default log (ticket 22).
+    if dataset is None:
+        tools.use_dataset(None, (), settings.reputation_dir)
+    else:
+        tools.use_dataset(dataset.frame, dataset.findings, settings.reputation_dir)
     return Services(settings=settings, dataset=dataset, dataset_error=dataset_error,
                     memory=memory, model=model, agent=built)
+
+
+def stop(svc: Services) -> None:
+    """Undo `start` when the server stops, so no run leaves its data behind for the next."""
+    tools.forget_dataset()
+    svc.memory.conn.close()
 
 
 def services(request: Request) -> Services:

@@ -8,13 +8,17 @@ attacker can write some log fields (S5 plants exactly that). A failure is one sh
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
+from dataclasses import dataclass
 from functools import cache
+from pathlib import Path
 
+import pandas as pd
 from langchain.tools import tool
 
 from login_investigator.loader import TIMESTAMP_FORMAT, load_log, parse_window
-from login_investigator.reputation import ReputationError, lookup
-from login_investigator.rules import RULE_GUIDE, detect_all, in_window
+from login_investigator.reputation import SAVED_DIR, ReputationError, lookup
+from login_investigator.rules import RULE_GUIDE, Finding, detect_all, in_window
 from login_investigator.search import DEFAULT_SAMPLE_ROWS
 from login_investigator.search import search_logins as search_core
 
@@ -24,16 +28,81 @@ DATA_NOTE = (
 )
 
 
+LOG_REFUSED = "The configured sign-in log failed validation, so it cannot be read."
+
+
+class _LogUnavailable(ValueError):
+    """The configured log failed validation. A ValueError, so each log tool's existing error
+    handling turns it into a short "error" result."""
+
+
+@dataclass(frozen=True)
+class _Dataset:
+    frame: pd.DataFrame | None  # None when the configured log failed validation
+    findings: tuple[Finding, ...]
+    reputation_dir: Path
+
+
+# The dataset handed over through use_dataset. None when nothing was handed over, as in v1's tests
+# and the eval runner's direct mode: the tools then load the default log themselves, as in v1.
+_loaded: _Dataset | None = None
+
+
+def use_dataset(frame: pd.DataFrame | None, findings: Iterable[Finding],
+                reputation_dir: Path) -> None:
+    """Make the tools read this log, these findings and this folder of saved reputations, so they
+    read exactly what the caller's other readers read. Replaces any earlier hand-over.
+
+    A frame of None means the configured log failed validation. The log tools then refuse with
+    LOG_REFUSED and never fall back to the default log; the reputation tool keeps working.
+    """
+    global _loaded
+    _loaded = _Dataset(frame=frame, findings=tuple(findings), reputation_dir=reputation_dir)
+
+
+def forget_dataset() -> None:
+    """Go back to the default log and folder, as if nothing had been handed over."""
+    global _loaded
+    _loaded = None
+
+
 @cache
-def _log():
+def _default_log() -> pd.DataFrame:
     return load_log()
 
 
 @cache
-def _all_findings() -> tuple:
+def _default_findings() -> tuple[Finding, ...]:
     # The rules need each user's whole history, so they run once on the whole log (about 1.5 s);
     # each call then only picks the findings in its window.
-    return tuple(detect_all(_log()))
+    return tuple(detect_all(_default_log()))
+
+
+def _handed_over_log() -> tuple[pd.DataFrame, tuple[Finding, ...]] | None:
+    """The handed-over log and its findings, or None when nothing was handed over and the
+    defaults apply. Refuses a log that failed validation, so the log tools never fall back to the
+    default log."""
+    loaded = _loaded  # read once: a hand-over or reset may replace it between two reads
+    if loaded is None:
+        return None
+    if loaded.frame is None:
+        raise _LogUnavailable(LOG_REFUSED)
+    return loaded.frame, loaded.findings
+
+
+def _log() -> pd.DataFrame:
+    handed_over = _handed_over_log()
+    return _default_log() if handed_over is None else handed_over[0]
+
+
+def _all_findings() -> tuple[Finding, ...]:
+    handed_over = _handed_over_log()
+    return _default_findings() if handed_over is None else handed_over[1]
+
+
+def _reputation_dir() -> Path:
+    loaded = _loaded
+    return SAVED_DIR if loaded is None else loaded.reputation_dir
 
 
 def _ok(source: str, data: dict) -> str:
@@ -138,7 +207,7 @@ def lookup_ip_reputation(ip: str) -> str:
         ip: One IPv4 or IPv6 address, such as 185.218.86.24.
     """
     try:
-        return _ok("AbuseIPDB", lookup(ip))
+        return _ok("AbuseIPDB", lookup(ip, saved_dir=_reputation_dir()))
     except ReputationError as error:
         return _error(str(error))
 

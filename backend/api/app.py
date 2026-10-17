@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from api import dashboard_routes, errors, investigation_routes
-from api.services import start
+from api.services import start, stop
 from api.settings import Settings
 
 
@@ -22,7 +22,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         app.state.services = start(settings)
         yield
-        app.state.services.memory.conn.close()
+        stop(app.state.services)
 
     app = FastAPI(title="Login Investigator", lifespan=lifespan)
     errors.install(app)
