@@ -65,6 +65,20 @@ contract, and the seams.
 
 - [What proves Parity](issues/08-parity.md): the 254 core tests copied unchanged plus adapted tests for moved logic and a boundary test that also forbids FastAPI; API tests replaying the data-checking screen tests; the eval set in a new API mode (runner starts its own server, isolated memory, no key) with the v1 target unchanged (90%, 100% security, 19 x 3) and v1's results history carried over; Vitest for the frontend logic and the allowlist renderer; a manual checklist and the eight-step scenario closed by the author's dated ruling, no screenshots and no browser tool; the three engineering checks kept. Written into the PRD as the acceptance criteria.
 
+- [Repository foundation](issues/10-repository-foundation.md): fresh git history with the agreed layout; v1's core, data, tests and evals copied byte for byte; v1's 254 core and agent tests pass on Python 3.12 (the box's 259 corrected to 254, B-001); the boundary test now also forbids Streamlit, FastAPI and Starlette; scan found no key, name or email. Author approved on 14 October 2026.
+
+- [Core: the logic that moved from the screens](issues/11-core-moved-logic.md): date resolution, dataset facts and alerts for a view now live in the core with adapted tests; the report offer was already in v1's core; no existing core function changed; 267 tests passed. Author approved on 14 October 2026 and raised tickets 20 and 21 from its concerns.
+
+- [API foundation and the Overview endpoint](issues/12-api-foundation-overview.md): a separate `api` package with thin routes; configuration by environment; one start-up place for log, rules, memory and agent; `/api/dataset`, `/api/rules` and `/api/overview` in the contract's shapes; bad filters refused without echoing the value; one error shape. Four rulings recorded, including empty means "all" and ticket 22 for the agent's tools. Author approved on 14 October 2026.
+
+- [Frontend shell and the Overview screen](issues/13-frontend-shell-overview.md): Vite and React Router with the API proxied; official shadcn/ui pieces; filters in the address bar; four tiles and two charts; fixed error text; no `dangerouslySetInnerHTML` anywhere, with one line of the official chart component changed by ruling (B-004). Five rulings recorded, including the reworded log-field rule and the agreed prototype as the Overview's reference. Author approved on 14 October 2026.
+
+- [Alerts, end to end](issues/14-alerts-end-to-end.md): `/api/alerts` returns the core's findings newest first; v1's seven columns; a fixed details panel beside the table with evidence, "Open in Log explorer" and "Investigate"; rules guide from the API; hostile log fields stay plain text in cells. Severity labels were left out because v1 has none on Alerts; they went to the report card. Author approved on 15 October 2026.
+
+- [Rename the core's `views.py` to `dashboard.py`](issues/20-rename-views-module.md): raised by ticket 11's standards review; the module now says what it holds and no longer suggests a link to `tool_views.py`. Moved with `git mv`, no behaviour change, 267 tests passed. Author approved on 14 October 2026.
+
+- [A type checker for the backend](issues/21-type-checker.md): Pyright pinned and run with `uv run pyright`, green from day one; new v2 code fully checked, and copied v1 files that fail sit on a "not yet checked" list that can only shrink. Author approved on 14 October 2026. Its open side notes are AUD-011 to AUD-014 in the improvement register.
+
 - [Log explorer, end to end](issues/15-log-explorer-end-to-end.md): full filtered rows and CSV share one core search; five explicit counts, IP validation at both boundaries, shared table pager and quiet supporting surface. Automated checks passed and the author approved the live layout on 16 October 2026.
 
 - [Investigations API](issues/16-investigations-api.md): persisted Investigations, streamed answers, readable tool evidence, numbered reports and offline PDF downloads. Author reviewed and approved on 16 October 2026. B-014 is tracked separately in ticket 23.
@@ -84,7 +98,7 @@ contract, and the seams.
 ## Not yet specified
 
 - Nothing. The map and Port build are complete. Tickets 10–19 are resolved, along with
-  the supporting follow-up tickets 22–25.
+  the supporting follow-up tickets 20–25.
 - [Ticket 19, Parity closing](issues/19-parity-closing.md), closed on 19 October 2026 by
   explicit author approval, P-110. The author accepts the course demo and waives the remaining
   same-case next-day check. Evidence: 393 backend tests, 141 frontend tests, passing type
