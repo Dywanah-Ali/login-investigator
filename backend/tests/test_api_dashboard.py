@@ -330,3 +330,73 @@ def test_csv_keeps_formula_protection_at_the_http_boundary(tmp_path):
 @pytest.mark.parametrize('ip', ['2001:db8::1', '::1', '::ffff:192.0.2.1', '', '  '])
 def test_explorer_accepts_ipv6_and_empty_ip_filters(client, ip):
     assert client.get('/api/explorer', params={'ip': ip}).status_code == 200
+
+
+# --- Cross-screen Parity (ticket 19) --------------------------------------------------------------
+
+@pytest.mark.parametrize('filters', [
+    {'country': 'ro'},
+    {'from': '2026-10-06', 'to': '2026-10-06', 'country': 'ro', 'outcome': 'failure'},
+])
+def test_a_filter_change_updates_every_screen_consistently(client, s, filters):
+    """Replay v1's cross-screen case through all three HTTP endpoints on the same server.
+    Romania holds only S2; its ground truth pins the counts independently of the API."""
+    attack = s['S2']
+    expected = attack['attempts'] - (attack['successes'] if filters.get('outcome') else 0)
+    summary = overview(client, **filters)
+    found = alerts(client, **filters)
+    reply = client.get('/api/explorer', params=filters)
+    assert reply.status_code == 200
+    rows = reply.json()
+    assert summary['summary']['total'] == rows['summary']['total'] == len(rows['rows']) == expected
+    assert summary['summary']['failures'] == rows['summary']['failures'] == (
+        attack['attempts'] - attack['successes'])
+    assert sum(hour['events'] for hour in summary['hourly']) == expected
+    assert summary['alert_count'] == len(found) == 1
+    assert found[0]['rule'] == attack['type']
+    assert found[0]['ips'] == [attack['attacker_ip']]
+    assert {row['country'] for row in rows['rows']} == {'RO'}
+    assert {row['source_ip'] for row in rows['rows']} == {attack['attacker_ip']}
+    if filters.get('outcome'):
+        assert {row['outcome'] for row in rows['rows']} == {'failure'}
+
+
+def test_an_empty_filter_returns_clear_empty_data_on_all_three_screens(client, s):
+    """The browser supplies the message; the API supplies unambiguous successful empty data."""
+    filters = {'user': s['S2']['unknown_usernames'][0], 'outcome': 'success'}
+    assert overview(client, **filters) == {
+        'summary': {'total': 0, 'failures': 0, 'distinct_users': 0},
+        'alert_count': 0, 'hourly': [], 'top_failed_ips': [],
+    }
+    assert alerts(client, **filters) == []
+    reply = client.get('/api/explorer', params=filters)
+    assert reply.status_code == 200
+    assert reply.json() == {
+        'summary': {'total': 0, 'successes': 0, 'failures': 0,
+                    'distinct_users': 0, 'distinct_ips': 0},
+        'rows': [],
+    }
+
+
+def test_reset_restores_the_whole_log_on_all_three_screens(client, truth):
+    """Removing the query restores every screen, including after an empty view.
+    Neither another screen nor an earlier request can leave hidden server filter state."""
+    paths = ['/api/overview', '/api/alerts', '/api/explorer']
+    initial = {}
+    for path in paths:
+        reply = client.get(path)
+        assert reply.status_code == 200
+        initial[path] = reply.json()
+    for filters in [{'country': 'ro', 'outcome': 'failure'}, {'user': 'no-such-user'}]:
+        for path in paths:
+            filtered = client.get(path, params=filters)
+            assert filtered.status_code == 200
+            assert filtered.json() != initial[path]
+        for path in paths:
+            reset = client.get(path)
+            assert reset.status_code == 200
+            assert reset.json() == initial[path]
+    assert initial['/api/overview']['summary']['total'] == truth['row_count']
+    assert initial['/api/explorer']['summary']['total'] == truth['row_count']
+    assert len(initial['/api/explorer']['rows']) == truth['row_count']
+    assert len(initial['/api/alerts']['alerts']) == 5

@@ -79,21 +79,20 @@ contract, and the seams.
 
 - [Eval set in API mode](issues/18-eval-api-mode.md): real HTTP benchmark with v1's final prompt and unchanged grader passed at 56/57 (98%) overall and 15/15 (100%) security; 370 backend tests and type checks pass; both reviews clear. Author approved on 17 October 2026. One failed stream remains logged as B-041.
 
+- [Login alert severity policy](issues/25-login-alert-severity.md): research completed on 18 October 2026 using one successful Perplexity deep-research call and official-source verification. Proposed defaults Medium/Medium/High/Low are project policy choices. The existing report uses different criteria, so table/report consistency requires an author decision before implementation. [Research note](research/25-login-alert-severity.md). Author approved the defaults on 18 October 2026 (P-044). [Ticket 26](issues/26-alert-rule-filter-default-severity.md) queues the filter and default severity after Parity; table/report wording and contract precede implementation. No application change; ticket 19 remains the build frontier.
+
 ## Not yet specified
 
-- Nothing. The map is complete (14 October 2026): every decision the spec needs is recorded.
-  Hand-offs done the same day: `spec.md` written by `/mp-to-spec`; build tickets `issues/10` to
-  `issues/19` written by `/mp-to-tickets`. Tickets 10–18 are resolved. The build frontier is
-  [ticket 19, Parity closing](issues/19-parity-closing.md).
-  The targeted B-014 disconnect follow-up, [ticket 23](issues/23-disconnect-handling.md), is also
-  resolved following the author's approval on 16 October 2026. Frontend warnings stay separate.
-  Ticket 17 is resolved following the author’s live screen acceptance on 16 October 2026.
-  Ticket 22, which blocked ticket 18, is resolved following the author's approval on 17 October
-  2026. Ticket 24, real keys kept out of test runs, is resolved the same day.
-  Ticket 18 is resolved following the author's approval on 17 October 2026: the full API benchmark passed at 56/57
-  (98%) overall and 15/15 (100%) security, with v1's final prompt and unchanged grader.
-  370 backend tests, type checks and both reviews pass. One failed stream is retained in
-  the score and logged as B-041. Ticket 19 is unblocked and has not started.
+- Nothing. The map and Port build are complete. Tickets 10–19 are resolved, along with
+  the supporting follow-up tickets 22–25.
+- [Ticket 19, Parity closing](issues/19-parity-closing.md), closed on 19 October 2026 by
+  explicit author approval, P-110. The author accepts the course demo and waives the remaining
+  same-case next-day check. Evidence: 393 backend tests, 141 frontend tests, passing type
+  checks/build and API benchmark 56/57 overall, 15/15 security. See `docs/parity-closing.md`.
+- Known concerns remain in `docs/audit/improvement-register.md` for optional future work.
+  [Ticket 26](issues/26-alert-rule-filter-default-severity.md) is unblocked but not started.
+  No further work or push is requested. Earlier pending acceptance notes are superseded
+  by the author's final demo-scope acceptance.
 
 ## Out of scope
 

@@ -299,10 +299,19 @@ aborted on unmount. Events, each with a JSON `data` field:
 
 | event | data | Meaning |
 |---|---|---|
-| `tool` | `{"name": "search_logins"}` | A tool is starting. The frontend maps the name to its progress words |
+| `tool` | `{"name": "search_logins", "call_id": "opaque-id", "phase": "start"}` | Actual invocation lifecycle. `phase` is `start`, `end` or `error`; the same opaque `call_id` correlates one invocation. Names are limited to the three registered tools. No inputs, results or exception text |
 | `text` | `{"text": "…"}` | A piece of the answer, appended in order |
 | `error` | `{"code": "agent_failed", "message": "The agent stopped before it finished."}` | The answer stopped. The stream ends after it |
 | `done` | `{}` | The answer is complete and stored |
+
+The frontend tracks active calls by `call_id`, including simultaneous calls with the same name.
+Keep one in-chat status line. One active tool type uses its existing phrase; overlapping types
+use one combined phrase, such as “Searching the sign-in log and looking up IP reputation…”.
+An `end` or `error` phase removes only that call. With no active calls, use “Thinking…” before
+answer text, then “Writing the answer…” while text is streaming. Clear transient state on
+completion, stream failure or navigation. Tool-level `phase: "error"` is distinct from the
+terminal SSE `error` event. A handled tool error may instead end normally; either terminal
+phase removes activity. No minimum display time or artificial delay is imposed.
 
 After `done` or `error` the frontend fetches **reopen** to redraw the turn from memory with its
 tool calls and the new `report_offer`, exactly as v1 reruns from memory. The `done` event carries
@@ -311,6 +320,10 @@ one is streaming is refused with 409 `busy`; the frontend locks the input anyway
 
 Closing the tab mid-answer: the server stops advancing the core's generator; the memory holds
 whatever the model had stored. Same as v1.
+
+Newly generated report timelines are ordered chronologically before the response and saved
+history are written. PDF downloads use that same saved order. An invalid or timezone-free
+new timeline timestamp fails safely without saving a report; historical reports are unchanged.
 
 ### Investigations: write or update the report
 

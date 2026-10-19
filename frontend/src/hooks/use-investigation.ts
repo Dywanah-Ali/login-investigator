@@ -2,12 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { ApiFailure, FAILURE_TEXT, getJson } from '@/lib/api'
 import { ask, investigationPath, postJson, type IncidentReport, type Investigation, type InvestigationEntry } from '@/lib/investigations'
+import { toolProgress, type ToolName } from '@/lib/tool-progress'
 
-const PROGRESS: Record<string, string> = {
-  find_suspicious_activity: 'Checking the detection rules…',
-  search_logins: 'Searching the sign-in log…',
-  lookup_ip_reputation: 'Looking up IP reputation…',
-}
 const message = (error: unknown) => error instanceof ApiFailure ? error.message : FAILURE_TEXT.failed
 
 /** Owns each request until it completes or the screen unmounts. Saved history wins over drafts. */
@@ -28,7 +24,7 @@ export function useInvestigation() {
   const [draft, setDraft] = useState<{ question: string; answer: string } | null>(null)
   const [reportReveal, setReportReveal] = useState<{ id: string; number: number; charactersPerSecond: number } | null>(null)
   // Used when no sufficiently long streamed text sample has been observed on this page yet.
-  const answerPace = useRef(200)
+  const [answerCharactersPerSecond, setAnswerCharactersPerSecond] = useState(200)
   const operation = useRef<{ id: string | null; controller: AbortController } | null>(null)
   const historyRequest = useRef<AbortController | null>(null)
 
@@ -107,6 +103,8 @@ export function useInvestigation() {
     let lastTextAt: number | null = null
     let textMilliseconds = 0
     let textCharacters = 0
+    const activeTools = new Map<string, ToolName>()
+    let hasAnswerText = false
     try {
       if (!currentId) {
         const created = await postJson<InvestigationEntry>('/api/investigations', { question: text }, controller.signal)
@@ -120,9 +118,12 @@ export function useInvestigation() {
         setParams({ id: currentId }, { replace: true })
       }
       await ask(currentId, text, controller.signal, (event) => {
+        if (controller.signal.aborted || operation.current !== active) return
         if (event.kind === 'tool') {
           lastTextAt = null
-          setProgress(PROGRESS[event.name] ?? 'Running an investigation tool…')
+          if (event.phase === 'start') activeTools.set(event.call_id, event.name)
+          else activeTools.delete(event.call_id)
+          setProgress(toolProgress(activeTools, hasAnswerText))
         }
         if (event.kind === 'text') {
           const now = performance.now()
@@ -131,12 +132,18 @@ export function useInvestigation() {
           if (elapsed > 0 && elapsed <= 1500) {
             textMilliseconds += elapsed
             textCharacters += Array.from(event.text).length
-            if (textMilliseconds >= 250) answerPace.current = Math.max(40, Math.min(600, textCharacters * 1000 / textMilliseconds))
+            if (textMilliseconds >= 250) setAnswerCharactersPerSecond(Math.max(40, Math.min(600, textCharacters * 1000 / textMilliseconds)))
           }
           lastTextAt = now
+          hasAnswerText = true
+          setProgress(toolProgress(activeTools, hasAnswerText))
           setDraft((old) => old ? { ...old, answer: old.answer + event.text } : old)
         }
-        if (event.kind === 'error') setFailure(FAILURE_TEXT.agent_failed)
+        if (event.kind === 'done' || event.kind === 'error') {
+          activeTools.clear()
+          setProgress('')
+          if (event.kind === 'error') setFailure(FAILURE_TEXT.agent_failed)
+        }
       })
     } catch (error) {
       if (!controller.signal.aborted) setFailure(message(error))
@@ -160,7 +167,7 @@ export function useInvestigation() {
     const { controller } = begin('Writing the incident report…')
     try {
       const report = await postJson<IncidentReport>(`${investigationPath(id)}/report`, { request: data.report_offer }, controller.signal)
-      if (!controller.signal.aborted) setReportReveal({ id, number: report.number, charactersPerSecond: answerPace.current })
+      if (!controller.signal.aborted) setReportReveal({ id, number: report.number, charactersPerSecond: answerCharactersPerSecond })
     } catch (error) {
       if (!controller.signal.aborted) setFailure(message(error))
     } finally {
@@ -172,5 +179,5 @@ export function useInvestigation() {
     setReportReveal((current) => current?.id === id && current.number === number ? null : current)
   }, [])
 
-  return { id, question, setQuestion, entries, data, failure, loading, busy, progress, draft, send, select, writeReport, reportReveal, completeReportReveal }
+  return { id, question, setQuestion, entries, data, failure, loading, busy, progress, draft, send, select, writeReport, reportReveal, completeReportReveal, answerCharactersPerSecond }
 }

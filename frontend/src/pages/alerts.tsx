@@ -9,8 +9,9 @@ import { RulesGuide } from '@/components/rules-guide'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useApi } from '@/hooks/use-api'
 import { useFilters } from '@/hooks/use-filters'
-import { type TitleOf, alertKey, countsLine, ruleTitles } from '@/lib/alerts'
+import { type TitleOf, alertKey, ruleTitles } from '@/lib/alerts'
 import type { Alert, AlertsReply, RulesReply } from '@/lib/api'
+import { countOf } from '@/lib/format'
 
 const NO_ALERTS = 'No alerts match these filters. Widen the date range or reset the filters.'
 
@@ -68,22 +69,12 @@ function AlertsView({
 
   return (
     <>
-      <AlertsCounts alerts={alerts} titleOf={titleOf} />
+      <p className="text-sm"><strong>{countOf(alerts.length, 'alert')} in the selected period</strong></p>
       {/* The panel takes 28% of the content width, the table 72% (author, 15 Oct). */}
       <div className="grid items-start gap-4 @5xl/main:grid-cols-[minmax(0,18fr)_minmax(0,7fr)]">
         <AlertsTable alerts={alerts} titleOf={titleOf} selected={selected} onSelect={onChoose} />
         <AlertDetails alert={selected} title={titleOf(selected.rule)} />
       </div>
     </>
-  )
-}
-
-function AlertsCounts({ alerts, titleOf }: { alerts: Alert[]; titleOf: TitleOf }) {
-  const line = countsLine(alerts, titleOf)
-  return (
-    <p className="text-sm">
-      <strong>{line.total}</strong>
-      {line.perRule.map((part) => ` · ${part}`).join('')}
-    </p>
   )
 }

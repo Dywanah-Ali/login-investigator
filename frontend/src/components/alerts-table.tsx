@@ -69,9 +69,9 @@ export function AlertsTable({
     <div className="min-w-0 space-y-3">
       <div className="overflow-hidden rounded-lg border">
         <Table aria-label="Alerts">
-          <TableHeader className="bg-muted">
+          <TableHeader className="bg-[color-mix(in_oklch,var(--muted),black_5%)] dark:bg-[color-mix(in_oklch,var(--muted),black_20%)]">
             {table.getHeaderGroups().map((group) => (
-              <TableRow key={group.id}>
+              <TableRow key={group.id} className="hover:bg-transparent">
                 {group.headers.map((header) => (
                   <TableHead key={header.id} className={cellClass(header.column.columnDef)}>
                     {flexRender(header.column.columnDef.header, header.getContext())}
@@ -107,7 +107,7 @@ export function AlertsTable({
           </TableBody>
         </Table>
       </div>
-      <TablePager table={table} />
+      <TablePager table={table} showSummary={false} />
     </div>
   )
 }

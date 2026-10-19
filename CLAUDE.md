@@ -13,6 +13,8 @@ stays frozen: **never change anything in that folder.** Read from it; copy out o
 1. Read `docs/migration-brief.md` if no spec exists yet. It holds the decisions made before this
    workspace existed.
 2. If a wayfinder map exists, load the map (not every ticket) and see what the frontier is.
+   Also review the [improvement audit register](docs/audit/improvement-register.md), reading the
+   entries relevant to the current work.
 3. Once `.scratch/v2-port/spec.md` exists, it replaces the brief as the source of truth for scope. Read only the
    section the next step needs.
 4. Tell the author in one line where we are and what comes next, then wait for their go.
@@ -38,6 +40,11 @@ ticket whose blockers are done. This is Tier 3 work: every ticket closes on evid
   iterations; never clean them away.
 - **Log the build prompts** in `docs/prompt-log.md`: the author's prompt verbatim, its purpose, the
   result, and what changed next. These may go into course submissions.
+- **Maintain the improvement audit** in `docs/audit/improvement-register.md`. Add future
+  enhancements and unresolved review concerns with stable IDs, sources, status and closure evidence.
+  Update existing entries as decisions change. Keep closed entries and their history. Registration
+  is not implementation approval; the spec and tickets still control scope. Keep bug details and
+  prompt history in their existing logs and link them from the register.
 - **Nothing is pushed to GitHub or submitted** until the author has reviewed it.
 - Only one Claude session edits this folder at a time, unless the author starts parallel sessions on
   separate wayfinder tickets. Research subagents may run in parallel.

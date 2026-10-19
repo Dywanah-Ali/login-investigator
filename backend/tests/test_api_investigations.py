@@ -73,10 +73,16 @@ def test_start_only_creates_a_record_and_list_is_full_newest_first(client):
 def test_ask_streams_then_reopen_shows_the_saved_answer_and_tool_evidence(client):
     case = start(client)
     path = f"/api/investigations/{case['id']}"
-    assert events(client.post(path + "/ask", json={"question": case["first_question"]})) == [
-        ("tool", {"name": "search_logins"}),
-        ("text", {"text": "**150** failures, then one success."}),
-        ("done", {}),
+    streamed = events(client.post(path + "/ask", json={"question": case["first_question"]}))
+    assert [kind for kind, _ in streamed] == ["tool", "tool", "text", "done"]
+    started, ended = streamed[0][1], streamed[1][1]
+    assert set(started) == {"name", "call_id", "phase"}
+    assert started["name"] == "search_logins"
+    assert started["phase"] == "start"
+    assert started["call_id"]
+    assert ended == {**started, "phase": "end"}
+    assert streamed[2:] == [
+        ("text", {"text": "**150** failures, then one success."}), ("done", {}),
     ]
     reopened = client.get(path).json()
     assert reopened["report_offer"] == "Write the incident report"
@@ -370,3 +376,81 @@ def test_disconnect_stops_advancing_the_core_and_releases_the_case(client, monke
     monkeypatch.undo()
     # A follow-up is accepted, rather than finding an abandoned busy reservation.
     assert events(client.post(path + "/ask", json={"question": "After disconnect"}))[-1] == ("done", {})
+
+
+def test_failed_tool_lifecycle_stream_hides_inputs_outputs_and_exception_text(client, monkeypatch):
+    from login_investigator.tools import search_logins
+
+    def failed(**kwargs):
+        raise RuntimeError('PRIVATE tool exception')
+
+    monkeypatch.setattr(search_logins, 'func', failed)
+    case = start(client)
+    response = client.post(f"/api/investigations/{case['id']}/ask", json={"question": 'Check the IP'})
+    streamed = events(response)
+    assert [kind for kind, _ in streamed] == ['tool', 'tool', 'error']
+    started, failed_tool = streamed[0][1], streamed[1][1]
+    assert started['phase'] == 'start'
+    assert failed_tool == {**started, 'phase': 'error'}
+    assert set(started) == {'name', 'call_id', 'phase'}
+    assert '185.218.86.24' not in response.text
+    assert 'PRIVATE' not in response.text
+    assert streamed[-1] == ('error', {
+        'code': 'agent_failed', 'message': 'The agent stopped before it finished.',
+    })
+
+
+def test_new_report_timeline_is_sorted_before_save_return_and_pdf(client, monkeypatch):
+    unsorted = agent.IncidentReport.model_validate({**REPORT.model_dump(), 'timeline': [
+        {'time_utc': '2026-10-08T02:00:00Z', 'event': 'EVENT_LATEST'},
+        {'time_utc': '2026-10-06T03:04:00Z', 'event': 'EVENT_OLDEST'},
+        {'time_utc': '2026-10-08T02:30:00+01:00', 'event': 'EVENT_MIDDLE'},
+    ]})
+    monkeypatch.setattr(FakeModel, 'with_structured_output',
+                        lambda *args, **kwargs: RunnableLambda(lambda _: unsorted))
+    case = start(client)
+    path = f"/api/investigations/{case['id']}"
+    events(client.post(path + '/ask', json={'question': case['first_question']}))
+    response = client.post(path + '/report', json={'request': 'Write the incident report'})
+    assert response.status_code == 200
+    report = response.json()
+    assert [entry['event'] for entry in report['timeline']] == ['EVENT_OLDEST', 'EVENT_MIDDLE', 'EVENT_LATEST']
+    assert client.get(path).json()['turns'][-1]['report'] == report
+    text = PdfReader(BytesIO(client.get(path + '/reports/1.pdf').content)).pages[0].extract_text()
+    assert text.index('EVENT_OLDEST') < text.index('EVENT_MIDDLE') < text.index('EVENT_LATEST')
+    assert unsorted.timeline[0].event == 'EVENT_LATEST'  # do not mutate the model response
+
+
+@pytest.mark.parametrize('timestamp', ['not a timestamp', '2026-10-08T02:00:00'])
+def test_invalid_new_report_timestamp_is_not_saved(client, monkeypatch, timestamp):
+    invalid = agent.IncidentReport.model_validate({**REPORT.model_dump(), 'timeline': [
+        {'time_utc': timestamp, 'event': 'Invalid timestamp'},
+    ]})
+    monkeypatch.setattr(FakeModel, 'with_structured_output',
+                        lambda *args, **kwargs: RunnableLambda(lambda _: invalid))
+    case = start(client)
+    path = f"/api/investigations/{case['id']}"
+    events(client.post(path + '/ask', json={'question': case['first_question']}))
+    with pytest.raises(ValueError):
+        client.post(path + '/report', json={'request': 'Write the incident report'})
+    reopened = client.get(path).json()
+    assert len(reopened['turns']) == 1
+    assert reopened['turns'][0]['report'] is None
+    assert reopened['report_offer'] == 'Write the incident report'
+
+
+def test_reading_historical_report_does_not_reorder_it(client):
+    from langchain_core.messages import HumanMessage
+
+    historical = agent.IncidentReport.model_validate({**REPORT.model_dump(), 'timeline': [
+        {'time_utc': '2026-10-08T02:00:00Z', 'event': 'HISTORICAL_LATEST'},
+        {'time_utc': '2026-10-06T03:04:00Z', 'event': 'HISTORICAL_OLDEST'},
+    ]})
+    case = start(client)
+    path = f"/api/investigations/{case['id']}"
+    events(client.post(path + '/ask', json={'question': case['first_question']}))
+    client.app.state.services.agent.update_state({'configurable': {'thread_id': case['id']}},
+        {'messages': [HumanMessage('Write the incident report'),
+                      AIMessage(historical.model_dump_json(), name=agent.REPORT_NAME)]}, as_node='model')
+    reopened = client.get(path).json()['turns'][-1]['report']
+    assert [entry['event'] for entry in reopened['timeline']] == ['HISTORICAL_LATEST', 'HISTORICAL_OLDEST']

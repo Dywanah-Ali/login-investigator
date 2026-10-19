@@ -92,8 +92,7 @@ function ExplorerResults({ query }: { query: string }) {
       ) : (
         <ExplorerTable rows={rows} />
       )}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-        <span>Every matching row, not a sample.</span>
+      <div className="flex justify-end">
         <Button variant="outline" size="sm" asChild>
           <a href={`/api/explorer.csv${query ? `?${query}` : ''}`}>Download these rows (CSV)</a>
         </Button>

@@ -95,7 +95,10 @@ ruling.
     the same shape.
 29. As an analyst, I want to download any report of an Investigation as a PDF, so that I can file it.
 30. As an analyst, I want a list of past Investigations (newest three, three more per click, the
-    open one always shown), so that I can reopen one and continue it the next day.
+    open one always shown), so that I can reopen one and continue it the next day. Use arrow-only
+    expand/collapse controls as in v1. Reveal a continuous prefix in groups of three to include
+    an older selected Investigation. Collapse returns to three, or enough to retain that selection.
+    Newly revealed entries animate briefly, respecting reduced motion.
 31. As an analyst, I want a reopened Investigation to show every Turn with its tools and reports, so
     that nothing is lost between sessions or server restarts.
 32. As an analyst, I want starter questions and a scope note in an empty Investigation, so that I
@@ -192,7 +195,7 @@ Each decision names the ticket that made it.
   at least one event among the filtered rows; the tool keeps findings overlapping a time window.
   Both are core already and both stay.
 - Moved into the frontend: cutting names to three plus "and N more", singular or plural counts, the
-  failed share percentage, time formats, the per-rule counts line, paging of past Investigations,
+  failed share percentage, time formats, the total alerts count, paging of past Investigations,
   the "Open in Log explorer" route, charts, colours per theme, empty states, locked input, progress
   words per tool, starter questions, the scope and AI notes, severity labels and colours on the
   report card.
@@ -240,8 +243,8 @@ Each decision names the ticket that made it.
 - Server-Sent Events over POST, produced with FastAPI's event-source response, read in the browser
   with fetch and a stream reader, aborted when the page unmounts. The built-in EventSource class is
   not used (GET only, no body, reconnects on its own).
-- Four events, each with a JSON data field: `tool` (a tool is starting, by name), `text` (a piece
-  of the answer), `error` (the answer stopped; the stream ends), `done` (complete and stored,
+- Four events, each with a JSON data field: `tool` (actual tool invocation lifecycle:
+  allowlisted name, opaque call ID, start/end/error phase), `text` (a piece of the answer), `error` (the answer stopped; the stream ends), `done` (complete and stored,
   carries nothing). After done or error the frontend fetches the Investigation again to redraw the
   Turn from memory, so a finished Turn has one source of truth.
 - Failures before the first byte are normal JSON replies (404, 422, 503). The core's synchronous
@@ -261,17 +264,31 @@ Each decision names the ticket that made it.
 - Alert evidence shows in a fixed details panel beside the table, below it on narrow screens, with
   the evidence table, "Open in Log explorer" and "Investigate". The newest alert is shown on first
   load and after a filter change; a row click swaps the panel's content with a short fade (ticket
-  14). "How these rules work" is a collapsible fed by the rules endpoint.
+  14). "How these rules work" is a collapsible fed by the rules endpoint. The Alerts screen
+  shows only the total above its table; per-rule subtotals and the rows/page-size caption are
+  omitted by the author's ruling on 18 October 2026. Paging controls remain.
 - Overview: four KPI cards, sign-ins per hour as stacked bars, top source IPs as horizontal bars.
   The block's interactive area chart and its period toggle are removed, since the toolbar holds the
   date range.
 - Log explorer: the toolbar plus the IP box, five count tiles, a paged table, a CSV link to the API.
+  The table footer shows only the total row count. Omit the newest-first/page-size caption and
+  the "Every matching row, not a sample" sentence (author's ruling, 18 October 2026).
 - Investigator: a second column with "New investigation" and the paged list; chat with the message
   components; tool events drive the progress line; a "Tools used" collapsible under each answer with
   asked and found lines, rows in a table, raw JSON behind a switch; the report as a card with fixed
   fields and a PDF link; the report button only when the Report offer says so, with its wording;
-  starters and the scope line only in an empty Investigation; input locked and a progress line while
-  answering; the AI note by the input.
+  starters and the scope line only in an empty Investigation; input locked while answering;
+  progress appears inside the chat viewport after the active question/answer, or after saved
+  turns while writing a report; the AI note by the input. Enter submits the question through
+  the same form as Send; Shift + Enter inserts a newline. Enter used to compose text through
+  an input method does not submit. Empty input and busy/loading states cannot send.
+- "Tools used" expands with a smooth height-and-fade reveal using the same observed answer pace
+  that guides new reports. Bound expansion to 0.4–1.2 seconds, with a steady 0.8-second fallback
+  when pace is unavailable. Collapse is shorter. Reduced-motion preference opens/closes immediately.
+  Evidence remains complete plain text/tables; expanding does not call a tool or a model.
+  Opening follows the chosen panel within the chat viewport while it expands, including when
+  the reader had scrolled upward. Stop following on manual scroll/navigation, closing or leaving.
+  Earlier evidence must not jump to unrelated later messages. Reduced motion reveals it once.
 - Newly generated reports reveal their fixed-field text gradually after validation and saving,
   at a pace approximating the latest observed answer text delivery. Use a steady fallback when
   timing is unavailable. Previously saved reports open in full. A skip control and reduced-motion
@@ -291,6 +308,11 @@ Each decision names the ticket that made it.
   column and the "Tools used" panels (ticket 17); the Overview is checked by eye in ticket 19. The
   quiet styling becomes one shared piece at its second use, in ticket 15. Each screen's look in the
   browser confirms that one element leads.
+
+The Overview Alerts metric uses a green count and subtle matching check icon when zero, and
+an amber count and matching bell icon when greater than zero. The card background stays quiet.
+This indicates whether findings need review in the current view, not incident severity or overall
+safety. The existing findings count and view wording remain. Author approved on 18 October 2026.
 
 **Security rendering (ticket 07)**
 
@@ -329,19 +351,44 @@ by the author's ruling.
 only when every row is ticked with named evidence. Automated checks run first; the manual run comes
 last, on a build where every automated check passes.
 
-| Layer | Evidence | What it proves |
-|---|---|---|
-| Core | The 254 v1 core and agent tests, copied unchanged | The core did not change |
-| Core, moved logic | New pytest tests, adapted from the screen tests, for every piece moved into the core: date resolution, dataset facts, alerts for a view, Report offer | The logic that left the screens still means the same |
-| Core boundary | The boundary test extended: no Streamlit and no FastAPI import in the core | The core stays independent of both shells |
-| API | pytest with FastAPI's test client, replaying the data-checking screen tests: filters change every screen consistently, an empty filter gives a clear message, S1 to S4 appear in alerts, alerts newest first, reset restores the whole log, a bad IP is refused without echoing it, memory opened once and agent built once per process | The contract behaves as v1's screens did |
-| Agent | The eval set run in a new **API mode**: the runner starts its own FastAPI server on a free port, with a temporary memory file and the AbuseIPDB key removed, sends each question through the ask endpoint, reads the stream, asks for the report through the report endpoint, and scores with the unchanged grader. The direct mode stays for cheap iteration; **the API mode is the one that counts** | The agent gives the same answers through the real transport |
-| Pass bar | Unchanged from v1: 90% overall, 100% for injection and refusal, 19 questions times 3 runs. Parity means meeting the target, not reproducing v1's 98% | A stable gate under model variance |
-| Eval history | v1's results summary rows are copied into v2 as the first rows; v2 runs continue the table | A regression against v1 is visible at a glance |
-| Frontend logic | Vitest with React Testing Library for the pieces placed in the frontend: three names then "N more", singular or plural counts, failed share, paging of past Investigations, the explorer jump route, the "Investigate" question, the bad IP message, and the allowlist renderer fed the S5 injection strings and crafted answers (markdown links, image tags, raw HTML, javascript: URLs), asserting no anchor, image, script, iframe or raw HTML in the output | The logic that left Python still means the same, and the renderer cannot leak |
-| Presence | A manual checklist, ticked by the author with a dated ruling: synthetic label, metric labels, empty-state messages, scope note, AI note, progress words per tool, locked input while answering, severity labels and colours on the report card, charts per theme, error messages hide exception text | What v1's presence tests checked is still on screen |
-| Core scenario | v1's eight-step scenario run end to end in the live v2 app by the author, closed with a dated ruling | Browser, API, agent, memory, report and PDF work together |
-| Engineering | Fresh-clone start of both servers from the README; no key in git history; the core boundary test | A reviewer's first ten minutes succeed |
+- [x] **Core:** the 254 v1 core and agent tests remain copied unchanged. Evidence: the twelve
+  identical test files and retained original boundary test listed in `docs/parity-closing.md`;
+  the full backend suite passes on 18 October 2026.
+- [x] **Core, moved logic:** date resolution, dataset facts, alerts for a view and Report offer.
+  Evidence: `backend/tests/test_dashboard.py`, included in 374 passing backend tests.
+- [x] **Core boundary:** no Streamlit, FastAPI or Starlette imports in the core. Evidence:
+  `backend/tests/test_core_boundary.py`, included in the passing suite.
+- [x] **API:** filters change all three screens consistently; empty data supports clear messages;
+  S1 to S4 appear newest first; reset restores the whole log; a bad IP is refused without echo;
+  memory and agent are created once per process. Evidence: `test_api_dashboard.py` (including
+  ticket 19's cross-screen replays), `test_api_startup.py` and `test_api_investigations.py` in
+  `backend/tests`; all pass. Frontend empty-message tests pass on all three dashboard pages.
+- [x] **Agent:** the eval runner starts an isolated real FastAPI process, removes the reputation
+  key, asks through the stream and report endpoints and scores with the unchanged grader.
+  Evidence: accepted ticket 18, `backend/tests/test_eval_api.py` and
+  `backend/evals/results/2026-10-17-185622-35d4d98f.json`. Direct mode remains for iteration.
+- [x] **Pass bar:** at least 90% overall and 100% injection/refusal, 19 questions times three runs.
+  Evidence: accepted API benchmark, 56/57 overall and 15/15 security. Offline regrading on
+  18 October reproduced all saved checks and the summary, retaining B-041 as a failed run.
+- [x] **Eval history:** v1's summary rows precede v2's API runs in
+  `backend/evals/results/summary.md`; questions, ground truth and grader are byte-identical to v1.
+- [x] **Frontend logic:** names and counts, failed share, Investigation paging, Explorer route,
+  prepared Investigate question, bad IP, and the allowlist renderer with planted/crafted hostile
+  content. Evidence: all 134 Vitest tests pass, including `lib/*.test.ts`, page tests,
+  `components/answer.test.tsx` and `test/repository-rules.test.ts`. No anchors, images, scripts,
+  iframes or raw HTML are permitted in rendered answers.
+- [x] **Presence:** author's dated ruling on synthetic label, metric labels, empty messages, scope
+  note, AI note, per-tool progress words, locked input, report severity labels/colours, charts in
+  both themes and safe errors. Evidence: all ten presence items in `docs/parity-closing.md`
+  have author rulings dated 18–19 October 2026. P-092 closes the final tool-progress item,
+  accepting brief visibility of fast cached operations with the single-line lifecycle display.
+- [x] **Core scenario:** accepted by the author on 19 October 2026, P-110, for the course demo.
+  Steps 1–7 are evidenced; the additional same-case next-day reopening/continuation check
+  is waived, not performed. Prior persistence evidence is retained in `docs/parity-closing.md`.
+- [x] **Engineering:** clean-clone README startup, repository scan and core boundary. Startup
+  and boundary pass; all 1,084 Git objects contain neither configured key value. The author
+  approved one explicit exception for the deliberately fake key-pattern fixture on 18 October
+  2026, prompt P-035. Full scan classification and startup evidence: `docs/parity-closing.md`.
 
 **The eight-step scenario (from v1's PRD).** Open the Overview and see the overnight spike; ask
 "Anything suspicious last night?"; the agent runs the rules and reports a brute force from one IP
@@ -365,6 +412,11 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 - A custom LangGraph graph or any change to how the agent is built.
 - Deploying or hosting v2.
 - Browser test tools and screenshots.
+
+Approved follow-up after Parity, 18 October 2026: ticket 26 tracks a rule filter over the four
+existing categories and rule-default severity Medium/Medium/High/Low. This does not expand the
+Port's acceptance gate. The existing report policy stays unchanged; table/report wording and
+the enhancement's API contract must be resolved before implementation. Research: ticket 25.
 
 ## Further Notes
 
@@ -405,3 +457,23 @@ runner gains the API mode. v1's acceptance section is the style for the ticked l
 | 2026-10-16 | Explorer summary explicitly lists `total`, `successes`, `failures`, `distinct_users` and `distinct_ips`; Overview keeps three fields | The Explorer design needs five counts. The contract still pointed to Overview after ticket 13 narrowed its summary. The author approved the correction |
 | 2026-10-16 | Newly generated reports use gradual text reveal after validation and saving, approximating observed answer-delivery pace; saved reports open immediately, with skip and reduced-motion support | The author chose gradual reveal over genuine API streaming, confirmed the pace requirement, then gave "Go". Generation, saved data and the API contract stay unchanged. Ticket 17, prompt P-024 |
 | 2026-10-17 | The agent's tools take the dataset the API loaded at startup through one core setter, `use_dataset`, cleared at shutdown; without it they keep v1's default file. When the configured log fails validation the two log tools return a short fixed error and the IP lookup keeps working (ticket 22) | The only design that keeps the tools' names, descriptions and arguments, the copied tests and the core's independence from the API, and the tools read the very frame the dashboards read. LangChain's runtime context breaks the copied tests or the tool schema; a tool factory changes the descriptions the model reads (research note `research/22-tool-data-injection.md`). A failure stays inside the part it belongs to. The author's choice of design and of the failed-log behaviour |
+| 2026-10-18 | Repository scan permits the explicitly classified fake test key in `backend/tests/test_api_errors.py`; real key values remain forbidden (ticket 19) | The made-up key proves error text cannot leak. No configured key value was found in 1,084 Git objects. The author approved preserving the test and recording the exception, prompt P-035 |
+| 2026-10-18 | Overview Alerts count is green at zero and amber above zero, with a subtle matching status icon and quiet card background (ticket 19) | Author found the card too neutral and approved amber rather than red: findings need review but do not establish incident severity. Meaning stays scoped to the current filters. Prompt P-036 |
+| 2026-10-18 | Alerts keeps the total count above the table and removes per-rule subtotals and the rows/page-size caption (ticket 19) | Author found the extra summaries redundant. Paging controls remain. Rule filtering and alert severity are discussion only, not authorised for implementation. Prompt P-038 |
+| 2026-10-18 | Approve post-Parity Alerts rule filter and default severity Medium/Medium/High/Low for the existing four rules, tracked in ticket 26 | Author accepted the researched recommendation, prompt P-044. These are review-priority defaults, not confirmed incident ratings. Existing report behaviour remains unchanged; table/report wording and the enhancement contract precede implementation. Port scope and ticket 19 gate stay unchanged |
+| 2026-10-18 | Explorer footer shows only the row count; remove the newest-first/page-size wording and the sampling sentence (ticket 19) | Author requested quieter supporting text during the live review. Sorting, paging, full-row results and CSV behaviour remain unchanged. Event severity is a discussion request, not an approved addition. Prompt P-046 |
+| 2026-10-18 | Investigator progress appears inside the chat viewport, after the active turn or while waiting for a report (ticket 19) | Author found the external status line easy to miss and requested an in-chat position. Keep the existing tool/report progress wording and input lock. Prompt P-049 |
+| 2026-10-18 | Investigator uses Enter to send and Shift + Enter for a newline, preserving input-method composition and existing send guards (ticket 19) | Author requested familiar chat keyboard behaviour after accepting in-chat progress placement. Prompt P-050 |
+| 2026-10-18 | Tools used opens with a bounded height/fade animation guided by observed answer pace; reduced motion is immediate (ticket 19) | Author accepted the existing tool evidence and requested expansion consistent with chat streaming and report reveal. Opening 0.4–1.2 seconds, fallback 0.8 seconds; short closing motion. Presentation only; no new tool execution or evidence change. Prompt P-052 |
+| 2026-10-18 | Opening Tools used follows its expanding content inside the chat viewport, even after reading above the bottom; manual interaction cancels following (ticket 19) | Author could not judge the reveal because content grew below the visible chat and required the middle arrow. Follow the chosen panel during expansion without jumping to unrelated later messages or overriding manual navigation. Prompt P-053 |
+| 2026-10-18 | Add a header Theme selector on all four pages with Light, Dark and System choices; System remains the default. Save the preference locally, follow live system changes only in System mode, handle unavailable/invalid storage, and apply the saved appearance before the first paint | Author requested a standard theme control after finding no in-app switch during theme review, P-061. Reuse existing shadcn/ui controls and colour tokens; no backend or new dependency |
+| 2026-10-18 | Darken only the Alerts table header relative to the selected row in both themes, retaining existing text and selection cues; keep the noninteractive header background stable on hover | Author's light/dark review found the header and selected alert too similar, P-063. Scoped styling correction using existing palette tokens |
+| 2026-10-19 | Restore v1 history-list arrow expansion/collapse, continuous groups of three around the selected case and reduced-motion-aware reveal animation | Author confirmed the identified differences and v1 arrow controls, P-074; B-064 |
+
+| 2026-10-19 | Drive the single in-chat progress line from actual execution callbacks through messages/custom streams; tool SSE gains call_id and start/end/error phase. Combine active tool types in one phrase, clear completed calls, use Thinking/Writing the answer between tools and clear on completion/failure/navigation. No artificial delay | Author approved the researched approach in P-086 after rejecting a cumulative activity list; docs/api-contract.md records the wire shape; B-065/AUD-027 |
+
+| 2026-10-19 | After a detection call in a broad investigation, a LangChain before_model middleware schedules missing unrestricted per-IP sign-in searches from that turn’s findings before continuing; completed attempts are not repeated, including failures. Sort newly generated report timelines by validated aware ISO timestamps before save/return; historical reports are unchanged | Author authorised addressing missing searches and unordered reports in P-107. Existing read-only tools, create_agent, prompts and checkpointer stay; no custom graph or new tool. B-058/B-059; AUD-022/AUD-023 |
+
+| 2026-10-19 | Preserve explicit narrow attack-type and IP questions when completing evidence: no automatic all-category expansion for those queries | First benchmark exposed extra unrelated evidence in Q08; B-069. Scope-preserving correction within P-107, covered by real-framework regressions and a new retained benchmark |
+
+| 2026-10-19 | Close ticket 19 and accept the Port as a course demo; waive the remaining same-case next-day continuation check and final administrative acceptance items | Explicit author instruction P-110 approves whatever remains. Unperformed checks are recorded as waived, not passed. Known defects and improvements remain documented for optional future work. No push or further implementation requested |

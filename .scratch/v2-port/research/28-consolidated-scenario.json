@@ -1,0 +1,69 @@
+{
+  "id": "ba63f90e8f6f465a9633817b8c898abb",
+  "url": "http://localhost:5174/investigator?id=ba63f90e8f6f465a9633817b8c898abb",
+  "opening_question": "Anything suspicious last night?",
+  "followup_question": "Did that user sign in from anywhere else afterwards?",
+  "opening_checks": {
+    "detection": true,
+    "attacker_ip_search": true,
+    "success_in_search": true,
+    "reputation": true
+  },
+  "followup_checks": {
+    "correct_account": true,
+    "both_later_ips": true,
+    "fresh_user_search": true
+  },
+  "report_checks": {
+    "all_fields": true,
+    "chronological": true,
+    "saved_equals_returned": true,
+    "pdf_opens": true,
+    "pdf_title": true,
+    "pdf_sections": true
+  },
+  "opening_tool_events": [
+    {
+      "name": "find_suspicious_activity",
+      "phase": "start"
+    },
+    {
+      "name": "find_suspicious_activity",
+      "phase": "end"
+    },
+    {
+      "name": "search_logins",
+      "phase": "start"
+    },
+    {
+      "name": "search_logins",
+      "phase": "end"
+    },
+    {
+      "name": "lookup_ip_reputation",
+      "phase": "start"
+    },
+    {
+      "name": "lookup_ip_reputation",
+      "phase": "end"
+    }
+  ],
+  "followup_tool_events": [
+    {
+      "name": "search_logins",
+      "phase": "start"
+    },
+    {
+      "name": "search_logins",
+      "phase": "end"
+    }
+  ],
+  "report_number": 1,
+  "report_timeline": [
+    "2026-10-08T01:12:07Z",
+    "2026-10-08T02:31:44Z",
+    "2026-10-08T02:32:20Z",
+    "2026-10-08T07:23:26Z",
+    "2026-10-08T08:45:37Z"
+  ]
+}

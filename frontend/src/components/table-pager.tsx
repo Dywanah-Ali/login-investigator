@@ -1,13 +1,13 @@
 import type { Table } from '@tanstack/react-table'
 
 import { Button } from '@/components/ui/button'
-import { formatCount } from '@/lib/format'
+import { countOf } from '@/lib/format'
 
 /** Both dashboard tables page locally. The server still returns every matching row. */
-export function TablePager<T>({ table }: { table: Table<T> }) {
+export function TablePager<T>({ table, showSummary = true }: { table: Table<T>; showSummary?: boolean }) {
   return (
-    <nav aria-label="Table pages" className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-      <span>{formatCount(table.getPrePaginationRowModel().rows.length)} rows, newest first. {table.getState().pagination.pageSize} per page.</span>
+    <nav aria-label="Table pages" className={`flex flex-wrap items-center gap-2 text-xs text-muted-foreground ${showSummary ? 'justify-between' : 'justify-end'}`}>
+      {showSummary && <span>{countOf(table.getPrePaginationRowModel().rows.length, 'row')}.</span>}
       <div className="flex items-center gap-2">
         <Button
           variant="outline"

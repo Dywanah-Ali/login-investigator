@@ -22,18 +22,50 @@ function api(detail: object = empty) {
 }
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
 
-test('past Investigations show three, three more per click, and always the open one', async () => {
+test('history arrows expand by three and collapse back to the newest three', async () => {
+  api()
+  open()
+  const list = await screen.findByRole('navigation', { name: 'Past investigations' })
+  await screen.findByRole('button', { name: /Question 0/ })
+  const questions = () => within(list).getAllByRole('button', { name: /Question/ })
+  expect(questions()).toHaveLength(3)
+  const expand = screen.getByRole('button', { name: 'Show 3 more investigations' })
+  expect(expand.textContent).toBe('')
+  await userEvent.click(expand)
+  expect(questions()).toHaveLength(6)
+  await userEvent.click(screen.getByRole('button', { name: 'Show 2 more investigations' }))
+  expect(questions()).toHaveLength(8)
+  expect(screen.queryByRole('button', { name: /Show .* more investigations/ })).not.toBeInTheDocument()
+  const collapse = screen.getByRole('button', { name: 'Show fewer investigations' })
+  expect(collapse.textContent).toBe('')
+  await userEvent.click(collapse)
+  expect(questions()).toHaveLength(3)
+  expect(screen.getByRole('button', { name: 'Show 3 more investigations' })).toBeInTheDocument()
+})
+
+test('opening an older Investigation reveals a continuous prefix and collapse retains its selection', async () => {
+  api({ ...empty, id: 'case-4' })
+  open('/investigator?id=case-4')
+  await screen.findByRole('button', { name: /Question 4/ })
+  const list = screen.getByRole('navigation', { name: 'Past investigations' })
+  const questions = () => within(list).getAllByRole('button', { name: /Question/ })
+  expect(questions().map((button) => button.textContent?.split('16 Oct')[0])).toEqual(
+    Array.from({ length: 6 }, (_, i) => `Question ${i}`),
+  )
+  await userEvent.click(screen.getByRole('button', { name: 'Show 2 more investigations' }))
+  expect(questions()).toHaveLength(8)
+  await userEvent.click(screen.getByRole('button', { name: 'Show fewer investigations' }))
+  expect(questions()).toHaveLength(6)
+  expect(screen.getByRole('button', { name: /Question 4/ })).toHaveAttribute('aria-current', 'true')
+})
+
+test('deep-linked oldest Investigation keeps every intervening entry visible', async () => {
   api({ ...empty, id: 'case-7' })
   open('/investigator?id=case-7')
-  const list = await screen.findByRole('navigation', { name: 'Past investigations' })
   await screen.findByRole('button', { name: /Question 7/ })
-  expect(within(list).getAllByRole('button').map((b) => b.textContent?.split('16 Oct')[0])).toEqual(['Question 0', 'Question 1', 'Question 2', 'Question 7', 'Show three more'])
-  await userEvent.click(screen.getByRole('button', { name: 'Show three more' }))
-  expect(screen.getByRole('button', { name: /Question 5/ })).toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: /Question 6/ })).not.toBeInTheDocument()
-  await userEvent.click(screen.getByRole('button', { name: 'Show three more' }))
-  expect(screen.getByRole('button', { name: /Question 6/ })).toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: 'Show three more' })).not.toBeInTheDocument()
+  const list = screen.getByRole('navigation', { name: 'Past investigations' })
+  expect(within(list).getAllByRole('button', { name: /Question/ })).toHaveLength(8)
+  expect(screen.getByRole('button', { name: 'Show fewer investigations' })).toBeDisabled()
 })
 
 test('Investigate arrival prepares the question without creating or asking', async () => {
@@ -56,6 +88,49 @@ test('an empty chat contains its introduction and starter questions; choosing on
   expect(fetcher.mock.calls.every(([, options]) => !options?.method || options.method === 'GET')).toBe(true)
 })
 
+test('Enter sends the multiline question while Shift + Enter adds a newline and blank Enter does not send', async () => {
+  let stream!: ReadableStreamDefaultController<Uint8Array>
+  const requests: { url: string; options?: RequestInit }[] = []
+  vi.stubGlobal('fetch', vi.fn(async (url: string, options?: RequestInit) => {
+    requests.push({ url, options })
+    if (url.endsWith('/ask')) return new Response(new ReadableStream({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    if (options?.method === 'POST') return Response.json(empty)
+    return Response.json(url === '/api/investigations' ? { investigations: entries } : empty)
+  }))
+  open()
+  const input = screen.getByRole('textbox', { name: 'Question' })
+  await userEvent.click(input)
+  await userEvent.keyboard('{Enter}')
+  expect(input).toHaveValue('')
+  expect(requests.filter((request) => request.options?.method === 'POST')).toHaveLength(0)
+  await userEvent.type(input, 'Check the log')
+  await userEvent.keyboard('{Shift>}{Enter}{/Shift}Include the evidence')
+  expect(input).toHaveValue('Check the log\nInclude the evidence')
+  expect(requests.filter((request) => request.options?.method === 'POST')).toHaveLength(0)
+  await userEvent.keyboard('{Enter}')
+  await vi.waitFor(() => expect(stream).toBeDefined())
+  expect(input).toBeDisabled()
+  expect(input).toHaveValue('')
+  const posts = requests.filter((request) => request.options?.method === 'POST')
+  expect(posts.map((request) => request.url)).toEqual(['/api/investigations', '/api/investigations/case-0/ask'])
+  expect(posts.map((request) => JSON.parse(String(request.options?.body)))).toEqual([
+    { question: 'Check the log\nInclude the evidence' },
+    { question: 'Check the log\nInclude the evidence' },
+  ])
+  await act(async () => { stream.enqueue(new TextEncoder().encode('event: done\ndata: {}\n\n')); stream.close() })
+  await vi.waitFor(() => expect(input).toBeEnabled())
+})
+
+test('Enter during input-method composition does not submit the question', async () => {
+  const fetcher = api()
+  open()
+  const input = screen.getByRole('textbox', { name: 'Question' })
+  await userEvent.type(input, 'Check the log')
+  fireEvent.keyDown(input, { key: 'Enter', isComposing: true })
+  expect(input).toHaveValue('Check the log')
+  expect(fetcher.mock.calls.every(([, options]) => !options?.method || options.method === 'GET')).toBe(true)
+})
+
 test('create then ask locks input, streams tool progress and text, then redraws saved memory', async () => {
   let stream!: ReadableStreamDefaultController<Uint8Array>
   let saved = false
@@ -75,8 +150,10 @@ test('create then ask locks input, streams tool progress and text, then redraws 
   const posts = requests.filter((r) => r.options?.method === 'POST')
   expect(posts.map((r) => r.url)).toEqual(['/api/investigations', '/api/investigations/case-0/ask'])
   expect(posts.map((r) => JSON.parse(String(r.options?.body)))).toEqual([{ question: 'Investigate' }, { question: 'Investigate' }])
-  await act(async () => { stream.enqueue(new TextEncoder().encode('event: tool\r\ndata: {"name":"search_logins"}\r\n\r\nevent: text\r\ndata: {"text":"Live 🛡 answer"}\r\n\r\n')) })
-  expect(screen.getByRole('status')).toHaveTextContent('Searching the sign-in log…')
+  await act(async () => { stream.enqueue(new TextEncoder().encode('event: tool\r\ndata: {"name":"search_logins","call_id":"search-1","phase":"start"}\r\n\r\nevent: text\r\ndata: {"text":"Live 🛡 answer"}\r\n\r\n')) })
+  const progress = within(screen.getByRole('region', { name: 'Investigation messages' })).getByRole('status')
+  expect(progress).toHaveTextContent('Searching the sign-in log…')
+  expect(screen.getAllByRole('status')).toHaveLength(1)
   expect(screen.getByText('Live 🛡 answer')).toBeInTheDocument()
   saved = true
   await act(async () => { stream.enqueue(new TextEncoder().encode('event: done\ndata: {}\n\n')); stream.close() })
@@ -215,7 +292,8 @@ test('the core offer controls report wording, waiting, saved fields and numbered
   viewport.scrollTop = 0
   fireEvent.scroll(viewport)
   await userEvent.click(writeButton)
-  expect(screen.getByRole('status')).toHaveTextContent('Writing the incident report…')
+  expect(within(viewport).getByRole('status')).toHaveTextContent('Writing the incident report…')
+  expect(screen.getAllByRole('status')).toHaveLength(1)
   expect(screen.getByRole('textbox', { name: 'Question' })).toBeDisabled()
   const sent = fetcher.mock.calls.find(([url]) => url.endsWith('/report'))
   expect(JSON.parse(String(sent?.[1]?.body))).toEqual({ request: 'Update the incident report' })
@@ -352,6 +430,7 @@ test('text frames survive split delimiters and UTF-8 bytes; a missing done event
 test.each(['answer', 'report'])('browser navigation during an %s aborts the old operation and opens usable saved history', async (kind) => {
   let navigate!: NavigateFunction
   let askSignal!: AbortSignal
+  let toolStream!: ReadableStreamDefaultController<Uint8Array>
   vi.stubGlobal('fetch', vi.fn(async (url: string, options?: RequestInit) => {
     if (url.endsWith('/report')) {
       askSignal = options?.signal as AbortSignal
@@ -359,7 +438,7 @@ test.each(['answer', 'report'])('browser navigation during an %s aborts the old 
     }
     if (url.endsWith('/ask')) {
       askSignal = options?.signal as AbortSignal
-      return new Response(new ReadableStream({ start(controller) { askSignal.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError'))) } }), { headers: { 'Content-Type': 'text/event-stream' } })
+      return new Response(new ReadableStream({ start(controller) { toolStream = controller; askSignal.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError'))) } }), { headers: { 'Content-Type': 'text/event-stream' } })
     }
     if (url === '/api/investigations') return Response.json({ investigations: entries })
     return Response.json(url.endsWith('case-1') ? { ...empty, id: 'case-1', turns: [{ ...turn, answer: 'Reopened investigation answer' }] } : { ...empty, report_offer: kind === 'report' ? 'Write the incident report' : null })
@@ -368,10 +447,99 @@ test.each(['answer', 'report'])('browser navigation during an %s aborts the old 
   await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Send question' })).toBeEnabled())
   await userEvent.click(screen.getByRole('button', { name: kind === 'report' ? 'Write the incident report' : 'Send question' }))
   await vi.waitFor(() => expect(askSignal).toBeDefined())
+  if (kind === 'answer') {
+    await act(async () => toolStream.enqueue(new TextEncoder().encode(
+      'event: tool\ndata: {"name":"lookup_ip_reputation","call_id":"old-case","phase":"start"}\n\n',
+    )))
+    expect(screen.getByRole('status')).toHaveTextContent('Looking up IP reputation…')
+  }
   await act(async () => { await navigate('/investigator?id=case-1') })
   expect(askSignal.aborted).toBe(true)
   expect(await screen.findByText('Reopened investigation answer')).toBeInTheDocument()
   expect(screen.getByRole('textbox', { name: 'Question' })).toBeEnabled()
   expect(screen.queryByText('Investigate')).not.toBeInTheDocument()
   expect(screen.queryByRole('status')).not.toBeInTheDocument()
+})
+
+test('batched tool starts show one combined status and each terminal call removes only itself', async () => {
+  let stream!: ReadableStreamDefaultController<Uint8Array>
+  vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+    if (url.endsWith('/ask')) return new Response(new ReadableStream({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    return Response.json(url === '/api/investigations' ? { investigations: entries } : empty)
+  }))
+  open('/investigator?id=case-0&ask=Investigate')
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Send question' })).toBeEnabled())
+  await userEvent.click(screen.getByRole('button', { name: 'Send question' }))
+  await vi.waitFor(() => expect(stream).toBeDefined())
+  const emit = async (...payloads: object[]) => act(async () => {
+    stream.enqueue(new TextEncoder().encode(payloads.map((data) => `event: tool\ndata: ${JSON.stringify(data)}\n\n`).join('')))
+  })
+  await emit(
+    { name: 'lookup_ip_reputation', call_id: 'rep-1', phase: 'start' },
+    { name: 'search_logins', call_id: 'log-1', phase: 'start' },
+    { name: 'lookup_ip_reputation', call_id: 'rep-2', phase: 'start' },
+  )
+  expect(screen.getAllByRole('status')).toHaveLength(1)
+  expect(screen.getByRole('status')).toHaveTextContent('Searching the sign-in log and looking up IP reputation…')
+  await emit({ name: 'lookup_ip_reputation', call_id: 'rep-1', phase: 'end' })
+  expect(screen.getByRole('status')).toHaveTextContent('Searching the sign-in log and looking up IP reputation…')
+  await emit({ name: 'search_logins', call_id: 'log-1', phase: 'error' })
+  expect(screen.getByRole('status')).toHaveTextContent('Looking up IP reputation…')
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  await emit({ name: 'lookup_ip_reputation', call_id: 'rep-2', phase: 'end' })
+  expect(screen.getByRole('status')).toHaveTextContent('Thinking…')
+  await act(async () => stream.enqueue(new TextEncoder().encode('event: text\ndata: {"text":"Answer"}\n\n')))
+  expect(screen.getByRole('status')).toHaveTextContent('Writing the answer…')
+  await act(async () => {
+    stream.enqueue(new TextEncoder().encode('event: done\ndata: {}\n\n'))
+    stream.close()
+  })
+  expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  expect(screen.getByRole('textbox', { name: 'Question' })).toBeEnabled()
+})
+
+test('a fast completed lookup does not leave a stale tool status while answer text streams', async () => {
+  let stream!: ReadableStreamDefaultController<Uint8Array>
+  vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+    if (url.endsWith('/ask')) return new Response(new ReadableStream({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'text/event-stream' } })
+    return Response.json(url === '/api/investigations' ? { investigations: entries } : empty)
+  }))
+  open('/investigator?id=case-0&ask=Investigate')
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Send question' })).toBeEnabled())
+  await userEvent.click(screen.getByRole('button', { name: 'Send question' }))
+  await vi.waitFor(() => expect(stream).toBeDefined())
+  await act(async () => stream.enqueue(new TextEncoder().encode(
+    'event: tool\ndata: {"name":"lookup_ip_reputation","call_id":"fast","phase":"start"}\n\n'
+    + 'event: tool\ndata: {"name":"lookup_ip_reputation","call_id":"fast","phase":"end"}\n\n'
+    + 'event: text\ndata: {"text":"Evidence"}\n\n',
+  )))
+  expect(screen.getByRole('status')).toHaveTextContent('Writing the answer…')
+  expect(screen.queryByText('Looking up IP reputation…')).not.toBeInTheDocument()
+  await act(async () => {
+    stream.enqueue(new TextEncoder().encode('event: error\ndata: {"code":"agent_failed"}\n\n'))
+    stream.close()
+  })
+  expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  expect(screen.getByRole('alert')).toHaveTextContent('The agent stopped before it finished.')
+})
+
+
+test.each([
+  { name: '<img src=hostile>', call_id: 'one', phase: 'start' },
+  { name: 'search_logins', call_id: 'one', phase: 'unknown' },
+  { name: 'search_logins', phase: 'start' },
+])('malformed tool lifecycle data produces a fixed error: %j', async (payload) => {
+  vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+    if (url.endsWith('/ask')) return new Response(
+      `event: tool\ndata: ${JSON.stringify(payload)}\n\n`,
+      { headers: { 'Content-Type': 'text/event-stream' } },
+    )
+    return Response.json(url === '/api/investigations' ? { investigations: entries } : empty)
+  }))
+  open('/investigator?id=case-0&ask=Investigate')
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Send question' })).toBeEnabled())
+  await userEvent.click(screen.getByRole('button', { name: 'Send question' }))
+  expect(await screen.findByRole('alert')).toHaveTextContent('The agent stopped before it finished.')
+  expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  expect(screen.getByRole('textbox', { name: 'Question' })).toBeEnabled()
 })

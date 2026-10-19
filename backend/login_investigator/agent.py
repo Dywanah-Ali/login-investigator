@@ -9,18 +9,22 @@ import json
 import os
 import re
 from collections.abc import Generator
+from contextlib import closing
 from dataclasses import dataclass, field
 from typing import Literal
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
-from langchain_core.messages import AIMessage, AIMessageChunk, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from pydantic import BaseModel, Field
 
 from login_investigator.generator import CAPTURED_AT, REPO_ROOT, WINDOW_START
 from login_investigator.loader import TIMESTAMP_FORMAT
+from login_investigator.investigation_policy import complete_detection_searches
+from login_investigator.progress import ToolLifecycle, ToolProgress
+from login_investigator.report_order import timeline_instant
 from login_investigator.tools import TOOLS
 
 MODEL = "openai/gpt-4o-mini"
@@ -136,7 +140,7 @@ def make_model():
 def build_agent(model, checkpointer):
     """Build once per browser session: the checkpointer, not the agent, holds the cases."""
     return create_agent(model=model, tools=list(TOOLS), system_prompt=system_prompt(),
-                        checkpointer=checkpointer)
+                        checkpointer=checkpointer, middleware=[complete_detection_searches])
 
 
 def _config(thread_id: str) -> dict:
@@ -147,26 +151,30 @@ def _config(thread_id: str) -> dict:
 
 @dataclass(frozen=True)
 class Stream:
-    """One piece of a streamed answer: a piece of text, or the name of a tool starting to run."""
+    """Answer text or execution progress; legacy callers receive tool starts only."""
 
     kind: Literal["text", "tool"]
     value: str
+    call_id: str | None = None
+    phase: Literal["start", "end", "error"] | None = None
 
 
-def ask(agent, thread_id: str, question: str) -> Generator[Stream, None, None]:
+def ask(agent, thread_id: str, question: str, *, lifecycle: bool = False) -> Generator[Stream, None, None]:
     """Ask a question in a case and stream the answer as it is written. The case's memory holds
     the full answer once the stream ends."""
     messages = {"messages": [HumanMessage(question)]}
-    for chunk, meta in agent.stream(messages, _config(thread_id), stream_mode="messages"):
-        if meta.get("langgraph_node") != "model" or not isinstance(chunk, AIMessage):
-            continue  # tool results are shown later, under the answer, not streamed
-        # A streaming model sends pieces; a model that cannot stream sends one whole message.
-        calls = chunk.tool_call_chunks if isinstance(chunk, AIMessageChunk) else chunk.tool_calls
-        for call in calls:
-            if call.get("name"):
-                yield Stream("tool", call["name"])
-        if chunk.text:
-            yield Stream("text", chunk.text)
+    config = {**_config(thread_id), "callbacks": [ToolLifecycle({tool.name for tool in TOOLS})]}
+    with closing(agent.stream(messages, config, stream_mode=["messages", "custom"])) as stream:
+        for mode, item in stream:
+            if mode == "custom" and isinstance(item, ToolProgress):
+                if lifecycle:
+                    yield Stream("tool", item.name, item.call_id, item.phase)
+                elif item.phase == "start":
+                    yield Stream("tool", item.name)
+            elif mode == "messages":
+                chunk, meta = item
+                if meta.get("langgraph_node") == "model" and isinstance(chunk, AIMessage) and chunk.text:
+                    yield Stream("text", chunk.text)
 
 
 # --- The incident report -------------------------------------------------------------------------
@@ -259,6 +267,8 @@ def write_report(agent, model, thread_id: str, request: str = REPORT_REQUEST) ->
     messages = agent.get_state(config).values.get("messages", [])
     chain = REPORT_PROMPT | model.with_structured_output(IncidentReport)
     report = chain.invoke({"today": TODAY["today"], "transcript": transcript(messages)})
+    report = report.model_copy(update={"timeline": sorted(
+        report.timeline, key=lambda entry: timeline_instant(entry.time_utc))})
     agent.update_state(config, {"messages": [
         HumanMessage(request),
         AIMessage(report.model_dump_json(), name=REPORT_NAME),

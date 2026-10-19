@@ -1,4 +1,5 @@
 import { ApiFailure, request } from '@/lib/api'
+import { isToolName, type ToolName } from '@/lib/tool-progress'
 
 export type InvestigationEntry = { id: string; started_at: string; first_question: string }
 export type ToolView = { name: string; args: Record<string, unknown>; title: string; asked: string; found: string; columns: string[]; rows: Record<string, unknown>[] | null; raw: string }
@@ -16,7 +17,9 @@ export async function postJson<T>(path: string, body: object, signal: AbortSigna
   return await response.json() as T
 }
 
-export type AnswerEvent = { kind: 'text'; text: string } | { kind: 'tool'; name: string } | { kind: 'done' | 'error' }
+export type AnswerEvent = { kind: 'text'; text: string }
+  | { kind: 'tool'; name: ToolName; call_id: string; phase: 'start' | 'end' | 'error' }
+  | { kind: 'done' | 'error' }
 
 /** SSE frames can cross network chunks, UTF-8 characters and CRLF boundaries. */
 export async function ask(id: string, question: string, signal: AbortSignal, onEvent: (event: AnswerEvent) => void) {
@@ -40,9 +43,13 @@ export async function ask(id: string, question: string, signal: AbortSignal, onE
         const kind = lines.find((line) => line.startsWith('event:'))?.slice(6).trim()
         const payload = lines.filter((line) => line.startsWith('data:')).map((line) => line.slice(5).replace(/^ /, '')).join('\n')
         if (!kind || !payload) continue // keepalive comments
-        const data = JSON.parse(payload) as { text?: unknown; name?: unknown }
+        const data = JSON.parse(payload) as { text?: unknown; name?: unknown; call_id?: unknown; phase?: unknown }
         if (kind === 'text' && typeof data.text === 'string') onEvent({ kind, text: data.text })
-        if (kind === 'tool' && typeof data.name === 'string') onEvent({ kind, name: data.name })
+        if (kind === 'tool') {
+          if (!isToolName(data.name) || typeof data.call_id !== 'string' || !data.call_id
+            || (data.phase !== 'start' && data.phase !== 'end' && data.phase !== 'error')) throw new ApiFailure('agent_failed')
+          onEvent({ kind, name: data.name, call_id: data.call_id, phase: data.phase })
+        }
         if (kind === 'done' || kind === 'error') { onEvent({ kind }); return }
       }
       if (done) throw new ApiFailure('agent_failed')

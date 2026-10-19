@@ -1,4 +1,6 @@
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { BellIcon, CircleCheckIcon } from 'lucide-react'
+
+import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import type { OverviewReply } from '@/lib/api'
 import { failedShare, formatCount, noun } from '@/lib/format'
 
@@ -6,6 +8,10 @@ import { failedShare, formatCount, noun } from '@/lib/format'
 // v1 has no period-on-period figures.
 export function SectionCards({ overview }: { overview: OverviewReply }) {
   const { summary, alert_count } = overview
+  const AlertIcon = alert_count === 0 ? CircleCheckIcon : BellIcon
+  const alertColour = alert_count === 0
+    ? 'text-green-700 dark:text-green-400'
+    : 'text-amber-700 dark:text-amber-400'
   const tiles = [
     { label: 'Sign-in attempts', value: summary.total, note: noun(summary.total, 'event') },
     {
@@ -14,7 +20,12 @@ export function SectionCards({ overview }: { overview: OverviewReply }) {
       note: `${failedShare(summary.failures, summary.total) ?? 'No share'} of attempts`,
     },
     { label: 'Usernames seen', value: summary.distinct_users, note: 'includes guessed names' },
-    { label: 'Alerts', value: alert_count, note: `${noun(alert_count, 'finding')} in this view` },
+    {
+      label: 'Alerts', value: alert_count, note: `${noun(alert_count, 'finding')} in this view`,
+      colour: alertColour,
+      icon: <AlertIcon aria-hidden="true" className="size-4" />,
+      iconBackground: alert_count === 0 ? 'bg-green-500/10' : 'bg-amber-500/10',
+    },
   ]
 
   return (
@@ -23,9 +34,16 @@ export function SectionCards({ overview }: { overview: OverviewReply }) {
         <Card key={tile.label} className="@container/card">
           <CardHeader>
             <CardDescription>{tile.label}</CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            <CardTitle className={`text-2xl font-semibold tabular-nums @[250px]/card:text-3xl ${tile.colour ?? ''}`}>
               {formatCount(tile.value)}
             </CardTitle>
+            {tile.icon && (
+              <CardAction>
+                <span className={`flex rounded-full p-2 ${tile.colour} ${tile.iconBackground}`}>
+                  {tile.icon}
+                </span>
+              </CardAction>
+            )}
           </CardHeader>
           <CardFooter className="text-sm text-muted-foreground">{tile.note}</CardFooter>
         </Card>

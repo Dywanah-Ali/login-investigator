@@ -158,7 +158,7 @@ def download_report(number: int, case: KnownCase, svc: Server) -> Response:
 def question_stream(body: Question, case: KnownCase, svc: Available,
                     reserved: Writing) -> Iterator[Generator[agent.Stream, None, None]]:
     """Close the core before releasing the writer, even when delivery is cancelled at a yield."""
-    stream = agent.ask(svc.agent, case.thread_id, body.question)
+    stream = agent.ask(svc.agent, case.thread_id, body.question, lifecycle=True)
     try:
         yield stream
     finally:
@@ -176,8 +176,9 @@ async def ask_question(stream: QuestionStream) -> AsyncIterator[ServerSentEvent]
             item = await run_in_threadpool(next, stream, None)
             if item is None:
                 break
-            yield ServerSentEvent(event=item.kind,
-                                  data={"name" if item.kind == "tool" else "text": item.value})
+            payload = ({"name": item.value, "call_id": item.call_id, "phase": item.phase}
+                       if item.kind == "tool" else {"text": item.value})
+            yield ServerSentEvent(event=item.kind, data=payload)
         yield ServerSentEvent(event="done", data={})
     except Exception:
         log.exception("The agent stream failed")

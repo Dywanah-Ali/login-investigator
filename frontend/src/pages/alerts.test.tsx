@@ -63,17 +63,20 @@ describe('the Alerts table', () => {
     ])
   })
 
-  test('the counts line gives the total and a count per rule title, in title order', async () => {
+  test('the counts line gives only the total without redundant rule and row captions', async () => {
     fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
     openApp('/alerts')
 
     expect(
       await screen.findByText(
         paragraph(
-          '2 alerts in the selected period · Password spraying: 1 · Sign-in from a new country: 1',
+          '2 alerts in the selected period',
         ),
       ),
     ).toBeInTheDocument()
+    expect(document.body).not.toHaveTextContent('Password spraying: 1')
+    expect(document.body).not.toHaveTextContent('rows, newest first.')
+    expect(screen.getByRole('navigation', { name: 'Table pages' })).toBeInTheDocument()
   })
 })
 

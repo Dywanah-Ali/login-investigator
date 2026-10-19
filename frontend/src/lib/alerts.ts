@@ -13,22 +13,6 @@ export function ruleTitles(rules: RuleGuide[]): TitleOf {
   return (rule) => titles.get(rule) ?? rule
 }
 
-/** The line above the table: "5 alerts in the selected period", then a count per rule title,
- * in title order, as v1 wrote it. */
-export function countsLine(alerts: Alert[], titleOf: TitleOf) {
-  const perTitle = new Map<string, number>()
-  for (const alert of alerts) {
-    const title = titleOf(alert.rule)
-    perTitle.set(title, (perTitle.get(title) ?? 0) + 1)
-  }
-  return {
-    total: `${countOf(alerts.length, 'alert')} in the selected period`,
-    perRule: [...perTitle]
-      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-      .map(([title, count]) => `${title}: ${formatCount(count)}`),
-  }
-}
-
 /** What tells one alert from another in a list: its rule, window, IPs and users. The core gives
  * findings no ID, and two rules can fire on the same events, so the rule is part of it. */
 export function alertKey(alert: Alert): string {

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { ArrowUpRight, Plus } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, ChevronUp, Plus } from 'lucide-react'
 import { useMessageScroller } from '@shadcn/react/message-scroller'
 
 import { Answer } from '@/components/answer'
@@ -65,11 +65,16 @@ export function InvestigatorPage() {
   const {
     id, question, setQuestion, entries, data, failure, loading, busy,
     progress, draft, send, select, writeReport,
-    reportReveal, completeReportReveal,
+    reportReveal, completeReportReveal, answerCharactersPerSecond,
   } = useInvestigation()
   const [limit, setLimit] = useState(3)
-  const shown = entries.filter((entry, index) => index < limit || entry.id === id)
+  const selectedIndex = entries.findIndex((entry) => entry.id === id)
+  const minimum = Math.max(3, Math.ceil((selectedIndex + 1) / 3) * 3)
+  if (limit < minimum) setLimit(minimum)
+  const shown = entries.slice(0, Math.max(limit, minimum))
+  const hidden = entries.length - shown.length
   const empty = !loading && !busy && !data?.turns.length && !draft
+  const progressLine = busy && <p role="status" className="text-sm text-muted-foreground">{progress}</p>
 
   return (
     <>
@@ -90,7 +95,7 @@ export function InvestigatorPage() {
                 <button
                   key={entry.id}
                   aria-current={entry.id === id ? 'true' : undefined}
-                  className="block w-full rounded-md border border-border/60 p-2.5 text-left transition-colors hover:bg-muted aria-[current=true]:border-primary/60 aria-[current=true]:bg-primary/10 aria-[current=true]:text-foreground disabled:opacity-50"
+                  className="investigation-history-entry block w-full rounded-md border border-border/60 p-2.5 text-left transition-colors hover:bg-muted aria-[current=true]:border-primary/60 aria-[current=true]:bg-primary/10 aria-[current=true]:text-foreground disabled:opacity-50"
                   disabled={busy}
                   onClick={() => select(entry.id)}
                 >
@@ -98,9 +103,19 @@ export function InvestigatorPage() {
                   <span className="mt-1 block text-[0.6875rem] text-muted-foreground">{formatTimestamp(entry.started_at)}</span>
                 </button>
               ))}
-              {entries.length > limit && (
-                <Button className="w-full" variant="ghost" size="sm" onClick={() => setLimit(limit + 3)}>
-                  Show three more
+              {hidden > 0 ? (
+                <Button className="w-full" variant="ghost" size="sm" disabled={busy}
+                  aria-label={`Show ${Math.min(hidden, 3)} more investigations`}
+                  title={`Show ${Math.min(hidden, 3)} more investigations`}
+                  onClick={() => setLimit(Math.max(limit, minimum) + 3)}>
+                  <ChevronDown aria-hidden="true" />
+                </Button>
+              ) : entries.length > 3 && (
+                <Button className="w-full" variant="ghost" size="sm"
+                  disabled={busy || shown.length <= minimum}
+                  aria-label="Show fewer investigations" title="Show fewer investigations"
+                  onClick={() => setLimit(minimum)}>
+                  <ChevronUp aria-hidden="true" />
                 </Button>
               )}
             </nav>
@@ -143,7 +158,7 @@ export function InvestigatorPage() {
                   {data?.turns.map((turn, index) => (
                     <MessageScrollerItem key={`${id}-${index}`} messageId={`${id}-${index}`} className="space-y-3">
                       <QuestionAnswer question={turn.question} answer={turn.answer} />
-                      <div className="sm:max-w-[85%]"><ToolsUsed tools={turn.tools} /></div>
+                      <div className="sm:max-w-[85%]"><ToolsUsed tools={turn.tools} charactersPerSecond={answerCharactersPerSecond} /></div>
                       {turn.report && id && <div className="sm:max-w-[85%]">
                         <IncidentReport
                           id={id}
@@ -156,6 +171,10 @@ export function InvestigatorPage() {
                   ))}
                   {draft && <MessageScrollerItem messageId="draft" scrollAnchor>
                     <QuestionAnswer question={draft.question} answer={draft.answer} />
+                    {progressLine}
+                  </MessageScrollerItem>}
+                  {!draft && progressLine && <MessageScrollerItem messageId="progress" scrollAnchor>
+                    {progressLine}
                   </MessageScrollerItem>}
                 </MessageScrollerContent>
               </MessageScrollerViewport>
@@ -163,7 +182,6 @@ export function InvestigatorPage() {
               <MessageScrollerButton />
             </MessageScroller>
           </MessageScrollerProvider>
-          {busy && <p role="status" className="text-xs text-muted-foreground">{progress}</p>}
           {data?.report_offer && (
             <div><Button variant="outline" size="sm" disabled={busy || loading} onClick={() => void writeReport()}>
               {data.report_offer}
@@ -179,6 +197,11 @@ export function InvestigatorPage() {
               className="field-sizing-content max-h-40 min-h-9 min-w-0 flex-1 resize-none rounded-md px-2 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return
+                event.preventDefault()
+                event.currentTarget.form?.requestSubmit()
+              }}
               maxLength={2000}
             />
             <Button type="submit" size="sm" aria-label="Send question" disabled={busy || loading || !question.trim()}>Send</Button>
