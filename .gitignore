@@ -25,5 +25,8 @@ build/
 # Local editor and agent settings (machine paths)
 .claude/settings.local.json
 
+# Session handoffs: local to this machine, hold absolute paths
+.scratch/handoff/
+
 # macOS
 .DS_Store
