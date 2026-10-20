@@ -57,6 +57,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-028 | Explorer test timeout during concurrent checks | Rerun passed, cause unresolved | Medium | B-066; P-086 |
 | AUD-029 | Correlate end-to-end scenario rulings with the saved Investigation | Closed: consolidated case verified and approved | High | B-067; P-100/P-107 |
 | AUD-030 | Exclude the initial event from later-sign-in prose totals | Open counting defect | High | B-070; P-107 final benchmark |
+| AUD-031 | Replace gpt-4o-mini before its retirement on 14 January 2027 | Open, deadline-bound; no model chosen | High | P-121; OpenRouter service notice |
 
 ### AUD-001: Rule filter
 
@@ -432,6 +433,24 @@ Q07 runs 2 and 3 pass; overall 56/57 and security 15/15 meet the agreed threshol
 exact evidence. No fix or grader change in the two-fix scope. Agree a robust boundary/counting
 remedy and regression evidence before implementation.
 
+### AUD-031: Model retirement
+
+On 20 October 2026 the author shared an OpenRouter service notice: OpenAI's GPT-4o, GPT-4o mini,
+GPT-4.1 and GPT-4.1 mini retire on 14 January 2027, and requests to them fail after that date.
+The agent's model is `openai/gpt-4o-mini` (`MODEL` in `backend/login_investigator/agent.py`;
+also named in `env.example`, the project rules and the spec's technical constraints). After the
+deadline the Investigator stops answering; dashboards are unaffected.
+
+A model change is a behaviour change, not a configuration edit. The agent's judgement is gated by
+the eval set, so a replacement is accepted only on a full API-mode eval run against the agreed
+thresholds (at least 90% overall, 100% for injection and refusal checks), with the old model's
+results kept for comparison. The notice names two OpenAI replacements; they are not yet verified.
+Choosing the model is the author's decision and changes the spec, so it goes through the spec's
+decisions log. v1 uses the same model and will also stop answering; it stays frozen.
+
+Closure evidence: a spec decision naming the new model, the code and documents updated, and a
+passing API-mode eval run on the new model before 14 January 2027.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -542,3 +561,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-20 | Built AUD-001 and AUD-002 under ticket 26 after the author approved the design note with Option A. Two-axis review findings fixed; lint stays at the six AUD-009 warnings. Awaiting author live review. | P-112 to P-115; ticket 26; 413 backend, 149 frontend tests |
 
 | 2026-10-20 | Closed AUD-001 and AUD-002 after the author's live review; ticket 26 resolved and merged locally. | P-116; ticket 26 |
+
+| 2026-10-20 | Added AUD-031: the agent's model retires on 14 January 2027. Recorded only; no model chosen. | P-121; OpenRouter service notice |

@@ -2378,4 +2378,17 @@ Committed locally, then pushed at the author's word ("push").
 already centred. The change applies to the table, the details panel and the rules guide, since
 all three use the one component. Checked live on the author's own dev server: all six badges
 measure 64 pixels with no clipped text. 149 frontend tests and the type check pass; lint is
-unchanged at six warnings. On branch `severity-badge-width`; not merged or pushed.
+unchanged at six warnings. Merged and pushed at the author's word ("merge and push. thanks").
+
+### P-121 · 2026-10-20 · Model retirement notice
+
+**Prompt, verbatim:**
+> heads up :D
+
+With a screenshot of an OpenRouter service notice: GPT-4o, GPT-4o mini, GPT-4.1 and GPT-4.1 mini
+retire on 14 January 2027.
+
+**Purpose:** warn that the agent's model has an end date.
+**Result:** confirmed the agent uses `openai/gpt-4o-mini`. Recorded as AUD-031 in the
+improvement register, with the eval run as the gate for any replacement. No model chosen and no
+code changed. Committed locally; not pushed.
