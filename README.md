@@ -79,21 +79,59 @@ remain available in Git history. The original v1 project is unchanged.
 
 ## Run
 
-Two terminals, one per server.
+The app is two servers, each in its own terminal window: the API does the work, and the
+frontend is the screen you use. Commands below start from the repository folder.
+
+### Start
+
+1. In the first terminal, start the API:
+
+   ```bash
+   cd backend
+   uv run uvicorn api.app:create_app --factory --port 8000
+   ```
+
+   Wait for `Application startup complete`, then leave this window open.
+
+2. In a second terminal, start the frontend:
+
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+   Wait for the line showing `http://localhost:5173`, then leave this window open too.
+
+3. Open http://localhost:5173 in a browser.
+
+Starting takes about 10 seconds. The frontend's dev server forwards every `/api` request to the
+API, so the browser talks to one address. The dashboards work without a model key; the
+Investigator needs `OPENROUTER_API_KEY` in `backend/.env`.
+
+### Stop
+
+Press **Ctrl + C** in each terminal window. Nothing restarts on its own.
+
+### When port 8000 is already in use
+
+Start the API on another port, and give the frontend the same address in `LI_API_URL`:
 
 ```bash
-# Terminal 1: the API, on port 8000
+# Terminal 1
 cd backend
-uv run uvicorn api.app:create_app --factory --port 8000
+uv run uvicorn api.app:create_app --factory --port 8010
 
-# Terminal 2: the frontend, then open http://localhost:5173
+# Terminal 2
 cd frontend
-npm run dev
+LI_API_URL=http://127.0.0.1:8010 npm run dev
 ```
 
-The frontend's dev server forwards every `/api` request to the API on port 8000, so the browser
-talks to one address. The dashboards work without a model key.
+`LI_API_URL` belongs to the frontend's dev server only; the API never reads it.
 
-If port 8000 is taken, start the API with another `--port`, and start the frontend with the same
-address in `LI_API_URL`, for example `LI_API_URL=http://127.0.0.1:8010 npm run dev`. This setting
-belongs to the frontend's dev server only; the API never reads it.
+### If something goes wrong
+
+| You see | It means |
+|---|---|
+| "address already in use" in the API terminal | Another program holds that port. Use another one, as above |
+| "The API cannot be reached" on screen | The API terminal is not running, or the two port numbers differ |
+| The Investigator says the agent is unavailable | The model key in `backend/.env` is missing or wrong. The dashboards still work |

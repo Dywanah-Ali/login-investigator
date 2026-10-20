@@ -2347,3 +2347,13 @@ private one. Before publishing, a scan of all 230 tracked files found no real ke
 memory file; the only key-shaped text is the fake test value in `test_api_errors.py`. All 73
 commits use the GitHub noreply address. `main` pushed and tracking `origin/main`; ticket
 branches stay local.
+
+### P-118 · 2026-10-20 · Put plain start steps in the README
+
+**Prompt, verbatim:**
+> add these start steps to the README pls
+
+**Purpose:** let the author start and stop the app on demand without help.
+**Result:** README "Run" section rewritten as numbered Start and Stop steps, with what to wait
+for, a recipe for when port 8000 is in use, and a short troubleshooting table. Commands are
+unchanged from the previous section. Committed locally; not pushed.
