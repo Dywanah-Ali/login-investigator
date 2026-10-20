@@ -95,6 +95,8 @@ contract, and the seams.
 
 - [Login alert severity policy](issues/25-login-alert-severity.md): research completed on 18 October 2026 using one successful Perplexity deep-research call and official-source verification. Proposed defaults Medium/Medium/High/Low are project policy choices. The existing report uses different criteria, so table/report consistency requires an author decision before implementation. [Research note](research/25-login-alert-severity.md). Author approved the defaults on 18 October 2026 (P-044). [Ticket 26](issues/26-alert-rule-filter-default-severity.md) queues the filter and default severity after Parity; table/report wording and contract precede implementation. No application change; ticket 19 remains the build frontier.
 
+- [Rule filter and default severity on Alerts](issues/26-alert-rule-filter-default-severity.md): a Rule box on Alerts only and a Severity badge from one core policy (Medium/Medium/High/Low), served by `/api/rules`; the details panel explains that a report can rate the case differently (Option A). 413 backend and 149 frontend tests pass; two-axis review fixes applied. Author approved the live screen on 20 October 2026 (P-116).
+
 ## Not yet specified
 
 - Nothing. The map and Port build are complete. Tickets 10–19 are resolved, along with
@@ -104,8 +106,8 @@ contract, and the seams.
   same-case next-day check. Evidence: 393 backend tests, 141 frontend tests, passing type
   checks/build and API benchmark 56/57 overall, 15/15 security. See `docs/parity-closing.md`.
 - Known concerns remain in `docs/audit/improvement-register.md` for optional future work.
-  [Ticket 26](issues/26-alert-rule-filter-default-severity.md) was built on 20 October 2026 on
-  branch `ticket-26-rule-filter-severity` and awaits the author's live review.
+  [Ticket 26](issues/26-alert-rule-filter-default-severity.md) was resolved on 20 October 2026
+  after the author's live review (P-116) and merged into `main` locally.
   No further work or push is requested. Earlier pending acceptance notes are superseded
   by the author's final demo-scope acceptance.
 

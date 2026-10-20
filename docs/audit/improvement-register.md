@@ -32,8 +32,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 
 | ID | Item | Status | Suggested priority | Source |
 | --- | --- | --- | --- | --- |
-| AUD-001 | Filter Alerts by rule | Built on branch, awaiting author live review | Medium | P-038, P-044, P-115; ticket 26 |
-| AUD-002 | Add default rule severity to Alerts | Built on branch with Option A, awaiting author live review | Medium | P-044, P-114, P-115; tickets 25 and 26 |
+| AUD-001 | Filter Alerts by rule | Closed: author approved live review | Medium | P-038, P-044, P-115, P-116; ticket 26 |
+| AUD-002 | Add default rule severity to Alerts | Closed: author approved live review, Option A | Medium | P-044, P-114 to P-116; tickets 25 and 26 |
 | AUD-003 | Let the user define the report's scope after a branching conversation | Deferred by author, design needed | Medium | P-056 |
 | AUD-004 | Expand investigation tools and evidence capabilities | Deferred by author, scope needed | Unranked | P-052 |
 | AUD-005 | Distinguish attempted attacks from suspected compromise in answers | Open concern, cause not investigated | High | B-056; P-055 |
@@ -94,6 +94,9 @@ Closure uses ticket 26's checks and author review. Evidence is in the
 [design note](../../.scratch/v2-port/research/26-design-note.md) (P-115). Built on branch
 `ticket-26-rule-filter-severity` with 413 backend and 149 frontend tests passing. AUD-001 and
 AUD-002 close on the author's live review.
+
+Closed 20 October 2026: the author reviewed the live screen and approved (P-116). Merged into
+`main` locally; not pushed.
 
 ### AUD-003: Report scope and user intent
 
@@ -537,3 +540,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-19 | Closed ticket 19 by explicit author acceptance of the course demo; waived remaining same-case next-day check. Open defects and enhancements retained for optional future work. No further implementation started. | P-110; ticket 19 Answer; Parity closure |
 
 | 2026-10-20 | Built AUD-001 and AUD-002 under ticket 26 after the author approved the design note with Option A. Two-axis review findings fixed; lint stays at the six AUD-009 warnings. Awaiting author live review. | P-112 to P-115; ticket 26; 413 backend, 149 frontend tests |
+
+| 2026-10-20 | Closed AUD-001 and AUD-002 after the author's live review; ticket 26 resolved and merged locally. | P-116; ticket 26 |

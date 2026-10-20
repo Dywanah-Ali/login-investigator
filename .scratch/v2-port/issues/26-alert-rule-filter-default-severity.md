@@ -1,7 +1,7 @@
 # 26: Rule filter and default severity on Alerts
 
 Type: task
-Status: ready-for-human
+Status: resolved
 Blocked by: 19 (resolved)
 
 ## Author-approved direction
@@ -57,7 +57,8 @@ These are project policy defaults, not industry-mandated scores.
 - [x] Meaningful API and frontend checks pass; report behaviour and existing findings stay intact.
   Evidence: 413 backend tests, Pyright clean, 149 frontend tests, type check and build pass; lint
   unchanged at six AUD-009 warnings. Agent, report prompt, rules and grader untouched.
-- [ ] Author reviews the live change before any push.
+- [x] Author reviews the live change before any push. Evidence: author's live review on
+  20 October 2026, "i reviewed it, all good, close the ticket and merge" (P-116).
 
 ## Comments
 
@@ -83,3 +84,5 @@ Perplexity remains a Codex development tool only. No Perplexity integration in t
   the report card's own "X severity" words, because its scale adds None and Critical; it shares
   the colours, not the badge component, which corrects the note's §6 wording. Status
   `ready-for-human`: awaiting the author's live review.
+- 20 October 2026. Author reviewed the live screen and approved (P-116). Ticket resolved and the
+  branch merged into `main` locally. Nothing pushed.

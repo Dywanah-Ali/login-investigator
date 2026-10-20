@@ -2325,3 +2325,12 @@ Its findings were fixed apart from the report card's own severity words, kept by
 **Validation:** 413 backend tests and Pyright clean; 149 frontend tests, type check and build
 pass; lint unchanged at the six AUD-009 warnings. No model or paid calls.
 **Next:** the author's live review of the Alerts screen before any merge or push.
+
+### P-116 · 2026-10-20 · Approve ticket 26 and merge
+
+**Prompt, verbatim:**
+> i reviewed it, all good, close the ticket and merge
+
+**Purpose:** accept the live change and close ticket 26.
+**Result:** ticket 26 resolved; AUD-001 and AUD-002 closed; map updated. Branch
+`ticket-26-rule-filter-severity` merged into `main` locally. Nothing pushed.
