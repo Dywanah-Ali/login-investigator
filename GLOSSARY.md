@@ -23,3 +23,10 @@ One suspicious pattern a detection rule caught in the log, with its IPs, users, 
 and evidence rows. The core and the agent call it a finding; the screens and the API call the same
 thing an **Alert**, as v1's screen did. The two words never name different things.
 _Avoid_: Incident, detection, event
+
+**Rule severity**:
+A **Finding**'s default review priority, Low, Medium or High, fixed per detection rule by one core
+policy (ticket 26). It says how urgently to review the pattern, not whether an account was taken
+over. It differs from an **Investigation**'s report severity, which weighs all the evidence and can
+rate the case higher or lower; the Alerts screen says so beside the badge.
+_Avoid_: Risk score, confidence, incident severity

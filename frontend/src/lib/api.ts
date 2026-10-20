@@ -52,15 +52,15 @@ export type ExplorerReply = {
 
 export type AlertsReply = { alerts: Alert[] }
 
-/** A rule's default review priority, fixed by the core's policy (ticket 26). */
-export type RuleSeverity = 'low' | 'medium' | 'high'
+/** The levels of a rule's default review priority, fixed by the core's policy (ticket 26). */
+export type SeverityLevel = 'low' | 'medium' | 'high'
 
 export type RuleGuide = {
   rule: string
   title: string
   fires_when: string
   assumption: string
-  severity: RuleSeverity
+  severity: SeverityLevel
   severity_reason: string
 }
 

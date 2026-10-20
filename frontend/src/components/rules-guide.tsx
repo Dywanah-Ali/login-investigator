@@ -2,13 +2,12 @@ import { ChevronRightIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { SeverityBadge } from '@/components/severity-badge'
 import type { RulesReply } from '@/lib/api'
-import { SEVERITY_WORD } from '@/lib/severity'
 
 /** "How these rules work": each rule's title, when it fires, its assumption and its default
- * severity (ticket 26), then the general
- * assumptions. Collapsed by default. The text comes from the rules endpoint, the same source as
- * the core's rules. */
+ * severity (ticket 26), then the general assumptions. Collapsed by default. The text comes from
+ * the rules endpoint, the same source as the core's rules. */
 export function RulesGuide({ guide }: { guide: RulesReply }) {
   return (
     <Collapsible className="rounded-lg border">
@@ -31,7 +30,8 @@ export function RulesGuide({ guide }: { guide: RulesReply }) {
               <em>Assumption:</em> {rule.assumption}
             </p>
             <p className="text-muted-foreground">
-              <em>Default severity:</em> {SEVERITY_WORD[rule.severity]}. {rule.severity_reason}
+              <em>Default severity:</em> <SeverityBadge level={rule.severity} />{' '}
+              {rule.severity_reason}
             </p>
           </div>
         ))}

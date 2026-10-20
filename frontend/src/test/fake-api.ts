@@ -69,6 +69,7 @@ export const RULES = {
   rules: [
     { rule: 'brute_force', title: 'Brute force', fires_when: 'Twenty failures.', assumption: 'Staff mistype less.', severity: 'medium', severity_reason: 'Failures on one account need review.' },
     { rule: 'password_spraying', title: 'Password spraying', fires_when: 'Ten accounts.', assumption: 'A list is worked through.', severity: 'medium', severity_reason: 'Failures across many accounts.' },
+    { rule: 'success_after_failures', title: 'Success after repeated failures', fires_when: 'A success after ten failures.', assumption: 'Staff succeed within two tries.', severity: 'high', severity_reason: 'Check urgently whether it was authorized.' },
     { rule: 'new_country', title: 'Sign-in from a new country', fires_when: 'A new country.', assumption: 'Five sign-ins are enough.', severity: 'low', severity_reason: 'An unfamiliar country is a lead.' },
   ],
   general_assumptions: ['Thresholds fit this dataset.', 'Usernames ignore case.'],

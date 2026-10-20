@@ -2,9 +2,9 @@ import { useLocation, useSearchParams } from 'react-router'
 
 import {
   type FilterKey,
-  SCREEN_ONLY_FILTERS,
   clearFilters,
   filterQuery,
+  otherScreensFilters,
   readFilters,
   withFilter,
 } from '@/lib/filters'
@@ -14,9 +14,7 @@ export function useFilters() {
   const [search, setSearch] = useSearchParams()
   const filters = readFilters(search)
   const { pathname } = useLocation()
-  for (const [key, screen] of Object.entries(SCREEN_ONLY_FILTERS)) {
-    if (pathname !== screen) delete filters[key as FilterKey]
-  }
+  for (const key of otherScreensFilters(pathname)) delete filters[key]
 
   return {
     filters,

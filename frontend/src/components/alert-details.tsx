@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { type SeverityOf, alertKey, evidenceCaption, explorerLink, investigateLink } from '@/lib/alerts'
+import { type RuleSeverity, alertKey, evidenceCaption, explorerLink, investigateLink } from '@/lib/alerts'
 import type { Alert, LogRow } from '@/lib/api'
 import { formatLogTime } from '@/lib/format'
 
@@ -40,7 +40,7 @@ export function AlertDetails({
 }: {
   alert: Alert
   title: string
-  severity: ReturnType<SeverityOf>
+  severity: RuleSeverity | undefined
   severityNote: string
 }) {
   const titleId = useId()

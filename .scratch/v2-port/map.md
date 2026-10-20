@@ -104,7 +104,8 @@ contract, and the seams.
   same-case next-day check. Evidence: 393 backend tests, 141 frontend tests, passing type
   checks/build and API benchmark 56/57 overall, 15/15 security. See `docs/parity-closing.md`.
 - Known concerns remain in `docs/audit/improvement-register.md` for optional future work.
-  [Ticket 26](issues/26-alert-rule-filter-default-severity.md) is unblocked but not started.
+  [Ticket 26](issues/26-alert-rule-filter-default-severity.md) was built on 20 October 2026 on
+  branch `ticket-26-rule-filter-severity` and awaits the author's live review.
   No further work or push is requested. Earlier pending acceptance notes are superseded
   by the author's final demo-scope acceptance.
 

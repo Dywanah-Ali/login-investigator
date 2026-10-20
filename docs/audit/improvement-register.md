@@ -32,8 +32,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 
 | ID | Item | Status | Suggested priority | Source |
 | --- | --- | --- | --- | --- |
-| AUD-001 | Filter Alerts by rule | Approved direction, blocked by Parity | Medium | P-038, P-044; ticket 26 |
-| AUD-002 | Add default rule severity to Alerts | Approved direction, design pending after Parity | Medium | P-044; tickets 25 and 26 |
+| AUD-001 | Filter Alerts by rule | Built on branch, awaiting author live review | Medium | P-038, P-044, P-115; ticket 26 |
+| AUD-002 | Add default rule severity to Alerts | Built on branch with Option A, awaiting author live review | Medium | P-044, P-114, P-115; tickets 25 and 26 |
 | AUD-003 | Let the user define the report's scope after a branching conversation | Deferred by author, design needed | Medium | P-056 |
 | AUD-004 | Expand investigation tools and evidence capabilities | Deferred by author, scope needed | Unranked | P-052 |
 | AUD-005 | Distinguish attempted attacks from suspected compromise in answers | Open concern, cause not investigated | High | B-056; P-055 |
@@ -89,6 +89,11 @@ Medium criterion, before shipping. Do not silently alter the report prompt or gr
 
 Closure uses ticket 26's checks and author review. Evidence is in the
 [research note](../../.scratch/v2-port/research/25-login-alert-severity.md).
+
+20 October 2026: the author chose Option A (P-114) and approved the
+[design note](../../.scratch/v2-port/research/26-design-note.md) (P-115). Built on branch
+`ticket-26-rule-filter-severity` with 413 backend and 149 frontend tests passing. AUD-001 and
+AUD-002 close on the author's live review.
 
 ### AUD-003: Report scope and user intent
 
@@ -530,3 +535,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-19 | Author approved consolidated fixes/case/PDF/layout. Closed AUD-022/AUD-023/AUD-029; same-case next-day continuation and final sign-off remain. | P-108; Parity evidence; 393 backend tests; 56/57 API benchmark |
 
 | 2026-10-19 | Closed ticket 19 by explicit author acceptance of the course demo; waived remaining same-case next-day check. Open defects and enhancements retained for optional future work. No further implementation started. | P-110; ticket 19 Answer; Parity closure |
+
+| 2026-10-20 | Built AUD-001 and AUD-002 under ticket 26 after the author approved the design note with Option A. Two-axis review findings fixed; lint stays at the six AUD-009 warnings. Awaiting author live review. | P-112 to P-115; ticket 26; 413 backend, 149 frontend tests |

@@ -2320,3 +2320,8 @@ the case differently.
 
 **Purpose:** approve the design note as a whole and unlock the build.
 **Result:** API contract and spec decisions log updated first; build started test-first.
+Built in three slices (core, API, screen), checked live in both themes, then a two-axis review.
+Its findings were fixed apart from the report card's own severity words, kept by reason.
+**Validation:** 413 backend tests and Pyright clean; 149 frontend tests, type check and build
+pass; lint unchanged at the six AUD-009 warnings. No model or paid calls.
+**Next:** the author's live review of the Alerts screen before any merge or push.

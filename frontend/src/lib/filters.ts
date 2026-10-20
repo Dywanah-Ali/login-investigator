@@ -6,9 +6,17 @@ export const FILTER_KEYS = ['from', 'to', 'outcome', 'country', 'user', 'ip', 'r
 
 /** Filters that belong to one screen, as the IP box belongs to the Log explorer. Elsewhere they
  * are neither sent nor carried onward. */
-export const SCREEN_ONLY_FILTERS: Partial<Record<FilterKey, string>> = {
+const SCREEN_ONLY_FILTERS: Partial<Record<FilterKey, string>> = {
   ip: '/explorer',
   rule: '/alerts',
+}
+
+/** The filters another screen owns, which this screen neither sends nor carries onward. */
+export function otherScreensFilters(path: string): FilterKey[] {
+  return FILTER_KEYS.filter((key) => {
+    const owner = SCREEN_ONLY_FILTERS[key]
+    return owner !== undefined && owner !== path
+  })
 }
 
 export type FilterKey = (typeof FILTER_KEYS)[number]

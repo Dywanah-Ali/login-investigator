@@ -96,7 +96,6 @@ def test_a_user_filter_keeps_only_that_users_alerts(log, s, findings):
 
 
 def test_a_rule_filter_keeps_only_that_rules_alerts_newest_first(log, s, findings):
-    """Ticket 26."""
     assert rule_and_ip(alerts_for_view(findings, log, rule="new_country")) == [
         ("new_country", s["S1"]["attacker_ip"]),  # 8 Oct
         ("new_country", s["S4"]["ip"]),           # 6 Oct

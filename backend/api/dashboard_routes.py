@@ -15,7 +15,7 @@ from api.filters import Filters, alerts_rule, explorer_ip, filters
 from api.services import Dataset, dataset
 from login_investigator.dashboard import alerts_for_view
 from login_investigator.loader import TIMESTAMP_FORMAT, to_records
-from login_investigator.rules import GENERAL_ASSUMPTIONS, RULE_GUIDE
+from login_investigator.rules import GENERAL_ASSUMPTIONS, RULE_GUIDE, RuleGuide
 from login_investigator.severity import RULE_SEVERITY, SEVERITY_NOTE
 from login_investigator.search import export_csv, summarize
 from login_investigator.stats import hourly_counts, top_failed_ips
@@ -77,16 +77,17 @@ def get_alerts(data: LoadedDataset, chosen: QueryFilters,
 
 @router.get("/rules")
 def get_rules() -> dict:
-    # Each rule travels with its default severity, so the screen looks both up by rule key.
     return {
-        "rules": [
-            {**asdict(guide), "severity": RULE_SEVERITY[guide.rule].level,
-             "severity_reason": RULE_SEVERITY[guide.rule].reason}
-            for guide in RULE_GUIDE
-        ],
+        "rules": [_rule_entry(guide) for guide in RULE_GUIDE],
         "general_assumptions": list(GENERAL_ASSUMPTIONS),
         "severity_note": SEVERITY_NOTE,
     }
+
+
+def _rule_entry(guide: RuleGuide) -> dict:
+    # Each rule travels with its default severity, so the screen looks both up by rule key.
+    policy = RULE_SEVERITY[guide.rule]
+    return {**asdict(guide), "severity": policy.level, "severity_reason": policy.reason}
 
 
 # Explorer and CSV share this dependency so filters and row order cannot drift apart.

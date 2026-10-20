@@ -193,6 +193,18 @@ describe('the details panel', () => {
     ).toBeInTheDocument()
   })
 
+  test('a success after failures shows High, asking for an urgent check, never a compromise', async () => {
+    const alert = { ...ALERTS.alerts[0], rule: 'success_after_failures' }
+    fakeApi({ ...API, '/api/alerts': { body: { alerts: [alert] } } })
+    openApp('/alerts')
+
+    const panel = await details('Success after repeated failures')
+    expect(within(panel).getByText('High')).toBeInTheDocument()
+    expect(within(panel).getByText('Check urgently whether it was authorized.')).toBeInTheDocument()
+    const table = screen.getByRole('table', { name: 'Alerts' })
+    expect(within(table).getByText('High').closest('td')).not.toBeNull()
+  })
+
   test('no alert matching means no panel, only the empty message', async () => {
     fakeApi({ ...API, '/api/alerts': { body: { alerts: [] } } })
     openApp('/alerts?user=nobody')
@@ -214,8 +226,12 @@ describe('How these rules work', () => {
 
     expect(screen.getByText(paragraph('Brute force. Fires when: Twenty failures.'))).toBeInTheDocument()
     expect(screen.getByText(paragraph('Assumption: A list is worked through.'))).toBeInTheDocument()
+    // Each rule shows the shared badge, its word, then its reason.
     expect(
-      screen.getByText(paragraph('Default severity: Medium. Failures on one account need review.')),
+      screen.getByText(paragraph('Default severity: Medium Failures on one account need review.')),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(paragraph('Default severity: High Check urgently whether it was authorized.')),
     ).toBeInTheDocument()
     const guide = toggle.closest('[data-slot=collapsible]') as HTMLElement
     expect(within(guide).getAllByRole('listitem').map((li) => li.textContent)).toEqual([
@@ -268,6 +284,7 @@ describe('the Rule filter (ticket 26)', () => {
       'All',
       'Brute force',
       'Password spraying',
+      'Success after repeated failures',
       'Sign-in from a new country',
     ])
     await userEvent.keyboard('{Escape}')
@@ -304,6 +321,16 @@ describe('the Rule filter (ticket 26)', () => {
 
     expect(await screen.findByText('Finding 1')).toBeInTheDocument()
     expect(screen.queryByText('Finding 21')).not.toBeInTheDocument()
+  })
+
+  test('a rule with no alerts in the view shows the empty message and keeps the choice', async () => {
+    fakeApi({ ...API, '/api/alerts': { body: { alerts: [] } } })
+    openApp('/alerts?rule=brute_force')
+
+    expect(
+      await screen.findByText('No alerts match these filters. Widen the date range or reset the filters.'),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Rule' })).toHaveTextContent('Brute force')
   })
 
   test('belongs to Alerts only: other screens neither send it nor carry it onward', async () => {

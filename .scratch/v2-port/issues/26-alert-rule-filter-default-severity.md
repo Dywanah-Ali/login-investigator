@@ -1,8 +1,8 @@
 # 26: Rule filter and default severity on Alerts
 
 Type: task
-Status: ready-for-agent
-Blocked by: 19
+Status: ready-for-human
+Blocked by: 19 (resolved)
 
 ## Author-approved direction
 
@@ -37,16 +37,26 @@ These are project policy defaults, not industry-mandated scores.
 
 ## Acceptance
 
-- [ ] Rule filter composes with existing filters, preserves meaningful URL state, resets paging,
-  supports reset and displays a clear empty state.
-- [ ] Only the existing four categories are offered, with All rules as the default.
-- [ ] One deterministic policy provides the approved default and an explanation for each rule.
-- [ ] API contract is written before implementation and the frontend reads the defined API fields.
-- [ ] Severity labels are visible as text and use the agreed accessible visual treatment.
-- [ ] Zero successful rows in a failure-only finding is never presented as proof no login succeeded.
-- [ ] High means urgent review of observed success, not confirmed attacker access.
-- [ ] Table defaults and report assessment have the agreed explicit distinction.
-- [ ] Meaningful API and frontend checks pass; report behaviour and existing findings stay intact.
+- [x] Rule filter composes with existing filters, preserves meaningful URL state, resets paging,
+  supports reset and displays a clear empty state. Evidence: `test_dashboard.py` and
+  `test_api_dashboard.py` rule tests; `alerts.test.tsx` "the Rule filter (ticket 26)".
+- [x] Only the existing four categories are offered, with All rules as the default. Evidence:
+  options test reads All plus four titles from the rules reply; unknown keys refused (422).
+- [x] One deterministic policy provides the approved default and an explanation for each rule.
+  Evidence: `backend/login_investigator/severity.py`, `test_severity.py`.
+- [x] API contract is written before implementation and the frontend reads the defined API fields.
+  Evidence: commit fe28a37 precedes the code; `/api/rules` test pins the new fields.
+- [x] Severity labels are visible as text and use the agreed accessible visual treatment.
+  Evidence: table and panel tests read the words; contrast 8.2:1 or better (design note §4).
+- [x] Zero successful rows in a failure-only finding is never presented as proof no login succeeded.
+  Evidence: `test_a_failure_only_rule_never_claims_that_nothing_succeeded`.
+- [x] High means urgent review of observed success, not confirmed attacker access. Evidence:
+  `test_high_asks_for_an_urgent_check_and_never_claims_a_compromise` and the frontend High test.
+- [x] Table defaults and report assessment have the agreed explicit distinction (Option A). Evidence:
+  the isolated new-country panel test shows Low with the note.
+- [x] Meaningful API and frontend checks pass; report behaviour and existing findings stay intact.
+  Evidence: 413 backend tests, Pyright clean, 149 frontend tests, type check and build pass; lint
+  unchanged at six AUD-009 warnings. Agent, report prompt, rules and grader untouched.
 - [ ] Author reviews the live change before any push.
 
 ## Comments
@@ -65,3 +75,11 @@ Perplexity remains a Codex development tool only. No Perplexity integration in t
   the note as a whole is pending.
 - 20 October 2026. Author approved the design note as a whole (P-115). `docs/api-contract.md`
   and the spec's decisions log updated before any code. Build started.
+- 20 October 2026. Built test-first in three slices: core, API, screen. Checked live in both
+  themes on a separate server pair. Two-axis review: Standards found no hard violations and seven
+  judgement calls; Spec found four test or wording gaps. Fixed: glossary entry "Rule severity",
+  route helper, clearer type names, one helper for screen-only filters, typed colour map, badge
+  in the rules guide, and frontend tests for four options, High and a rule's empty state. Kept:
+  the report card's own "X severity" words, because its scale adds None and Critical; it shares
+  the colours, not the badge component, which corrects the note's §6 wording. Status
+  `ready-for-human`: awaiting the author's live review.
