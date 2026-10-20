@@ -18,6 +18,7 @@ from fastapi import Query
 
 from api.errors import ApiError
 from login_investigator.dashboard import date_window
+from login_investigator.rules import RULE_TITLES
 from login_investigator.search import filter_logins
 
 _DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
@@ -95,4 +96,12 @@ def explorer_ip(ip: str | None = None) -> str | None:
     except ValueError:
         raise _refuse("ip is not a valid IP address.") from None
     # Validation must not normalise the spelling: the core matches the stored IP exactly.
+    return value
+
+
+def alerts_rule(rule: str | None = None) -> str | None:
+    """An optional rule key for the Alerts screen (ticket 26), refused without echoing it."""
+    value = _given(rule)
+    if value is not None and value not in RULE_TITLES:
+        raise _refuse("rule is not a known rule.")
     return value

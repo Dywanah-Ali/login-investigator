@@ -95,6 +95,23 @@ def test_a_user_filter_keeps_only_that_users_alerts(log, s, findings):
     assert rule_and_ip(alerts_for_view(findings, rows)) == [("new_country", s["S4"]["ip"])]
 
 
+def test_a_rule_filter_keeps_only_that_rules_alerts_newest_first(log, s, findings):
+    """Ticket 26."""
+    assert rule_and_ip(alerts_for_view(findings, log, rule="new_country")) == [
+        ("new_country", s["S1"]["attacker_ip"]),  # 8 Oct
+        ("new_country", s["S4"]["ip"]),           # 6 Oct
+    ]
+
+
+def test_a_rule_filter_composes_with_the_other_filters(log, s, findings):
+    """Ticket 26: the rule narrows what the row filters kept, and can leave nothing."""
+    s4_rows = filter_logins(log, user=s["S4"]["user"])
+    assert rule_and_ip(alerts_for_view(findings, s4_rows, rule="new_country")) == [
+        ("new_country", s["S4"]["ip"]),
+    ]
+    assert alerts_for_view(findings, s4_rows, rule="brute_force") == []
+
+
 def test_a_date_filter_keeps_alerts_with_an_event_on_those_days(log, s, findings):
     start, end = date_window(date(2026, 10, 6), None)
     rows = filter_logins(log, start=start, end=end)

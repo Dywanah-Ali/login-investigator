@@ -43,14 +43,19 @@ def dataset_facts(df: pd.DataFrame) -> DatasetFacts:
     )
 
 
-def alerts_for_view(findings: list[Finding], rows: pd.DataFrame) -> list[Finding]:
+def alerts_for_view(
+    findings: list[Finding], rows: pd.DataFrame, rule: str | None = None
+) -> list[Finding]:
     """The alerts a dashboard view shows, newest first by last seen, then by rule.
 
     `findings` come from the rules run once on the whole log, since the rules need each user's full
     history. A finding is kept when at least one of its events is among `rows`, so every filter
     counts. This is not the agent's matching, which keeps findings overlapping a time window.
+    `rule`, when given, keeps only that rule's findings (ticket 26).
     """
     kept = findings_matching(findings, rows)
+    if rule is not None:
+        kept = [finding for finding in kept if finding.rule == rule]
     return sorted(kept, key=lambda f: (f.last_seen, f.rule), reverse=True)
 
 

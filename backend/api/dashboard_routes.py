@@ -11,11 +11,12 @@ import pandas as pd
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 
-from api.filters import Filters, explorer_ip, filters
+from api.filters import Filters, alerts_rule, explorer_ip, filters
 from api.services import Dataset, dataset
 from login_investigator.dashboard import alerts_for_view
 from login_investigator.loader import TIMESTAMP_FORMAT, to_records
 from login_investigator.rules import GENERAL_ASSUMPTIONS, RULE_GUIDE
+from login_investigator.severity import RULE_SEVERITY, SEVERITY_NOTE
 from login_investigator.search import export_csv, summarize
 from login_investigator.stats import hourly_counts, top_failed_ips
 
@@ -65,18 +66,26 @@ def get_overview(data: LoadedDataset, chosen: QueryFilters) -> dict:
 
 
 @router.get("/alerts")
-def get_alerts(data: LoadedDataset, chosen: QueryFilters) -> dict:
+def get_alerts(data: LoadedDataset, chosen: QueryFilters,
+               rule: Annotated[str | None, Depends(alerts_rule)]) -> dict:
     # The core's finding dictionary unchanged, evidence included, so the side panel makes no
     # second request. The core sorts it newest first.
     rows = chosen.rows(data.frame)
-    return {"alerts": [finding.to_dict() for finding in alerts_for_view(data.findings, rows)]}
+    found = alerts_for_view(data.findings, rows, rule=rule)
+    return {"alerts": [finding.to_dict() for finding in found]}
 
 
 @router.get("/rules")
 def get_rules() -> dict:
+    # Each rule travels with its default severity, so the screen looks both up by rule key.
     return {
-        "rules": [asdict(guide) for guide in RULE_GUIDE],
+        "rules": [
+            {**asdict(guide), "severity": RULE_SEVERITY[guide.rule].level,
+             "severity_reason": RULE_SEVERITY[guide.rule].reason}
+            for guide in RULE_GUIDE
+        ],
         "general_assumptions": list(GENERAL_ASSUMPTIONS),
+        "severity_note": SEVERITY_NOTE,
     }
 
 

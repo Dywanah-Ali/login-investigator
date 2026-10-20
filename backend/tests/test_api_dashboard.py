@@ -48,18 +48,21 @@ def test_the_rules_guide_names_every_rule_with_its_title_and_reasons(client, s):
     reply = client.get("/api/rules")
     assert reply.status_code == 200
     body = reply.json()
-    assert set(body) == {"rules", "general_assumptions"}
-    assert [(r["rule"], r["title"]) for r in body["rules"]] == [
-        (s["S1"]["type"], "Brute force"),
-        (s["S2"]["type"], "Password spraying"),
-        (s["S3"]["type"], "Success after repeated failures"),
-        (s["S4"]["type"], "Sign-in from a new country"),
+    assert set(body) == {"rules", "general_assumptions", "severity_note"}
+    # The default severities are the author's approved policy (P-044, ticket 26).
+    assert [(r["rule"], r["title"], r["severity"]) for r in body["rules"]] == [
+        (s["S1"]["type"], "Brute force", "medium"),
+        (s["S2"]["type"], "Password spraying", "medium"),
+        (s["S3"]["type"], "Success after repeated failures", "high"),
+        (s["S4"]["type"], "Sign-in from a new country", "low"),
     ]
     for rule in body["rules"]:
-        assert set(rule) == {"rule", "title", "fires_when", "assumption"}
-        assert rule["fires_when"] and rule["assumption"]
+        assert set(rule) == {"rule", "title", "fires_when", "assumption", "severity",
+                             "severity_reason"}
+        assert rule["fires_when"] and rule["assumption"] and rule["severity_reason"]
     assert len(body["general_assumptions"]) == 4
     assert all(body["general_assumptions"])
+    assert body["severity_note"].startswith("Rule default.")
 
 
 # --- Overview ------------------------------------------------------------------------------------
@@ -223,6 +226,39 @@ def test_filters_narrow_the_alerts(client, s, filters, expected):
     rules = {"S1": s["S1"]["type"], "S2": s["S2"]["type"], "S3": s["S3"]["type"],
              "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"]}
     assert [a["rule"] for a in alerts(client, **filters)] == [rules[key] for key in expected]
+
+
+@pytest.mark.parametrize(("filters", "expected"), [
+    # Ticket 26. Pinned by hand from the ground truth, as above.
+    ({"rule": "new_country"}, ["S3-new-country", "S4"]),
+    ({"rule": "brute_force"}, ["S1"]),
+    ({"rule": "new_country", "from": "2026-10-06", "to": "2026-10-06"}, ["S4"]),
+    ({"rule": "password_spraying", "country": "ro"}, ["S2"]),
+    ({"rule": "brute_force", "outcome": "success"}, []),  # S1 has no success
+    ({"rule": "success_after_failures", "user": "OLIVIA.BENNETT"}, []),
+    ({"rule": ""}, ["S3", "S3-new-country", "S1", "S4", "S2"]),  # an empty box means all
+    ({"rule": "  "}, ["S3", "S3-new-country", "S1", "S4", "S2"]),
+])
+def test_a_rule_filter_composes_with_the_other_filters(client, s, filters, expected):
+    rules = {"S1": s["S1"]["type"], "S2": s["S2"]["type"], "S3": s["S3"]["type"],
+             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"]}
+    assert [a["rule"] for a in alerts(client, **filters)] == [rules[key] for key in expected]
+
+
+@pytest.mark.parametrize("rule", ["<script>alert(1)</script>", "Brute force", "BRUTE_FORCE",
+                                  "brute_force,new_country"])
+def test_an_unknown_rule_is_refused_without_echoing_it(client, rule):
+    reply = client.get("/api/alerts", params={"rule": rule})
+    assert reply.status_code == 422
+    assert reply.json() == {"error": {"code": "invalid_filter",
+                                      "message": "rule is not a known rule."}}
+    assert rule not in reply.text
+
+
+def test_the_rule_filter_belongs_to_alerts_only(client, s):
+    """The Overview ignores it, as it ignores ip, so its alert count stays the view's."""
+    whole = client.get("/api/overview").json()
+    assert client.get("/api/overview", params={"rule": "brute_force"}).json() == whole
 
 
 def test_the_alerts_of_an_empty_view_are_an_empty_list(client, s):
