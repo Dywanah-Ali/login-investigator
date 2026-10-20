@@ -2,7 +2,14 @@
 // parameters travel on every API request, so the address describes the screen and a reload shows
 // the same view. Names and meanings follow the API contract's "Shared filter parameters".
 
-export const FILTER_KEYS = ['from', 'to', 'outcome', 'country', 'user', 'ip'] as const
+export const FILTER_KEYS = ['from', 'to', 'outcome', 'country', 'user', 'ip', 'rule'] as const
+
+/** Filters that belong to one screen, as the IP box belongs to the Log explorer. Elsewhere they
+ * are neither sent nor carried onward. */
+export const SCREEN_ONLY_FILTERS: Partial<Record<FilterKey, string>> = {
+  ip: '/explorer',
+  rule: '/alerts',
+}
 
 export type FilterKey = (typeof FILTER_KEYS)[number]
 

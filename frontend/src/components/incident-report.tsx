@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { investigationPath, type IncidentReport as Report } from '@/lib/investigations'
+import { SEVERITY_COLOUR } from '@/lib/severity'
 
 const SEVERITY = {
-  none: { accent: 'border-l-green-400', label: 'No incident', colour: 'bg-green-100 text-green-900 dark:bg-green-950 dark:text-green-200' },
-  low: { accent: 'border-l-blue-400', label: 'Low severity', colour: 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-200' },
-  medium: { accent: 'border-l-orange-400', label: 'Medium severity', colour: 'bg-orange-100 text-orange-900 dark:bg-orange-950 dark:text-orange-200' },
-  high: { accent: 'border-l-red-400', label: 'High severity', colour: 'bg-red-100 text-red-900 dark:bg-red-950 dark:text-red-200' },
-  critical: { accent: 'border-l-red-400', label: 'Critical severity', colour: 'bg-red-100 text-red-900 dark:bg-red-950 dark:text-red-200' },
+  none: { accent: 'border-l-green-400', label: 'No incident', colour: SEVERITY_COLOUR.none },
+  low: { accent: 'border-l-blue-400', label: 'Low severity', colour: SEVERITY_COLOUR.low },
+  medium: { accent: 'border-l-orange-400', label: 'Medium severity', colour: SEVERITY_COLOUR.medium },
+  high: { accent: 'border-l-red-400', label: 'High severity', colour: SEVERITY_COLOUR.high },
+  critical: { accent: 'border-l-red-400', label: 'Critical severity', colour: SEVERITY_COLOUR.critical },
 }
 
 const MOTION_QUERY = '(prefers-reduced-motion: reduce)'

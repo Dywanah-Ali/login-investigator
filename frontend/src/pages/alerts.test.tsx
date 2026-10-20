@@ -2,7 +2,7 @@ import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect } from 'react'
 import { MemoryRouter, type NavigateFunction, useNavigate } from 'react-router'
-import { afterEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { AppRoutes } from '@/App'
 import { ALERTS, DATASET, RULES, fakeApi } from '@/test/fake-api'
@@ -26,13 +26,14 @@ afterEach(() => {
 })
 
 describe('the Alerts table', () => {
-  test("shows v1's seven columns, rule titles from the rules endpoint, names cut to three", async () => {
+  test("shows v1's seven columns plus Severity, rule titles and severities from the rules endpoint, names cut to three", async () => {
     fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
     openApp('/alerts')
 
     const table = await screen.findByRole('table', { name: 'Alerts' })
     expect(within(table).getAllByRole('columnheader').map((th) => th.textContent)).toEqual([
       'Rule',
+      'Severity',
       'Summary',
       'IP addresses',
       'Users',
@@ -44,6 +45,7 @@ describe('the Alerts table', () => {
     expect(rows.map((tr) => within(tr).getAllByRole('cell').map((td) => td.textContent))).toEqual([
       [
         'Sign-in from a new country',
+        'Low', // the word itself is shown, so the level never rests on colour alone
         'olivia.bennett signed in from RU for the first time.',
         '91.142.73.116',
         'olivia.bennett',
@@ -53,6 +55,7 @@ describe('the Alerts table', () => {
       ],
       [
         'Password spraying',
+        'Medium',
         '2.57.122.53 failed on 4 accounts within an hour.',
         '2.57.122.53',
         'admin, backup, helpdesk and 1 more',
@@ -177,6 +180,19 @@ describe('the details panel', () => {
     expect(await details('Sign-in from a new country')).toBeInTheDocument()
   })
 
+  test("an isolated new-country alert shows Low with the rule's reason and the report note", async () => {
+    // Option A (P-114): a report on this case can say Medium, so the panel says why they differ.
+    fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
+    openApp('/alerts')
+
+    const panel = await details('Sign-in from a new country')
+    expect(within(panel).getByText('Low')).toBeInTheDocument()
+    expect(within(panel).getByText('An unfamiliar country is a lead.')).toBeInTheDocument()
+    expect(
+      within(panel).getByText('Rule default. A report can rate the case higher or lower.'),
+    ).toBeInTheDocument()
+  })
+
   test('no alert matching means no panel, only the empty message', async () => {
     fakeApi({ ...API, '/api/alerts': { body: { alerts: [] } } })
     openApp('/alerts?user=nobody')
@@ -198,6 +214,9 @@ describe('How these rules work', () => {
 
     expect(screen.getByText(paragraph('Brute force. Fires when: Twenty failures.'))).toBeInTheDocument()
     expect(screen.getByText(paragraph('Assumption: A list is worked through.'))).toBeInTheDocument()
+    expect(
+      screen.getByText(paragraph('Default severity: Medium. Failures on one account need review.')),
+    ).toBeInTheDocument()
     const guide = toggle.closest('[data-slot=collapsible]') as HTMLElement
     expect(within(guide).getAllByRole('listitem').map((li) => li.textContent)).toEqual([
       'Thresholds fit this dataset.',
@@ -214,6 +233,110 @@ describe('How these rules work', () => {
     ).toBeInTheDocument()
     expect(screen.queryByRole('table')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'How these rules work' })).toBeInTheDocument()
+  })
+})
+
+describe('the Rule filter (ticket 26)', () => {
+  // The select scrolls its chosen option into view, which the test page cannot do.
+  const originalScrollIntoView = Element.prototype.scrollIntoView
+  beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn()
+  })
+  afterEach(() => {
+    Element.prototype.scrollIntoView = originalScrollIntoView
+  })
+
+  /** Opens the Rule box from the keyboard, so the filter is proved to work without a mouse. */
+  async function openRuleBox() {
+    screen.getByRole('combobox', { name: 'Rule' }).focus()
+    await userEvent.keyboard('{Enter}')
+    return screen.findAllByRole('option')
+  }
+
+  async function chooseRule(title: string) {
+    await openRuleBox()
+    await userEvent.click(screen.getByRole('option', { name: title }))
+  }
+
+  test('offers All and the rules the endpoint sent; a choice travels on the alerts request', async () => {
+    const api = fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
+    openApp('/alerts?user=alice.k')
+    await screen.findByRole('table', { name: 'Alerts' })
+
+    expect(screen.getByRole('combobox', { name: 'Rule' })).toHaveTextContent('All')
+    expect((await openRuleBox()).map((option) => option.textContent)).toEqual([
+      'All',
+      'Brute force',
+      'Password spraying',
+      'Sign-in from a new country',
+    ])
+    await userEvent.keyboard('{Escape}')
+    await chooseRule('Brute force')
+
+    await vi.waitFor(() =>
+      expect(api.requests()).toContain('/api/alerts?user=alice.k&rule=brute_force'),
+    )
+    expect(screen.getByRole('combobox', { name: 'Rule' })).toHaveTextContent('Brute force')
+  })
+
+  test('Reset clears the rule with the other filters', async () => {
+    const api = fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
+    openApp('/alerts?rule=brute_force&country=GB')
+    await screen.findByRole('table', { name: 'Alerts' })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset' }))
+
+    await vi.waitFor(() => expect(api.requests().at(-1)).toBe('/api/alerts'))
+    expect(screen.getByRole('combobox', { name: 'Rule' })).toHaveTextContent('All')
+  })
+
+  test('a rule change goes back to the first page of the table', async () => {
+    const alerts = Array.from({ length: 21 }, (_, index) => ({
+      ...ALERTS.alerts[0], summary: `Finding ${index + 1}`, ips: [`203.0.113.${index + 1}`],
+    }))
+    fakeApi({ ...API, '/api/alerts': { body: { alerts } } })
+    openApp('/alerts')
+    const pager = await screen.findByRole('navigation', { name: 'Table pages' })
+    await userEvent.click(within(pager).getByRole('button', { name: 'Next page' }))
+    expect(screen.getByText('Finding 21')).toBeInTheDocument()
+
+    await chooseRule('Sign-in from a new country')
+
+    expect(await screen.findByText('Finding 1')).toBeInTheDocument()
+    expect(screen.queryByText('Finding 21')).not.toBeInTheDocument()
+  })
+
+  test('belongs to Alerts only: other screens neither send it nor carry it onward', async () => {
+    fakeApi({ ...API, '/api/alerts': { body: ALERTS } })
+    openApp('/alerts?country=GB&rule=brute_force')
+    await screen.findByRole('table', { name: 'Alerts' })
+
+    const nav = screen.getByRole('navigation', { name: 'Screens' })
+    expect(within(nav).getByRole('link', { name: 'Overview' })).toHaveAttribute('href', '/?country=GB')
+    expect(within(nav).getByRole('link', { name: 'Log explorer' })).toHaveAttribute(
+      'href',
+      '/explorer?country=GB',
+    )
+    expect(within(nav).getByRole('link', { name: 'Alerts' })).toHaveAttribute(
+      'href',
+      '/alerts?country=GB&rule=brute_force',
+    )
+  })
+
+  test('an unknown rule in the address stays visible and the refusal is fixed text', async () => {
+    fakeApi({
+      ...API,
+      '/api/alerts': {
+        status: 422,
+        body: { error: { code: 'invalid_filter', message: 'rule is not a known rule.' } },
+      },
+    })
+    openApp('/alerts?rule=made_up')
+
+    expect(
+      await screen.findByText('A filter in the address is not valid. Reset the filters to continue.'),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'Rule' })).toHaveTextContent('made_up')
   })
 })
 

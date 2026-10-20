@@ -1,7 +1,7 @@
 // How an alert is shown and where it leads. Presentation only: the API sends the full lists and
 // raw timestamps, and the core decides which alerts a view holds.
 
-import type { Alert, RuleGuide } from '@/lib/api'
+import type { Alert, RuleGuide, RuleSeverity } from '@/lib/api'
 import { countOf, formatCount, formatLogTime } from '@/lib/format'
 
 /** Looks up a rule key's title, such as "brute_force" to "Brute force". */
@@ -11,6 +11,18 @@ export type TitleOf = (rule: string) => string
 export function ruleTitles(rules: RuleGuide[]): TitleOf {
   const titles = new Map(rules.map((guide) => [guide.rule, guide.title]))
   return (rule) => titles.get(rule) ?? rule
+}
+
+/** Looks up a rule key's default severity and its reason (ticket 26). */
+export type SeverityOf = (rule: string) => { level: RuleSeverity; reason: string } | undefined
+
+/** Each rule key's default severity, from the rules endpoint. A key the guide lacks has none,
+ * so no level is ever guessed. */
+export function ruleSeverities(rules: RuleGuide[]): SeverityOf {
+  const levels = new Map(
+    rules.map((guide) => [guide.rule, { level: guide.severity, reason: guide.severity_reason }]),
+  )
+  return (rule) => levels.get(rule)
 }
 
 /** What tells one alert from another in a list: its rule, window, IPs and users. The core gives

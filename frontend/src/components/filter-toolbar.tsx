@@ -79,7 +79,8 @@ export function FilterToolbar({ children, dirty = false, onReset }: {
   )
 }
 
-function FilterSelect({
+/** One filter as a select box, with "All" first. Exported for a screen's own filters. */
+export function FilterSelect({
   label,
   value,
   options,

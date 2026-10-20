@@ -1,28 +1,40 @@
 import { type ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table'
 import { useMemo } from 'react'
 
+import { SeverityBadge } from '@/components/severity-badge'
 import { TablePager } from '@/components/table-pager'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { type TitleOf, cutNames } from '@/lib/alerts'
+import { type SeverityOf, type TitleOf, cutNames } from '@/lib/alerts'
 import type { Alert } from '@/lib/api'
 import { formatCount, formatLogMinute } from '@/lib/format'
 
-/** The tasks example's table (TanStack Table) with v1's seven columns. The rows come sorted
- * newest first by the core. Log fields appear only as plain text in these cells. */
+/** The tasks example's table (TanStack Table) with v1's seven columns plus the rule's default
+ * severity (ticket 26). The rows come sorted newest first by the core. Log fields appear only as
+ * plain text in these cells. */
 export function AlertsTable({
   alerts,
   titleOf,
+  severityOf,
   selected,
   onSelect,
 }: {
   alerts: Alert[]
   titleOf: TitleOf
+  severityOf: SeverityOf
   selected: Alert
   onSelect: (alert: Alert) => void
 }) {
   const columns = useMemo<ColumnDef<Alert>[]>(
     () => [
       { id: 'rule', header: 'Rule', cell: ({ row }) => titleOf(row.original.rule) },
+      {
+        id: 'severity',
+        header: 'Severity',
+        cell: ({ row }) => {
+          const severity = severityOf(row.original.rule)
+          return severity && <SeverityBadge level={severity.level} />
+        },
+      },
       {
         accessorKey: 'summary',
         header: 'Summary',
@@ -54,7 +66,7 @@ export function AlertsTable({
         meta: { className: 'tabular-nums' },
       },
     ],
-    [titleOf],
+    [titleOf, severityOf],
   )
 
   const table = useReactTable({

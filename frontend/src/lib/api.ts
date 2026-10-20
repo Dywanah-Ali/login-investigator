@@ -52,9 +52,19 @@ export type ExplorerReply = {
 
 export type AlertsReply = { alerts: Alert[] }
 
-export type RuleGuide = { rule: string; title: string; fires_when: string; assumption: string }
+/** A rule's default review priority, fixed by the core's policy (ticket 26). */
+export type RuleSeverity = 'low' | 'medium' | 'high'
 
-export type RulesReply = { rules: RuleGuide[]; general_assumptions: string[] }
+export type RuleGuide = {
+  rule: string
+  title: string
+  fires_when: string
+  assumption: string
+  severity: RuleSeverity
+  severity_reason: string
+}
+
+export type RulesReply = { rules: RuleGuide[]; general_assumptions: string[]; severity_note: string }
 
 /** What went wrong, in the few kinds the screen tells apart. */
 export type FailureKind = 'invalid_filter' | 'log_invalid' | 'unreachable' | 'failed' | 'agent_unavailable' | 'agent_failed' | 'not_found' | 'busy' | 'not_offered' | 'invalid_question'

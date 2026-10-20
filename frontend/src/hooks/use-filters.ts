@@ -1,13 +1,22 @@
 import { useLocation, useSearchParams } from 'react-router'
 
-import { type FilterKey, clearFilters, filterQuery, readFilters, withFilter } from '@/lib/filters'
+import {
+  type FilterKey,
+  SCREEN_ONLY_FILTERS,
+  clearFilters,
+  filterQuery,
+  readFilters,
+  withFilter,
+} from '@/lib/filters'
 
 /** The shared filters, read from and written to the address bar. */
 export function useFilters() {
   const [search, setSearch] = useSearchParams()
   const filters = readFilters(search)
   const { pathname } = useLocation()
-  if (pathname !== '/explorer') delete filters.ip
+  for (const [key, screen] of Object.entries(SCREEN_ONLY_FILTERS)) {
+    if (pathname !== screen) delete filters[key as FilterKey]
+  }
 
   return {
     filters,
