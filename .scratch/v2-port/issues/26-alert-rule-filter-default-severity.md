@@ -53,3 +53,15 @@ These are project policy defaults, not industry-mandated scores.
 
 This ticket records the approved follow-up. It is blocked on the Port closing and is not started.
 Perplexity remains a Codex development tool only. No Perplexity integration in the application.
+
+- 20 October 2026. Started on branch `ticket-26-rule-filter-severity`. The author agreed that no
+  new research is needed, because ticket 25 covered it; the open items are decisions (P-112,
+  P-113). Design note drafted: [26-design-note.md](../research/26-design-note.md). Badge
+  colours reuse the report card's blue, orange and red; all six pairs measured at 8.2:1 or
+  better.
+- 20 October 2026. Author chose **Option A** for the table/report distinction (P-114): the
+  column stays "Severity", and the details panel explains that it is the rule's default review
+  urgency while a report weighs all the evidence and can rate the case differently. Approval of
+  the note as a whole is pending.
+- 20 October 2026. Author approved the design note as a whole (P-115). `docs/api-contract.md`
+  and the spec's decisions log updated before any code. Build started.

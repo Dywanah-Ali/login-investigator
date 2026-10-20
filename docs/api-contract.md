@@ -54,6 +54,7 @@ Missing or empty means "all", for every parameter (author's ruling, ticket 12). 
 | `country` | two capital letters | Matched without regard to case, as the core does | |
 | `user` | text | Matched without regard to case, as the core does | |
 | `ip` | IP address | Explorer and CSV only | not an IP address (message never echoes it) |
+| `rule` | rule key from `/api/rules` | Alerts only: findings of this rule (ticket 26) | not one of the four rule keys (message never echoes it) |
 
 Validation lives at the boundary: a bad value is a 422 before the core is called. A single date
 (`from` without `to`, or equal values) means that one day, as v1's picker did. `to` without `from`
@@ -109,10 +110,12 @@ Empty view (no rows match): `summary.total` is 0, `hourly` and `top_failed_ips` 
 
 ### Alerts
 
-`GET /api/alerts?<filters>`
+`GET /api/alerts?<filters>` (includes `rule`)
 
 Findings with at least one event among the filtered rows, sorted newest first by `last_seen` then
-`rule`, by the core (ticket 01: `alerts_for_view`).
+`rule`, by the core (ticket 01: `alerts_for_view`). With `rule`, only that rule's findings
+(ticket 26). The reply shape does not change: severity is a property of the rule, so the
+frontend looks it up from `/api/rules` by rule key, as it does the title.
 
 ```json
 {
@@ -154,13 +157,18 @@ in the input box; the user presses send. Proposed wording, built from the alert'
 ```json
 {
   "rules": [
-    {"rule": "brute_force", "title": "Brute force", "fires_when": "...", "assumption": "..."}
+    {"rule": "brute_force", "title": "Brute force", "fires_when": "...", "assumption": "...",
+     "severity": "medium",                   // "low" | "medium" | "high": the rule's default
+     "severity_reason": "..."}               // one sentence shown with the badge
   ],
-  "general_assumptions": ["...", "..."]
+  "general_assumptions": ["...", "..."],
+  "severity_note": "..."                     // how the table's severity differs from a report's
 }
 ```
 
-Straight from `rules.RULE_GUIDE` and `rules.GENERAL_ASSUMPTIONS`. Serves both the rule titles for
+Straight from `rules.RULE_GUIDE` and `rules.GENERAL_ASSUMPTIONS`, plus the severity policy in
+`severity.py` (ticket 26). Severity is a fixed review-priority default per rule, not a confirmed
+incident rating; the agent never sees it. Serves both the rule titles for
 the alerts table and the "How these rules work" text. Fixed text, cacheable by the frontend for the
 session.
 

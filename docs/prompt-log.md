@@ -2278,3 +2278,45 @@ commit. No push requested.
 files before committing. No application changes or additional test runs.
 **Concerns:** documented open audit items remain unchanged.
 **Next:** retain the local checkpoint; no further work requested.
+
+### P-112 · 2026-10-20 · Ask whether ticket 26 needs research first
+
+**Prompt, verbatim:**
+> do u think this T26 worth a research as a first step claude ?
+
+**Purpose:** decide the first step for ticket 26.
+**Result:** advised against new research. Ticket 25 already researched the severity policy and
+the author approved its values. Every remaining item is an author decision or contract design.
+Offered a small contrast check on the badge colours inside the design step.
+**Next:** start the design step.
+
+### P-113 · 2026-10-20 · Start ticket 26
+
+**Prompt, verbatim:**
+> ok lets start
+
+**Purpose:** begin ticket 26 with the design step.
+**Result:** branch `ticket-26-rule-filter-severity`; design note
+`.scratch/v2-port/research/26-design-note.md` covering the screen, policy wording, colours,
+contract changes, code placement and evidence. Contrast measured: all six badge pairs 8.2:1 or
+better. One choice put to the author: how the table severity is told apart from the report's.
+**Next:** the author's choice, then approval of the note.
+
+### P-114 · 2026-10-20 · Choose how table severity differs from report severity
+
+**Prompt, verbatim:**
+> go with option A
+
+**Purpose:** settle the table/report distinction for ticket 26.
+**Result:** Option A recorded in the design note and the ticket. The column stays "Severity";
+the details panel explains it is the rule's default review urgency and that a report can rate
+the case differently.
+**Next:** approval of the design note as a whole, then the contract edit and the build.
+
+### P-115 · 2026-10-20 · Approve the ticket 26 design note
+
+**Prompt, verbatim (pop-up answer):**
+> Approve and build (Recommended)
+
+**Purpose:** approve the design note as a whole and unlock the build.
+**Result:** API contract and spec decisions log updated first; build started test-first.
