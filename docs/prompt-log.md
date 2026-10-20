@@ -2334,3 +2334,16 @@ pass; lint unchanged at the six AUD-009 warnings. No model or paid calls.
 **Purpose:** accept the live change and close ticket 26.
 **Result:** ticket 26 resolved; AUD-001 and AUD-002 closed; map updated. Branch
 `ticket-26-rule-filter-severity` merged into `main` locally. Nothing pushed.
+
+### P-117 · 2026-10-20 · Push v2 to GitHub
+
+**Prompt, verbatim:**
+> push it
+
+**Purpose:** publish v2 for the first time.
+**Result:** no remote existed, so the repository `Dywanah-Ali/login-investigator` was created
+under the name agreed in ticket 03. The author chose **public** visibility over the recommended
+private one. Before publishing, a scan of all 230 tracked files found no real key, name, email or
+memory file; the only key-shaped text is the fake test value in `test_api_errors.py`. All 73
+commits use the GitHub noreply address. `main` pushed and tracking `origin/main`; ticket
+branches stay local.

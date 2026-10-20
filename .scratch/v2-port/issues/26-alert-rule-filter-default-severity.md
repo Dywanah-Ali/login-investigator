@@ -86,3 +86,5 @@ Perplexity remains a Codex development tool only. No Perplexity integration in t
   `ready-for-human`: awaiting the author's live review.
 - 20 October 2026. Author reviewed the live screen and approved (P-116). Ticket resolved and the
   branch merged into `main` locally. Nothing pushed.
+- 20 October 2026. `main` pushed to the new public repository
+  `https://github.com/Dywanah-Ali/login-investigator` at the author's request (P-117).
