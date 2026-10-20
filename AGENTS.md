@@ -29,9 +29,10 @@ workspace moves to **initiatives**: features and capabilities built on top of th
 initiative gets its own folder under `.scratch/`, its own map, spec and tickets, and starts at the
 rigour tier it deserves. Tier 3 stays the default for anything the app will depend on.
 
-**Current initiative:** the week 2 initiative, inspired by the bootcamp's RAG brief, is being
-scoped with the author. Its folder under `.scratch/` is named at intake; until then there is no
-frontier, and the session starts by asking the author for the intake.
+**Current initiative:** `.scratch/knowledge-base/`, a knowledge graph with RAG in its ecosystem
+that explains the threat behind a login alert. Scope is phases 0 and 1 only (foundation, then
+blast radius with spread and shared ground); later phases are planned features, not
+requirements. See its `map.md` for the frontier.
 
 ## How the bootcamp projects are used from now on (author's ruling, 20 October 2026)
 

@@ -67,9 +67,37 @@ and risk score. GRC is a later slice.
 
 Each phase is specified before it is built, and the eval set grows with each phase.
 
+### Scope ruling (author, 20 October 2026)
+
+**This initiative delivers phases 0 and 1 only.** They are the requirements: the foundation and
+the blast-radius slice with spread and shared ground. The spec and tickets cover those two phases
+and nothing else. The initiative closes when phase 1 is accepted on a live screen with its eval
+passing.
+
+Phases 2, 3, 4 and the GRC view are **planned features, not requirements.** They stay recorded
+here and in research note 01 so the design keeps room for them, and each is taken later as its
+own small initiative, with its own spec section and tickets, whenever the author chooses. Other
+bootcamp-week initiatives will arrive in between; nothing in this initiative waits on them or
+blocks them.
+
+### Decision tickets charted (20 October 2026)
+
+| Ticket | Type | Blocked by |
+|---|---|---|
+| [02 Where the graph lives and where retrieval runs](issues/02-store-and-retrieval-provider.md) | research | none |
+| [03 Embedding model, keyword search and re-ranker](issues/03-embedding-and-reranking.md) | research | 02 |
+| [04 Synthetic organisation, corpus and ground truth](issues/04-synthetic-data-and-ground-truth.md) | grilling | 02 |
+| [05 How the knowledge base reaches the agent](issues/05-agent-tools-for-the-knowledge-base.md) | grilling | 02, 04 |
+| [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | grilling | 04, 05 |
+| [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
+
+The frontier is ticket 02. The spec (`mp-to-spec`) follows the last resolution.
+
 ## Not yet specified
 
-- The spec for phases 0 and 1.
+- Whether a dataset-swap mechanism for the organisation needs its own decision or falls out of
+  ticket 04.
+- The spec for phases 0 and 1, after tickets 02 to 07.
 
 ## Out of scope
 
