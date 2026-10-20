@@ -2366,4 +2366,16 @@ unchanged from the previous section. Committed locally; not pushed.
 **Purpose:** state the reuse terms of the now-public repository.
 **Result:** standard MIT text in `LICENSE`, copyright "2026 Dywanah-Ali" (the author's handle,
 since no personal name goes into the repository). README gains a short Licence section.
-Committed locally.
+Committed locally, then pushed at the author's word ("push").
+
+### P-120 · 2026-10-20 · Give severity badges one width
+
+**Prompt, verbatim:**
+> the severity tags in the alerts table. they have diff sizes because i guess u make it fits the severity name .. can u give the tags (i mean the width of the tag) the same size, maybe by centering the severity name inside the tag
+
+**Purpose:** make the Severity column line up, so the badges read as one scale.
+**Result:** `SeverityBadge` now has a fixed width of 64 pixels, sized for "Medium"; the word was
+already centred. The change applies to the table, the details panel and the rules guide, since
+all three use the one component. Checked live on the author's own dev server: all six badges
+measure 64 pixels with no clipped text. 149 frontend tests and the type check pass; lint is
+unchanged at six warnings. On branch `severity-badge-width`; not merged or pushed.
