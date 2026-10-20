@@ -2357,3 +2357,13 @@ branches stay local.
 **Result:** README "Run" section rewritten as numbered Start and Stop steps, with what to wait
 for, a recipe for when port 8000 is in use, and a short troubleshooting table. Commands are
 unchanged from the previous section. Committed locally; not pushed.
+
+### P-119 · 2026-10-20 · Add an MIT licence
+
+**Prompt, verbatim:**
+> add an MIT licence file
+
+**Purpose:** state the reuse terms of the now-public repository.
+**Result:** standard MIT text in `LICENSE`, copyright "2026 Dywanah-Ali" (the author's handle,
+since no personal name goes into the repository). README gains a short Licence section.
+Committed locally.

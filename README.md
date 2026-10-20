@@ -135,3 +135,7 @@ LI_API_URL=http://127.0.0.1:8010 npm run dev
 | "address already in use" in the API terminal | Another program holds that port. Use another one, as above |
 | "The API cannot be reached" on screen | The API terminal is not running, or the two port numbers differ |
 | The Investigator says the agent is unavailable | The model key in `backend/.env` is missing or wrong. The dashboards still work |
+
+## Licence
+
+MIT. See [LICENSE](LICENSE).
