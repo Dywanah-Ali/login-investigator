@@ -46,6 +46,14 @@ value it adds to the app, not for the sake of demonstrating RAG.
   organisational context, so we generate our own small consistent set. Three candidate slices
   documented; recommendation is slice 2 (spray-to-compromise blast radius) with slice 1's network
   and travel facts folded in. Author's choice pending. [Research note](research/01-use-case-research.md).
+- [Where the graph lives and where retrieval runs](issues/02-store-and-retrieval-provider.md):
+  one store, the author's installed PostgreSQL 18.6 with pgvector; LangChain's PostgreSQL store
+  for hybrid search with our own score-keeping fusion; built-in keyword ranking first, BM25 only
+  if the eval demands it; graph walked in NetworkX built from the tables, chunks included with
+  `mentions` edges; a read-only graph screen of our own plus Gephi export; ground-truth files are
+  the truth and the database is built from them; fresh database per run, loud failures; two
+  read-only locks; memory stays in SQLite. Neo4j, LanceDB, LadybugDB and hosted services ruled
+  out. Ten decisions under the ticket's Answer. [Research note](research/02-store-and-retrieval-provider.md).
 
 ### Author's ruling, 20 October 2026
 
@@ -91,13 +99,14 @@ blocks them.
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | grilling | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
-The frontier is ticket 02. The spec (`mp-to-spec`) follows the last resolution.
+Ticket 02 is resolved (20 October 2026). The frontier is tickets 03 and 04, which 02 unblocked;
+03 by number first. The spec (`mp-to-spec`) follows the last resolution.
 
 ## Not yet specified
 
-- Whether a dataset-swap mechanism for the organisation needs its own decision or falls out of
-  ticket 04.
-- The spec for phases 0 and 1, after tickets 02 to 07.
+- Dataset swap: ticket 02 settled the mechanism (build from another folder into another
+  database name; the app opens a dataset by name). Ticket 04 settles the folder's format.
+- The spec for phases 0 and 1, after tickets 03 to 07.
 
 ## Out of scope
 

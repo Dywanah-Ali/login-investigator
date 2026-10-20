@@ -58,6 +58,9 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-029 | Correlate end-to-end scenario rulings with the saved Investigation | Closed: consolidated case verified and approved | High | B-067; P-100/P-107 |
 | AUD-030 | Exclude the initial event from later-sign-in prose totals | Open counting defect | High | B-070; P-107 final benchmark |
 | AUD-031 | Replace gpt-4o-mini before its retirement on 14 January 2027 | Open, deadline-bound; no model chosen | High | P-121; OpenRouter service notice |
+| AUD-032 | Move the agent's conversation memory from SQLite to the PostgreSQL checkpointer | Open, parked by the author; not in the knowledge-base initiative's scope | Low | Knowledge-base ticket 02, decision 9 |
+| AUD-033 | Incremental sync of the knowledge base instead of a full rebuild per run | Open, future; phases 0 and 1 rebuild in full | Low | Knowledge-base ticket 02, decision 6 |
+| AUD-034 | Check Intel-Mac wheels before recommending a native Python package | Open, process lesson; no code change | Medium | Knowledge-base research note 02, section 3.8 |
 
 ### AUD-001: Rule filter
 
@@ -451,6 +454,33 @@ decisions log. v1 uses the same model and will also stop answering; it stays fro
 Closure evidence: a spec decision naming the new model, the code and documents updated, and a
 passing API-mode eval run on the new model before 14 January 2027.
 
+### AUD-032: Agent memory in PostgreSQL
+
+The knowledge-base initiative (ticket 02, 20 October 2026) chose the author's installed
+PostgreSQL as the knowledge base's one store. LangChain ships `langgraph-checkpoint-postgres`,
+the PostgreSQL twin of the `SqliteSaver` the agent uses. Moving memory would put everything the
+app persists in one store. The author ruled it out of the initiative's scope: it has no bearing
+on phases 0 and 1 and the eval set does not cover memory. Closure evidence: a spec decision, the
+checkpointer swapped in the one agent-creation function, conversation continuity re-verified.
+
+### AUD-033: Incremental sync of the knowledge base
+
+Ticket 02 decided that the ground-truth files stand in for the upstream systems and the loader
+is the sync job. Phases 0 and 1 rebuild the database in full on every run, which is right for
+generated data. Production-shaped sync is incremental: only changed records and chunks are
+reloaded, with provenance (which source, when). LangChain's indexing API with a record manager
+covers the chunk side. Closure evidence: a spec section for a later phase, a loader that skips
+unchanged inputs, and a test showing a changed record is reloaded and an unchanged one is not.
+
+### AUD-034: Intel-Mac wheel check
+
+While researching ticket 02, two recommended packages (LanceDB 0.40.0, pgembed 0.2.0) turned out
+to ship macOS wheels for Apple Silicon only. The author's Mac is Intel. The recommendation had
+to be revised after the machine was checked. Lesson: before recommending a native Python package,
+list its wheels on PyPI and confirm a `macosx_*_x86_64` build exists, or state the source-build
+cost. Closure evidence: the check recorded in the research method of the next ticket that
+recommends a native package.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -458,8 +488,8 @@ acceptance criteria. See the [spec](../../.scratch/v2-port/spec.md), future seam
 
 | ID | Capability | Existing architectural seam | Status |
 | --- | --- | --- | --- |
-| AUD-015 | Retrieval-augmented generation | Central tool list | Future idea |
-| AUD-016 | Knowledge graph | Data access in the core | Future idea |
+| AUD-015 | Retrieval-augmented generation | Central tool list | In progress: knowledge-base initiative, `.scratch/knowledge-base/` |
+| AUD-016 | Knowledge graph | Data access in the core | In progress: knowledge-base initiative, `.scratch/knowledge-base/` |
 | AUD-017 | Tracing | One model/agent creation function | Future idea |
 | AUD-018 | Evaluation-platform integration | Evals call core or API independently of screens | Future idea |
 | AUD-019 | Log upload | Dataset abstraction at the API/core boundary | Future idea |
@@ -563,3 +593,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-20 | Closed AUD-001 and AUD-002 after the author's live review; ticket 26 resolved and merged locally. | P-116; ticket 26 |
 
 | 2026-10-20 | Added AUD-031: the agent's model retires on 14 January 2027. Recorded only; no model chosen. | P-121; OpenRouter service notice |
+
+| 2026-10-20 | Knowledge-base ticket 02 resolved: PostgreSQL chosen as the one store. Added AUD-032 (memory to PostgreSQL, parked), AUD-033 (incremental sync, future), AUD-034 (Intel-Mac wheel check, lesson). AUD-015 and AUD-016 marked in progress. | Knowledge-base ticket 02 Answer; research note 02 |
