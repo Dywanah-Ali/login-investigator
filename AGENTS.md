@@ -132,3 +132,11 @@ Issues live as local markdown files under `.scratch/`. See `docs/agents/issue-tr
 ### Domain docs
 
 Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### Session handoff
+
+On "session handoff", "wrap up" or before a `/clear`, follow the `session-handoff` skill. The same
+file is installed twice: `.claude/skills/session-handoff/SKILL.md` for Claude Code and
+`.agents/skills/session-handoff/SKILL.md` for Codex; keep them identical. It writes `.scratch/handoff/SESSION_HANDOFF.md` (overwritten each run) and offers a dated backup
+into `.scratch/handoff/handoff-backup/`. A new session reads that file after `CLAUDE.md` and the
+current map.
