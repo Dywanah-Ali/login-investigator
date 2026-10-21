@@ -60,7 +60,9 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-031 | Replace gpt-4o-mini before its retirement on 14 January 2027 | Open, deadline-bound; no model chosen | High | P-121; OpenRouter service notice |
 | AUD-032 | Move the agent's conversation memory from SQLite to the PostgreSQL checkpointer | Open, parked by the author; not in the knowledge-base initiative's scope | Low | Knowledge-base ticket 02, decision 9 |
 | AUD-033 | Incremental sync of the knowledge base instead of a full rebuild per run | Open, future; phases 0 and 1 rebuild in full | Low | Knowledge-base ticket 02, decision 6 |
-| AUD-034 | Check Intel-Mac wheels before recommending a native Python package | Open, process lesson; no code change | Medium | Knowledge-base research note 02, section 3.8 |
+| AUD-034 | Check Intel-Mac wheels before recommending a native Python package | Open, process lesson; applied once in research note 03 (section 3.1) | Medium | Knowledge-base research note 02, section 3.8 |
+| AUD-035 | Evaluate Cohere Rerank 5 (calibrated relevance scores) as a replacement for `rerank-v3.5` once OpenRouter serves it | Open, watch item; swap gated by the eval set | Low | Knowledge-base research note 03, section 3.5 |
+| AUD-036 | Langfuse as the trace and eval-result store for the knowledge base; the author holds three months of free access | Open, candidate; decided inside knowledge-base ticket 06 | Medium | Author, 21 October 2026 |
 
 ### AUD-001: Rule filter
 
@@ -479,7 +481,33 @@ to ship macOS wheels for Apple Silicon only. The author's Mac is Intel. The reco
 to be revised after the machine was checked. Lesson: before recommending a native Python package,
 list its wheels on PyPI and confirm a `macosx_*_x86_64` build exists, or state the source-build
 cost. Closure evidence: the check recorded in the research method of the next ticket that
-recommends a native package.
+recommends a native package. Applied in research note 03 (21 October 2026): PyPI wheel lists
+were queried directly for torch, onnxruntime and fastembed before any local model was weighed;
+the author then ruled out local models altogether.
+
+### AUD-035: Cohere Rerank 5 with calibrated scores
+
+Research note 03 proposes `cohere/rerank-v3.5` through OpenRouter's rerank endpoint as the
+default re-ranker. Its relevance scores are for ranking only, so the refusal threshold has to be
+calibrated on the eval set. On 21 October 2026 Cohere announced Rerank 5, whose scores are
+described as calibrated probabilities (a score of 0.7 reads as a 70 percent chance the document
+is useful), which would make the threshold a documented constant rather than a calibrated one. It
+was not on OpenRouter when checked the same day. Closure evidence: an eval run comparing the two
+models on precision at 5 and on the refusal metrics, and a spec row recording the choice.
+
+### AUD-036: Langfuse for traces and eval results
+
+The author has three months of free access to Langfuse (noted 21 October 2026; start date of
+the period not yet recorded). Langfuse stores traces of every agent run (tool calls, retrieval
+candidates with their scores, model answers), holds datasets of test questions, attaches scores
+to runs and compares runs side by side. It would serve the knowledge base as the place where eval
+results and retrieval traces are stored and inspected. It does **not** replace the eval harness:
+the map requires the eval to be runnable by the author or Codex without Claude, as a test script
+in the repo with pass rates against agreed thresholds; the question files and gold answers in
+the repo stay the truth. Traces leave the machine on the hosted service; all data is synthetic;
+the key lives only in `.env`. Decision belongs to ticket 06 (eval design): whether to adopt it,
+hosted or self-hosted, and what the trace record contains. Closure evidence: a ticket 06 decision
+row and, if adopted, one eval run visible in Langfuse with the retrieval-layer record fields.
 
 ## Longer-term capabilities already named in the spec
 
@@ -595,3 +623,9 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-20 | Added AUD-031: the agent's model retires on 14 January 2027. Recorded only; no model chosen. | P-121; OpenRouter service notice |
 
 | 2026-10-20 | Knowledge-base ticket 02 resolved: PostgreSQL chosen as the one store. Added AUD-032 (memory to PostgreSQL, parked), AUD-033 (incremental sync, future), AUD-034 (Intel-Mac wheel check, lesson). AUD-015 and AUD-016 marked in progress. | Knowledge-base ticket 02 Answer; research note 02 |
+
+| 2026-10-21 | Knowledge-base ticket 03 research done, awaiting the author's grilling. Added AUD-035 (Cohere Rerank 5 watch item). AUD-034 noted as applied once. The author ruled out local models. | Knowledge-base ticket 03 comments; research note 03 |
+
+| 2026-10-21 | Added AUD-036: Langfuse as a candidate trace and eval-result store, three months of free access held by the author; decided in ticket 06. | Author |
+
+| 2026-10-21 | Knowledge-base ticket 03 resolved: seven decisions on refusal path, embeddings, chunking, identifiers, re-ranker, metadata filters and fusion. Frontier moves to ticket 04. | Knowledge-base ticket 03 Answer; map |

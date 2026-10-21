@@ -54,6 +54,15 @@ value it adds to the app, not for the sake of demonstrating RAG.
   the truth and the database is built from them; fresh database per run, loud failures; two
   read-only locks; memory stays in SQLite. Neo4j, LanceDB, LadybugDB and hosted services ruled
   out. Ten decisions under the ticket's Answer. [Research note](research/02-store-and-retrieval-provider.md).
+- [Embedding model, keyword search and re-ranker](issues/03-embedding-and-reranking.md): refusal
+  path first, three verdicts (`none`, `weak`, `found`) computed in code from recorded scores, with
+  the threshold calibrated on the eval set before the `none` rule is switched on;
+  `text-embedding-3-small` through OpenRouter at 1,536 dimensions, no local models; structure-first
+  chunking with a context header on every chunk; exact identifiers as typed columns plus a
+  chunk-to-entity link table; `cohere/rerank-v3.5` through OpenRouter behind a switch, 20 to 5,
+  eval decides; metadata filters on typed columns applied before both legs, typed tool options,
+  the model never writes a filter; our reciprocal rank fusion with three library traps pinned by
+  tests. Seven decisions under the ticket's Answer. [Research note](research/03-embedding-and-reranking.md).
 
 ### Author's ruling, 20 October 2026
 
@@ -99,13 +108,19 @@ blocks them.
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | grilling | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
-Ticket 02 is resolved (20 October 2026). The frontier is tickets 03 and 04, which 02 unblocked;
-03 by number first. The spec (`mp-to-spec`) follows the last resolution.
+Tickets 02 and 03 are resolved (20 and 21 October 2026). The frontier is ticket 04, the last
+ticket that only 02 blocked; 05 opens when 04 resolves. The spec (`mp-to-spec`) follows the last
+resolution.
 
 ## Not yet specified
 
 - Dataset swap: ticket 02 settled the mechanism (build from another folder into another
   database name; the app opens a dataset by name). Ticket 04 settles the folder's format.
+- Metadata fields per document kind: ticket 03 settled the two layers (shared typed columns for
+  filtering, a JSON column for per-kind details, a link table for mentions). Ticket 04 names the
+  fields.
+- Refusal threshold: ticket 03 settled that it is calibrated on the eval set, not borrowed.
+  Ticket 06 designs the calibration set and the procedure.
 - The spec for phases 0 and 1, after tickets 03 to 07.
 
 ## Out of scope
