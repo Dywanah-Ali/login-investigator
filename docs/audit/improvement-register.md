@@ -62,7 +62,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-033 | Incremental sync of the knowledge base instead of a full rebuild per run | Open, future; phases 0 and 1 rebuild in full | Low | Knowledge-base ticket 02, decision 6 |
 | AUD-034 | Check Intel-Mac wheels before recommending a native Python package | Open, process lesson; applied once in research note 03 (section 3.1) | Medium | Knowledge-base research note 02, section 3.8 |
 | AUD-035 | Evaluate Cohere Rerank 5 (calibrated relevance scores) as a replacement for `rerank-v3.5` once OpenRouter serves it | Open, watch item; swap gated by the eval set | Low | Knowledge-base research note 03, section 3.5 |
-| AUD-036 | Langfuse as the trace and eval-result store for the knowledge base; the author holds three months of free access | Open, candidate; decided inside knowledge-base ticket 06 | Medium | Author, 21 October 2026 |
+| AUD-036 | Langfuse as the trace and eval-result store for the knowledge base; the author's three months of free access run 21 October 2026 to about 21 January 2027 | Open, candidate; decided inside knowledge-base ticket 06 | Medium | Author, 21 October 2026 |
 
 ### AUD-001: Rule filter
 
@@ -497,8 +497,8 @@ models on precision at 5 and on the refusal metrics, and a spec row recording th
 
 ### AUD-036: Langfuse for traces and eval results
 
-The author has three months of free access to Langfuse (noted 21 October 2026; start date of
-the period not yet recorded). Langfuse stores traces of every agent run (tool calls, retrieval
+The author has three months of free access to Langfuse, starting 21 October 2026 and therefore
+ending around 21 January 2027. Langfuse stores traces of every agent run (tool calls, retrieval
 candidates with their scores, model answers), holds datasets of test questions, attaches scores
 to runs and compares runs side by side. It would serve the knowledge base as the place where eval
 results and retrieval traces are stored and inspected. It does **not** replace the eval harness:
