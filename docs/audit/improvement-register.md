@@ -469,6 +469,12 @@ the PostgreSQL twin of the `SqliteSaver` the agent uses. Moving memory would put
 app persists in one store. The author ruled it out of the initiative's scope: it has no bearing
 on phases 0 and 1 and the eval set does not cover memory. Closure evidence: a spec decision, the
 checkpointer swapped in the one agent-creation function, conversation continuity re-verified.
+Parking reaffirmed by the author on 22 October 2026 after ticket 05: both checkpointers
+serialise messages through the same LangChain code, so the artifact round-trip check in phase 0
+does not favour either store, and the switch would make PostgreSQL a requirement for opening a
+conversation, which the Port's service-free tests avoid. **Trigger to reopen: phase 2
+(history), when incident write-ups enter the graph and a past investigation becomes knowledge;**
+reopen with the eval extended to cover memory.
 
 ### AUD-033: Incremental sync of the knowledge base
 
@@ -717,3 +723,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-22 | Knowledge-base ticket 04 resolved: seventeen decisions on the synthetic organisation, the stories, the corpus, the dataset folder and the truth file. AUD-037 to AUD-039's "taken now" items confirmed (S6, the MFA column, three twins). Frontier moves to ticket 05. | Knowledge-base ticket 04 Answer; map |
 
 | 2026-10-22 | Knowledge-base ticket 05 resolved after a discussion, research note 05 and a fourteen-question grilling: five rulings (purpose, playbook in code, chat entry point, conversation then report, code does the deterministic work) and sixteen decisions (seven tools, bundled investigation package, content plus artifact, content-computed IDs including a stable finding ID on the Alerts API, label citations resolved in code, two answer checks, fencing middleware with canaries, middleware plan, tool choice as shortcut rule, report gate, caps, parallel calls, playbook as one list, rules unchanged, no context field). Added AUD-040 (structural escalation seam) and AUD-041 (structured answer option). Frontier moves to ticket 06. | Knowledge-base ticket 05 Answer; research note 05; map |
+
+| 2026-10-22 | AUD-032 parking reaffirmed by the author; trigger to reopen set to phase 2 (history), when past investigations become knowledge. | Author, after ticket 05 |
