@@ -63,6 +63,19 @@ value it adds to the app, not for the sake of demonstrating RAG.
   eval decides; metadata filters on typed columns applied before both legs, typed tool options,
   the model never writes a filter; our reciprocal rank fusion with three library traps pinned by
   tests. Seven decisions under the ticket's Answer. [Research note](research/03-embedding-and-reranking.md).
+- [Synthetic organisation, corpus and ground truth](issues/04-synthetic-data-and-ground-truth.md):
+  the Port's seeded generator grows into the world's one source: the 50 users and five stories
+  stay, with six departments, three privilege groups, ten assets with sensitivity, a device
+  register and a four-address VPN pool drawn around them; two new log columns (`mfa_result`,
+  `device_id`); a new spray S6 that succeeds on an IT Admin, both compromised accounts on a
+  documented MFA exception list; three benign twins (travel, reset burst, laptop swap) that trip
+  the Port's rules and are cleared by one document each; 13 ATT&CK pages and 27 own documents
+  written by a standalone Codex from a brief kept in the repo and checked by a script; Markdown
+  front matter with mentions computed by ingestion; one folder per dataset under
+  `backend/data/datasets/`; four recorded gaps for the refusal path; the generator writes the
+  answer key into `truth.json` with a test that recomputes S6's radius; the Port's eval passes
+  unchanged and regeneration is phase 0's first build ticket. Seventeen decisions under the
+  ticket's Answer.
 
 ### Author's ruling, 20 October 2026
 
@@ -108,20 +121,19 @@ blocks them.
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | grilling | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
-Tickets 02 and 03 are resolved (20 and 21 October 2026). The frontier is ticket 04, the last
-ticket that only 02 blocked; 05 opens when 04 resolves. The spec (`mp-to-spec`) follows the last
+Tickets 02, 03 and 04 are resolved (20, 21 and 22 October 2026). The frontier is ticket 05, which
+04 unblocked; 06 opens when 05 resolves, and 07 with it. The spec (`mp-to-spec`) follows the last
 resolution.
 
 ## Not yet specified
 
-- Dataset swap: ticket 02 settled the mechanism (build from another folder into another
-  database name; the app opens a dataset by name). Ticket 04 settles the folder's format.
-- Metadata fields per document kind: ticket 03 settled the two layers (shared typed columns for
-  filtering, a JSON column for per-kind details, a link table for mentions). Ticket 04 names the
-  fields.
 - Refusal threshold: ticket 03 settled that it is calibrated on the eval set, not borrowed.
-  Ticket 06 designs the calibration set and the procedure.
-- The spec for phases 0 and 1, after tickets 03 to 07.
+  Ticket 04 planted four recorded gaps as its material. Ticket 06 designs the calibration set
+  and the procedure.
+- Group membership, S6's target, the leaver's name and the two never-mentioned users: chosen when
+  the tables are built, in phase 0's first build ticket.
+- The Codex brief's wording and the consistency script's checks: written after the tables exist.
+- The spec for phases 0 and 1, after tickets 05 to 07.
 
 ## Out of scope
 

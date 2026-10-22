@@ -63,6 +63,9 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-034 | Check Intel-Mac wheels before recommending a native Python package | Open, process lesson; applied once in research note 03 (section 3.1) | Medium | Knowledge-base research note 02, section 3.8 |
 | AUD-035 | Evaluate Cohere Rerank 5 (calibrated relevance scores) as a replacement for `rerank-v3.5` once OpenRouter serves it | Open, watch item; swap gated by the eval set | Low | Knowledge-base research note 03, section 3.5 |
 | AUD-036 | Langfuse as the trace and eval-result store for the knowledge base; the author's three months of free access run 21 October 2026 to about 21 January 2027 | Open, candidate; decided inside knowledge-base ticket 06 | Medium | Author, 21 October 2026 |
+| AUD-037 | Widen the planted attack scenarios beyond the five the Port ships (impossible travel, MFA fatigue, dormant account, after-hours privileged use, credential stuffing) | Open; the spray-to-privileged-success story is taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
+| AUD-038 | Plant benign look-alikes that share a signature with an attack (travel, VPN change, new device, password reset burst, new joiner, scheduled scanner, authorised test) | Open; two or three look-alikes are taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
+| AUD-039 | Richer log row signals (MFA result, device identifier, authentication method, target application, session identifier) and a longer baseline window | Open; the MFA column is taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
 
 ### AUD-001: Rule filter
 
@@ -509,6 +512,62 @@ the key lives only in `.env`. Decision belongs to ticket 06 (eval design): wheth
 hosted or self-hosted, and what the trace record contains. Closure evidence: a ticket 06 decision
 row and, if adopted, one eval run visible in Langfuse with the retrieval-layer record fields.
 
+### AUD-037 to AUD-039: Scenario coverage for a product-grade investigator
+
+Context, recorded 22 October 2026 during the plain-English discussion before knowledge-base
+ticket 04. The author asked whether the Port's planted scenarios are enough for an app that may
+become a product. Claude's assessment, accepted by the author: enough for the knowledge base's
+phases 0 and 1, not enough for a product MVP. The gap is not the number of attacks. The benign
+side is too thin (the only false positives are three IP addresses judged on reputation), and each
+log row carries too little signal for a behavioural judgement. An eval set over scenarios that
+each have one obvious answer would show a high pass rate that proves little. The author accepted
+that the Port's tests and eval set will be re-pointed to a regenerated log for the sake of a more
+comprehensive foundation.
+
+The ruling for ticket 04 is to take the cheapest changes with the largest effect on the honesty
+of the eval, and to register the rest here so the design leaves room and nothing is forgotten.
+The three entries below are that remainder; each names what ticket 04 takes now.
+
+#### AUD-037: Attack scenarios beyond the Port's five
+
+The Port's generator (`backend/login_investigator/generator.py`) plants brute force then
+compromise (S1, S3), a spray that never succeeds (S2), a sign-in from a new country (S4) and
+prompt injection in a log field (S5). A product needs, at least: a spray that succeeds on a
+privileged account; impossible travel (two countries within a time that rules out a flight); MFA
+fatigue (many prompts, one accepted); a dormant account that wakes up; after-hours use of a
+privileged account; credential stuffing (many accounts, one attempt each, a breached-password
+pattern) as distinct from spraying. **Taken into ticket 04 now:** the spray that succeeds on a
+privileged account, because phase 1 needs it. **Future:** the rest, each as a planted scenario
+with a ground-truth entry and eval questions, taken when a phase needs it or when the author opens
+a scenario initiative. Closure evidence: generator scenarios, ground-truth entries and passing
+eval questions per scenario.
+
+#### AUD-038: Benign look-alikes
+
+An investigator earns trust on the cases it refuses to flag. Every planted attack today has a
+clean signature and no innocent twin. A product needs benign behaviours that share a signature
+with an attack: legitimate travel that looks like a new country; a VPN or provider change that
+looks like a new address; a new device after a laptop refresh that looks like an unknown browser;
+a password reset burst that looks like brute force; a new joiner's first week that looks like a
+dormant or unknown account; a scheduled scanner or monitoring job that looks like a spray; an
+authorised test announced in a document that the knowledge base can find. **Taken into ticket 04
+now:** two or three look-alikes, chosen in the grilling so that each twins one planted attack.
+**Future:** the rest. Closure evidence: generator scenarios, ground-truth entries marked benign,
+and eval questions whose gold answer is "not an incident", scored separately from the attacks.
+
+#### AUD-039: Row signals and baseline
+
+Each log row holds time, user, address, country, outcome, failure reason and browser string. A
+behavioural judgement needs more: the MFA result (passed, failed, not prompted, prompt declined);
+a device identifier so "same device, different user" is a fact rather than a guess from the
+browser string; the authentication method or protocol (password, token, legacy); the target
+application; a session identifier. The window is one week, so "usual for this user" has a thin
+baseline. **Taken into ticket 04 now:** the MFA column, because adding a column later means
+regenerating the log, the ground truth, the eval set and every test that reads the CSV at once.
+**Future:** the other columns and a longer baseline, each weighed against the Port's rules and
+screens that read the log. Closure evidence: the column in the generator and the CSV, the Port's
+tests and eval passing on the regenerated log, and a rule or tool that reads the new signal.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -629,3 +688,7 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-21 | Added AUD-036: Langfuse as a candidate trace and eval-result store, three months of free access held by the author; decided in ticket 06. | Author |
 
 | 2026-10-21 | Knowledge-base ticket 03 resolved: seven decisions on refusal path, embeddings, chunking, identifiers, re-ranker, metadata filters and fusion. Frontier moves to ticket 04. | Knowledge-base ticket 03 Answer; map |
+
+| 2026-10-22 | Added AUD-037 to AUD-039 (attack scenarios, benign look-alikes, row signals and baseline) after the author asked whether the Port's planted scenarios suffice for a product. Each names what knowledge-base ticket 04 takes now and what stays future. The author accepted re-pointing the Port's tests and eval to a regenerated log. | Author; discussion before ticket 04 |
+
+| 2026-10-22 | Knowledge-base ticket 04 resolved: seventeen decisions on the synthetic organisation, the stories, the corpus, the dataset folder and the truth file. AUD-037 to AUD-039's "taken now" items confirmed (S6, the MFA column, three twins). Frontier moves to ticket 05. | Knowledge-base ticket 04 Answer; map |
