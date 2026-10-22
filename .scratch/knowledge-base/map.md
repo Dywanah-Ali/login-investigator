@@ -117,12 +117,15 @@ blocks them.
 | [02 Where the graph lives and where retrieval runs](issues/02-store-and-retrieval-provider.md) | research | none |
 | [03 Embedding model, keyword search and re-ranker](issues/03-embedding-and-reranking.md) | research | 02 |
 | [04 Synthetic organisation, corpus and ground truth](issues/04-synthetic-data-and-ground-truth.md) | grilling | 02 |
-| [05 How the knowledge base reaches the agent](issues/05-agent-tools-for-the-knowledge-base.md) | grilling | 02, 04 |
+| [05 How the knowledge base reaches the agent](issues/05-agent-tools-for-the-knowledge-base.md) | research, then grilling (retyped 22 October 2026) | 02, 04 |
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | grilling | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
 Tickets 02, 03 and 04 are resolved (20, 21 and 22 October 2026). The frontier is ticket 05, which
-04 unblocked; 06 opens when 05 resolves, and 07 with it. The spec (`mp-to-spec`) follows the last
+04 unblocked and which was claimed on 22 October 2026. The author ruled it the most important
+ticket of the initiative and retyped it to research then grilling: its first comment records
+the agent's purpose and the playbook stance that every tool must serve. 06 opens when 05
+resolves, and 07 with it. The spec (`mp-to-spec`) follows the last
 resolution.
 
 ## Not yet specified
