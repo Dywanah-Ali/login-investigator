@@ -66,6 +66,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-037 | Widen the planted attack scenarios beyond the five the Port ships (impossible travel, MFA fatigue, dormant account, after-hours privileged use, credential stuffing) | Open; the spray-to-privileged-success story is taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
 | AUD-038 | Plant benign look-alikes that share a signature with an attack (travel, VPN change, new device, password reset burst, new joiner, scheduled scanner, authorised test) | Open; two or three look-alikes are taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
 | AUD-039 | Richer log row signals (MFA result, device identifier, authentication method, target application, session identifier) and a longer baseline window | Open; the MFA column is taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
+| AUD-040 | Structural escalation of the agent: the agent as a node in a parent graph with deterministic pre-steps, or a knowledge-base sub-agent (Dual-LLM) if the corpus ever becomes hostile | Open, future seam; knowledge-base ticket 05 chose the Port's middleware extended | Low | Knowledge-base research note 05, sections 3.1, 3.3, 3.5 |
+| AUD-041 | Structured agent answer (text plus a list of citation labels) so the citation gate reads a list instead of parsing prose | Open, build-time option in phase 0 | Low | Knowledge-base ticket 05, conditions |
 
 ### AUD-001: Rule filter
 
@@ -568,6 +570,27 @@ regenerating the log, the ground truth, the eval set and every test that reads t
 screens that read the log. Closure evidence: the column in the generator and the CSV, the Port's
 tests and eval passing on the regenerated log, and a rule or tool that reads the new signal.
 
+### AUD-040: Structural escalation of the agent
+
+Knowledge-base ticket 05 (22 October 2026) placed the playbook in the Port's `create_agent`
+middleware, extended with `before_model`, `after_model` and `wrap_tool_call` hooks. Research note
+05 verified two stronger shapes the pinned LangChain supports and the ticket did not take: the
+agent dropped as a node into a parent `StateGraph` with deterministic steps before it (strongest
+control-flow integrity, but code would classify the chat, which the author ruled out), and a
+knowledge-base sub-agent isolating corpus text from the main model (the Dual-LLM pattern, at a
+second model call per step). Both stay available without rework because middleware survives
+composition into a parent graph. Trigger to reopen: the corpus admits documents the workspace
+does not write, or the canary pass rate in the eval falls below the agreed threshold. Closure
+evidence: a spec decision row and an eval run on the new shape.
+
+### AUD-041: Structured agent answer
+
+Ticket 05's decision 6 resolves short citation labels in code after the model answers. Research
+note 05 and the grilling discussion noted that a structured answer (the text plus a list of the
+labels cited) lets the `after_model` hook read a list instead of finding brackets in prose. It
+is a build-time choice in phase 0, not a spec change; recorded so the build ticket weighs it.
+Closure evidence: the build ticket's decision and the hook's tests.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -692,3 +715,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-22 | Added AUD-037 to AUD-039 (attack scenarios, benign look-alikes, row signals and baseline) after the author asked whether the Port's planted scenarios suffice for a product. Each names what knowledge-base ticket 04 takes now and what stays future. The author accepted re-pointing the Port's tests and eval to a regenerated log. | Author; discussion before ticket 04 |
 
 | 2026-10-22 | Knowledge-base ticket 04 resolved: seventeen decisions on the synthetic organisation, the stories, the corpus, the dataset folder and the truth file. AUD-037 to AUD-039's "taken now" items confirmed (S6, the MFA column, three twins). Frontier moves to ticket 05. | Knowledge-base ticket 04 Answer; map |
+
+| 2026-10-22 | Knowledge-base ticket 05 resolved after a discussion, research note 05 and a fourteen-question grilling: five rulings (purpose, playbook in code, chat entry point, conversation then report, code does the deterministic work) and sixteen decisions (seven tools, bundled investigation package, content plus artifact, content-computed IDs including a stable finding ID on the Alerts API, label citations resolved in code, two answer checks, fencing middleware with canaries, middleware plan, tool choice as shortcut rule, report gate, caps, parallel calls, playbook as one list, rules unchanged, no context field). Added AUD-040 (structural escalation seam) and AUD-041 (structured answer option). Frontier moves to ticket 06. | Knowledge-base ticket 05 Answer; research note 05; map |

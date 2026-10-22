@@ -76,6 +76,21 @@ value it adds to the app, not for the sake of demonstrating RAG.
   answer key into `truth.json` with a test that recomputes S6's radius; the Port's eval passes
   unchanged and regeneration is phase 0's first build ticket. Seventeen decisions under the
   ticket's Answer.
+- [How the knowledge base reaches the agent](issues/05-agent-tools-for-the-knowledge-base.md):
+  the agent's purpose fixed first (an explained, evidence-backed answer to what happened, what it
+  can reach, and whether it is a threat); the playbook lives in code, asked for in chat, never
+  unasked; conversation first, then report, with a light gate per turn and a full gate at report
+  time; seven typed tools, the Port's three plus `investigate_alert` (steps 2 to 6 bundled into
+  one package with a section per step, spray targets included), `lookup_account`, `find_peers`,
+  `search_corpus`; every tool returns short labelled content for the model and a full artifact
+  for the eval and screen; IDs computed from content, including a new stable finding ID on the
+  Alerts API; citations as short labels resolved in code, an unresolved label fails the turn;
+  two answer checks in the eval; every tool result fenced in one middleware with canaries
+  measured; the plan in the Port's middleware extended (before, after, wrap); the tool choice is
+  the shortcut rule; the report gate completes missing steps in code and names what cannot run;
+  package caps; parallel calls on; the playbook as one list in the core shared by policy, gate
+  and eval. Five rulings and sixteen decisions under the ticket's Answer.
+  [Research note](research/05-agent-tools.md).
 
 ### Author's ruling, 20 October 2026
 
@@ -121,11 +136,11 @@ blocks them.
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | grilling | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
-Tickets 02, 03 and 04 are resolved (20, 21 and 22 October 2026). The frontier is ticket 05, which
-04 unblocked and which was claimed on 22 October 2026. The author ruled it the most important
-ticket of the initiative and retyped it to research then grilling: its first comment records
-the agent's purpose and the playbook stance that every tool must serve. 06 opens when 05
-resolves, and 07 with it. The spec (`mp-to-spec`) follows the last
+Tickets 02, 03, 04 and 05 are resolved (20, 21, 22 and 22 October 2026). The author ruled 05
+the most important ticket of the initiative and retyped it to research then grilling; its first
+comment records the agent's purpose and the playbook stance that every tool serves. 05 unblocked
+06 and 07; the frontier is ticket 06 (first by number), and 07 may run in parallel. The spec
+(`mp-to-spec`) follows the last resolution. The spec (`mp-to-spec`) follows the last
 resolution.
 
 ## Not yet specified
@@ -136,7 +151,12 @@ resolution.
 - Group membership, S6's target, the leaver's name and the two never-mentioned users: chosen when
   the tables are built, in phase 0's first build ticket.
 - The Codex brief's wording and the consistency script's checks: written after the tables exist.
-- The spec for phases 0 and 1, after tickets 05 to 07.
+- The eval's thresholds, sample size for judged faithfulness, and the canary pass rate: ticket 06.
+- Whether the artifact is shown or downloadable as an evidence panel, and the investigate
+  button on an alert row: ticket 07.
+- The exact hash fields and slug rules for the finding ID, and whether the answer is structured
+  (text plus citation list) or parsed from prose: phase 0 build.
+- The spec for phases 0 and 1, after tickets 06 and 07.
 
 ## Out of scope
 
