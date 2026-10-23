@@ -133,15 +133,15 @@ blocks them.
 | [03 Embedding model, keyword search and re-ranker](issues/03-embedding-and-reranking.md) | research | 02 |
 | [04 Synthetic organisation, corpus and ground truth](issues/04-synthetic-data-and-ground-truth.md) | grilling | 02 |
 | [05 How the knowledge base reaches the agent](issues/05-agent-tools-for-the-knowledge-base.md) | research, then grilling (retyped 22 October 2026) | 02, 04 |
-| [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | grilling | 04, 05 |
+| [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | research, then grilling (retyped 23 October 2026) | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
 Tickets 02, 03, 04 and 05 are resolved (20, 21, 22 and 22 October 2026). The author ruled 05
 the most important ticket of the initiative and retyped it to research then grilling; its first
 comment records the agent's purpose and the playbook stance that every tool serves. 05 unblocked
-06 and 07; the frontier is ticket 06 (first by number), and 07 may run in parallel. The spec
-(`mp-to-spec`) follows the last resolution. The spec (`mp-to-spec`) follows the last
-resolution.
+06 and 07; the frontier is ticket 06 (first by number), and 07 may run in parallel. Ticket 06 was
+claimed on 23 October 2026 and retyped to research then grilling, on four gaps the earlier notes
+do not cover. The spec (`mp-to-spec`) follows the last resolution.
 
 ## Not yet specified
 
