@@ -62,12 +62,13 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-033 | Incremental sync of the knowledge base instead of a full rebuild per run | Open, future; phases 0 and 1 rebuild in full | Low | Knowledge-base ticket 02, decision 6 |
 | AUD-034 | Check Intel-Mac wheels before recommending a native Python package | Open, process lesson; applied once in research note 03 (section 3.1) | Medium | Knowledge-base research note 02, section 3.8 |
 | AUD-035 | Evaluate Cohere Rerank 5 (calibrated relevance scores) as a replacement for `rerank-v3.5` once OpenRouter serves it | Open, watch item; swap gated by the eval set | Low | Knowledge-base research note 03, section 3.5 |
-| AUD-036 | Langfuse as the trace and eval-result store for the knowledge base; the author's three months of free access run 21 October 2026 to about 21 January 2027 | Open, candidate; decided inside knowledge-base ticket 06 | Medium | Author, 21 October 2026 |
+| AUD-036 | Langfuse as the trace and eval-result store for the knowledge base; the author's three months of free access run 21 October 2026 to about 21 January 2027 | Decided, 23 October 2026 (ticket 06, decision 10): adopted to the full as a mirror behind a switch, repo files stay the source of truth; closes on one eval run visible in Langfuse | Medium | Author, 21 October 2026 |
 | AUD-037 | Widen the planted attack scenarios beyond the five the Port ships (impossible travel, MFA fatigue, dormant account, after-hours privileged use, credential stuffing) | Open; the spray-to-privileged-success story is taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
 | AUD-038 | Plant benign look-alikes that share a signature with an attack (travel, VPN change, new device, password reset burst, new joiner, scheduled scanner, authorised test) | Open; two or three look-alikes are taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
 | AUD-039 | Richer log row signals (MFA result, device identifier, authentication method, target application, session identifier) and a longer baseline window | Open; the MFA column is taken into knowledge-base ticket 04, the rest stays future | High | Author and Claude, 22 October 2026 |
 | AUD-040 | Structural escalation of the agent: the agent as a node in a parent graph with deterministic pre-steps, or a knowledge-base sub-agent (Dual-LLM) if the corpus ever becomes hostile | Open, future seam; knowledge-base ticket 05 chose the Port's middleware extended | Low | Knowledge-base research note 05, sections 3.1, 3.3, 3.5 |
 | AUD-041 | Structured agent answer (text plus a list of citation labels) so the citation gate reads a list instead of parsing prose | Open, build-time option in phase 0 | Low | Knowledge-base ticket 05, conditions |
+| AUD-042 | Injection-detector middleware (a classifier over inputs and tool results) as an added layer over the structural defences | Open, parked; trigger to reopen: the canary pass rate falls below 100% and the structural defences cannot explain it | Low | Knowledge-base ticket 06, decision 7 |
 
 ### AUD-001: Rule filter
 
@@ -520,6 +521,19 @@ the key lives only in `.env`. Decision belongs to ticket 06 (eval design): wheth
 hosted or self-hosted, and what the trace record contains. Closure evidence: a ticket 06 decision
 row and, if adopted, one eval run visible in Langfuse with the retrieval-layer record fields.
 
+**Decided, 23 October 2026 (ticket 06, decision 10).** Adopted to the full as a mirror: traces
+through one callback handler in the agent-building function, the two question files as datasets,
+each eval run as an experiment run stamped with the same version fingerprint and commit as the
+JSON record, every check verdict as a score, the judge's verdict and reason as a score with a
+comment, judge verdicts labelled in the annotation UI, and the running app traced for latency and
+cost. Off by default, one environment variable turns it on, key loaded only when on; the JSON file
+is written first and an upload failure is logged and noted in the summary; runs, datasets and
+scores flow out, only human labels flow back by an export script into a repo file; a masking hook
+is wired from day one. The author's reason: hands-on use of an observability platform for evals
+and monitoring is part of the career goal. Hosted (free tier) for now; self-hosting (six
+containers) is not planned. Research note 06, section 3.4, holds the facts. Closure evidence
+unchanged: one eval run visible in Langfuse.
+
 ### AUD-037 to AUD-039: Scenario coverage for a product-grade investigator
 
 Context, recorded 22 October 2026 during the plain-English discussion before knowledge-base
@@ -596,6 +610,20 @@ note 05 and the grilling discussion noted that a structured answer (the text plu
 labels cited) lets the `after_model` hook read a list instead of finding brackets in prose. It
 is a build-time choice in phase 0, not a spec change; recorded so the build ticket weighs it.
 Closure evidence: the build ticket's decision and the hook's tests.
+
+### AUD-042: Injection-detector middleware
+
+During ticket 06 the author asked whether LangChain's prompt-injection middleware should be used
+for the fence around tool results. Checked on 23 October 2026: LangChain 1.3.1 ships no injection
+middleware; its Guardrails page shows injection checks as custom middleware, which is what ticket
+05's `wrap_tool_call` fence is. Detectors exist as third-party middleware (Azure Prompt Shield,
+hosted; several community packages, some local). All are probabilistic classifiers layered over
+the structural defences the design already has (plan in code, read-only tools, deterministic
+answer checks), and research note 05 found that such layers lower the injection rate without
+closing it. Not adopted. Trigger to reopen: the eval's canary pass rate (ticket 06, decision 7)
+falls below 100% and the structural defences cannot explain the failure. A hosted detector would
+also send every prompt and retrieved chunk across the trust boundary. Closure evidence: a
+decision row in the ticket that reopens it, with the canary results that triggered it.
 
 ## Longer-term capabilities already named in the spec
 
@@ -725,3 +753,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-22 | Knowledge-base ticket 05 resolved after a discussion, research note 05 and a fourteen-question grilling: five rulings (purpose, playbook in code, chat entry point, conversation then report, code does the deterministic work) and sixteen decisions (seven tools, bundled investigation package, content plus artifact, content-computed IDs including a stable finding ID on the Alerts API, label citations resolved in code, two answer checks, fencing middleware with canaries, middleware plan, tool choice as shortcut rule, report gate, caps, parallel calls, playbook as one list, rules unchanged, no context field). Added AUD-040 (structural escalation seam) and AUD-041 (structured answer option). Frontier moves to ticket 06. | Knowledge-base ticket 05 Answer; research note 05; map |
 
 | 2026-10-22 | AUD-032 parking reaffirmed by the author; trigger to reopen set to phase 2 (history), when past investigations become knowledge. | Author, after ticket 05 |
+| 2026-10-23 | Knowledge-base ticket 06 resolved after a discussion, research note 06 and a ten-question grilling: two hard retrieval checks per question (top 20 and the 5 the model received), exact-set graph gate, a mix weighted to say-no and mixed questions, a separate tuning file for the refusal threshold, citation resolution with gold IDs as the answer gate, the judge as a smoke alarm with three trials and stored verdicts, playbook and canary checks as 100% gates, one scorer with two exams kept separate, on-versus-off comparisons for the re-ranker and BM25, and Langfuse adopted as a mirror. AUD-036 decided. Added AUD-042 (injection-detector middleware, parked with a trigger). Frontier moves to ticket 07. | Knowledge-base ticket 06 Answer; research note 06; map |

@@ -91,6 +91,20 @@ value it adds to the app, not for the sake of demonstrating RAG.
   package caps; parallel calls on; the playbook as one list in the core shared by policy, gate
   and eval. Five rulings and sixteen decisions under the ticket's Answer.
   [Research note](research/05-agent-tools.md).
+- [The eval set for a graph-plus-text system](issues/06-eval-design.md): retrieval gated per
+  question with two hard checks (every gold ID among the 20 fused candidates and among the chunks
+  the model received), no rate and no borrowed target; the graph walk must return exactly the gold
+  set; the phase 1 mix weighted to say-no and mixed questions with lookups as the control group,
+  every question carrying gold IDs; the refusal threshold calibrated on a separate tuning file
+  that never overlaps the test questions; the answer gate is citation resolution with the gold IDs
+  cited, say-no questions graded from the tool verdict at 100%; the faithfulness judge is a smoke
+  alarm (different model family, binary per claim, three trials, ten answers, verdicts stored,
+  never a gate in phase 1); playbook and canary checks as 100% gates, canaries flagged security;
+  one scorer and runner with two question files kept separate, artifacts saved, version
+  fingerprint widened, a direct retrieval path; re-ranker and BM25 settled by on-versus-off
+  comparisons with tie to off; Langfuse adopted to the full as a mirror with the repo files as the
+  source of truth. Ten decisions under the ticket's Answer.
+  [Research note](research/06-eval-design.md).
 
 ### Author's ruling, 20 October 2026
 
@@ -136,27 +150,26 @@ blocks them.
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | research, then grilling (retyped 23 October 2026) | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
-Tickets 02, 03, 04 and 05 are resolved (20, 21, 22 and 22 October 2026). The author ruled 05
-the most important ticket of the initiative and retyped it to research then grilling; its first
-comment records the agent's purpose and the playbook stance that every tool serves. 05 unblocked
-06 and 07; the frontier is ticket 06 (first by number), and 07 may run in parallel. Ticket 06 was
-claimed on 23 October 2026 and retyped to research then grilling, on four gaps the earlier notes
-do not cover. The spec (`mp-to-spec`) follows the last resolution.
+Tickets 02, 03, 04, 05 and 06 are resolved (20, 21, 22, 22 and 23 October 2026). The author
+ruled 05 the most important ticket of the initiative and retyped it to research then grilling;
+its first comment records the agent's purpose and the playbook stance that every tool serves.
+Ticket 06 was retyped the same way on four gaps the earlier notes did not cover, and resolved the
+same day. The frontier is ticket 07, the last decision ticket. The spec (`mp-to-spec`) follows
+its resolution.
 
 ## Not yet specified
 
-- Refusal threshold: ticket 03 settled that it is calibrated on the eval set, not borrowed.
-  Ticket 04 planted four recorded gaps as its material. Ticket 06 designs the calibration set
-  and the procedure.
 - Group membership, S6's target, the leaver's name and the two never-mentioned users: chosen when
   the tables are built, in phase 0's first build ticket.
 - The Codex brief's wording and the consistency script's checks: written after the tables exist.
-- The eval's thresholds, sample size for judged faithfulness, and the canary pass rate: ticket 06.
+- The tuning file's pairs and the calibrated refusal threshold itself; the judge model; the
+  phase 1 questions and their gold IDs; the on-versus-off results for the re-ranker and BM25:
+  phase 0 and phase 1 build, under ticket 06's rules.
 - Whether the artifact is shown or downloadable as an evidence panel, and the investigate
   button on an alert row: ticket 07.
 - The exact hash fields and slug rules for the finding ID, and whether the answer is structured
   (text plus citation list) or parsed from prose: phase 0 build.
-- The spec for phases 0 and 1, after tickets 06 and 07.
+- The spec for phases 0 and 1, after ticket 07.
 
 ## Out of scope
 
