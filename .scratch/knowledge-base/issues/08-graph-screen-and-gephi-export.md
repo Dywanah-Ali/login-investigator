@@ -1,7 +1,7 @@
 # 08: The read-only graph screen and the Gephi export
 
-Type: prototype, then grilling
-Status: open
+Type: research, then prototype, then grilling (retyped 25 October 2026)
+Status: claimed
 Blocked by: 02, 07
 
 ## Question
@@ -57,3 +57,28 @@ chose a new ticket over reopening 07, so that 07's evidence stays intact and the
 own prototype, under the author's ruling of 24 October 2026 that a screen cannot be decided from a
 description. Same order of work as ticket 07: prototype first, then the grilling with the picture
 in front of the author, one question at a time with a plain heading each.
+
+**2026-10-25, claimed and retyped.** The author asked for a short best-practice research step before
+the prototype, after a mutual-understanding round. The author's picture, confirmed in that round:
+the graph is a panel in the investigator screen's third column, to the right of the evidence
+panel, the space the Port left empty on purpose; it appears whenever the agent's answer involved a
+graph walk, full investigation or partial; it draws only the nodes and edges the walk touched, with
+the walk's direction, not the whole organisation with highlights (the author's lean, to be tested
+by the research); library versus own SVG is open. The Gephi export was explained as a builder's
+tool, not an analyst's: one function writing the NetworkX graph to GEXF or GraphML so the whole
+synthetic organisation can be inspected by eye in Gephi during phase 0. Five research questions
+agreed: (1) walk-only subgraph or whole graph with highlights, as security investigation tools do
+it; (2) how a small walked path is drawn well and what misleads; (3) React drawing library versus
+own SVG, with bundle size, licence, maintenance and plain-text labels; (4) the shape of the
+nodes-and-edges payload carrying direction and hop order; (5) GEXF versus GraphML for Gephi, script
+or download, and the proof the file opens. Findings go to `research/08-graph-screen.md`.
+
+**2026-10-25, research done.** [Research note 08](../research/08-graph-screen.md) written. Its
+recommendation, for the author to rule on in the grilling: draw the walk's subgraph only, which every
+investigation tool examined does (BloodHound, Neo4j Bloom, Defender XDR, Elastic); a Graph tab beside
+Evidence in the third column rather than a fourth column; React Flow plus dagre in read-only mode
+with own SVG as fallback; a payload that projects the saved artifact with `focus`, `type` and `step`
+fields; GEXF by script with no download endpoint, proved by a write-and-read-back test and the
+author opening the file in Gephi Lite. One conflict surfaced: the author's "right of the evidence
+panel" would be a fourth column in a three-column shell; both are drawn in the prototype. Next:
+the HTML prototype.
