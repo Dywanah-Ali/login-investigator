@@ -90,3 +90,6 @@ fixture, retrieval-layer record fields), ticket 07 (graph screen).
   wheels. Recommendation revised to shape D on the installed PostgreSQL, with four conditions
   for the spec (per-run database fixture, pinned package, tsvector first then BM25 if the eval
   says so, fusion function of ours for scores). Awaiting the grilling.
+- 2026-10-24, Claude: decision 2's graph screen and Gephi export were not taken up by ticket 07,
+  which this decision named as their design ticket. They now belong to
+  [ticket 08](08-graph-screen-and-gephi-export.md), opened by the author.

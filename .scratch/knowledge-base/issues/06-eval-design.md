@@ -99,3 +99,28 @@ retrieval metrics and a sane floor for a small set; building a gold set for grap
 (counts per type, multi-hop gold, tuning set apart from test set); LLM-judge reliability (sample
 size, agreement, repeat runs); Langfuse against file-based results. A background agent writes
 `research/06-eval-design.md` on those four gaps only, then the grilling runs one question at a time.
+
+**2026-10-24, after resolution: a phase 0 build item added to the hand-offs.** While checking
+ticket 02's decision 2 against this ticket, the author found that decision 2 above grades the walk
+but nothing checks the graph the walk runs on. The NetworkX graph is a derived artefact, built from
+the tables and the chunk store every time the knowledge base opens; a silent build error would
+become a confident wrong answer that the gates catch only where a question happens to cross it.
+Agreed with the author, recorded here so the spec lists it under phase 0 beside the other build
+items of this ticket's hand-offs:
+
+**Graph integrity check.** One core function runs when the graph is built and fails loudly on the
+first mismatch (ticket 02, decisions 4 and 5: loud failures, never skipped). The retrieval layer
+(`--layer retrieval`) reports it as its precondition.
+
+| Source | Becomes | Check |
+|---|---|---|
+| A row in an entity table (people, groups, assets, devices, networks) | one node | node count per type equals row count |
+| A row in a link table (memberships, grants, device_assignments) | one edge | edge count per type equals row count; both ends exist |
+| A chunk produced by splitting a document | one node | chunk node count equals the chunk count in the database |
+| A chunk-to-entity link (ticket 03's typed link table) | one `mentions` edge | edge count equals the link table's row count; both ends exist |
+
+Plus: no isolated node outside a short allowed list (the two never-mentioned users of ticket 04).
+Tests: one builds the graph from the pinned dataset and asserts every row of the table above; one
+corrupts a single row and asserts the check fails, the break-the-gate habit this ticket already
+uses. Deterministic code, so unit tests are the gate; no eval question is added. Ticket 08's
+graph screen draws this graph and relies on the check rather than repeating it.

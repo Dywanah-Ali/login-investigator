@@ -99,6 +99,13 @@ consolidates it at resolution.
    five-level ranking; the author accepted it and added that citation tags take a calm link
    blue so they read as clickable. Recorded as decision 9 in the Answer.
 
+**2026-10-24, after resolution: a promised scope this ticket did not take up.** Ticket 02,
+decision 2, said the read-only graph screen would be "designed in ticket 07". This ticket's
+question, scope and answer never mention it; graph paths are shown as text lines only (decision
+2), which stands. The author found the gap while checking ticket 02 against ticket 06 and opened
+[ticket 08](08-graph-screen-and-gephi-export.md) for the graph screen and the Gephi export rather
+than reopen this one. The Answer above is unchanged.
+
 ## Answer
 
 Resolved 24 October 2026 after a prototype review and an eight-point grilling with the prototype
