@@ -80,5 +80,15 @@ Evidence in the third column rather than a fourth column; React Flow plus dagre 
 with own SVG as fallback; a payload that projects the saved artifact with `focus`, `type` and `step`
 fields; GEXF by script with no download endpoint, proved by a write-and-read-back test and the
 author opening the file in Gephi Lite. One conflict surfaced: the author's "right of the evidence
-panel" would be a fourth column in a three-column shell; both are drawn in the prototype. Next:
-the HTML prototype.
+panel" would be a fourth column in a three-column shell; both are drawn in the prototype.
+
+**2026-10-25, prototype built.** [Prototype](../research/08-graph-panel-prototype.html), served
+locally and checked in Chrome on four screens with no console errors. Screen 1 is ticket 07's S6
+answer with the walk drawn in the right-hand space and seven option boxes: what the panel shows
+(walk only, walk plus ghosts, whole organisation highlighted), where it sits (tab, stacked, fourth
+column), documents drawn or not, the many collapsed or every node, what a click does, and the
+drawing rules used. Screen 2 is B1's tiny walk. Screen 3 is an answer with no walk (empty state or
+hidden tab). Screen 4 is the Gephi export (script only or a download too), the GEXF the file
+holds, and the evidence list. The drawing is hand-placed SVG in a layered top-to-bottom layout by
+playbook step; edges that skip a row are routed round the side; fans of identical edges carry one
+label. Next: the grilling, one question at a time, with the prototype open.

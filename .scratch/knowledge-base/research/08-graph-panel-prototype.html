@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph Panel Prototype</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* PROTOTYPE for knowledge-base ticket 08. The graph panel beside the evidence panel, and the Gephi export.
+   Same style file as ticket 07's prototype (08 is drawn on top of 07's decided screen).
+   Every open decision is a box with option buttons; the screen redraws when an option changes.
+   The drawing is hand-placed inline SVG with a layered layout, top to bottom, in the walk's order.
+   Content is the shape of the S6 story and the B1 twin from ticket 04, not live values.
+   Not UI code: plain HTML. */
+:root {
+  --bg: #f6f7f4; --panel: #ffffff; --fg: #1d2420; --muted: #5d6862; --line: #d6dbd4; --soft: #eef1ec;
+  --accent: #1f5f8b; --accent-bg: #e3eef6; --ok: #2f7a4f; --ok-bg: #e4f1e9; --bad: #b0412f; --bad-bg: #f7e6e2; --warn: #a05a12; --warn-bg: #fbeedd;
+  --new: #a05a12; --new-bg: #fbeedd; --bar: #1d2420; --bar-fg: #f6f7f4;
+  --sans: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15191a; --panel: #1e2426; --fg: #e6ebe7; --muted: #9aa69f; --line: #334039; --soft: #262e30;
+  --accent: #7fb6dd; --accent-bg: #1f3444; --ok: #7fc79c; --ok-bg: #1d3327; --bad: #e08a8a; --bad-bg: #3d2322; --warn: #e8a862; --warn-bg: #3d2d16;
+  --new: #e8a862; --new-bg: #3d2d16; --bar: #e6ebe7; --bar-fg: #15191a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15191a; --panel: #1e2426; --fg: #e6ebe7; --muted: #9aa69f; --line: #334039; --soft: #262e30;
+  --accent: #7fb6dd; --accent-bg: #1f3444; --ok: #7fc79c; --ok-bg: #1d3327; --bad: #e08a8a; --bad-bg: #3d2322; --warn: #e8a862; --warn-bg: #3d2d16;
+  --new: #e8a862; --new-bg: #3d2d16; --bar: #e6ebe7; --bar-fg: #15191a; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 96px; }
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 14px; }
+h1 { font-size: 1.35rem; font-weight: 600; margin: 0; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 76ch; }
+.legend { font-size: .8rem; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+.legend .n::before { content: ""; display: inline-block; width: 12px; height: 10px; border: 1.5px dashed var(--new); background: var(--new-bg); margin-right: 5px; vertical-align: middle; }
+.legend .p::before { content: ""; display: inline-block; width: 12px; height: 10px; border: 1px solid var(--line); background: var(--panel); margin-right: 5px; vertical-align: middle; }
+
+/* the app frame */
+.app { border: 1px solid var(--line); background: var(--panel); display: grid; grid-template-columns: 200px 1fr; min-height: 560px; }
+@media (max-width: 760px) { .app { grid-template-columns: 1fr; } .sb { display: none; } }
+.sb { border-right: 1px solid var(--line); padding: 12px; display: grid; gap: 4px; align-content: start; font-size: .85rem; }
+.sb .brand { font-weight: 600; padding: 6px 8px 10px; }
+.sb .nav { padding: 6px 8px; border-radius: 4px; color: var(--muted); }
+.sb .nav.cur { background: var(--accent-bg); color: var(--fg); font-weight: 500; }
+.sb .foot { margin-top: auto; padding: 8px; font-size: .75rem; color: var(--muted); border-top: 1px solid var(--line); }
+.main { display: grid; gap: 12px; padding: 12px 16px 16px; align-content: start; min-width: 0; }
+.hdr { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.hdr h2 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.hdr .meta { display: flex; gap: 10px; align-items: center; font-size: .78rem; color: var(--muted); flex-wrap: wrap; }
+.badge { border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; font-size: .72rem; background: var(--soft); white-space: nowrap; }
+.badge.syn { border-color: var(--warn); color: var(--warn); background: transparent; }
+.btn { border: 1px solid var(--line); border-radius: 4px; padding: 5px 10px; font-size: .8rem; background: var(--panel); color: var(--fg); white-space: nowrap; display: inline-block; }
+.new { border: 1.5px dashed var(--new) !important; background: var(--new-bg) !important; }
+.note { font-size: .72rem; color: var(--muted); }
+.m { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+code, pre { font-family: var(--mono); font-size: .74rem; }
+pre { margin: 0; white-space: pre-wrap; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: var(--soft); max-width: 90ch; overflow-x: auto; }
+
+/* chat and columns */
+.inv { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 12px; }
+.inv.four { grid-template-columns: 200px minmax(0, 1fr) 260px 300px; }
+@media (max-width: 1000px) { .inv, .inv.four { grid-template-columns: 1fr; } .hist { display: none; } }
+.hist { display: grid; gap: 6px; align-content: start; }
+.hist .item { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: .78rem; display: grid; gap: 2px; }
+.hist .item.cur { border-color: var(--accent); background: var(--accent-bg); }
+.hist .item small { color: var(--muted); }
+.chat { display: grid; gap: 10px; min-width: 0; align-content: start; }
+.msg { display: grid; gap: 6px; }
+.msg.me { justify-items: end; }
+.bub { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: .82rem; max-width: 92%; background: var(--soft); min-width: 0; }
+.msg.me .bub { background: var(--accent-bg); }
+.bub p + p, .bub p + .hops, .bub .hops + p, .bub p + .radii, .bub .radii + p { margin-top: 8px; }
+.who { font-size: .72rem; color: var(--muted); }
+.cite { font-family: var(--mono); font-size: .72rem; color: var(--accent); background: var(--accent-bg); border-radius: 3px; padding: 0 4px; white-space: nowrap; cursor: default; }
+.hops { display: grid; gap: 3px; font-size: .78rem; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; background: var(--panel); }
+.hops div { padding-left: 20px; text-indent: -20px; }
+.hops div::before { content: "↳"; color: var(--muted); display: inline-block; width: 20px; text-indent: 0; }
+.hops div:first-child::before { content: "●"; }
+.hops div.hl { background: var(--accent-bg); border-radius: 3px; }
+.radii { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (max-width: 700px) { .radii { grid-template-columns: 1fr; } }
+.tile { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; min-width: 0; background: var(--panel); }
+.tile b { display: block; font-weight: 500; font-size: .7rem; color: var(--muted); }
+.tile .v { font-size: 1.25rem; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.tile small { color: var(--muted); font-size: .7rem; display: block; }
+.tools { font-size: .75rem; color: var(--muted); border-left: 2px solid var(--line); padding-left: 10px; }
+.report { border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 6px; padding: 10px 12px; font-size: .8rem; display: grid; gap: 5px; max-width: 92%; }
+.report.ok { border-left-color: var(--ok); }
+.report b { font-size: .72rem; color: var(--muted); font-weight: 500; }
+.input { display: flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: .82rem; color: var(--muted); }
+
+/* right-hand column: evidence and graph */
+.panel { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); display: grid; align-content: start; font-size: .76rem; min-width: 0; }
+.panel h3 { margin: 0; padding: 10px 12px; font-size: .85rem; font-weight: 600; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.panel .tabs { display: flex; border-bottom: 1px solid var(--line); }
+.panel .tabs span { padding: 8px 12px; font-size: .8rem; color: var(--muted); border-bottom: 2px solid transparent; }
+.panel .tabs span.cur { color: var(--fg); font-weight: 500; border-bottom-color: var(--fg); }
+.panel .ev { padding: 8px 12px; border-bottom: 1px solid var(--line); display: grid; gap: 3px; }
+.panel .ev.hl { background: var(--accent-bg); }
+.panel .ev .src { color: var(--muted); font-size: .7rem; }
+.panel .act { padding: 8px 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+.panel .sub { padding: 6px 12px; font-size: .7rem; color: var(--muted); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.gwrap { padding: 8px 8px 4px; }
+.gwrap svg { width: 100%; height: auto; display: block; font-family: var(--sans); }
+.glegend { display: flex; gap: 10px; flex-wrap: wrap; padding: 4px 12px 10px; font-size: .68rem; color: var(--muted); }
+.glegend span::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 4px; vertical-align: -1px; border: 1px solid var(--muted); background: var(--panel); }
+.glegend .per::before { border-radius: 50%; }
+.glegend .grp::before { border-radius: 3px; }
+.glegend .ast::before { border-radius: 0; }
+.glegend .dev::before { transform: rotate(45deg); width: 7px; height: 7px; }
+.glegend .doc::before { border-style: dashed; }
+.glegend .foc::before { background: var(--fg); border-color: var(--fg); border-radius: 50%; }
+.empty { padding: 28px 14px; text-align: center; color: var(--muted); font-size: .76rem; display: grid; gap: 4px; }
+
+/* svg pieces */
+.nd { fill: var(--panel); stroke: var(--muted); stroke-width: 1; }
+.nd.grp { fill: var(--accent-bg); stroke: var(--accent); }
+.nd.foc { fill: var(--fg); stroke: var(--fg); }
+.nd.ghost { fill: var(--soft); stroke: var(--line); stroke-dasharray: 2 2; }
+.nd.doc { stroke-dasharray: 3 2; }
+.nd.sel { stroke: var(--accent); stroke-width: 2.2; }
+.lb { font-size: 9.5px; fill: var(--fg); }
+.lb.foc { fill: var(--bg); font-weight: 600; }
+.lb.ghost { fill: var(--muted); }
+.sm { font-size: 7.5px; fill: var(--muted); }
+.sm.foc { fill: var(--bg); opacity: .8; }
+.sm.r { fill: var(--bad); font-weight: 600; }
+.ed { stroke: var(--muted); stroke-width: 1.1; fill: none; }
+.ed.hl { stroke: var(--accent); stroke-width: 2; }
+.ed.ghost { stroke: var(--line); stroke-dasharray: 2 2; }
+.el { font-size: 7.5px; fill: var(--muted); }
+.el.hl { fill: var(--accent); }
+.stp { font-size: 7px; fill: var(--muted); letter-spacing: .04em; }
+.stepline { stroke: var(--line); stroke-dasharray: 1 3; }
+.whole .nd { stroke-width: .6; }
+.whole .ed { stroke-width: .5; opacity: .45; }
+.whole .ed.hl { opacity: 1; stroke-width: 1.6; }
+.whole .nd.dim { fill: var(--soft); stroke: var(--line); }
+
+/* decision box and toggles */
+.decide { border: 1px solid var(--line); border-left: 4px solid var(--accent); padding: 12px 14px; display: grid; gap: 6px; background: var(--panel); }
+.decide h3 { margin: 0; font-size: .95rem; font-weight: 600; }
+.decide ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.decide li { max-width: 86ch; }
+.decide .opts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.opt { border: 1px solid var(--line); border-radius: 4px; padding: 4px 10px; font: inherit; font-size: .8rem; background: var(--panel); color: var(--fg); cursor: pointer; }
+.opt.cur { background: var(--accent); color: #fff; border-color: var(--accent); }
+.scr { display: none; gap: 14px; } .scr.on { display: grid; }
+[hidden] { display: none !important; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 900px) { .row2 { grid-template-columns: 1fr; } }
+.checks { display: grid; gap: 4px; font-size: .8rem; }
+.checks div::before { content: "☐"; color: var(--muted); margin-right: 6px; }
+
+.bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; pointer-events: none;
+  padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.pill { pointer-events: auto; display: flex; align-items: center; gap: 2px; background: var(--bar); color: var(--bar-fg); border-radius: 999px; padding: 6px 8px; box-shadow: 0 6px 24px rgba(0,0,0,.25); font-size: .82rem; flex-wrap: wrap; justify-content: center; }
+.pill button { background: transparent; color: inherit; border: 0; font: inherit; padding: 6px 11px; border-radius: 999px; cursor: pointer; }
+.pill button:hover, .pill button:focus-visible { background: rgba(127,127,127,.3); outline: none; }
+.pill button.cur { background: var(--accent); color: #fff; }
+</style>
+
+<div class="wrap">
+  <h1>The read-only graph panel and the Gephi export</h1>
+  <p class="lead"><b>Ticket 08, prototype for the grilling.</b> The S6 answer from ticket 07 stays exactly as decided; what is new is the drawing of the walk the agent made, placed in the right-hand space. The buttons switch between the candidate answers to each open question. Research note 08 recommends the defaults shown. Second screen: the benign twin B1, where the walk is tiny. Third screen: what the analyst sees when the answer had no walk. Fourth screen: the Gephi export, a builder's file, not a screen. Switch with the bar below or the arrow keys.</p>
+  <div class="legend"><span class="p">from the Port and ticket 07, as decided</span><span class="n">new in ticket 08</span></div>
+
+  <!-- ============ SCREEN 1: S6 ============ -->
+  <section class="scr on" id="s6" data-name="S6: the walk drawn">
+
+    <div class="decide">
+      <h3>Question 1. What the panel shows</h3>
+      <ul>
+        <li>The agent's investigation walked from mgarcia to IT Admins, to four restricted assets, and out to peers by device and VPN address. The evidence panel lists those records as G1, G2, G3.</li>
+        <li><b>The walk only:</b> the nodes and edges the walk returned, nothing else. Every tool in the research does this (BloodHound, Bloom, Defender, Elastic).</li>
+        <li><b>Walk plus ghosts:</b> the walk, and every neighbour one hop away drawn faint. Context, but the faint edges are things the walk did not return.</li>
+        <li><b>Whole organisation, walk highlighted:</b> all 50 people, groups, assets, devices and networks, the walk lit. The option the author leans against.</li>
+      </ul>
+      <div class="opts"><button class="opt" data-set="show" data-val="walk">The walk only</button><button class="opt" data-set="show" data-val="ghost">Walk plus ghosts</button><button class="opt" data-set="show" data-val="whole">Whole organisation, highlighted</button></div>
+    </div>
+
+    <div class="decide">
+      <h3>Question 2. Where it sits</h3>
+      <ul>
+        <li>Ticket 07 made the evidence panel the third column. The author's words today: "to the right of the evidence panel".</li>
+        <li><b>Tab in the third column:</b> Evidence and Graph as two tabs of one panel. The chat keeps its width; the analyst flips.</li>
+        <li><b>Stacked in the third column:</b> the drawing above the evidence list in one tall panel. Both visible, the column grows.</li>
+        <li><b>Fourth column:</b> the graph to the right of the evidence panel, as said. Both visible side by side; the chat pays in width.</li>
+      </ul>
+      <div class="opts"><button class="opt" data-set="place" data-val="tab">Tab in the third column</button><button class="opt" data-set="place" data-val="stack">Stacked in the third column</button><button class="opt" data-set="place" data-val="four">Fourth column</button></div>
+    </div>
+
+    <div class="decide">
+      <h3>Question 3. Are documents drawn?</h3>
+      <ul>
+        <li>Ticket 02 made chunks nodes with <code>mentions</code> edges. The answer cites D1 (the MFA exception row), D3 (the runbook) and D4 (ATT&amp;CK).</li>
+        <li><b>Organisation only:</b> people, groups, assets, devices, networks. Documents stay in the evidence list.</li>
+        <li><b>Documents too:</b> each cited chunk as a dashed node hanging off the thing it mentions.</li>
+      </ul>
+      <div class="opts"><button class="opt" data-set="docs" data-val="no">Organisation only</button><button class="opt" data-set="docs" data-val="yes">Documents too</button></div>
+    </div>
+
+    <div class="decide">
+      <h3>Question 4. Peers and assets: one node each, or collapsed with a count?</h3>
+      <ul>
+        <li>S6 has 4 restricted assets, 3 internal assets, 2 device peers and 9 VPN peers. Ticket 07 shows the radii as counts first.</li>
+        <li><b>Collapse the many:</b> the four restricted assets drawn one by one because they are the point; the three internal assets and the nine VPN peers drawn as one node each with a count that opens the list in the evidence tab.</li>
+        <li><b>Draw every node:</b> all 18 reachable things drawn. Complete, and the panel gets long.</li>
+      </ul>
+      <div class="opts"><button class="opt" data-set="fold" data-val="yes">Collapse the many</button><button class="opt" data-set="fold" data-val="no">Draw every node</button></div>
+    </div>
+
+    <div class="app">
+      <aside class="sb"><div class="brand">Login Investigator</div>
+        <div class="nav">Overview</div><div class="nav">Alerts</div><div class="nav">Log explorer</div><div class="nav cur">Investigator</div>
+        <div class="foot">Log captured 8 Oct 2026, 09:00 UTC</div></aside>
+      <div class="main">
+        <div class="hdr"><h2>Investigator</h2><div class="meta"><span class="badge syn">Synthetic data</span><span>Investigations use the whole log. Dashboard filters do not apply.</span></div></div>
+        <div class="inv" id="s6-inv">
+          <div class="hist">
+            <span class="btn">+ New investigation</span>
+            <div class="item cur"><b>Investigate finding F-0006…</b><small>today, 09:14 UTC</small></div>
+            <div class="item"><b>Who failed most from Russia?</b><small>yesterday</small></div>
+          </div>
+
+          <div class="chat">
+            <div class="msg me"><div class="bub">Investigate finding F-0006: Password spraying, 185.220.101.4 against 41 accounts between 03:10 and 03:26 UTC on 6 Oct, one success on mgarcia.</div></div>
+            <div class="msg">
+              <div class="bub">
+                <p><b>What happened.</b> One address, 185.220.101.4, tried 41 accounts in 16 minutes and got in once, on <span class="m">mgarcia</span> at 03:24 UTC <span class="cite">[L1]</span>. The account was not asked for MFA: it sits on the MFA exception register <span class="cite">[D1]</span>.</p>
+                <p><b>What it can reach.</b> mgarcia is a member of IT Admins <span class="cite">[G1]</span>, which is granted the identity provider, VPN gateway, domain controller and backup server, all restricted <span class="cite">[G2]</span>. The widest path:</p>
+                <div class="hops">
+                  <div>Account <span class="m">mgarcia</span> (IT, Operations office)</div>
+                  <div class="hl">is a member of group <span class="m">IT Admins</span> <span class="cite">[G1]</span></div>
+                  <div>which is granted asset <span class="m">domain controller</span>, sensitivity restricted <span class="cite">[G2]</span></div>
+                </div>
+                <p class="note">The highlighted hop line and the highlighted edge in the drawing are the same record, G1. Click one, the other lights. Question 5 below asks whether that link is wanted.</p>
+                <div class="radii">
+                  <div class="tile"><b>Groups held</b><div class="v">2</div><small>IT Admins, Everyone</small></div>
+                  <div class="tile"><b>Assets reachable</b><div class="v">7</div><small>4 restricted, worst: domain controller</small></div>
+                  <div class="tile"><b>Peers</b><div class="v">11</div><small>2 by device, 9 by VPN address</small></div>
+                </div>
+                <p><b>Is there a reason it is fine?</b> No <span class="cite">[D2]</span>. Against it: a lapsed MFA exception <span class="cite">[D1]</span>, the reset rule in the password policy <span class="cite">[D3]</span>, and ATT&amp;CK T1110.003 <span class="cite">[D4]</span>.</p>
+                <p><b>Verdict.</b> A compromised privileged account with a path to the domain controller. Treat as an incident <span class="cite">[D3]</span>.</p>
+              </div>
+              <span class="who">Investigator · 3.4 s · gpt-4o-mini</span>
+            </div>
+            <div class="tools"><details><summary>Tools used (3)</summary><div style="padding-top:6px"><b>investigate_alert F-0006</b>, 5 steps · <b>search_log</b> · <b>lookup_ip</b></div></details></div>
+            <div class="report"><b>Incident report · severity High</b><span>Compromised privileged account (mgarcia) via password spray; MFA bypassed by a lapsed exception; path to 4 restricted assets including the domain controller.</span></div>
+            <div class="input">Ask a follow-up, for example "which of the 9 VPN peers signed in after 03:24?"</div>
+          </div>
+
+          <!-- third column: evidence, with the graph as tab or stacked -->
+          <aside class="panel" id="s6-ev">
+            <div class="tabs new" data-show="place:tab"><span id="tab-ev">Evidence · 8</span><span class="cur" id="tab-g">Graph</span></div>
+            <h3 data-show="place:stack">Evidence <span class="badge">8 items</span></h3>
+            <h3 data-show="place:four">Evidence <span class="badge">8 items</span></h3>
+            <div class="new" data-show="place:stack" id="g-stack"></div>
+            <div class="new" data-show="place:tab" id="g-tab"></div>
+            <div id="ev-list">
+              <div class="ev"><span class="m">[L1]</span> Log, 2 of 42 rows<span class="src">03:24:17 UTC mgarcia 185.220.101.4 success, mfa none</span></div>
+              <div class="ev hl"><span class="m">[G1]</span> Graph, membership<span class="src">mgarcia → IT Admins · mem-0117</span></div>
+              <div class="ev"><span class="m">[G2]</span> Graph, grants<span class="src">IT Admins → 4 restricted assets · grant-0031…0034</span></div>
+              <div class="ev"><span class="m">[G3]</span> Graph, peers<span class="src">device LT-0412 (2), VPN 10.8.0.3 (9)</span></div>
+              <div class="ev"><span class="m">[D1]</span> MFA exception register v3, row 7<span class="src">reg-mfa-exceptions#7 · score 0.81</span></div>
+              <div class="ev"><span class="m">[D2]</span> Clearing search: none<span class="src">0 above threshold, best 0.31</span></div>
+              <div class="ev"><span class="m">[D3]</span> Compromised account runbook, step 2<span class="src">rb-compromised-account#2 · 0.77</span></div>
+              <div class="ev"><span class="m">[D4]</span> ATT&amp;CK T1110.003<span class="src">attack-T1110.003#1 · 0.74</span></div>
+              <div class="act"><span class="btn">Download artifact (JSON)</span></div>
+            </div>
+          </aside>
+
+          <!-- fourth column -->
+          <aside class="panel new" data-show="place:four" id="g-four"></aside>
+        </div>
+      </div>
+    </div>
+
+    <div class="decide">
+      <h3>Question 5. What a click does</h3>
+      <ul>
+        <li>Every node and edge in the drawing is a record the walk returned, so it has a G label.</li>
+        <li><b>Light the record:</b> clicking an edge highlights its row in the evidence list and its hop line in the answer. Nothing else: no menu, no expand, no drag that sticks.</li>
+        <li><b>Nothing:</b> the drawing is a picture. Hover shows the full label, that is all.</li>
+        <li>Expansion ("show me this group's other members") is not on the table for phase 1; it would walk the graph outside the playbook.</li>
+      </ul>
+      <div class="opts"><button class="opt" data-set="click" data-val="light">Light the record</button><button class="opt" data-set="click" data-val="none">Nothing</button></div>
+    </div>
+
+    <div class="decide">
+      <h3>Drawing rules used here, from research note 08, section 3.2</h3>
+      <ul>
+        <li>Layered layout, top to bottom, in the order of the playbook steps: the account, then groups, then assets, then peers. Positions are computed from the payload the same way every time, so the same walk is the same picture.</li>
+        <li>Shape says type: circle for a person, rounded box for a group, square box for an asset, diamond for a device, pill for a network, dashed box for a document. No new colour enters the app. The focus node is the one dark element, in line with ticket 07's hierarchy. Restricted assets carry a small red R, the same red as the severity badge.</li>
+        <li>Edge labels are the relation from the table the edge came from: member of, granted, assigned, shared address. Small arrowheads, drawn outside the node.</li>
+        <li>Every label is a plain string. Long labels are clipped and shown in full on hover.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2: B1 ============ -->
+  <section class="scr" id="b1" data-name="B1: the benign twin">
+    <div class="decide">
+      <h3>A small walk, drawn the same way</h3>
+      <ul>
+        <li>B1 is a sales user cleared by a travel notice. The walk is tiny: lthompson, Everyone, three internal assets, no peers. The drawing shows that at a glance, which is the point: a benign alert looks small.</li>
+        <li>Drawn with the defaults: tab in the third column, organisation only, collapsed assets.</li>
+      </ul>
+    </div>
+    <div class="app">
+      <aside class="sb"><div class="brand">Login Investigator</div>
+        <div class="nav">Overview</div><div class="nav">Alerts</div><div class="nav">Log explorer</div><div class="nav cur">Investigator</div>
+        <div class="foot">Log captured 8 Oct 2026, 09:00 UTC</div></aside>
+      <div class="main">
+        <div class="hdr"><h2>Investigator</h2><div class="meta"><span class="badge syn">Synthetic data</span></div></div>
+        <div class="inv">
+          <div class="hist"><span class="btn">+ New investigation</span><div class="item cur"><b>Investigate finding F-0009…</b><small>today, 09:40 UTC</small></div></div>
+          <div class="chat">
+            <div class="msg me"><div class="bub">Investigate finding F-0009: Sign-in from a new country, 212.77.98.14 (Germany) for lthompson, 3 to 5 Oct.</div></div>
+            <div class="msg"><div class="bub">
+              <p><b>What happened.</b> lthompson signed in 11 times from Germany, all with MFA passed <span class="cite">[L1]</span>.</p>
+              <p><b>What it can reach.</b> lthompson is in Sales and holds only the Everyone group <span class="cite">[G1]</span>: email, intranet and file share, all internal.</p>
+              <div class="radii"><div class="tile"><b>Groups held</b><div class="v">1</div><small>Everyone</small></div><div class="tile"><b>Assets reachable</b><div class="v">3</div><small>0 restricted</small></div><div class="tile"><b>Peers</b><div class="v">0</div><small>own laptop, home network</small></div></div>
+              <p><b>Cleared by:</b> travel notice TN-2026-031 <span class="cite">[D1]</span>.</p>
+              <p><b>Verdict.</b> Benign. Approved travel explains every flagged row.</p>
+            </div><span class="who">Investigator · 2.9 s</span></div>
+            <div class="report ok"><b>Incident report · severity Low · benign</b><span>New-country sign-ins by lthompson explained by approved travel notice TN-2026-031.</span></div>
+            <div class="input">Ask a follow-up…</div>
+          </div>
+          <aside class="panel">
+            <div class="tabs new"><span>Evidence · 4</span><span class="cur">Graph</span></div>
+            <div class="new" id="g-b1"></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: NO WALK ============ -->
+  <section class="scr" id="nowalk" data-name="No walk: the empty state">
+    <div class="decide">
+      <h3>Question 6. When the answer had no graph walk</h3>
+      <ul>
+        <li>"Who failed most from Russia?" is answered from the log alone. No graph tool ran.</li>
+        <li><b>Empty state in the tab:</b> the Graph tab is there, with one quiet line saying no graph was walked for this answer. The analyst learns where the drawing lives.</li>
+        <li><b>Tab hidden:</b> the Graph tab appears only when there is something to draw. Less to look at; the tab comes and goes.</li>
+      </ul>
+      <div class="opts"><button class="opt" data-set="empty" data-val="show">Empty state in the tab</button><button class="opt" data-set="empty" data-val="hide">Tab hidden</button></div>
+    </div>
+    <div class="app">
+      <aside class="sb"><div class="brand">Login Investigator</div>
+        <div class="nav">Overview</div><div class="nav">Alerts</div><div class="nav">Log explorer</div><div class="nav cur">Investigator</div>
+        <div class="foot">Log captured 8 Oct 2026, 09:00 UTC</div></aside>
+      <div class="main">
+        <div class="hdr"><h2>Investigator</h2><div class="meta"><span class="badge syn">Synthetic data</span></div></div>
+        <div class="inv">
+          <div class="hist"><span class="btn">+ New investigation</span><div class="item cur"><b>Who failed most from Russia?</b><small>yesterday</small></div></div>
+          <div class="chat">
+            <div class="msg me"><div class="bub">Who failed most from Russia?</div></div>
+            <div class="msg"><div class="bub"><p>Three accounts account for 61 of the 74 failures from Russian addresses: <span class="m">admin</span> (23), <span class="m">svc-backup</span> (21) and <span class="m">jdoe</span> (17) <span class="cite">[L1]</span>. All from 2.57.122.53 on 1 October between 02:10 and 02:40 UTC.</p></div><span class="who">Investigator · 1.8 s</span></div>
+            <div class="input">Ask a follow-up…</div>
+          </div>
+          <aside class="panel">
+            <div class="tabs new" data-show="empty:show"><span>Evidence · 1</span><span class="cur">Graph</span></div>
+            <div class="tabs new" data-show="empty:hide"><span class="cur">Evidence · 1</span></div>
+            <div class="empty new" data-show="empty:show"><b>No graph was walked for this answer.</b><span>The drawing appears when an investigation or a lookup touches the organisation graph.</span></div>
+            <div data-show="empty:hide"><div class="ev"><span class="m">[L1]</span> Log, 74 rows<span class="src">country = RU, outcome = failure, grouped by user</span></div></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4: GEPHI ============ -->
+  <section class="scr" id="gephi" data-name="Gephi export">
+    <div class="decide">
+      <h3>Question 7. The Gephi export: a builder's file</h3>
+      <ul>
+        <li>Not a screen. One core function writes the whole NetworkX graph, or one neighbourhood, to a GEXF file. GEXF carries colour and size; Gephi's GraphML import drops them (research note 08, section 3.5).</li>
+        <li><b>Script only:</b> <code>uv run python -m core.graph.export --dataset default --out graph.gexf</code>. The file is opened in Gephi Lite in the browser (no install, no server, the file never leaves the machine) or in Gephi Desktop.</li>
+        <li><b>Download endpoint too:</b> a button in the app that returns the file. Convenient, and it pushes the whole organisation through the API for a builder's task. The research recommends against.</li>
+      </ul>
+      <div class="opts"><button class="opt" data-set="gx" data-val="script">Script only</button><button class="opt" data-set="gx" data-val="api">Download endpoint too</button></div>
+      <p class="note new" data-show="gx:api" style="padding:6px 8px;border-radius:6px">With this option the evidence panel's action row gains "Download graph (GEXF)" next to "Download artifact (JSON)", and the API contract gains a route that returns every table.</p>
+    </div>
+    <div class="row2">
+      <div class="decide">
+        <h3>What the file holds</h3>
+        <pre>&lt;gexf version="1.2"&gt;
+  &lt;graph defaultedgetype="directed"&gt;
+    &lt;attributes class="node"&gt;
+      &lt;attribute id="0" title="type" type="string"/&gt;
+      &lt;attribute id="1" title="sensitivity" type="string"/&gt;
+    &lt;/attributes&gt;
+    &lt;nodes&gt;
+      &lt;node id="user-0017" label="mgarcia"&gt;
+        &lt;viz:color r="31" g="95" b="139"/&gt;
+        &lt;attvalues&gt;&lt;attvalue for="0" value="person"/&gt;&lt;/attvalues&gt;
+      &lt;/node&gt;
+      &lt;node id="group-it-admins" label="IT Admins"&gt; … &lt;/node&gt;
+      &lt;node id="asset-dc01" label="domain controller"&gt;
+        &lt;attvalues&gt;&lt;attvalue for="0" value="asset"/&gt;
+                   &lt;attvalue for="1" value="restricted"/&gt;&lt;/attvalues&gt;
+      &lt;/node&gt;
+    &lt;/nodes&gt;
+    &lt;edges&gt;
+      &lt;edge id="mem-0117" source="user-0017" target="group-it-admins" label="member of"/&gt;
+      &lt;edge id="grant-0031" source="group-it-admins" target="asset-dc01" label="granted"/&gt;
+    &lt;/edges&gt;
+  &lt;/graph&gt;
+&lt;/gexf&gt;</pre>
+        <p class="note">Node IDs are the ground-truth IDs (ticket 05, decision 5). Colour by type is set on the node's <code>viz</code> attribute before writing. GEXF reserves <code>id</code>, <code>label</code> and <code>pid</code> as attribute names, so our attributes are <code>type</code> and <code>sensitivity</code>.</p>
+      </div>
+      <div class="decide">
+        <h3>Evidence that the export works</h3>
+        <div class="checks">
+          <div>Unit test: write the pinned dataset, read it back with <code>read_gexf</code>, node and edge counts per type equal the integrity check's counts (ticket 06 comment, 24 October 2026).</div>
+          <div>Unit test: a node with a reserved attribute name fails loudly before writing.</div>
+          <div>The author opens the file in Gephi Lite in the browser once and sees the organisation: 50 people, 3 privilege groups plus departments, 10 assets, devices, 4 VPN addresses. Recorded as the author's look, with the date, in the ticket.</div>
+          <div>Optional: the same for one neighbourhood (S6's radius) to compare with the panel's drawing by eye.</div>
+        </div>
+        <p class="note" style="margin-top:8px">A screenshot is never the evidence (standing rule); the look and the test are.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="bar"><div class="pill" id="pill"></div></div>
+
+<script>
+(function () {
+  // ---------- screens ----------
+  var screens = Array.prototype.slice.call(document.querySelectorAll('.scr'));
+  var pill = document.getElementById('pill');
+  screens.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.textContent = s.dataset.name;
+    b.addEventListener('click', function () { show(i); });
+    pill.appendChild(b);
+  });
+  var cur = 0;
+  function show(i) {
+    cur = (i + screens.length) % screens.length;
+    screens.forEach(function (s, j) { s.classList.toggle('on', j === cur); });
+    Array.prototype.forEach.call(pill.children, function (b, j) { b.classList.toggle('cur', j === cur); });
+    window.scrollTo(0, 0);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+
+  // ---------- the payload, as research note 08 section 5 shapes it ----------
+  // nodes: id, type, label, role (focus | walked), small (second line), count (collapsed group), restricted
+  // edges: id, source, target, type (relation), step (playbook step that produced it), hl (highlighted record)
+  var S6 = {
+    nodes: [
+      { id: 'user-0017', type: 'person', label: 'mgarcia', small: 'IT · Operations office', role: 'focus' },
+      { id: 'group-it-admins', type: 'group', label: 'IT Admins', small: '4 members' },
+      { id: 'group-everyone', type: 'group', label: 'Everyone', small: '50 members' },
+      { id: 'asset-idp', type: 'asset', label: 'identity provider', restricted: true },
+      { id: 'asset-vpn', type: 'asset', label: 'VPN gateway', restricted: true },
+      { id: 'asset-dc01', type: 'asset', label: 'domain controller', restricted: true },
+      { id: 'asset-bak', type: 'asset', label: 'backup server', restricted: true },
+      { id: 'fold-internal', type: 'asset', label: '3 internal assets', small: 'email, intranet, file share', count: 3, fold: true },
+      { id: 'asset-email', type: 'asset', label: 'email', unfold: true },
+      { id: 'asset-intranet', type: 'asset', label: 'intranet', unfold: true },
+      { id: 'asset-share', type: 'asset', label: 'file share', unfold: true },
+      { id: 'dev-lt0412', type: 'device', label: 'LT-0412', small: 'shared laptop' },
+      { id: 'net-vpn3', type: 'network', label: '10.8.0.3', small: 'VPN pool, week of 6 Oct' },
+      { id: 'user-jpatel', type: 'person', label: 'jpatel' },
+      { id: 'user-rkim', type: 'person', label: 'rkim' },
+      { id: 'fold-vpn', type: 'person', label: '9 peers', small: 'aflores, bnguyen, cmoore…', count: 9, fold: true },
+      { id: 'user-aflores', type: 'person', label: 'aflores', unfold: true },
+      { id: 'user-bnguyen', type: 'person', label: 'bnguyen', unfold: true },
+      { id: 'user-cmoore', type: 'person', label: 'cmoore', unfold: true },
+      { id: 'user-dlee', type: 'person', label: 'dlee', unfold: true },
+      { id: 'user-ehall', type: 'person', label: 'ehall', unfold: true },
+      { id: 'user-fwright', type: 'person', label: 'fwright', unfold: true },
+      { id: 'user-gscott', type: 'person', label: 'gscott', unfold: true },
+      { id: 'user-hlopez', type: 'person', label: 'hlopez', unfold: true },
+      { id: 'user-iyoung', type: 'person', label: 'iyoung', unfold: true },
+      { id: 'doc-mfa', type: 'doc', label: 'MFA exception register', small: 'row 7 · D1', doc: true },
+      { id: 'doc-rb', type: 'doc', label: 'Compromised account runbook', small: 'step 2 · D3', doc: true },
+      { id: 'doc-attack', type: 'doc', label: 'ATT&CK T1110.003', small: 'D4', doc: true }
+    ],
+    edges: [
+      { id: 'mem-0117', source: 'user-0017', target: 'group-it-admins', type: 'member of', step: 1, hl: true },
+      { id: 'mem-0118', source: 'user-0017', target: 'group-everyone', type: 'member of', step: 1 },
+      { id: 'grant-0031', source: 'group-it-admins', target: 'asset-idp', type: 'granted', step: 2 },
+      { id: 'grant-0032', source: 'group-it-admins', target: 'asset-vpn', type: 'granted', step: 2 },
+      { id: 'grant-0033', source: 'group-it-admins', target: 'asset-dc01', type: 'granted', step: 2 },
+      { id: 'grant-0034', source: 'group-it-admins', target: 'asset-bak', type: 'granted', step: 2 },
+      { id: 'grant-fold', source: 'group-everyone', target: 'fold-internal', type: 'granted', step: 2, fold: true },
+      { id: 'grant-0101', source: 'group-everyone', target: 'asset-email', type: 'granted', step: 2, unfold: true },
+      { id: 'grant-0102', source: 'group-everyone', target: 'asset-intranet', type: 'granted', step: 2, unfold: true },
+      { id: 'grant-0103', source: 'group-everyone', target: 'asset-share', type: 'granted', step: 2, unfold: true },
+      { id: 'dev-0412-a', source: 'user-0017', target: 'dev-lt0412', type: 'assigned', step: 3 },
+      { id: 'dev-0412-b', source: 'user-jpatel', target: 'dev-lt0412', type: 'assigned', step: 3 },
+      { id: 'dev-0412-c', source: 'user-rkim', target: 'dev-lt0412', type: 'assigned', step: 3 },
+      { id: 'net-a', source: 'user-0017', target: 'net-vpn3', type: 'used address', step: 3 },
+      { id: 'net-fold', source: 'fold-vpn', target: 'net-vpn3', type: 'used address', step: 3, fold: true },
+      { id: 'net-1', source: 'user-aflores', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-2', source: 'user-bnguyen', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-3', source: 'user-cmoore', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-4', source: 'user-dlee', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-5', source: 'user-ehall', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-6', source: 'user-fwright', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-7', source: 'user-gscott', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-8', source: 'user-hlopez', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'net-9', source: 'user-iyoung', target: 'net-vpn3', type: 'used address', step: 3, unfold: true },
+      { id: 'men-1', source: 'doc-mfa', target: 'user-0017', type: 'mentions', step: 5, doc: true },
+      { id: 'men-2', source: 'doc-rb', target: 'user-0017', type: 'mentions', step: 5, doc: true },
+      { id: 'men-3', source: 'doc-attack', target: 'user-0017', type: 'mentions', step: 5, doc: true }
+    ],
+    ghosts: {
+      nodes: [
+        { id: 'g-user-tnguyen', type: 'person', label: 'tnguyen' }, { id: 'g-user-mlee', type: 'person', label: 'mlee' }, { id: 'g-user-pwong', type: 'person', label: 'pwong' },
+        { id: 'g-dept-it', type: 'group', label: 'IT department' }
+      ],
+      edges: [
+        { source: 'g-user-tnguyen', target: 'group-it-admins', type: 'member of' }, { source: 'g-user-mlee', target: 'group-it-admins', type: 'member of' }, { source: 'g-user-pwong', target: 'group-it-admins', type: 'member of' },
+        { source: 'user-0017', target: 'g-dept-it', type: 'member of' }
+      ]
+    }
+  };
+  var B1 = {
+    nodes: [
+      { id: 'user-0031', type: 'person', label: 'lthompson', small: 'Sales · Munich this week', role: 'focus' },
+      { id: 'group-everyone', type: 'group', label: 'Everyone', small: '50 members' },
+      { id: 'fold-internal', type: 'asset', label: '3 internal assets', small: 'email, intranet, file share', count: 3 },
+      { id: 'dev-lt0231', type: 'device', label: 'LT-0231', small: 'own laptop' }
+    ],
+    edges: [
+      { id: 'mem-0203', source: 'user-0031', target: 'group-everyone', type: 'member of', step: 1, hl: true },
+      { id: 'grant-fold', source: 'group-everyone', target: 'fold-internal', type: 'granted', step: 2 },
+      { id: 'dev-0231', source: 'user-0031', target: 'dev-lt0231', type: 'assigned', step: 3 }
+    ]
+  };
+
+  // ---------- layered layout: rows by step, columns spread ----------
+  // Row of a node: focus 0; groups 1; assets 2; devices and networks 3; peers 4; docs on row -1 (above the focus).
+  var ROW = { focus: 1, group: 2, asset: 3, hub: 4, peer: 5, doc: 0 };
+  function rowOf(n) {
+    if (n.role === 'focus') return ROW.focus;
+    if (n.type === 'group') return ROW.group;
+    if (n.type === 'asset') return ROW.asset;
+    if (n.type === 'device' || n.type === 'network') return ROW.hub;
+    if (n.type === 'doc') return ROW.doc;
+    return ROW.peer;
+  }
+  var W = 300, ROWH = 74, NW = { person: 72, group: 80, asset: 84, device: 64, network: 76, doc: 104 }, NH = 30;
+  function layout(graph, opts) {
+    var nodes = graph.nodes.filter(function (n) {
+      if (n.fold && !opts.fold) return false;
+      if (n.unfold && opts.fold) return false;
+      if (n.doc && !opts.docs) return false;
+      return true;
+    });
+    var ids = {}; nodes.forEach(function (n) { ids[n.id] = n; });
+    var edges = graph.edges.filter(function (e) {
+      if (e.fold && !opts.fold) return false;
+      if (e.unfold && opts.fold) return false;
+      if (e.doc && !opts.docs) return false;
+      return ids[e.source] && ids[e.target];
+    });
+    var rows = {};
+    nodes.forEach(function (n) { var r = rowOf(n); (rows[r] = rows[r] || []).push(n); });
+    var used = Object.keys(rows).map(Number).sort(function (a, b) { return a - b; });
+    var y0 = 26, rowIndex = {};
+    used.forEach(function (r, i) { rowIndex[r] = i; });
+    nodes.forEach(function (n) {
+      var r = rowOf(n), list = rows[r], k = list.indexOf(n), count = list.length;
+      var w = NW[n.type] || 72;
+      // up to six in a row: one line, narrow boxes with wrapped labels; more: two lines
+      var perLine = count > 6 ? Math.ceil(count / 2) : count;
+      var line = Math.floor(k / perLine), kk = k % perLine, inLine = Math.min(perLine, count - line * perLine);
+      var slot = W / inLine;
+      n.w = Math.min(w, slot - 6); n.h = n.w < w - 8 ? NH + 6 : NH;
+      n.x = slot * kk + slot / 2;
+      n.y = y0 + rowIndex[r] * ROWH + line * 44 + n.h / 2;
+      n.lines = n.w < w - 8 ? 2 : 1;
+    });
+    var height = 0; nodes.forEach(function (n) { height = Math.max(height, n.y + n.h / 2); });
+    return { nodes: nodes, edges: edges, ids: ids, height: height + 18 };
+  }
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function clip(s, n) { return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+
+  function shape(n, cls) {
+    var x = n.x - n.w / 2, y = n.y - n.h / 2;
+    if (n.type === 'person') return '<rect class="nd ' + cls + '" x="' + x + '" y="' + y + '" width="' + n.w + '" height="' + n.h + '" rx="15"/>';
+    if (n.type === 'group') return '<rect class="nd grp ' + cls + '" x="' + x + '" y="' + y + '" width="' + n.w + '" height="' + n.h + '" rx="6"/>';
+    if (n.type === 'asset') return '<rect class="nd ' + cls + '" x="' + x + '" y="' + y + '" width="' + n.w + '" height="' + n.h + '" rx="1"/>';
+    if (n.type === 'device') return '<polygon class="nd ' + cls + '" points="' + n.x + ',' + (y - 4) + ' ' + (x + n.w + 6) + ',' + n.y + ' ' + n.x + ',' + (y + n.h + 4) + ' ' + (x - 6) + ',' + n.y + '"/>';
+    if (n.type === 'network') return '<rect class="nd ' + cls + '" x="' + x + '" y="' + y + '" width="' + n.w + '" height="' + n.h + '" rx="15"/><rect class="nd ' + cls + '" x="' + (x + 4) + '" y="' + (y + 4) + '" width="' + (n.w - 8) + '" height="' + (n.h - 8) + '" rx="11" fill="none"/>';
+    return '<rect class="nd doc ' + cls + '" x="' + x + '" y="' + y + '" width="' + n.w + '" height="' + n.h + '" rx="2"/>';
+  }
+  function nodeSvg(n) {
+    var cls = (n.role === 'focus' ? 'foc' : '') + (n.ghost ? ' ghost' : '') + (n.sel ? ' sel' : '');
+    var s = shape(n, cls);
+    var maxc = Math.max(6, Math.floor(n.w / 5.6));
+    var title = '<title>' + esc(n.label + (n.small ? ' · ' + n.small : '') + ' · ' + n.id) + '</title>';
+    if (n.lines === 2 && n.label.length > maxc && n.label.indexOf(' ') > 0) {
+      // narrow box: wrap the label at the last space that fits
+      var cut = n.label.lastIndexOf(' ', maxc); if (cut < 1) cut = n.label.indexOf(' ');
+      s += '<text class="lb ' + cls + '" x="' + n.x + '" y="' + (n.y - 1.5) + '" text-anchor="middle">' + esc(clip(n.label.slice(0, cut), maxc)) + '</text>';
+      s += '<text class="lb ' + cls + '" x="' + n.x + '" y="' + (n.y + 9) + '" text-anchor="middle">' + esc(clip(n.label.slice(cut + 1), maxc)) + '</text>';
+    } else {
+      var ly = n.small && n.lines === 1 ? n.y - 2 : n.y + 3.5;
+      s += '<text class="lb ' + cls + '" x="' + n.x + '" y="' + ly + '" text-anchor="middle">' + esc(clip(n.label, maxc)) + '</text>';
+      if (n.small && n.lines === 1) s += '<text class="sm ' + (n.role === 'focus' ? 'foc' : '') + '" x="' + n.x + '" y="' + (n.y + 9) + '" text-anchor="middle">' + esc(clip(n.small, Math.floor(n.w / 4.3))) + '</text>';
+    }
+    if (n.restricted) s += '<text class="sm r" x="' + (n.x + n.w / 2 - 6) + '" y="' + (n.y - n.h / 2 + 8) + '" text-anchor="middle">R</text>';
+    return '<g>' + title + s + '</g>';
+  }
+  function edgeSvg(e, a, b, cls) {
+    // top-to-bottom: leave from the lower edge of the upper node, arrive at the upper edge of the lower node
+    var down = b.y > a.y, src = a, dst = b;
+    if (!down) { src = b; dst = a; }
+    var x1 = src.x, y1 = src.y + src.h / 2 + (src.type === 'device' ? 4 : 0), x2 = dst.x, y2 = dst.y - dst.h / 2 - (dst.type === 'device' ? 4 : 0) - 3;
+    var my = (y1 + y2) / 2, d, labelY = my + 2.5, labelX = (x1 + x2) / 2;
+    var span = Math.abs(rowOf(dst) - rowOf(src));
+    if (span > 1 && !src.ghost && !dst.ghost) {
+      // an edge that skips a row is routed round the side, so it does not cut through the row between
+      var side = dst.x < W / 2 ? 4 : W - 4;
+      var yA = y1 + 18, yB = y2 - 14;
+      d = 'M' + x1 + ',' + y1 + ' C' + x1 + ',' + (y1 + 30) + ' ' + side + ',' + yA + ' ' + side + ',' + (yA + 30)
+        + ' L' + side + ',' + (yB - 30) + ' C' + side + ',' + yB + ' ' + x2 + ',' + (y2 - 30) + ' ' + x2 + ',' + y2;
+      labelX = (side + x2) / 2; labelY = y2 - 16;
+    } else {
+      d = 'M' + x1 + ',' + y1 + ' C' + x1 + ',' + my + ' ' + x2 + ',' + my + ' ' + x2 + ',' + y2;
+    }
+    var arrow = down === (dst === b) ? 'url(#ah' + (cls.indexOf('hl') >= 0 ? 'h' : cls.indexOf('ghost') >= 0 ? 'g' : '') + ')' : '';
+    var s = '<g><title>' + esc(e.type + ' · ' + (e.id || 'neighbour, not walked') + (e.step ? ' · step ' + e.step : '')) + '</title>';
+    s += '<path class="ed ' + cls + '" d="' + d + '" marker-end="' + arrow + '"/>';
+    if (cls.indexOf('ghost') < 0 && !e.nolabel) s += '<text class="el ' + (cls.indexOf('hl') >= 0 ? 'hl' : '') + '" x="' + labelX + '" y="' + labelY + '" text-anchor="middle" paint-order="stroke" stroke="var(--panel)" stroke-width="3">' + esc(e.type) + '</text>';
+    return s + '</g>';
+  }
+  var DEFS = '<defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0.5 L8,4 L0,7.5 z" fill="var(--muted)"/></marker>'
+    + '<marker id="ahh" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0.5 L8,4 L0,7.5 z" fill="var(--accent)"/></marker>'
+    + '<marker id="ahg" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0.5 L8,4 L0,7.5 z" fill="var(--line)"/></marker></defs>';
+
+  function drawWalk(graph, opts) {
+    var L = layout(graph, opts);
+    var extra = '';
+    if (opts.ghost && graph.ghosts) {
+      // ghosts hang at the sides of the row they connect to
+      var gn = graph.ghosts.nodes.map(function (g) { return Object.assign({ ghost: true, w: 60, h: 24 }, g); });
+      gn[0].x = 34; gn[0].y = L.ids['group-it-admins'].y + 34; gn[1].x = 34; gn[1].y = gn[0].y + 30; gn[2].x = 100; gn[2].y = gn[0].y + 30;
+      gn[3].x = W - 44; gn[3].y = L.ids['user-0017'].y + 36;
+      // make room: push every walked node below row 2 further down
+      var push = 40;
+      L.nodes.forEach(function (n) { if (rowOf(n) >= ROW.asset) n.y += push; });
+      L.height += push;
+      var gids = {}; gn.forEach(function (g) { gids[g.id] = g; });
+      graph.ghosts.edges.forEach(function (e) {
+        var a = gids[e.source] || L.ids[e.source], b = gids[e.target] || L.ids[e.target];
+        extra += edgeSvg(e, a, b, 'ghost');
+      });
+      gn.forEach(function (g) { extra += nodeSvg(g); });
+    }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + L.height + '" role="img" aria-label="Graph of the investigation walk">' + DEFS;
+    // step guides
+    var seen = {};
+    L.nodes.forEach(function (n) {
+      var r = rowOf(n); if (seen[r]) return; seen[r] = true;
+      var name = r === ROW.focus ? 'the account' : r === ROW.group ? 'step 1 · groups' : r === ROW.asset ? 'step 2 · assets' : r === ROW.hub ? 'step 3 · shared device and address' : r === ROW.peer ? 'step 3 · peers' : 'step 5 · documents';
+      s += '<text class="stp" x="3" y="' + (n.y - n.h / 2 - 5) + '">' + esc(name.toUpperCase()) + '</text>';
+    });
+    s += extra;
+    // a fan of edges with the same source, relation and target row is labelled once, on the middle edge
+    var fans = {};
+    L.edges.forEach(function (e) { var k = e.source + '|' + e.type + '|' + rowOf(L.ids[e.target]); (fans[k] = fans[k] || []).push(e); });
+    Object.keys(fans).forEach(function (k) { var f = fans[k]; f.sort(function (a, b) { return L.ids[a.target].x - L.ids[b.target].x; }); f.forEach(function (e, i) { e.nolabel = f.length > 1 && i !== Math.floor((f.length - 1) / 2); }); });
+    L.edges.forEach(function (e) { s += edgeSvg(e, L.ids[e.source], L.ids[e.target], e.hl && opts.click === 'light' ? 'hl' : ''); });
+    L.nodes.forEach(function (n) { s += nodeSvg(n); });
+    s += '</svg>';
+    return s;
+  }
+
+  // the whole organisation, walk highlighted: 50 people, 6 departments, 3 privilege groups, 10 assets, devices, 4 addresses
+  function drawWhole(opts) {
+    var s = '<svg class="whole" viewBox="0 0 300 420" role="img" aria-label="Whole organisation with the walk highlighted">' + DEFS;
+    var rnd = 7; function r() { rnd = (rnd * 9301 + 49297) % 233280; return rnd / 233280; }
+    var people = [], groups = [], assets = [], devices = [], nets = [];
+    for (var i = 0; i < 50; i++) people.push({ x: 20 + (i % 10) * 29, y: 300 + Math.floor(i / 10) * 24 });
+    for (i = 0; i < 9; i++) groups.push({ x: 24 + i * 32, y: 190 });
+    for (i = 0; i < 10; i++) assets.push({ x: 20 + i * 29, y: 60 });
+    for (i = 0; i < 12; i++) devices.push({ x: 18 + i * 24, y: 250 });
+    for (i = 0; i < 4; i++) nets.push({ x: 60 + i * 60, y: 130 });
+    var walkP = [6], walkG = [1, 8], walkA = [2, 3, 5, 7], walkD = [4], walkN = [1], walkPeer = [12, 17, 21, 24, 28, 30, 33, 37, 41, 44, 48];
+    function edge(a, b, hl) { s += '<path class="ed ' + (hl ? 'hl' : '') + '" d="M' + a.x + ',' + a.y + ' L' + b.x + ',' + b.y + '"/>'; }
+    people.forEach(function (p, i) { var g = groups[Math.floor(r() * 9)]; edge(p, g, false); if (r() < .5) edge(p, groups[8], false); edge(p, devices[Math.floor(r() * 12)], false); if (r() < .3) edge(p, nets[Math.floor(r() * 4)], false); });
+    groups.forEach(function (g, i) { for (var k = 0; k < 2 + Math.floor(r() * 3); k++) edge(g, assets[Math.floor(r() * 10)], false); });
+    // the walk
+    edge(people[6], groups[1], true); edge(people[6], groups[8], true);
+    walkA.forEach(function (a) { edge(groups[1], assets[a], true); });
+    edge(groups[8], assets[0], true); edge(groups[8], assets[1], true); edge(groups[8], assets[9], true);
+    edge(people[6], devices[4], true); edge(people[6], nets[1], true);
+    edge(people[12], devices[4], true); edge(people[17], devices[4], true);
+    walkPeer.slice(2).forEach(function (p) { edge(people[p], nets[1], true); });
+    function dot(p, cls, shapeK) {
+      if (shapeK === 'c') s += '<circle class="nd ' + cls + '" cx="' + p.x + '" cy="' + p.y + '" r="5"/>';
+      else if (shapeK === 'g') s += '<rect class="nd grp ' + cls + '" x="' + (p.x - 7) + '" y="' + (p.y - 5) + '" width="14" height="10" rx="3"/>';
+      else if (shapeK === 'a') s += '<rect class="nd ' + cls + '" x="' + (p.x - 6) + '" y="' + (p.y - 6) + '" width="12" height="12"/>';
+      else if (shapeK === 'd') s += '<rect class="nd ' + cls + '" x="' + (p.x - 4) + '" y="' + (p.y - 4) + '" width="8" height="8" transform="rotate(45 ' + p.x + ' ' + p.y + ')"/>';
+      else s += '<rect class="nd ' + cls + '" x="' + (p.x - 9) + '" y="' + (p.y - 5) + '" width="18" height="10" rx="5"/>';
+    }
+    people.forEach(function (p, i) { dot(p, i === 6 ? 'foc' : walkPeer.indexOf(i) >= 0 ? '' : 'dim', 'c'); });
+    groups.forEach(function (g, i) { dot(g, walkG.indexOf(i) >= 0 ? '' : 'dim', 'g'); });
+    assets.forEach(function (a, i) { dot(a, walkA.indexOf(i) >= 0 || i === 0 || i === 1 || i === 9 ? '' : 'dim', 'a'); });
+    devices.forEach(function (d, i) { dot(d, i === 4 ? '' : 'dim', 'd'); });
+    nets.forEach(function (n, i) { dot(n, i === 1 ? '' : 'dim', 'n'); });
+    s += '<text class="stp" x="3" y="48">ASSETS (10)</text><text class="stp" x="3" y="118">VPN ADDRESSES (4)</text><text class="stp" x="3" y="178">GROUPS (9)</text><text class="stp" x="3" y="238">DEVICES (12)</text><text class="stp" x="3" y="288">PEOPLE (50)</text>';
+    s += '<text class="lb" x="' + (people[6].x) + '" y="' + (people[6].y + 14) + '" text-anchor="middle">mgarcia</text>';
+    s += '</svg>';
+    return s;
+  }
+
+  function legend(opts) {
+    return '<div class="glegend"><span class="foc">the account</span><span class="per">person</span><span class="grp">group</span><span class="ast">asset</span><span class="dev">device</span><span>address</span>' + (opts.docs ? '<span class="doc">document</span>' : '') + '<span style="color:var(--bad)">R restricted</span></div>';
+  }
+  function panelBody(graph, opts, title) {
+    var head = '<div class="sub"><span>' + esc(title) + '</span><span>' + (opts.show === 'whole' ? '85 nodes, 11 walked' : (layout(graph, opts).nodes.length + ' nodes, all from the walk')) + '</span></div>';
+    var body = opts.show === 'whole' ? drawWhole(opts) : drawWalk(graph, opts);
+    return head + '<div class="gwrap">' + body + '</div>' + legend(opts);
+  }
+
+  // ---------- state and apply ----------
+  var state = { show: 'walk', place: 'tab', docs: 'no', fold: 'yes', click: 'light', empty: 'show', gx: 'script' };
+  function apply() {
+    document.querySelectorAll('[data-show]').forEach(function (el) {
+      var parts = el.dataset.show.split(':');
+      el.hidden = state[parts[0]] !== parts[1];
+    });
+    document.querySelectorAll('.opt').forEach(function (b) { b.classList.toggle('cur', state[b.dataset.set] === b.dataset.val); });
+    var opts = { show: state.show, ghost: state.show === 'ghost', docs: state.docs === 'yes', fold: state.fold === 'yes', click: state.click };
+    var inv = document.getElementById('s6-inv');
+    inv.classList.toggle('four', state.place === 'four');
+    var body = panelBody(S6, opts, 'Walk for F-0006');
+    document.getElementById('g-tab').innerHTML = body;
+    document.getElementById('g-stack').innerHTML = '<div class="tabs" style="border-bottom:0"><span class="cur">Graph</span></div>' + body + '<div style="border-top:1px solid var(--line)"></div>';
+    document.getElementById('g-four').innerHTML = '<h3>Graph</h3>' + body;
+    document.getElementById('ev-list').hidden = state.place === 'tab';
+    document.getElementById('tab-ev').classList.toggle('cur', false);
+    // the hop line highlight follows the click option
+    document.querySelectorAll('.hops .hl').forEach(function (h) { h.style.background = state.click === 'light' ? '' : 'transparent'; });
+    document.querySelectorAll('#ev-list .ev.hl').forEach(function (h) { h.style.background = state.click === 'light' ? '' : 'transparent'; });
+    document.getElementById('g-b1').innerHTML = panelBody(B1, { show: 'walk', docs: false, fold: true, click: 'light' }, 'Walk for F-0009');
+  }
+  document.querySelectorAll('.opt').forEach(function (b) {
+    b.addEventListener('click', function () { state[b.dataset.set] = b.dataset.val; apply(); });
+  });
+  apply();
+})();
+</script>
+</html>
