@@ -292,7 +292,7 @@ pre { margin: 0; white-space: pre-wrap; border: 1px solid var(--line); border-ra
     <div class="decide">
       <h3>Drawing rules used here, from research note 08, section 3.2</h3>
       <ul>
-        <li>Layered layout, top to bottom, in the order of the playbook steps: the account, then groups, then assets, then peers. Positions are computed from the payload the same way every time, so the same walk is the same picture.</li>
+        <li>Layered layout, top to bottom, in the order of the playbook steps: the account, then groups, then assets, then peers. Positions are computed from the payload the same way every time, so the same walk is the same picture. No step captions on the rows (author, 25 October 2026): the shapes and the order carry it.</li>
         <li>Shape says type: circle for a person, rounded box for a group, square box for an asset, diamond for a device, pill for a network, dashed box for a document. No new colour enters the app. The focus node is the one dark element, in line with ticket 07's hierarchy. Restricted assets carry a small red R, the same red as the severity badge.</li>
         <li>Edge labels are the relation from the table the edge came from: member of, granted, assigned, shared address. Small arrowheads, drawn outside the node.</li>
         <li>Every label is a plain string. Long labels are clipped and shown in full on hover.</li>
@@ -665,13 +665,8 @@ pre { margin: 0; white-space: pre-wrap; border: 1px solid var(--line); border-ra
       gn.forEach(function (g) { extra += nodeSvg(g); });
     }
     var s = '<svg viewBox="0 0 ' + W + ' ' + L.height + '" role="img" aria-label="Graph of the investigation walk">' + DEFS;
-    // step guides
-    var seen = {};
-    L.nodes.forEach(function (n) {
-      var r = rowOf(n); if (seen[r]) return; seen[r] = true;
-      var name = r === ROW.focus ? 'the account' : r === ROW.group ? 'step 1 · groups' : r === ROW.asset ? 'step 2 · assets' : r === ROW.hub ? 'step 3 · shared device and address' : r === ROW.peer ? 'step 3 · peers' : 'step 5 · documents';
-      s += '<text class="stp" x="3" y="' + (n.y - n.h / 2 - 5) + '">' + esc(name.toUpperCase()) + '</text>';
-    });
+    // Author's ruling, 25 October 2026: no step captions on the rows. The shapes and the order carry it;
+    // the step stays in the payload, where it ties an edge to its hop line.
     s += extra;
     // a fan of edges with the same source, relation and target row is labelled once, on the middle edge
     var fans = {};

@@ -115,6 +115,16 @@ value it adds to the app, not for the sake of demonstrating RAG.
   screen; a five-level visual hierarchy with the verdict as the one coloured surface and tags in
   link blue. Nine decisions and a draft API addition under the ticket's Answer.
   [Prototype](research/07-explained-alert-prototype.html).
+- [The read-only graph panel and the Gephi export](issues/08-graph-screen-and-gephi-export.md):
+  a Graph tab beside Evidence in the third column that draws only the walk the agent made,
+  projected from the saved artifact so map and report cannot disagree; organisation nodes only,
+  the many collapsed with a count; a click switches to Evidence and lights the record, with an
+  uncited edge named as such; layered layout by playbook step with shape per type, no step
+  captions; an empty state when no walk ran; React Flow plus dagre read-only with own SVG as
+  fallback; Gephi export as a GEXF script with two tests and the author's look, no endpoint.
+  Nine decisions and a draft `graph` field under the ticket's Answer.
+  [Research note](research/08-graph-screen.md) and
+  [prototype](research/08-graph-panel-prototype.html).
 
 ### Author's ruling, 20 October 2026
 
@@ -159,17 +169,18 @@ blocks them.
 | [05 How the knowledge base reaches the agent](issues/05-agent-tools-for-the-knowledge-base.md) | research, then grilling (retyped 22 October 2026) | 02, 04 |
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | research, then grilling (retyped 23 October 2026) | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
-| [08 The read-only graph screen and the Gephi export](issues/08-graph-screen-and-gephi-export.md) | prototype, then grilling (opened 24 October 2026) | 02, 07 |
+| [08 The read-only graph screen and the Gephi export](issues/08-graph-screen-and-gephi-export.md) | research, then prototype, then grilling (opened 24 October 2026, retyped 25 October 2026) | 02, 07 |
 
-Tickets 02 to 07 are resolved (20, 21, 22, 22, 23 and 24 October 2026). The author ruled 05 the
+Tickets 02 to 08 are resolved (20, 21, 22, 22, 23, 24 and 25 October 2026). The author ruled 05 the
 most important ticket of the initiative and retyped it to research then grilling; its first
 comment records the agent's purpose and the playbook stance that every tool serves. Ticket 06 was
 retyped the same way on four gaps the earlier notes did not cover. Ticket 07 ran prototype first,
 grilling second, by the author's ruling that a screen cannot be decided from a description.
 Ticket 08 was opened on 24 October 2026 when the author found that the read-only graph screen and
 the Gephi export promised in ticket 02's decision 2 were never designed: ticket 07 did not take
-them up. **The frontier is ticket 08.** After it, the spec for phases 0 and 1 (`mp-to-spec`),
-which orders the build items the tickets handed off and turns them into tickets.
+them up; it ran research, then prototype, then grilling, and resolved on 25 October 2026.
+**The frontier is the spec for phases 0 and 1 (`mp-to-spec`)**, which orders the build items the
+tickets handed off and turns them into tickets. The decision tickets are complete.
 
 ## Not yet specified
 
@@ -184,11 +195,13 @@ which orders the build items the tickets handed off and turns them into tickets.
 - The exact colours and dark-mode treatment of the answer's visual hierarchy (ticket 07,
   decision 9), and the progress patterns borrowed from Anthropic's and OpenAI's docs (decision
   4's build condition): the build ticket, with the author's screenshot review.
-- The graph screen's view, placement and drawing approach, the graph endpoint's shape and the
-  Gephi export: ticket 08, next.
+- The exact dagre spacing, node sizes and dark-mode shades of the Graph tab (ticket 08,
+  decision 6), and the read-only test's list of switched-off behaviours (decision 8): the build
+  ticket, with the author's screenshot review.
 - The graph integrity check (tables and chunk links against the built NetworkX graph): a phase 0
-  build item, recorded in ticket 06's comments on 24 October 2026.
-- The spec for phases 0 and 1: after ticket 08.
+  build item, recorded in ticket 06's comments on 24 October 2026; the GEXF export test compares
+  against it (ticket 08, decision 9).
+- The spec for phases 0 and 1: next.
 
 ## Out of scope
 
