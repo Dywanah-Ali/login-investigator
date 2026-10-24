@@ -53,7 +53,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-024 | Provide an in-app theme selector | Accepted in author theme review; Alerts header adjustment tracked separately | Medium | B-061; P-061 to P-063 |
 | AUD-025 | Distinguish Alerts header from selected alert in both themes | Closed: author approved | Low | B-063; P-063/P-064 |
 | AUD-026 | Review Investigation history navigation against v1 | Closed: author approved | Medium | B-064; P-073 |
-| AUD-027 | Keep tool-progress activity observable during fast event bursts | Closed: author approved current behaviour | Medium | B-065; P-082 |
+| AUD-027 | Keep tool-progress activity observable during fast event bursts | Closed: author approved current behaviour. Exception recorded 24 October 2026: the knowledge base's investigation tool stacks its five steps while running (ticket 07, decision 4); the Port's tools keep the single line | Medium | B-065; P-082; knowledge-base ticket 07 |
 | AUD-028 | Explorer test timeout during concurrent checks | Rerun passed, cause unresolved | Medium | B-066; P-086 |
 | AUD-029 | Correlate end-to-end scenario rulings with the saved Investigation | Closed: consolidated case verified and approved | High | B-067; P-100/P-107 |
 | AUD-030 | Exclude the initial event from later-sign-in prose totals | Open counting defect | High | B-070; P-107 final benchmark |
@@ -69,6 +69,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-040 | Structural escalation of the agent: the agent as a node in a parent graph with deterministic pre-steps, or a knowledge-base sub-agent (Dual-LLM) if the corpus ever becomes hostile | Open, future seam; knowledge-base ticket 05 chose the Port's middleware extended | Low | Knowledge-base research note 05, sections 3.1, 3.3, 3.5 |
 | AUD-041 | Structured agent answer (text plus a list of citation labels) so the citation gate reads a list instead of parsing prose | Open, build-time option in phase 0 | Low | Knowledge-base ticket 05, conditions |
 | AUD-042 | Injection-detector middleware (a classifier over inputs and tool results) as an added layer over the structural defences | Open, parked; trigger to reopen: the canary pass rate falls below 100% and the structural defences cannot explain it | Low | Knowledge-base ticket 06, decision 7 |
+| AUD-043 | Show the faithfulness judge's reason on the screen | Open, parked; trigger to reopen: a measured agreement between the judge and the author's labels | Low | Knowledge-base ticket 07, decision 8 |
 
 ### AUD-001: Rule filter
 
@@ -625,6 +626,15 @@ falls below 100% and the structural defences cannot explain the failure. A hoste
 also send every prompt and retrieved chunk across the trust boundary. Closure evidence: a
 decision row in the ticket that reopens it, with the canary results that triggered it.
 
+### AUD-043: The faithfulness judge's reason on the screen
+
+Ticket 06 (decision 6) made the judge a smoke alarm for the eval, never a gate, because its
+agreement with human labels is unmeasured. Ticket 07 (decision 8) keeps its reason off the
+screen for the same reason: showing it would teach the analyst to trust a signal the workspace
+does not yet trust. Parked. Trigger to reopen: a measured agreement (kappa) between the judge and
+the author's labels on the stored verdicts, at a level the author accepts. Closure evidence: a
+screen decision in its own ticket, with the kappa that justified it.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -753,4 +763,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-22 | Knowledge-base ticket 05 resolved after a discussion, research note 05 and a fourteen-question grilling: five rulings (purpose, playbook in code, chat entry point, conversation then report, code does the deterministic work) and sixteen decisions (seven tools, bundled investigation package, content plus artifact, content-computed IDs including a stable finding ID on the Alerts API, label citations resolved in code, two answer checks, fencing middleware with canaries, middleware plan, tool choice as shortcut rule, report gate, caps, parallel calls, playbook as one list, rules unchanged, no context field). Added AUD-040 (structural escalation seam) and AUD-041 (structured answer option). Frontier moves to ticket 06. | Knowledge-base ticket 05 Answer; research note 05; map |
 
 | 2026-10-22 | AUD-032 parking reaffirmed by the author; trigger to reopen set to phase 2 (history), when past investigations become knowledge. | Author, after ticket 05 |
+| 2026-10-24 | Knowledge-base ticket 07 resolved, prototype first then an eight-point grilling with the prototype open, plus a ninth decision the author raised: the chat is the screen with a finding ID column on Alerts; citations in an evidence panel built from the artifact and downloadable; one line per hop; radii as counts first; the investigation tool's steps stack while running (an exception to AUD-027, noted on its row) with a build condition to study Anthropic's and OpenAI's progress patterns; letters L, G, D; judge's reason off the screen; a five-level visual hierarchy. Added AUD-043 (judge's reason on screen, parked with a trigger). All decision tickets resolved; frontier moves to the spec. | Knowledge-base ticket 07 Answer; prototype; map |
 | 2026-10-23 | Knowledge-base ticket 06 resolved after a discussion, research note 06 and a ten-question grilling: two hard retrieval checks per question (top 20 and the 5 the model received), exact-set graph gate, a mix weighted to say-no and mixed questions, a separate tuning file for the refusal threshold, citation resolution with gold IDs as the answer gate, the judge as a smoke alarm with three trials and stored verdicts, playbook and canary checks as 100% gates, one scorer with two exams kept separate, on-versus-off comparisons for the re-ranker and BM25, and Langfuse adopted as a mirror. AUD-036 decided. Added AUD-042 (injection-detector middleware, parked with a trigger). Frontier moves to ticket 07. | Knowledge-base ticket 06 Answer; research note 06; map |

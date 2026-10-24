@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explained Alert Screen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* PROTOTYPE for knowledge-base ticket 07. The Investigator chat showing an explained alert.
+   Same style file as the Port's screens prototype (.scratch/v2-port/research/07-screens-prototype.html).
+   Every open decision is a box with option buttons; the chat below redraws when an option changes.
+   Content is the shape of the S6 story and the B1 twin from ticket 04, not live values.
+   Not UI code: plain HTML. */
+:root {
+  --bg: #f6f7f4; --panel: #ffffff; --fg: #1d2420; --muted: #5d6862; --line: #d6dbd4; --soft: #eef1ec;
+  --accent: #1f5f8b; --accent-bg: #e3eef6; --ok: #2f7a4f; --ok-bg: #e4f1e9; --bad: #b0412f; --bad-bg: #f7e6e2; --warn: #a05a12; --warn-bg: #fbeedd;
+  --new: #a05a12; --new-bg: #fbeedd; --bar: #1d2420; --bar-fg: #f6f7f4;
+  --sans: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15191a; --panel: #1e2426; --fg: #e6ebe7; --muted: #9aa69f; --line: #334039; --soft: #262e30;
+  --accent: #7fb6dd; --accent-bg: #1f3444; --ok: #7fc79c; --ok-bg: #1d3327; --bad: #e08a8a; --bad-bg: #3d2322; --warn: #e8a862; --warn-bg: #3d2d16;
+  --new: #e8a862; --new-bg: #3d2d16; --bar: #e6ebe7; --bar-fg: #15191a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15191a; --panel: #1e2426; --fg: #e6ebe7; --muted: #9aa69f; --line: #334039; --soft: #262e30;
+  --accent: #7fb6dd; --accent-bg: #1f3444; --ok: #7fc79c; --ok-bg: #1d3327; --bad: #e08a8a; --bad-bg: #3d2322; --warn: #e8a862; --warn-bg: #3d2d16;
+  --new: #e8a862; --new-bg: #3d2d16; --bar: #e6ebe7; --bar-fg: #15191a; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 96px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 14px; }
+h1 { font-size: 1.35rem; font-weight: 600; margin: 0; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 76ch; }
+.legend { font-size: .8rem; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+.legend .n::before { content: ""; display: inline-block; width: 12px; height: 10px; border: 1.5px dashed var(--new); background: var(--new-bg); margin-right: 5px; vertical-align: middle; }
+.legend .p::before { content: ""; display: inline-block; width: 12px; height: 10px; border: 1px solid var(--line); background: var(--panel); margin-right: 5px; vertical-align: middle; }
+
+/* the app frame */
+.app { border: 1px solid var(--line); background: var(--panel); display: grid; grid-template-columns: 200px 1fr; min-height: 560px; }
+@media (max-width: 760px) { .app { grid-template-columns: 1fr; } .sb { display: none; } }
+.sb { border-right: 1px solid var(--line); padding: 12px; display: grid; gap: 4px; align-content: start; font-size: .85rem; }
+.sb .brand { font-weight: 600; padding: 6px 8px 10px; }
+.sb .nav { padding: 6px 8px; border-radius: 4px; color: var(--muted); }
+.sb .nav.cur { background: var(--accent-bg); color: var(--fg); font-weight: 500; }
+.sb .foot { margin-top: auto; padding: 8px; font-size: .75rem; color: var(--muted); border-top: 1px solid var(--line); }
+.main { display: grid; gap: 12px; padding: 12px 16px 16px; align-content: start; min-width: 0; }
+.hdr { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.hdr h2 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.hdr .meta { display: flex; gap: 10px; align-items: center; font-size: .78rem; color: var(--muted); flex-wrap: wrap; }
+.badge { border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; font-size: .72rem; background: var(--soft); white-space: nowrap; }
+.badge.syn { border-color: var(--warn); color: var(--warn); background: transparent; }
+.badge.bad { border-color: var(--bad); color: var(--bad); background: var(--bad-bg); }
+.badge.ok { border-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
+.badge.warn { border-color: var(--warn); color: var(--warn); background: var(--warn-bg); }
+.btn { border: 1px solid var(--line); border-radius: 4px; padding: 5px 10px; font-size: .8rem; background: var(--panel); color: var(--fg); white-space: nowrap; display: inline-block; }
+.btn.pri { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn.ghost { border-color: transparent; color: var(--accent); }
+.new { border: 1.5px dashed var(--new) !important; background: var(--new-bg) !important; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .78rem; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: top; }
+th { color: var(--muted); font-weight: 500; font-size: .7rem; }
+td.m, .m { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+td.w { white-space: normal; }
+.note { font-size: .72rem; color: var(--muted); }
+
+/* alerts split (screen 3) */
+.split { display: grid; grid-template-columns: 1fr 340px; gap: 12px; align-items: start; }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+.sheet { border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: grid; gap: 8px; background: var(--panel); min-width: 0; }
+.sheet h3 { margin: 0; font-size: .9rem; font-weight: 600; }
+tr.sel td { background: var(--accent-bg); }
+
+/* chat */
+.inv { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 12px; }
+.inv.with-panel { grid-template-columns: 220px minmax(0, 1fr) 300px; }
+@media (max-width: 1000px) { .inv, .inv.with-panel { grid-template-columns: 1fr; } .hist { display: none; } }
+.hist { display: grid; gap: 6px; align-content: start; }
+.hist .item { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: .78rem; display: grid; gap: 2px; }
+.hist .item.cur { border-color: var(--accent); background: var(--accent-bg); }
+.hist .item small { color: var(--muted); }
+.chat { display: grid; gap: 10px; min-width: 0; }
+.msg { display: grid; gap: 6px; }
+.msg.me { justify-items: end; }
+.bub { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: .82rem; max-width: 88%; background: var(--soft); min-width: 0; }
+.msg.me .bub { background: var(--accent-bg); white-space: pre-wrap; }
+.bub p + p, .bub p + .tbl, .bub .tbl + p, .bub p + ul, .bub ul + p { margin-top: 8px; }
+.bub ul { margin: 0; padding-left: 18px; }
+.bub h4 { margin: 10px 0 4px; font-size: .8rem; font-weight: 600; }
+.bub h4:first-child { margin-top: 0; }
+.who { font-size: .72rem; color: var(--muted); }
+.cite { font-family: var(--mono); font-size: .72rem; color: var(--accent); background: var(--accent-bg); border-radius: 3px; padding: 0 4px; white-space: nowrap; cursor: default; }
+.cite.unk { color: var(--warn); background: var(--warn-bg); }
+.foot { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 8px; display: grid; gap: 5px; font-size: .75rem; color: var(--muted); }
+.foot div { display: grid; grid-template-columns: 40px 1fr; gap: 6px; }
+.foot .m { color: var(--fg); }
+.chip { display: inline-block; margin: 2px 2px 0 0; }
+.chip summary { list-style: none; cursor: pointer; display: inline-block; }
+.chip summary::-webkit-details-marker { display: none; }
+.chip[open] > div { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 8px 10px; margin: 6px 0 4px; font-size: .75rem; display: grid; gap: 3px; max-width: 60ch; white-space: normal; }
+.chip .src { color: var(--muted); font-size: .7rem; }
+.quote { border-left: 2px solid var(--line); padding-left: 8px; color: var(--muted); white-space: pre-wrap; font-size: .74rem; }
+.tools { font-size: .75rem; color: var(--muted); border-left: 2px solid var(--line); padding-left: 10px; display: grid; gap: 4px; max-width: 88%; }
+.tools b { color: var(--fg); font-weight: 500; }
+.tools .row { display: grid; grid-template-columns: 16px 1fr auto; gap: 8px; align-items: baseline; }
+.tools .row .m { font-size: .7rem; }
+.tools .done::before { content: "✓"; color: var(--ok); }
+.tools .run::before { content: "…"; color: var(--warn); }
+.tools .skip::before { content: "–"; color: var(--muted); }
+.tools details summary { cursor: pointer; color: var(--fg); font-weight: 500; }
+.report { border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 6px; padding: 10px 12px; font-size: .8rem; display: grid; gap: 5px; max-width: 88%; }
+.report.ok { border-left-color: var(--ok); }
+.report b { font-size: .72rem; color: var(--muted); font-weight: 500; }
+.report .nc { color: var(--warn); }
+.input { display: flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: .82rem; color: var(--muted); }
+.hops { display: grid; gap: 3px; font-size: .78rem; }
+.hops div { padding-left: 20px; text-indent: -20px; }
+.hops div::before { content: "↳"; color: var(--muted); display: inline-block; width: 20px; text-indent: 0; }
+.hops div:first-child::before { content: "●"; }
+.radii { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+@media (max-width: 700px) { .radii { grid-template-columns: 1fr; } }
+.tile { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; min-width: 0; background: var(--panel); }
+.tile b { display: block; font-weight: 500; font-size: .7rem; color: var(--muted); }
+.tile .v { font-size: 1.25rem; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.tile small { color: var(--muted); font-size: .7rem; display: block; }
+.tile .link { color: var(--accent); font-size: .72rem; }
+
+/* evidence panel (decision 1, option C) */
+.panel { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); display: grid; gap: 0; align-content: start; font-size: .76rem; min-width: 0; }
+.panel h3 { margin: 0; padding: 10px 12px; font-size: .85rem; font-weight: 600; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+.panel .ev { padding: 8px 12px; border-bottom: 1px solid var(--line); display: grid; gap: 3px; }
+.panel .ev.hl { background: var(--accent-bg); }
+.panel .ev .src { color: var(--muted); font-size: .7rem; }
+.panel .act { padding: 8px 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* decision box and toggles */
+.decide { border: 1px solid var(--line); border-left: 4px solid var(--accent); padding: 12px 14px; display: grid; gap: 6px; background: var(--panel); }
+.decide h3 { margin: 0; font-size: .95rem; font-weight: 600; }
+.decide ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.decide li { max-width: 80ch; }
+.decide .opts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.opt { border: 1px solid var(--line); border-radius: 4px; padding: 4px 10px; font: inherit; font-size: .8rem; background: var(--panel); color: var(--fg); cursor: pointer; }
+.opt.cur { background: var(--accent); color: #fff; border-color: var(--accent); }
+.scr { display: none; gap: 14px; } .scr.on { display: grid; }
+[hidden] { display: none !important; }
+
+.bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; pointer-events: none;
+  padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.pill { pointer-events: auto; display: flex; align-items: center; gap: 2px; background: var(--bar); color: var(--bar-fg); border-radius: 999px; padding: 6px 8px; box-shadow: 0 6px 24px rgba(0,0,0,.25); font-size: .82rem; flex-wrap: wrap; justify-content: center; }
+.pill button { background: transparent; color: inherit; border: 0; font: inherit; padding: 6px 11px; border-radius: 999px; cursor: pointer; }
+.pill button:hover, .pill button:focus-visible { background: rgba(127,127,127,.3); outline: none; }
+.pill button.cur { background: var(--accent); color: #fff; }
+</style>
+
+<div class="wrap">
+  <h1>What the screen shows for an explained alert</h1>
+  <p class="lead"><b>Decided 24 October 2026: evidence panel, one line per hop, counts first, stacked steps that collapse after.</b> Citation letters are L (log), G (graph), D (document). The buttons still switch to the options not taken. The Investigator chat after the user presses Investigate on the S6 alert (the spray that worked). Second screen: the benign twin B1, where the answer is "nothing to see, here is why". Third screen: the one small change on the Alerts panel. Switch with the bar below or the arrow keys.</p>
+  <div class="legend"><span class="p">from the Port, as it is today</span><span class="n">new in this initiative</span></div>
+
+  <!-- ============ SCREEN 1: S6 BLAST RADIUS ============ -->
+  <section class="scr on" id="s6" data-name="S6: the spray that worked">
+
+    <div class="decide">
+      <h3>Decision 1. Where a citation lands</h3>
+      <ul>
+        <li>The answer says "<i>mgarcia is in IT Admins</i> [G1]". The label is plain text from the agent; code swaps it for the real record or passage after the answer. Something must show what A1 is.</li>
+        <li><b>Footnotes:</b> a numbered list under the answer, one line per citation: source, ID, first line of the passage. Read like a paper.</li>
+        <li><b>Expandable chips:</b> click [G1] in the sentence and the passage opens right there, under the sentence. Nothing moves away from the text.</li>
+        <li><b>Evidence panel:</b> a third column on the right lists every cited record and passage for the whole conversation, built from the saved artifact. Clicking [G1] highlights its row. The panel is the eval's artifact made visible.</li>
+      </ul>
+      <div class="opts"><button class="opt cur" data-set="cite" data-val="foot">Footnotes</button><button class="opt" data-set="cite" data-val="chip">Expandable chips</button><button class="opt" data-set="cite" data-val="panel">Evidence panel</button></div>
+    </div>
+
+    <div class="decide">
+      <h3>Decision 2. How a graph path is written as plain text</h3>
+      <ul>
+        <li>The graph says: account mgarcia, member of IT Admins, which is granted the domain controller, which is restricted. No drawing is allowed, because graph fields never pass through a markup renderer.</li>
+        <li><b>One line per hop:</b> an indented list, each hop a short sentence with its record ID.</li>
+        <li><b>Arrow chain:</b> one monospace line, <code>mgarcia → IT Admins → domain controller (restricted)</code>. Compact, reads like a path.</li>
+        <li><b>Hop table:</b> columns From, Relation, To, Record. The most literal, the heaviest.</li>
+      </ul>
+      <div class="opts"><button class="opt cur" data-set="path" data-val="hops">One line per hop</button><button class="opt" data-set="path" data-val="arrow">Arrow chain</button><button class="opt" data-set="path" data-val="table">Hop table</button></div>
+    </div>
+
+    <div class="decide">
+      <h3>Decision 3. How the three radii are shown</h3>
+      <ul>
+        <li>Ticket 04 fixed three radii: groups held, assets reachable, peers by shared device and network. S6's peers can be a dozen names.</li>
+        <li><b>Counts first:</b> three small tiles in the answer with the number and the worst item; the full lists sit in Tools used (or the evidence panel). The chat stays readable.</li>
+        <li><b>Full tables:</b> three tables inside the answer. Everything visible at once, the chat gets long.</li>
+      </ul>
+      <div class="opts"><button class="opt cur" data-set="radii" data-val="counts">Counts first</button><button class="opt" data-set="radii" data-val="tables">Full tables</button></div>
+    </div>
+
+    <div class="decide">
+      <h3>Decision 4. What the user sees while the playbook runs, and after</h3>
+      <ul>
+        <li>The investigation tool runs five internal steps and streams progress per step (ticket 05, decision 2). The Port already shows a "Tools used" drawer under each answer.</li>
+        <li><b>Collapse after:</b> the step list stacks live while the investigation tool runs (an exception to the Port's single status line, for this tool only), then folds into the Tools used drawer once the answer arrives. Open the drawer to see it again.</li>
+        <li><b>Stay visible:</b> the step list stays above the answer as a permanent receipt of what was checked.</li>
+      </ul>
+      <div class="opts"><button class="opt cur" data-set="prog" data-val="collapse">Collapse after</button><button class="opt" data-set="prog" data-val="stay">Stay visible</button></div>
+    </div>
+
+    <div class="app">
+      <aside class="sb"><div class="brand">Login Investigator</div>
+        <div class="nav">Overview</div><div class="nav">Alerts</div><div class="nav">Log explorer</div><div class="nav cur">Investigator</div>
+        <div class="foot">Log captured 8 Oct 2026, 09:00 UTC</div></aside>
+      <div class="main">
+        <div class="hdr"><h2>Investigator</h2><div class="meta"><span class="badge syn">Synthetic data</span><span>Investigations use the whole log. Dashboard filters do not apply.</span></div></div>
+        <div class="inv" id="s6-inv">
+          <div class="hist">
+            <span class="btn">+ New investigation</span>
+            <div class="item cur"><b>Investigate finding F-0006…</b><small>today, 09:14 UTC</small></div>
+            <div class="item"><b>Who failed most from Russia?</b><small>yesterday</small></div>
+            <div class="item"><b>Investigate finding F-0003…</b><small>yesterday</small></div>
+          </div>
+
+          <div class="chat">
+            <div class="msg me"><div class="bub new">Investigate finding F-0006: Password spraying, 185.220.101.4 against 41 accounts between 03:10 and 03:26 UTC on 6 Oct, one success on mgarcia.</div><span class="who">Pre-written by the Investigate button. The finding ID is the new part.</span></div>
+
+            <!-- progress, decision 4 -->
+            <div class="tools new" data-show="prog:stay">
+              <b>Investigation of F-0006, 5 steps</b>
+              <div class="row done"><span>Account context: mgarcia, IT department, member of IT Admins</span><span class="m">0.2 s</span></div>
+              <div class="row done"><span>Reachable assets: 7, of which 4 restricted</span><span class="m">0.1 s</span></div>
+              <div class="row done"><span>Peers: 2 share a device, 9 shared the VPN address that week</span><span class="m">0.1 s</span></div>
+              <div class="row done"><span>Clearing documents: none found that explain it away</span><span class="m">1.4 s</span></div>
+              <div class="row done"><span>Aggravating documents: 3 found</span><span class="m">1.3 s</span></div>
+            </div>
+
+            <div class="msg">
+              <div class="bub">
+                <p><b>What happened.</b> One address, 185.220.101.4, tried 41 accounts in 16 minutes and got in once, on <span class="m">mgarcia</span> at 03:24 UTC <span class="cite">[L1]</span>. The account was not asked for MFA: its MFA result is <span class="m">none</span>, and it sits on the MFA exception register <span class="cite">[D1]</span>. Two more sign-ins from the same address followed at 03:31 and 04:02 <span class="cite">[L2]</span>.</p>
+
+                <p><b>What it can reach.</b> mgarcia is a member of IT Admins <span class="cite">[G1]</span>, which is granted the identity provider, VPN gateway, domain controller and backup server, all restricted <span class="cite">[G2]</span>. The widest path:</p>
+
+                <!-- path, decision 2 -->
+                <div class="hops new" data-show="path:hops">
+                  <div>Account <span class="m">mgarcia</span> (IT, Operations office)</div>
+                  <div>is a member of group <span class="m">IT Admins</span> <span class="cite">[G1]</span></div>
+                  <div>which is granted asset <span class="m">domain controller</span>, sensitivity restricted <span class="cite">[G2]</span></div>
+                </div>
+                <p class="m new" data-show="path:arrow" hidden style="font-size:.76rem">mgarcia → member of → IT Admins → granted → domain controller (restricted) <span class="cite">[G1]</span> <span class="cite">[G2]</span></p>
+                <div class="tbl new" data-show="path:table" hidden><table><thead><tr><th>From</th><th>Relation</th><th>To</th><th>Record</th></tr></thead><tbody>
+                  <tr><td class="m">mgarcia</td><td>member of</td><td class="m">IT Admins</td><td><span class="cite">[G1]</span></td></tr>
+                  <tr><td class="m">IT Admins</td><td>granted</td><td class="m">domain controller</td><td><span class="cite">[G2]</span></td></tr>
+                  <tr><td class="m">domain controller</td><td>sensitivity</td><td>restricted</td><td><span class="cite">[G2]</span></td></tr>
+                </tbody></table></div>
+
+                <!-- radii, decision 3 -->
+                <div class="radii new" data-show="radii:counts">
+                  <div class="tile"><b>Groups held</b><div class="v">2</div><small>IT Admins, Everyone</small><span class="link">See list</span></div>
+                  <div class="tile"><b>Assets reachable</b><div class="v">7</div><small>4 restricted, worst: domain controller</small><span class="link">See list</span></div>
+                  <div class="tile"><b>Peers</b><div class="v">11</div><small>2 by device, 9 by VPN address</small><span class="link">See list</span></div>
+                </div>
+                <div class="new" data-show="radii:tables" hidden style="display:grid;gap:8px;margin-top:6px;padding:8px;border-radius:6px">
+                  <div class="tbl"><table><thead><tr><th>Group held</th><th>Members</th><th>Record</th></tr></thead><tbody>
+                    <tr><td>IT Admins</td><td>4</td><td><span class="cite">[G1]</span></td></tr><tr><td>Everyone</td><td>50</td><td><span class="cite">[G1]</span></td></tr></tbody></table></div>
+                  <div class="tbl"><table><thead><tr><th>Asset reachable</th><th>Sensitivity</th><th>Through</th><th>Record</th></tr></thead><tbody>
+                    <tr><td>domain controller</td><td>restricted</td><td>IT Admins</td><td><span class="cite">[G2]</span></td></tr>
+                    <tr><td>identity provider</td><td>restricted</td><td>IT Admins</td><td><span class="cite">[G2]</span></td></tr>
+                    <tr><td>backup server</td><td>restricted</td><td>IT Admins</td><td><span class="cite">[G2]</span></td></tr>
+                    <tr><td>VPN gateway</td><td>restricted</td><td>IT Admins</td><td><span class="cite">[G2]</span></td></tr>
+                    <tr><td>file share</td><td>internal</td><td>Everyone</td><td><span class="cite">[G2]</span></td></tr>
+                    <tr><td>intranet</td><td>internal</td><td>Everyone</td><td><span class="cite">[G2]</span></td></tr>
+                    <tr><td>email</td><td>internal</td><td>Everyone</td><td><span class="cite">[G2]</span></td></tr></tbody></table></div>
+                  <div class="tbl"><table><thead><tr><th>Peer</th><th>Shares</th><th>Record</th></tr></thead><tbody>
+                    <tr><td>jpatel</td><td>device LT-0412</td><td><span class="cite">[G3]</span></td></tr>
+                    <tr><td>rkim</td><td>device LT-0412</td><td><span class="cite">[G3]</span></td></tr>
+                    <tr><td>aflores, bnguyen, cmoore, dlee, ehall, fwright, gscott, hlopez, iyoung</td><td>VPN address 10.8.0.3, week of 6 Oct</td><td><span class="cite">[G3]</span></td></tr></tbody></table></div>
+                </div>
+
+                <p><b>Is there a reason it is fine?</b> No. No travel notice, helpdesk ticket or handover record names mgarcia or this address <span class="cite">[D2]</span>. Against it: the MFA exception for this account was due to expire in August and was not reviewed <span class="cite">[D1]</span>, the password policy requires a reset after a suspected spray <span class="cite">[D3]</span>, and the pattern matches ATT&amp;CK T1110.003, password spraying <span class="cite">[D4]</span>.</p>
+
+                <p><b>Verdict.</b> A compromised privileged account with a path to the domain controller. Treat as an incident; the compromised-account runbook applies <span class="cite">[D3]</span>.</p>
+
+                <!-- footnotes, decision 1 option A -->
+                <div class="foot new" data-show="cite:foot">
+                  <div><span class="m">[L1]</span><span>Log, 2 of 42 rows: 2026-10-06 03:24:17 UTC, mgarcia, 185.220.101.4, success, mfa none</span></div>
+                  <div><span class="m">[L2]</span><span>Log, 2 rows: 03:31:05 and 04:02:48 UTC, mgarcia, 185.220.101.4, success</span></div>
+                  <div><span class="m">[G1]</span><span>Graph, membership mgarcia → IT Admins (record <span class="m">mem-0117</span>)</span></div>
+                  <div><span class="m">[G2]</span><span>Graph, grants IT Admins → 4 restricted assets (records <span class="m">grant-0031</span> to <span class="m">grant-0034</span>)</span></div>
+                  <div><span class="m">[D1]</span><span>Document, MFA exception register v3, row 7: "mgarcia, service migration, exception until 2026-08-31" (<span class="m">reg-mfa-exceptions#7</span>, score 0.81)</span></div>
+                  <div><span class="m">[D2]</span><span>Search for clearing documents: 0 above the threshold, best score 0.31 (verdict: none)</span></div>
+                  <div><span class="m">[D3]</span><span>Document, Compromised account response runbook, step 2 (<span class="m">rb-compromised-account#2</span>, score 0.77)</span></div>
+                  <div><span class="m">[D4]</span><span>Document, ATT&amp;CK T1110.003 Password Spraying (<span class="m">attack-T1110.003#1</span>, score 0.74)</span></div>
+                </div>
+
+                <!-- chips, decision 1 option B: one open as an example -->
+                <div class="new" data-show="cite:chip" hidden style="margin-top:10px;padding:8px;border-radius:6px">
+                  <p class="note" style="margin-bottom:4px">In this option the labels in the text are the buttons. Here is [D1] opened, as it would look under its sentence:</p>
+                  <details class="chip" open><summary><span class="cite">[D1]</span></summary>
+                    <div><span class="src">Document · MFA exception register v3, row 7 · <span class="m">reg-mfa-exceptions#7</span> · score 0.81</span>
+                      <div class="quote">| mgarcia | service migration | approved by IT lead | exception until 2026-08-31 | review: pending |</div>
+                      <span class="src">Owner: it.lead · status: current · dated 2026-05-12</span></div>
+                  </details>
+                </div>
+              </div>
+              <span class="who">Investigator · 3.4 s · gpt-4o-mini</span>
+            </div>
+
+            <!-- tools used drawer, with the progress folded in (decision 4 option A) -->
+            <div class="tools">
+              <details>
+                <summary>Tools used (3)</summary>
+                <div style="display:grid;gap:6px;padding-top:6px">
+                  <div class="new" data-show="prog:collapse" style="padding:6px 8px;border-radius:6px;display:grid;gap:3px">
+                    <b>investigate_alert F-0006, 5 steps</b>
+                    <div class="row done"><span>Account context</span><span class="m">0.2 s</span></div>
+                    <div class="row done"><span>Reachable assets: 7, 4 restricted</span><span class="m">0.1 s</span></div>
+                    <div class="row done"><span>Peers: 2 by device, 9 by VPN address</span><span class="m">0.1 s</span></div>
+                    <div class="row done"><span>Clearing documents: none</span><span class="m">1.4 s</span></div>
+                    <div class="row done"><span>Aggravating documents: 3</span><span class="m">1.3 s</span></div>
+                    <span class="note">Full lists: groups (2), assets (7), peers (11), cited passages (4). Show raw JSON.</span>
+                  </div>
+                  <div><b>search_log</b> · asked: source_ip = 185.220.101.4 · found: 42 rows</div>
+                  <div><b>lookup_ip</b> · asked: 185.220.101.4 · found: Tor exit node, abuse score 97</div>
+                </div>
+              </details>
+            </div>
+
+            <div class="report">
+              <b>Incident report · severity High</b>
+              <span>Compromised privileged account (mgarcia) via password spray from 185.220.101.4; MFA bypassed by a lapsed exception; path to 4 restricted assets including the domain controller.</span>
+              <span class="nc new">Not checked: peers by network. The knowledge store was unavailable for the VPN table.</span>
+              <span class="note">The "Not checked" line is ticket 05, decision 11. Shown here as an example of its wording; in this run every step actually ran.</span>
+            </div>
+
+            <div class="input">Ask a follow-up, for example "which of the 9 VPN peers signed in after 03:24?"</div>
+          </div>
+
+          <!-- evidence panel, decision 1 option C -->
+          <aside class="panel new" data-show="cite:panel" hidden>
+            <h3>Evidence <span class="badge">8 items</span></h3>
+            <div class="ev"><span class="m">[L1]</span> Log, 2 of 42 rows<span class="src">03:24:17 UTC mgarcia 185.220.101.4 success, mfa none</span></div>
+            <div class="ev"><span class="m">[L2]</span> Log, 2 rows<span class="src">03:31:05 and 04:02:48 UTC, same address</span></div>
+            <div class="ev"><span class="m">[G1]</span> Graph, membership<span class="src">mgarcia → IT Admins · mem-0117</span></div>
+            <div class="ev"><span class="m">[G2]</span> Graph, grants<span class="src">IT Admins → 4 restricted assets · grant-0031…0034</span></div>
+            <div class="ev hl"><span class="m">[D1]</span> MFA exception register v3, row 7<span class="src">reg-mfa-exceptions#7 · score 0.81</span><div class="quote">| mgarcia | service migration | exception until 2026-08-31 | review: pending |</div></div>
+            <div class="ev"><span class="m">[D2]</span> Clearing search: none<span class="src">0 above threshold, best 0.31</span></div>
+            <div class="ev"><span class="m">[D3]</span> Compromised account runbook, step 2<span class="src">rb-compromised-account#2 · score 0.77</span></div>
+            <div class="ev"><span class="m">[D4]</span> ATT&amp;CK T1110.003<span class="src">attack-T1110.003#1 · score 0.74</span></div>
+            <div class="act"><span class="btn">Download artifact (JSON)</span></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <div class="decide">
+      <h3>What is fixed already, from tickets 04 to 06</h3>
+      <ul>
+        <li>The chat is the screen. No context section on the Alerts panel. Nothing runs unless asked.</li>
+        <li>Labels like [G1] are typed by the agent; code resolves them to real IDs and passages after the answer. An unresolvable label gets one retry, then shows as <span class="cite unk">[D9?]</span> with a warning "one citation could not be verified".</li>
+        <li>Document text, graph values and log values show as plain text only. The answer prose is the one markdown boundary, as in the Port, with links and images off.</li>
+        <li>Everything on this screen comes from the saved artifact, which is also what the eval reads. Screen and exam see the same payload.</li>
+        <li>The faithfulness judge's reason is not shown. It is a smoke alarm for the eval, not analyst information.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2: B1 BENIGN TWIN ============ -->
+  <section class="scr" id="b1" data-name="B1: the benign twin">
+    <div class="decide">
+      <h3>The other half of trust: an alert that is cleared</h3>
+      <ul>
+        <li>B1 is a sales user signing in from Germany for three days. The Port's new-country rule flags it. A travel notice clears it.</li>
+        <li>The same shape as the S6 answer, so the user learns one layout. The difference is the verdict and the "cleared by" document, which gets its own line and its own citation.</li>
+        <li>The report card turns green and says benign. The radii still show, because "what could it have reached" matters even when nothing happened.</li>
+        <li>Drawn with the chosen set: evidence panel, one line per hop, counts first, collapse after.</li>
+      </ul>
+    </div>
+    <div class="app">
+      <aside class="sb"><div class="brand">Login Investigator</div>
+        <div class="nav">Overview</div><div class="nav">Alerts</div><div class="nav">Log explorer</div><div class="nav cur">Investigator</div>
+        <div class="foot">Log captured 8 Oct 2026, 09:00 UTC</div></aside>
+      <div class="main">
+        <div class="hdr"><h2>Investigator</h2><div class="meta"><span class="badge syn">Synthetic data</span></div></div>
+        <div class="inv with-panel">
+          <div class="hist">
+            <span class="btn">+ New investigation</span>
+            <div class="item cur"><b>Investigate finding F-0009…</b><small>today, 09:40 UTC</small></div>
+            <div class="item"><b>Investigate finding F-0006…</b><small>today, 09:14 UTC</small></div>
+          </div>
+          <div class="chat">
+            <div class="msg me"><div class="bub">Investigate finding F-0009: Sign-in from a new country, 212.77.98.14 (Germany) for lthompson, 3 to 5 Oct.</div></div>
+            <div class="msg">
+              <div class="bub">
+                <p><b>What happened.</b> lthompson signed in 11 times from 212.77.98.14 in Germany between 3 and 5 Oct, all successful, all with MFA passed <span class="cite">[L1]</span>. The account had never signed in from Germany before <span class="cite">[L2]</span>.</p>
+                <p><b>What it can reach.</b> lthompson is in Sales and holds only the Everyone group <span class="cite">[G1]</span>: email, intranet and file share, all internal. No privileged group, no restricted asset.</p>
+                <div class="radii new">
+                  <div class="tile"><b>Groups held</b><div class="v">1</div><small>Everyone</small></div>
+                  <div class="tile"><b>Assets reachable</b><div class="v">3</div><small>0 restricted</small></div>
+                  <div class="tile"><b>Peers</b><div class="v">0</div><small>own laptop, home network</small></div>
+                </div>
+                <p class="new" style="padding:6px 8px;border-radius:6px"><b>Cleared by:</b> travel notice TN-2026-031, "lthompson, customer visit, Munich, 2 to 6 Oct 2026", approved by the Sales lead on 28 Sep <span class="cite">[D1]</span>. The dates and country match the sign-ins.</p>
+                <p><b>Against it.</b> Nothing found. The remote access policy allows approved travel with MFA <span class="cite">[D2]</span>, and MFA passed on every row.</p>
+                <p><b>Verdict.</b> Benign. Approved travel explains every flagged row. No action needed beyond noting the travel notice on the alert.</p>
+              </div>
+              <span class="who">Investigator · 2.9 s</span>
+            </div>
+            <div class="tools"><details><summary>Tools used (2)</summary><div style="padding-top:6px"><b>investigate_alert F-0009</b>, 5 steps, all ran · <b>search_log</b> username = lthompson · 11 rows</div></details></div>
+            <div class="report ok">
+              <b>Incident report · severity Low · benign</b>
+              <span>New-country sign-ins by lthompson explained by approved travel notice TN-2026-031; no privileged access; MFA passed throughout.</span>
+            </div>
+            <div class="input">Ask a follow-up…</div>
+          </div>
+          <aside class="panel new">
+            <h3>Evidence <span class="badge">5 items</span></h3>
+            <div class="ev"><span class="m">[L1]</span> Log, 11 rows<span class="src">2026-10-03 to 10-05, lthompson, 212.77.98.14, DE, success, mfa pass</span></div>
+            <div class="ev"><span class="m">[L2]</span> Log, first-seen check<span class="src">no DE row for lthompson before 2026-10-03</span></div>
+            <div class="ev"><span class="m">[G1]</span> Graph, membership<span class="src">lthompson → Everyone · mem-0203 · no other group</span></div>
+            <div class="ev hl"><span class="m">[D1]</span> Travel notice TN-2026-031<span class="src">rec-travel-031#1 · score 0.88 · verdict found</span><div class="quote">lthompson, customer visit, Munich, 2 to 6 Oct 2026. Approved: Sales lead, 28 Sep.</div></div>
+            <div class="ev"><span class="m">[D2]</span> Remote access and VPN policy, section 4<span class="src">pol-remote-access#4 · score 0.72</span></div>
+            <div class="act"><span class="btn">Download artifact (JSON)</span></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: ALERTS PANEL ============ -->
+  <section class="scr" id="alerts" data-name="Alerts: the button">
+    <div class="decide">
+      <h3>The one change on the Alerts screen</h3>
+      <ul>
+        <li>The Port's Investigate button already sends the user to the chat with a pre-written question. It keeps doing exactly that.</li>
+        <li>New: the pre-written question carries the finding ID (F-0006). The agent then calls the investigation tool on that exact alert instead of guessing the account and address from prose.</li>
+        <li>Nothing else changes here. No context section, no radius on the panel, no cost until the user presses the button.</li>
+      </ul>
+    </div>
+    <div class="app">
+      <aside class="sb"><div class="brand">Login Investigator</div>
+        <div class="nav">Overview</div><div class="nav cur">Alerts</div><div class="nav">Log explorer</div><div class="nav">Investigator</div>
+        <div class="foot">Log captured 8 Oct 2026, 09:00 UTC</div></aside>
+      <div class="main">
+        <div class="hdr"><h2>Alerts</h2><div class="meta"><span class="badge syn">Synthetic data</span><span>8 alerts in this view</span></div></div>
+        <div class="split">
+          <div class="tbl"><table>
+            <thead><tr><th>ID</th><th>Rule</th><th>Severity</th><th>User</th><th>Source IP</th><th>Events</th><th>First seen (UTC)</th></tr></thead>
+            <tbody>
+              <tr><td class="m new">F-0001</td><td>Brute force</td><td><span class="badge bad">High</span></td><td class="m">admin</td><td class="m">2.57.122.53</td><td class="m">23</td><td class="m">1 Oct 02:10</td></tr>
+              <tr class="sel"><td class="m new">F-0006</td><td>Password spraying</td><td><span class="badge bad">High</span></td><td class="m">41 accounts</td><td class="m">185.220.101.4</td><td class="m">42</td><td class="m">6 Oct 03:10</td></tr>
+              <tr><td class="m new">F-0009</td><td>Sign-in from a new country</td><td><span class="badge warn">Low</span></td><td class="m">lthompson</td><td class="m">212.77.98.14</td><td class="m">11</td><td class="m">3 Oct 08:02</td></tr>
+            </tbody></table>
+            <p class="note" style="margin-top:6px">Decided: the ID column is shown, first column, so the analyst can name a finding in chat.</p>
+          </div>
+          <div class="sheet">
+            <h3>Password spraying</h3>
+            <p class="note">Showing 2 of 42 events: the first and the last ones.</p>
+            <p style="font-size:.8rem">Severity: <span class="badge bad">High</span> One address tried many accounts and succeeded once.</p>
+            <div class="tbl"><table><thead><tr><th>Time</th><th>User</th><th>Outcome</th></tr></thead><tbody>
+              <tr><td class="m">03:10:02</td><td class="m">aflores</td><td>failure</td></tr><tr><td class="m">03:24:17</td><td class="m">mgarcia</td><td>success</td></tr></tbody></table></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="btn">Open in Log explorer</span><span class="btn pri">Investigate</span></div>
+            <p class="note new" style="padding:6px 8px;border-radius:6px">Sends to /investigator with the question: "Investigate finding <b>F-0006</b>: Password spraying, 185.220.101.4 against 41 accounts between 03:10 and 03:26 UTC on 6 Oct, one success on mgarcia."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="bar"><div class="pill" id="pill"></div></div>
+
+<script>
+(function () {
+  var screens = Array.prototype.slice.call(document.querySelectorAll('.scr'));
+  var pill = document.getElementById('pill');
+  screens.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.textContent = s.dataset.name;
+    b.addEventListener('click', function () { show(i); });
+    pill.appendChild(b);
+  });
+  var cur = 0;
+  function show(i) {
+    cur = (i + screens.length) % screens.length;
+    screens.forEach(function (s, j) { s.classList.toggle('on', j === cur); });
+    Array.prototype.forEach.call(pill.children, function (b, j) { b.classList.toggle('cur', j === cur); });
+    window.scrollTo(0, 0);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+
+  // Defaults are the decisions of 24 October 2026; the other buttons stay for the record.
+  var state = { cite: 'panel', path: 'hops', radii: 'counts', prog: 'collapse' };
+  function apply() {
+    document.querySelectorAll('[data-show]').forEach(function (el) {
+      var parts = el.dataset.show.split(':');
+      el.hidden = state[parts[0]] !== parts[1];
+    });
+    document.querySelectorAll('.opt').forEach(function (b) {
+      b.classList.toggle('cur', state[b.dataset.set] === b.dataset.val);
+    });
+    var inv = document.getElementById('s6-inv');
+    inv.classList.toggle('with-panel', state.cite === 'panel');
+  }
+  document.querySelectorAll('.opt').forEach(function (b) {
+    b.addEventListener('click', function () { state[b.dataset.set] = b.dataset.val; apply(); });
+  });
+  apply();
+})();
+</script>
+</html>

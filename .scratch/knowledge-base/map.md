@@ -105,6 +105,16 @@ value it adds to the app, not for the sake of demonstrating RAG.
   comparisons with tie to off; Langfuse adopted to the full as a mirror with the repo files as the
   source of truth. Ten decisions under the ticket's Answer.
   [Research note](research/06-eval-design.md).
+- [What the screen shows for an explained alert](issues/07-explained-alert-screen.md): the chat
+  is the screen and the Alerts panel gains only a finding ID column; citations land in an
+  evidence panel, a third column built from the saved artifact and downloadable as JSON; a graph
+  path is one line per hop; the radii show as counts first with the lists in the panel; the
+  investigation tool's five steps stack while it runs, an exception to the Port's single status
+  line, and collapse into Tools used after, with a build condition to study Anthropic's and
+  OpenAI's progress patterns first; citation letters L, G, D; the judge's reason stays off the
+  screen; a five-level visual hierarchy with the verdict as the one coloured surface and tags in
+  link blue. Nine decisions and a draft API addition under the ticket's Answer.
+  [Prototype](research/07-explained-alert-prototype.html).
 
 ### Author's ruling, 20 October 2026
 
@@ -150,12 +160,13 @@ blocks them.
 | [06 The eval set for a graph-plus-text system](issues/06-eval-design.md) | research, then grilling (retyped 23 October 2026) | 04, 05 |
 | [07 What the screen shows for an explained alert](issues/07-explained-alert-screen.md) | prototype | 05 |
 
-Tickets 02, 03, 04, 05 and 06 are resolved (20, 21, 22, 22 and 23 October 2026). The author
-ruled 05 the most important ticket of the initiative and retyped it to research then grilling;
-its first comment records the agent's purpose and the playbook stance that every tool serves.
-Ticket 06 was retyped the same way on four gaps the earlier notes did not cover, and resolved the
-same day. The frontier is ticket 07, the last decision ticket. The spec (`mp-to-spec`) follows
-its resolution.
+Tickets 02 to 07 are resolved (20, 21, 22, 22, 23 and 24 October 2026). The author ruled 05 the
+most important ticket of the initiative and retyped it to research then grilling; its first
+comment records the agent's purpose and the playbook stance that every tool serves. Ticket 06 was
+retyped the same way on four gaps the earlier notes did not cover. Ticket 07 ran prototype first,
+grilling second, by the author's ruling that a screen cannot be decided from a description.
+**All decision tickets are resolved. The frontier is the spec for phases 0 and 1
+(`mp-to-spec`)**, which orders the build items the tickets handed off and turns them into tickets.
 
 ## Not yet specified
 
@@ -165,11 +176,12 @@ its resolution.
 - The tuning file's pairs and the calibrated refusal threshold itself; the judge model; the
   phase 1 questions and their gold IDs; the on-versus-off results for the re-ranker and BM25:
   phase 0 and phase 1 build, under ticket 06's rules.
-- Whether the artifact is shown or downloadable as an evidence panel, and the investigate
-  button on an alert row: ticket 07.
 - The exact hash fields and slug rules for the finding ID, and whether the answer is structured
   (text plus citation list) or parsed from prose: phase 0 build.
-- The spec for phases 0 and 1, after ticket 07.
+- The exact colours and dark-mode treatment of the answer's visual hierarchy (ticket 07,
+  decision 9), and the progress patterns borrowed from Anthropic's and OpenAI's docs (decision
+  4's build condition): the build ticket, with the author's screenshot review.
+- The spec for phases 0 and 1: next.
 
 ## Out of scope
 
