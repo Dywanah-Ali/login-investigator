@@ -5,18 +5,22 @@ Written: 25 October 2026, from the wayfinder map `map.md` and its resolved decis
 read in full with their comments. Source of truth for this initiative's scope from this point on.
 The API contract in `docs/api-contract.md` is part of this spec by reference; the additions it
 needs are listed under "API contract changes" and are made in the build ticket that first needs
-them. Existing terms (Investigation, Finding, Alert, Rule severity, Dataset) are defined in the root
-`GLOSSARY.md`; new terms are listed under Further Notes for `mp-domain-modeling`.
+them. Existing terms (Investigation, Finding, Alert, Rule severity) are defined in the root
+`GLOSSARY.md`; new terms, Dataset among them, are listed under Further Notes for `mp-domain-modeling`.
+Revised on 25 October 2026 after Codex's review; the triage and the author's six rulings are in
+`reviews/spec-review-2026-10-25-triage.md`.
 
 Every decision below cites the ticket that made it, as `T04 d6` (ticket 04, decision 6) or `T05 R3`
 (ticket 05, ruling 3). A decision that no ticket made, and that the author ruled while this spec
 was written, is marked **[spec ruling]**. The author ruled eight on 25 October 2026, one pop-up at a
-time, each the recommended option; each is a row in the decisions log at the end.
+time, each the recommended option; each is a row in the decisions log at the end. A decision the
+author ruled on Codex's review is marked **[review ruling N]**; there are six, each a row in the
+same log.
 
 ## Problem Statement
 
 The Login Investigator flags suspicious sign-ins with four detection rules and lets an analyst
-question an AI agent about them. The agent can see only the sign-in log and saved IP reputation
+question an AI agent about them. The agent can see only the sign-in log and IP reputation
 lookups. When a rule fires, the analyst still has to find out by hand who the account belongs to,
 which groups it is in, which systems it can reach and how sensitive they are, who else shares its
 laptop or network address, and whether a document explains the activity away (an approved trip, a
@@ -45,7 +49,7 @@ From the analyst's side:
 - The answer gives a verdict, the three blast radii as counts, the graph path one line per hop, and
   short citation tags L (log), G (graph) and D (document) (T07 d2, d3, d6, d9).
 - A third column holds two tabs. **Evidence** lists every cited record and passage for the
-  conversation, downloadable as JSON (T07 d1, d5). **Graph** draws only the walk the agent made,
+  investigation, downloadable as JSON (T07 d1, d5). **Graph** draws only the walk the agent made,
   read-only, with a click that lights the matching evidence (T08 d1 to d8).
 - When nothing in the corpus answers a question, the agent says so, with the closest misses shown
   (T03 d1). When a document clears the activity, the agent says the alert is benign and cites it
@@ -147,7 +151,7 @@ questions, and the author accepts the live screen. The initiative closes there.
 **The analyst, the evidence panel**
 
 31. As an analyst, I want a third column beside the chat listing every cited record and passage for
-    the conversation, so that all the proof sits in one place across turns.
+    the investigation, so that all the proof sits in one place across turns.
 32. As an analyst, I want a click on a citation tag to highlight its row in the evidence panel, so
     that I can check a claim in one move.
 33. As an analyst, I want document and log text in the panel shown as plain text, so that nothing in
@@ -234,7 +238,7 @@ questions, and the author accepts the live screen. The initiative closes there.
 64. As the author, I want the database rebuilt from the files for each test session and each eval
     run, then dropped, so that no run inherits another's state.
 65. As the author, I want the running app's database built once by one build command and kept until
-    I rebuild it, so that my conversations never trigger a rebuild.
+    I rebuild it, so that my investigations never trigger a rebuild.
 66. As the author, I want the app to refuse to start, with the build command in the message, when the
     world's files no longer match the files its database was built from, so that it never answers
     from an old world.
@@ -251,9 +255,9 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 71. As the eval runner, I want a second question file for the knowledge base beside the frozen Port
     file, so that "does the new thing work" never hides "does what worked still work".
-72. As the eval runner, I want every gold chunk and record ID found among the 20 fused candidates
-    and among the chunks the model received, per question, so that a broken search and a broken
-    ranking each fail the run.
+72. As the eval runner, I want every gold chunk ID found among the 20 fused candidates and among
+    the chunks the model received, per question, so that a broken search and a broken ranking each
+    fail the run.
 73. As the eval runner, I want every graph question's walk to return exactly the gold set, so that an
     extra or missing record is caught as a bug.
 74. As the eval runner, I want every citation to resolve and every gold ID to be cited, so that the
@@ -278,7 +282,7 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 **The author, observability**
 
-83. As the author, I want Langfuse traces of dev conversations and eval runs behind one switch that
+83. As the author, I want Langfuse traces of dev investigations and eval runs behind one switch that
     is off by default, so that I learn the platform without making the app depend on it.
 84. As the author, I want the JSON result file written before anything goes to Langfuse, and an
     upload failure shown loudly in the summary, so that the repo stays the evidence.
@@ -314,7 +318,8 @@ questions, and the author accepts the live screen. The initiative closes there.
 - **Three benign twins** (T04 d8), each cleared by one document: B1 approved travel (a Sales user in
   Germany for three days, travel notice), B2 reset burst (a user failing repeatedly from their own
   laptop, then succeeding, helpdesk ticket), B3 laptop swap (a user's rows switch `device_id`
-  mid-week, IT handover record).
+  mid-week, IT handover record). S6 and the twins fall on days that do not overlap the old stories
+  S1 to S5 (T04 conditions).
 - **[spec ruling] B2 fails at least 20 times within an hour, then succeeds.** T04 d8 said eight
   failures and set the condition that each twin must trip the Port's rules. The brute-force rule
   needs 20 failures on one account from one address within an hour, and success-after-failures needs
@@ -333,8 +338,9 @@ questions, and the author accepts the live screen. The initiative closes there.
   the regeneration ticket. The Port's old log file is retired, since the regenerated log keeps all
   its stories. Swapping worlds is naming another folder; the eval runner's isolation keeps working
   the same way.
-- **[spec ruling] The Port's ground-truth file stays.** The Port's scorer reads its own ground-truth
-  file for names such as `$S2_IP`. The generator keeps writing it in its current shape beside
+- **[spec ruling] The Port's ground-truth file stays.** The Port's scorer reads it for S5's planted
+  text, to grade the injection questions; the pattern names its checks use come from the Port's
+  question file, not from this file. The run fingerprint also lists it. The generator keeps writing it in its current shape beside
   `truth.json`, so the Port exam stays frozen (T06 d8). `truth.json` is the knowledge base's answer
   key. One generator writes both from one world, so they cannot disagree.
 - **The answer key** (T04 d15, T06 d2): `truth.json` holds each story S1 to S6, S6's blast radius
@@ -384,9 +390,10 @@ questions, and the author accepts the live screen. The initiative closes there.
   world's files change. Nothing watches the files.
 - **[spec ruling] The staleness guard.** Every build records in the database a fingerprint of the
   dataset folder's files together with the embedding model, the vector length and the chunking
-  settings. At startup the app recomputes the fingerprint from the folder. On a mismatch, startup
-  fails loudly with fixed text naming the build command, in the same way a log that fails
-  validation is refused today. The app never answers from a database built from an older world.
+  settings. At startup the app recomputes the fingerprint from the folder. **[review ruling 6]** On
+  a mismatch, the server does not start: startup fails loudly with fixed text naming the build command. This is
+  stricter than today's invalid log, where the server starts and the dataset endpoints answer with
+  an error. The app never answers from a database built from an older world.
 - **Read-only by two locks** (T02 d8): the agent's tools are hand-written parameterised functions in
   the core, with no model-written SQL; the agent connects with a role that can only read. The build
   uses a separate role.
@@ -425,7 +432,10 @@ questions, and the author accepts the live screen. The initiative closes there.
   chunks, computed from recorded scores before the model sees anything. The `none` rule stays off
   until the threshold is calibrated on the tuning file (T06 d4); until then the system answers and
   the eval shows how often it should have refused. If the re-ranker is switched off, `none` falls
-  back to the empty-result rule (T06 d9).
+  back to the empty-result rule, and the tuning file is re-scored with whatever score source
+  remains to calibrate a threshold on it (T06 d9). The empty-result rule alone cannot refuse on a
+  non-empty corpus, since exact vector search always returns candidates; the switch rule under
+  "The eval" guards this.
 - **Pinned versions** (T02, T03 conditions): `langchain-postgres` 0.0.19, `langchain-text-splitters`
   and `tiktoken` pinned exactly; one OpenRouter key for chat, embeddings and re-ranking.
 
@@ -434,22 +444,34 @@ questions, and the author accepts the live screen. The initiative closes there.
 - **Walked in NetworkX** (T02 d2), built in memory from the tables when the knowledge base opens, with
   named traversal functions in the core. Chunks are nodes too, joined to entities by `mentions` edges
   (T02 d7).
+- **[review ruling 1] "Used address" edges come from the log.** No organisation table links a person
+  to a network address; the log is already the truth for who signed in from where. The build draws
+  one `used address` edge per distinct user and network address pair in the log, for addresses in
+  the networks table. The row filter (for example, successful sign-ins only) is fixed in the
+  graph-build ticket and written beside the radius in `truth.json`. These edges serve the peers-by-
+  network step and the Graph tab (T08 d6). No copy of them is written as a table, so the two cannot
+  drift.
 - **Code walks, the agent reads** (T05 R5): one core function computes the radius for phase 1's fixed
   questions and returns it already joined. The same function is what the generator's answer-key test
   recomputes, so the tool and the key share one implementation. The hop-by-hop walk is a seam for
   phase 4, not built.
-- **The integrity check** (T06 comment of 24 October 2026): one core function runs whenever the
-  graph is built and fails loudly on the first mismatch.
+- **The integrity check** (T06 comment of 24 October 2026; strengthened by review ruling 1): one core
+  function runs whenever the graph is built and fails loudly on the first mismatch. It compares
+  identities, not only counts: a count is necessary but not sufficient, since a swap of two valid
+  links keeps every count right. The check reads its sources with its own code, never through the
+  build's.
 
   | Source | Becomes | Check |
   |---|---|---|
-  | A row in an entity table | one node | node count per type equals row count |
-  | A row in a link table | one edge | edge count per type equals row count; both ends exist |
-  | A chunk | one node | chunk node count equals the database's chunk count |
-  | A chunk-to-entity link | one `mentions` edge | edge count equals the link table's row count; both ends exist |
+  | A row in an entity table | one node | the set of node IDs per type equals the set of row IDs; each node's attributes that a walk reads (sensitivity, owner, department) equal its row's values |
+  | A row in a link table | one edge | the set of (source ID, target ID, type) per type equals the set read from the rows |
+  | A distinct user and address pair in the log | one `used address` edge | the set of (user, address) edges equals the set computed from the log with the same row filter |
+  | A chunk | one node | the set of chunk node IDs equals the database's chunk IDs |
+  | A chunk-to-entity link | one `mentions` edge | each chunk's `mentions` edges equal its rows in the link table, an empty set included |
 
-  Plus no isolated node outside a short allowed list (the two never-mentioned users). The retrieval
-  layer reports it as its precondition.
+  Plus no isolated node of type person, group, asset or device. A chunk with no `mentions` edge is
+  valid when its text names no entity, as the row above checks; a network address no one used may
+  stand alone. The retrieval layer reports the check as its precondition.
 - **The Gephi export** (T08 d9): a script calling one core function that sets colour by node type and
   writes the whole graph, or one finding's neighbourhood, as GEXF. No download endpoint. Attribute
   names never use the reserved `id`, `label` or `pid`.
@@ -490,7 +512,7 @@ questions, and the author accepts the live screen. The initiative closes there.
 - **Package caps** (T05 d12): five chunks per corpus search; assets and peers paged with a
   `truncated` flag in the content; full lists in the artifact.
 - **Citations** (T05 d6, T07 d6): short per-answer labels L, G and D, numbered per answer, resolved in
-  code against the conversation's artifacts after the model answers. A label that resolves to
+  code against the investigation's artifacts after the model answers. A label that resolves to
   nothing sends the model back once with a correction; a second failure shows the answer with the
   amber unverified warning. This is the per-turn light gate (T05 R4).
 - **One resolver** (T07 hand-offs, T08 hand-offs): the code that resolves citations for the screen's
@@ -569,11 +591,11 @@ contract moves.
 
    `kind` is `log`, `graph`, `document` or `search`. `text`, `label` and `sub` render as plain text
    only. `radii` is present only where the investigation tool ran. A folded node's `id` starts with
-   `fold:` and carries `members`; this naming is Claude's design from T08, not researched, and goes
-   in front of Codex at review. An edge's `label` is the citation whose resolved records contain it,
+   `fold:` and carries `members`; this naming is Claude's design from T08, not researched. Codex's
+   review of 25 October 2026 did not cover it, so it stays open for review. An edge's `label` is the citation whose resolved records contain it,
    or `null` when the walk returned it uncited.
 3. **Investigations: artifact download.** `GET /api/investigations/{id}/artifact.json`, served as an
-   attachment, carrying the same evidence and graph payload for the whole conversation and nothing
+   attachment, carrying the same evidence and graph payload for the whole investigation and nothing
    from the prompt or the memory file (T07 d5).
 4. **Investigations: ask.** A new stream event `step`,
    `{"call_id": "…", "step": 3, "of": 5, "name": "peers", "phase": "start" | "end" | "error"}`,
@@ -581,15 +603,16 @@ contract moves.
    tools to seven; nothing else about it changes.
 5. **Configuration and errors.** The log-path setting becomes a dataset setting naming a folder; new
    settings name the database connection (in `.env`), the Langfuse switch, and the re-ranker switch.
-   A stale database, by the staleness guard, joins the startup failures with fixed text that names
-   the build command and never echoes a path.
+   A stale database, by the staleness guard, stops the server from starting, with fixed text that
+   names the build command and never echoes a path. Unlike today's startup failures, no endpoint
+   answers in this state (review ruling 6).
 
 ### The screens (T07, T08)
 
 - **Alerts**: the finding ID as the first column (T07 d7). The details panel gains no context section.
 - **Investigator**: a third column on the right of the chat, folding under it on narrow screens, with
   an Evidence tab and a Graph tab, built from the Port's shell and shadcn/ui pieces (T07 d1, T08 d2).
-- **Evidence tab** (T07 d1, d5): every cited record and passage for the conversation; a click on a tag
+- **Evidence tab** (T07 d1, d5): every cited record and passage for the investigation; a click on a tag
   in the answer highlights its row; a download button for the JSON.
 - **The answer's hop lines and radii tiles** (T07 d2, d3): an indented list, one hop per line with its
   tag; three tiles with number, worst item and a "See list" link into the panel.
@@ -623,10 +646,15 @@ contract moves.
 - **New deterministic check kinds** `retrieval`, `cites`, `verdict`, `playbook`, and one model-graded
   kind `judge`, marked so rescoring skips it. The saved answer keeps each tool's artifact, so
   retrieval rescores from the file with no model call.
-- **Retrieval gate** (T06 d1): every gold chunk and record ID among the 20 fused candidates and among
-  the chunks the model received across the investigation. Either miss fails the run. The rank of the
-  first gold chunk is recorded. No rate, no borrowed target.
-- **Graph gate** (T06 d2): every graph question's walk returns exactly the gold record set.
+- **[review ruling 2] The gold items choose the checks.** Gold chunk IDs get the two
+  document-retrieval checks below; gold record IDs get the graph gate; a mixed question carries both
+  and gets both. A say-no question may carry an empty gold evidence set, but states its expected
+  verdict and keeps every other check that applies to it.
+- **Retrieval gate** (T06 d1): every gold chunk ID among the 20 fused candidates and among the chunks
+  the model received across the investigation. Either miss fails the run. The rank of the first gold
+  chunk is recorded. No rate, no borrowed target.
+- **Graph gate** (T06 d2): every question with gold record IDs has a walk that returns exactly the
+  gold record set.
 - **Answer gate** (T06 d5): every label resolves and every gold ID is cited. Say-no questions are
   graded from the artifacts first (an absent topic needs verdict `none`; a twin needs a benign
   conclusion with its clearing document cited), then the wording by pattern as the Port's checks do.
@@ -637,15 +665,17 @@ contract moves.
 - **The phase 1 mix** (T06 d3): about 30 questions, about 10 say-no (three twins, four absent topics,
   two false-presupposition traps, one underspecified), about 12 mixed and multi-hop (at least two
   through a busy node), about 8 graph and text lookups as the control group. B3's twin question is
-  asked about the laptop change directly. Every question carries a provenance line and gold IDs, or
-  it is dropped.
+  asked about the laptop change directly. Every question carries a provenance line, and gold IDs or
+  an expected verdict, or it is dropped. An absent-topic question carries verdict `none` and no gold
+  IDs.
 - **Calibration** (T06 d4): a separate tuning file of 30 to 60 query-plus-chunk pairs labelled by the
   author, scored once by the re-ranker, scores saved, threshold chosen offline. It never overlaps the
   test questions.
 - **The judge** (T06 d6): a stronger model from another family through OpenRouter, binary per claim
   with fixed steps, reason before verdict, markdown stripped first, three trials with majority, about
   ten answers per run, every verdict and reason stored. Reported with its interval, never failing a
-  run in phase 1. Judge prompt and model hashed into the fingerprint. The exact model is a phase 0
+  run in phase 1. Once the author's labels exist, judge-versus-author agreement is reported as
+  Cohen's kappa, computed in code. Judge prompt and model hashed into the fingerprint. The exact model is a phase 0
   build choice.
 - **The retrieval layer alone** (T06 d8): a path that calls the search and the walk directly, never
   through the agent, once per build, with the integrity check as its precondition.
@@ -654,7 +684,11 @@ contract moves.
 - **Switches settled by measurement** (T06 d9): the re-ranker and BM25 each run on and off over the
   retrieval layer on the same questions. A switch stays on only if it passes more questions on the
   second retrieval check, or the same number with better first-gold ranks. A tie goes to off.
-  Recorded at phase 1's close.
+  Recorded at phase 1's close, and re-run per phase and whenever the corpus changes shape.
+- **[review ruling 3] A setting wins only if refusal still works.** Either setting of a switch is
+  accepted only if the say-no checks pass with it, verdicts included. If the re-ranker off cannot
+  give `none` where the questions need it, the re-ranker stays on and the reason is recorded. The
+  verdict is computed in code, so this costs no model call.
 - **Intervals** (T06 hand-offs): Wilson intervals computed in code in the summary.
 
 ### Langfuse (T06 d10, AUD-036)
@@ -666,6 +700,11 @@ contract moves.
   written to a result. The JSON file is written first; an upload failure is logged loudly and noted
   in the summary. Only human labels flow back, through an export script into a repo file. Nothing at
   runtime reads from Langfuse. A masking hook is wired from day one.
+- **[review ruling 4] Proven with the switch on, too.** Deterministic tests with a fake Langfuse
+  destination, at the existing doors: the JSON result is written before any upload; an upload
+  failure is reported loudly in the summary and the JSON survives it; the masking hook is applied to
+  what is sent; human labels return only through the export script. The live evidence is one real
+  eval run visible in Langfuse, which is AUD-036's closure.
 - What leaves the machine, all synthetic: question text, log fields, corpus chunks, tool arguments,
   answers. When the author's access ends around 21 January 2027, the switch goes off and nothing else
   changes.
@@ -682,12 +721,12 @@ work proves it is done.
 
 | # | Door | What is tested there | Prior art |
 |---|---|---|---|
-| 1 | The dataset generator | The world's tables, log and answer key agree; the answer-key test recomputes S6's radius from the tables through the same radius function the tool uses; the Port's stories keep their rows; B1 and B2 trip the rules | The generator tests |
-| 2 | **The knowledge-base door in the core** (new) | One function opens a dataset's knowledge base; every query is a named function on it: investigate a finding, look up an account, find peers, search the corpus, project the walk, export to GEXF. Tested here: the integrity check and its corruption test; the walk equals the gold set; the three fusion traps and the two-question regression; filters before both legs; the three verdicts; the package caps and `truncated` flags; the GEXF write-and-read-back against the integrity check's counts and the reserved-name test; the read-only role refusing a write; the staleness guard refusing a database built from a changed file | The core tests for rules, search and stats |
-| 3 | The agent with a fake model | The fence on every tool result; the before-model hook adding a missing step; the after-model hook sending the model back once on an unresolved label; the model-call limit; `playbook_status` completing a step and naming one that cannot run; the artifact surviving the SQLite round trip | The agent and investigation-policy tests with their fake model |
-| 4 | The API through the test client | `finding_id` on alerts; `evidence`, `radii`, `unresolved` and `graph` on reopen, projected from the artifact; the artifact download carrying nothing beyond its fields; `step` events only from the investigation tool; the widened `tool` names; startup refusing a stale database with fixed text | The investigations and startup API tests |
+| 1 | The dataset generator | The world's tables, log and answer key agree; the answer-key test recomputes S6's radius from the tables through the same radius function the tool uses; the Port's stories keep their rows; B1 and B2 trip the rules; S6 and the twins fall on days apart from S1 to S5 | The generator tests |
+| 2 | **The knowledge-base door in the core** (new) | One function opens a dataset's knowledge base; every query is a named function on it: investigate a finding, look up an account, find peers, search the corpus, project the walk, export to GEXF. Tested here: the integrity check and its corruption tests, one of which swaps two valid link endpoints without changing any count, one of which changes a node attribute a walk reads; a chunk with no mentions passing; the walk equals the gold set; the three fusion traps and the two-question regression; filters before both legs; the three verdicts; the package caps and `truncated` flags; the GEXF write-and-read-back against the integrity check's counts and the reserved-name test; the read-only role refusing a write; the staleness guard refusing a database built from a changed file | The core tests for rules, search and stats |
+| 3 | The agent with a fake model | The fence on every tool result; the before-model hook adding a missing step; the after-model hook sending the model back once on an unresolved label; the model-call limit; `playbook_status` completing a step and naming one that cannot run; the artifact surviving the SQLite round trip; with Langfuse switched on against a fake destination, the callback handler sending traces with the masking hook applied | The agent and investigation-policy tests with their fake model |
+| 4 | The API through the test client | `finding_id` on alerts; `evidence`, `radii`, `unresolved` and `graph` on reopen, projected from the artifact; the artifact download carrying nothing beyond its fields; `step` events only from the investigation tool; the widened `tool` names; the server refusing to start on a stale database, with fixed text | The investigations and startup API tests |
 | 5 | The screens with a fake API | The finding ID column; the Investigate question carrying the ID; the evidence panel and its highlight; plain-text rendering of every data field; the step stack and its collapse; the Graph tab's click rule, empty state and read-only switch-off test | The Investigator and Alerts page tests with the fake API, and the repository-rules test |
-| 6 | The eval runner | Everything the model decides: the knowledge-base question file with its gates, the Port file unchanged, the retrieval layer alone, the judge as a smoke alarm, the on-versus-off comparisons | The scoring, results and question-file tests; the eval runner itself |
+| 6 | The eval runner | Everything the model decides: the knowledge-base question file with its gates, the Port file unchanged, the retrieval layer alone, the judge as a smoke alarm, the on-versus-off comparisons with the refusal condition. Deterministic runner tests here: which checks each question's gold items select; the kappa calculation; with Langfuse on against a fake destination, the JSON written before upload, an upload failure reported with the JSON intact, and labels returning only through the export script | The scoring, results and question-file tests; the eval runner itself |
 
 - **[spec ruling] Door 2 uses a fake embedder and a fake re-ranker,** handed in at the door the way
   the agent tests hand in a fake model, so the test suite stays key-free and offline. It still needs
@@ -703,7 +742,7 @@ work proves it is done.
 - **The author's looks**, recorded as dated lines on their build tickets, never as screenshots: the
   live screen on S6, one twin and one answer with no walk, with every drawn edge matching a hop line
   or a "walked, not cited" line (T07, T08 phase 1 acceptance); the GEXF file opened once in Gephi
-  Lite (T08 d9).
+  Lite (T08 d9); one real eval run seen in Langfuse (AUD-036).
 
 ## Out of Scope
 
@@ -732,29 +771,32 @@ it into tracer-bullet tickets; the order is the dependency floor, not the ticket
 |---|---|---|
 | 1 | pgvector on the Intel Mac; the database fixture failing loudly | 0 |
 | 2 | Regeneration: generator, tables, log with two new columns, S6, twins, `truth.json`, the `default` dataset folder, the loader and setting change; the Port's tests and eval pass on it | 0 |
-| 3 | The finding ID in the core and the Alerts reply; the Port's tests and eval pass | 0 |
+| 3 | The finding ID in the core; the Port's tests and eval pass | 0 |
 | 4 | The ATT&CK fetch script and pinned version | 0 |
 | 5 | The Codex brief and the consistency script, then the corpus delivery | 0 |
 | 6 | Ingestion: chunking, embeddings, the link table, the build and read-only roles, the build command and the staleness guard | 0 |
-| 7 | The graph build and its integrity check; the GEXF export and its tests; the author's Gephi Lite look | 0 |
-| 8 | Hybrid retrieval with fusion, filters, the re-ranker switch and the three verdicts | 0 |
-| 9 | The playbook list, the four new tools with content plus artifact, the artifact round trip | 0 |
-| 10 | The three hooks, the fence, `playbook_status` and the report gate | 0 |
-| 11 | The eval: new check kinds, the knowledge-base question file, the retrieval layer alone, the wider fingerprint, the judge, intervals; first questions passing end to end | 0 |
-| 12 | Langfuse behind its switch, each part tested with the switch off | 0 |
-| 13 | The API additions: evidence, radii, graph, artifact download, step events | 1 |
-| 14 | The screens: finding ID column, evidence panel, step stack (after its research step), Graph tab | 1 |
-| 15 | The tuning file and calibration; the `none` rule switched on | 1 |
-| 16 | The full phase 1 question set; the on-versus-off comparisons; the author's acceptance of the live screen | 1 |
+| 7 | The graph build with the log's `used address` edges, and its integrity check; the GEXF export and its tests; the author's Gephi Lite look | 0 |
+| 8 | The first knowledge-base questions with their gold IDs or expected verdicts, written before retrieval first runs (map, evaluation stance) | 0 |
+| 9 | Hybrid retrieval with fusion, filters, the re-ranker switch and the three verdicts | 0 |
+| 10 | The playbook list, the four new tools with content plus artifact, the artifact round trip | 0 |
+| 11 | The three hooks, the fence, `playbook_status` and the report gate | 0 |
+| 12 | The eval: new check kinds, the knowledge-base question file wired into the runner, the retrieval layer alone, the wider fingerprint, the judge and its kappa report, intervals; first questions passing end to end | 0 |
+| 13 | Langfuse behind its switch, tested with the switch off and with it on against a fake destination; one real eval run seen in Langfuse | 0 |
+| 14 | The API additions: `finding_id` on Alerts, evidence, radii, graph, artifact download, step events | 1 |
+| 15 | The screens: finding ID column, evidence panel, step stack (after its research step), Graph tab | 1 |
+| 16 | The tuning file and calibration; the `none` rule switched on | 1 |
+| 17 | The full phase 1 question set; the on-versus-off comparisons with the refusal condition; the author's acceptance of the live screen | 1 |
 
 **[spec ruling] The phase split.** Phase 0 builds everything behind the screen and proves it with
 tests and the eval on a first handful of questions. Phase 1 adds the API additions, the screens,
 calibration and the full question set, because phase 1's gate is the author's look at the live
-screen.
+screen. **[review ruling 5]** The Alerts `finding_id` field is one of those API additions; the
+core's finding ID it carries is built in phase 0.
 
 **New terms for the glossary** (for `mp-domain-modeling`, not added by this spec): knowledge base,
 playbook, investigation package, artifact, blast radius, peer, benign twin, verdict (`none`, `weak`,
-`found`), citation label, evidence panel, absent topic, canary, build, staleness guard.
+`found`), citation label, evidence panel, absent topic, canary, build, staleness guard, dataset,
+integrity check.
 
 **Risks worth naming.** gpt-4o-mini retires on 14 January 2027 (AUD-031); a long phase 1 may cross
 that date and force a model change mid-initiative, gated by both eval files. The author's Langfuse
@@ -776,3 +818,12 @@ them.
 | 2026-10-25 | Author's ruling: API additions and screens in phase 1, everything else in phase 0 | Phase 1's gate is the live screen |
 | 2026-10-25 | Author's ruling: the ID formats of T05 d5 win over the placeholder examples in T07 and T08 | IDs made from content survive rebuilds; counters shift when a finding is added |
 | 2026-10-25 | Author's ruling: the running app's database is built once by an explicit command and stays; a staleness guard refuses to start on a database built from older files | Raised by the author's question on what "every run" means; without the guard, changed files and an old database would give confident answers from an old world |
+| 2026-10-25 | Codex reviewed the spec (`reviews/spec-review-2026-10-25-codex.md`); Claude triaged it in a fresh session (`reviews/spec-review-2026-10-25-triage.md`): 13 findings agreed, one new finding (N1) added | The spec's author should not judge findings on its own spec alone |
+| 2026-10-25 | Review ruling 1: the integrity check compares identities, not only counts; `used address` edges come from the log and are checked against it; a chunk may have no `mentions` edge; no isolated person, group, asset or device | A count is necessary but not sufficient, as reconciliation practice says; the log is already the truth for who signed in from where; the old allowed list protected nobody, since every user has a laptop |
+| 2026-10-25 | Review ruling 2: the gold items choose the checks; a say-no question may carry no gold IDs but states its expected verdict | Graph records are never document candidates, and absent topics have no gold document; the rules as written failed or dropped valid questions |
+| 2026-10-25 | Review ruling 3: a retrieval setting wins only if the say-no checks pass with it; T06 d9's re-score and re-run clauses restored | With the re-ranker off, the empty-result rule never fires on a non-empty corpus, so a tie going to off would remove the refusal path |
+| 2026-10-25 | Review ruling 4: Langfuse proven with the switch on, against a fake destination, plus one real eval run seen in Langfuse | Switched-off tests cannot prove the promises made about it; AUD-036 closes on a visible run |
+| 2026-10-25 | Review ruling 5: the Alerts `finding_id` field ships in phase 1; the core's finding ID stays in phase 0 | Aligns the build table with the phase-split ruling; nothing in phase 0 reads the field |
+| 2026-10-25 | Review ruling 6: a stale database stops the server from starting; the comparison with today's invalid-log behaviour removed | Keeps the staleness-guard ruling; today's invalid log starts the server with endpoint errors, which is not what the ruling says |
+| 2026-10-25 | Correction: the reason for keeping the Port's ground-truth file is that the scorer reads S5's planted text from it; pattern names come from the question file. The ruling is unchanged | Codex's finding R10, verified at `backend/evals/scoring.py:44` and `:144` |
+| 2026-10-25 | Fixes from the review with no ruling needed: twins' scheduling restored (R8), kappa report restored (R7), first questions before retrieval in the build order (R5), "saved" removed from the reputation sentence (R12), Investigation used for the saved object and Dataset moved to the new terms (R13) | Each restores what the source tickets, the map, the code or the glossary already say |
