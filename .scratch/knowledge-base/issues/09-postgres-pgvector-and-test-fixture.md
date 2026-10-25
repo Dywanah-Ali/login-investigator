@@ -60,7 +60,6 @@ Outstanding before `resolved`:
 - Codex's review of the change.
 - The Port's eval, if the author wants it run: the change touches no agent code, but the safety
   net names it.
-- Removing the build-only packages (author's request), pending the author's approval of the list.
 
 Review findings not fixed, by choice: the ping treats every non-OK answer alike, so a server that is
 shutting down or a mistyped host also gets the start command (the message names host and port);
@@ -117,3 +116,7 @@ leftover databases after a killed run are AUD-044.
   `postgresql@17`, which Homebrew keeps as a build dependency of the source-built pgvector. Removing
   it needs an explicit `brew uninstall postgresql@17`; the old `postgresql@18` 18.6 build (no longer
   running) needs `brew cleanup postgresql@18`. Awaiting the author's approval of that list.
+- 2026-10-25, author approved; Claude ran it. `brew uninstall postgresql@17` also autoremoved
+  `icu4c@78` (86.7 MB); `brew cleanup postgresql@18` removed the old 18.6 build and its download
+  (96.9 MB). Left: `postgresql@18` 18.6_1, `pgvector` 0.8.7, `icu4c@79`; `brew autoremove
+  --dry-run` lists nothing. Server accepting connections; the four database fixture tests pass.
