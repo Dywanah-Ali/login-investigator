@@ -179,8 +179,12 @@ grilling second, by the author's ruling that a screen cannot be decided from a d
 Ticket 08 was opened on 24 October 2026 when the author found that the read-only graph screen and
 the Gephi export promised in ticket 02's decision 2 were never designed: ticket 07 did not take
 them up; it ran research, then prototype, then grilling, and resolved on 25 October 2026.
-**The frontier is the spec for phases 0 and 1 (`mp-to-spec`)**, which orders the build items the
-tickets handed off and turns them into tickets. The decision tickets are complete.
+The decision tickets are complete. The [spec for phases 0 and 1](spec.md) was written on
+25 October 2026 with `mp-to-spec`, after the author agreed six test doors and ruled eight points no
+ticket had decided (twins B2 and B3, the `default` dataset folder, the Port's answer key kept, fake
+embedder and re-ranker in tests, the phase split, the ID formats, and a staleness guard on the
+app's database). **The frontier is cutting the spec into build tickets (`mp-to-tickets`)**,
+numbered from 09.
 
 ## Not yet specified
 
@@ -201,7 +205,7 @@ tickets handed off and turns them into tickets. The decision tickets are complet
 - The graph integrity check (tables and chunk links against the built NetworkX graph): a phase 0
   build item, recorded in ticket 06's comments on 24 October 2026; the GEXF export test compares
   against it (ticket 08, decision 9).
-- The spec for phases 0 and 1: next.
+- The spec for phases 0 and 1: written, [spec.md](spec.md). The build tickets: next.
 
 ## Out of scope
 

@@ -146,3 +146,13 @@ The author took the recommended option on sixteen and chose a larger corpus on q
 the repo mid-grilling: the Port's eval asserts the S2 address got into no account; every attacker
 address has a saved reputation file; the loader imports `COLUMNS` from the generator; the four
 rules. Map pointer added; frontier moves to ticket 05.
+
+**2026-10-25, Claude, while writing the spec: decision 8 corrected by two author's rulings.** The
+four rules were checked against the twins. The brute-force rule needs 20 failures on one account
+from one address within an hour, and success-after-failures needs 10 in the hour before a success,
+so B2's eight failures would trip neither, against this decision's own condition. None of the rules
+reads `device_id`, so B3 can never become an alert. The author ruled, one pop-up at a time: **B2
+fails at least 20 times within an hour, then succeeds**, so it trips both rules; **B3 is tested by
+asking the agent about the laptop change directly**, and passes only if the agent finds the IT
+handover record and calls it benign. A fifth rule was not taken. The Answer above is unchanged; the
+spec (`../spec.md`, decisions log) carries the rulings.

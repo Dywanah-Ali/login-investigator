@@ -59,7 +59,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-030 | Exclude the initial event from later-sign-in prose totals | Open counting defect | High | B-070; P-107 final benchmark |
 | AUD-031 | Replace gpt-4o-mini before its retirement on 14 January 2027 | Open, deadline-bound; no model chosen | High | P-121; OpenRouter service notice |
 | AUD-032 | Move the agent's conversation memory from SQLite to the PostgreSQL checkpointer | Open, parked by the author; not in the knowledge-base initiative's scope | Low | Knowledge-base ticket 02, decision 9 |
-| AUD-033 | Incremental sync of the knowledge base instead of a full rebuild per run | Open, future; phases 0 and 1 rebuild in full | Low | Knowledge-base ticket 02, decision 6 |
+| AUD-033 | Incremental sync of the knowledge base instead of a full rebuild per run | Open, future; phases 0 and 1 rebuild in full; trigger to reopen: a full rebuild takes too long or costs too much to run per change | Low | Knowledge-base ticket 02, decision 6 |
 | AUD-034 | Check Intel-Mac wheels before recommending a native Python package | Open, process lesson; applied once in research note 03 (section 3.1) | Medium | Knowledge-base research note 02, section 3.8 |
 | AUD-035 | Evaluate Cohere Rerank 5 (calibrated relevance scores) as a replacement for `rerank-v3.5` once OpenRouter serves it | Open, watch item; swap gated by the eval set | Low | Knowledge-base research note 03, section 3.5 |
 | AUD-036 | Langfuse as the trace and eval-result store for the knowledge base; the author's three months of free access run 21 October 2026 to about 21 January 2027 | Decided, 23 October 2026 (ticket 06, decision 10): adopted to the full as a mirror behind a switch, repo files stay the source of truth; closes on one eval run visible in Langfuse | Medium | Author, 21 October 2026 |
@@ -487,6 +487,12 @@ reloaded, with provenance (which source, when). LangChain's indexing API with a 
 covers the chunk side. Closure evidence: a spec section for a later phase, a loader that skips
 unchanged inputs, and a test showing a changed record is reloaded and an unchanged one is not.
 
+**Trigger to reopen (author, 25 October 2026):** a full rebuild takes too long or costs too much
+to run per change, either because the world grows to thousands of documents or because its sources
+change often. Until then the knowledge-base spec's staleness guard makes a forgotten rebuild fail
+loudly at startup, and the content-made IDs (ticket 05, decision 5) keep an unchanged passage's ID
+stable, which incremental sync will rely on.
+
 ### AUD-034: Intel-Mac wheel check
 
 While researching ticket 02, two recommended packages (LanceDB 0.40.0, pgembed 0.2.0) turned out
@@ -764,4 +770,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 
 | 2026-10-22 | AUD-032 parking reaffirmed by the author; trigger to reopen set to phase 2 (history), when past investigations become knowledge. | Author, after ticket 05 |
 | 2026-10-24 | Knowledge-base ticket 07 resolved, prototype first then an eight-point grilling with the prototype open, plus a ninth decision the author raised: the chat is the screen with a finding ID column on Alerts; citations in an evidence panel built from the artifact and downloadable; one line per hop; radii as counts first; the investigation tool's steps stack while running (an exception to AUD-027, noted on its row) with a build condition to study Anthropic's and OpenAI's progress patterns; letters L, G, D; judge's reason off the screen; a five-level visual hierarchy. Added AUD-043 (judge's reason on screen, parked with a trigger). All decision tickets resolved; frontier moves to the spec. | Knowledge-base ticket 07 Answer; prototype; map |
+| 2026-10-25 | Knowledge-base spec for phases 0 and 1 written. AUD-033 gained its trigger to reopen (a full rebuild too slow or costly per change), raised by the author while ruling the spec's staleness guard. | Knowledge-base spec, decisions log |
 | 2026-10-23 | Knowledge-base ticket 06 resolved after a discussion, research note 06 and a ten-question grilling: two hard retrieval checks per question (top 20 and the 5 the model received), exact-set graph gate, a mix weighted to say-no and mixed questions, a separate tuning file for the refusal threshold, citation resolution with gold IDs as the answer gate, the judge as a smoke alarm with three trials and stored verdicts, playbook and canary checks as 100% gates, one scorer with two exams kept separate, on-versus-off comparisons for the re-ranker and BM25, and Langfuse adopted as a mirror. AUD-036 decided. Added AUD-042 (injection-detector middleware, parked with a trigger). Frontier moves to ticket 07. | Knowledge-base ticket 06 Answer; research note 06; map |
