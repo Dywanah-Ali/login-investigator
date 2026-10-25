@@ -116,6 +116,9 @@ leftover databases after a killed run are AUD-044.
   `postgresql@17`, which Homebrew keeps as a build dependency of the source-built pgvector. Removing
   it needs an explicit `brew uninstall postgresql@17`; the old `postgresql@18` 18.6 build (no longer
   running) needs `brew cleanup postgresql@18`. Awaiting the author's approval of that list.
+- 2026-10-25, author's ruling (pop-up): from ticket 17, our table access uses SQLAlchemy Core on
+  the psycopg driver, sharing one engine with LangChain's store. This ticket's server-level work
+  (ping, create and drop a database) stays on psycopg directly. Spec decisions log has the row.
 - 2026-10-25, author approved; Claude ran it. `brew uninstall postgresql@17` also autoremoved
   `icu4c@78` (86.7 MB); `brew cleanup postgresql@18` removed the old 18.6 build and its download
   (96.9 MB). Left: `postgresql@18` 18.6_1, `pgvector` 0.8.7, `icu4c@79`; `brew autoremove

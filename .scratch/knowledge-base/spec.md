@@ -398,6 +398,13 @@ questions, and the author accepts the live screen. The initiative closes there.
   the core, with no model-written SQL; the agent connects with a role that can only read. The build
   uses a separate role.
 - **Agent memory stays in SQLite** (T02 d9; AUD-032).
+- **[author's ruling, 25 October 2026] Our code reaches its tables through SQLAlchemy Core**, not
+  its ORM, on the psycopg driver (`postgresql+psycopg://`). The tables are defined in code and
+  created at each build. One engine and its connection pool are shared with LangChain's store,
+  whose `PGEngine` is an SQLAlchemy engine. The read-only role is a second engine with its own
+  connection string. Queries stay hand-written, parameterised functions in the core (T02 d8).
+  Server-level work (the ping, creating and dropping a database) stays on psycopg directly, as
+  ticket 09 built it.
 
 ### Chunking, embedding and retrieval (T03)
 
@@ -836,3 +843,4 @@ them.
 | 2026-10-25 | Author's ruling at ticket 09: build tickets close on the safety net, a clean type checker and the build loop's two-axis code review (`mp-code-review`) with its findings triaged. Codex's review is removed from the standing criteria of tickets 09 to 41, from the Testing Decisions and from the reviewer's user stories | Claude wrote "independent review by Codex" into this spec from the author's global defaults without a ruling; the author ruled that default does not apply to this project |
 | 2026-10-25 | Author's ruling: Matt Pocock's skills go back to their original names in Claude Code (`implement`, `tdd`, `to-tickets` and the rest), matching Codex's copies; only Claude Code's review keeps `mp-code-review`. Live references in this spec and tickets 09 to 41 name the review for both builders; dated history keeps the names used at the time | Codex builds some tickets too, so a closing condition must name a skill both builders have; Claude Code ships a built-in `code-review`, so that one name would clash |
 | 2026-10-25 | Author's ruling: Codex's copy of the review skill is renamed `code-review` to `mp-code-review` too, with its two callers (`implement`, `tdd`) updated, so both builders share every name. Tickets 09 to 41 name the review once, `mp-code-review` | One name per skill for both builders, with no exception to remember |
+| 2026-10-25 | Author's ruling: our table access uses SQLAlchemy Core on the psycopg driver, sharing one engine and pool with LangChain's store; no ORM; server-level tasks stay on psycopg | No ticket had decided the access layer. LangChain's `PGEngine` is an SQLAlchemy engine (LangChain's PGVectorStore docs), so one engine serves both; tables in code fit the fresh build; migrations, ORM objects and database portability bring nothing here |

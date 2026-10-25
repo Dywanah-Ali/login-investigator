@@ -24,6 +24,9 @@ and the own corpus flows in with no code change once ticket 16 delivers it.
 - Spec "The IDs": chunk ID `<doc-slug>@<version>#<section-path>/<ordinal>`; [spec ruling] the running
   app's database is built once by an explicit command; [spec ruling] door 2 uses a fake embedder.
 - Pinned versions: `langchain-postgres` 0.0.19, `langchain-text-splitters` and `tiktoken` exactly.
+- [author's ruling, 25 October 2026] Table access through SQLAlchemy Core (no ORM) on the psycopg
+  driver, one engine and pool shared with LangChain's `PGEngine`; tables defined in code; the
+  read-only role as a second engine. Spec, "The store and the build".
 - User stories 63 to 65, 68.
 
 ## Acceptance criteria
@@ -40,6 +43,8 @@ and the own corpus flows in with no code change once ticket 16 delivers it.
 - [ ] Door 2 tests use a fake embedder and the real PostgreSQL fixture from ticket 09. The one-string
       embedder check against OpenRouter is run once and recorded.
 - [ ] A test proves the read-only role is refused a write.
+- [ ] Our tables are defined and queried with SQLAlchemy Core through the engine LangChain's store
+      also uses; `sqlalchemy` is pinned exactly, with its x86_64 build checked.
 - [ ] The build runs on the ATT&CK pages alone; a test with one sample own document proves the own
       corpus needs no code change.
 - [ ] The first real build's time and cost are measured and recorded.
