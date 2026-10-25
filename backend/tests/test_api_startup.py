@@ -65,9 +65,9 @@ def test_a_missing_model_key_leaves_the_dashboards_working(monkeypatch, calls, m
 
 def test_a_log_that_fails_validation_makes_the_dataset_endpoints_answer_log_invalid(
         tmp_path, memory_path):
-    bad_log = tmp_path / "bad.csv"
+    bad_log = tmp_path / "logins.csv"
     bad_log.write_text("timestamp_utc,username\n2026-10-01T00:00:00Z,alice\n", encoding="utf-8")
-    settings = Settings.from_env({"LI_LOG_PATH": str(bad_log), "LI_MEMORY_PATH": str(memory_path)})
+    settings = Settings.from_env({"LI_DATASET_DIR": str(bad_log.parent), "LI_MEMORY_PATH": str(memory_path)})
     with TestClient(create_app(settings)) as client:
         for path in ["/api/dataset", "/api/overview"]:
             reply = client.get(path)
@@ -84,11 +84,11 @@ def test_a_bad_row_never_sends_its_log_values_back(tmp_path, memory_path):
     hostile = "<script>alert(1)</script>"
     row = {"timestamp_utc": "2026-10-01T00:00:00Z", "username": "alice", "source_ip": hostile,
            "country": "GB", "outcome": "success", "failure_reason": "", "user_agent": "x"}
-    bad_log = tmp_path / "bad.csv"
+    bad_log = tmp_path / "logins.csv"
     bad_log.write_text(",".join(generator.COLUMNS) + "\n"
                        + ",".join(row[column] for column in generator.COLUMNS) + "\n",
                        encoding="utf-8")
-    settings = Settings.from_env({"LI_LOG_PATH": str(bad_log), "LI_MEMORY_PATH": str(memory_path)})
+    settings = Settings.from_env({"LI_DATASET_DIR": str(bad_log.parent), "LI_MEMORY_PATH": str(memory_path)})
     with TestClient(create_app(settings)) as client:
         reply = client.get("/api/overview")
     assert reply.status_code == 500
@@ -96,10 +96,16 @@ def test_a_bad_row_never_sends_its_log_values_back(tmp_path, memory_path):
     assert "script" not in reply.text
 
 
-def test_a_missing_log_file_does_not_reveal_where_the_server_looked(tmp_path, memory_path):
+@pytest.mark.parametrize("folder_kind", ["missing", "empty", "file"])
+def test_an_invalid_dataset_folder_does_not_reveal_where_the_server_looked(
+        tmp_path, memory_path, folder_kind):
     """The loader's own message holds the full path, which can name the machine's user (B-003)."""
     missing = tmp_path / "private-folder" / "logins.csv"
-    settings = Settings.from_env({"LI_LOG_PATH": str(missing), "LI_MEMORY_PATH": str(memory_path)})
+    if folder_kind == "empty":
+        missing.parent.mkdir()
+    elif folder_kind == "file":
+        missing.parent.write_text("not a folder", encoding="utf-8")
+    settings = Settings.from_env({"LI_DATASET_DIR": str(missing.parent), "LI_MEMORY_PATH": str(memory_path)})
     with TestClient(create_app(settings)) as client:
         reply = client.get("/api/dataset")
     assert reply.status_code == 500
@@ -110,14 +116,14 @@ def test_a_missing_log_file_does_not_reveal_where_the_server_looked(tmp_path, me
 
 def test_the_settings_default_to_the_paths_in_the_contract():
     settings = Settings.from_env({})
-    assert settings.log_path.parts[-3:] == ("backend", "data", "logins.csv")
+    assert settings.dataset_dir.parts[-4:] == ("backend", "data", "datasets", "default")
     assert settings.memory_path.parts[-3:] == ("backend", "memory", "investigations.sqlite")
     assert settings.reputation_dir.parts[-3:] == ("backend", "data", "ip_reputation")
 
 
 def test_the_settings_read_each_path_from_the_environment(tmp_path):
-    settings = Settings.from_env({"LI_LOG_PATH": str(tmp_path / "a.csv"),
+    settings = Settings.from_env({"LI_DATASET_DIR": str(tmp_path / "dataset"),
                                   "LI_MEMORY_PATH": str(tmp_path / "b.sqlite"),
                                   "LI_REPUTATION_DIR": str(tmp_path / "c")})
-    assert settings == Settings(log_path=tmp_path / "a.csv", memory_path=tmp_path / "b.sqlite",
+    assert settings == Settings(dataset_dir=tmp_path / "dataset", memory_path=tmp_path / "b.sqlite",
                                 reputation_dir=tmp_path / "c")

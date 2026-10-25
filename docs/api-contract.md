@@ -29,7 +29,7 @@ Configuration comes from environment variables, so the eval runner can isolate a
 
 | Variable | Default | Used for |
 |---|---|---|
-| `LI_LOG_PATH` | `backend/data/logins.csv` | The dataset the core loads at startup |
+| `LI_DATASET_DIR` | `backend/data/datasets/default` | The dataset folder; startup loads its `logins.csv` |
 | `LI_MEMORY_PATH` | `backend/memory/investigations.sqlite` | The `SqliteSaver` memory and the investigations table, one file |
 | `LI_REPUTATION_DIR` | `backend/data/ip_reputation` | Saved AbuseIPDB responses |
 | `OPENROUTER_API_KEY` | none | The model. Missing: see "Agent unavailable" |

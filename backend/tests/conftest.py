@@ -1,4 +1,4 @@
-"""Shared fixtures. Expected answers always come from evals/ground_truth.json, never the tests."""
+"""Shared fixtures. Expected answers always come from data/datasets/default/ground_truth.json, never the tests."""
 
 import json
 

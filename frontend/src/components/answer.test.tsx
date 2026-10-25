@@ -17,7 +17,7 @@ test('answers allow the agreed formatting and keep link addresses visible as tex
 })
 
 test('S5 and crafted answers cannot create links, images, executable or raw HTML', () => {
-  const truth = JSON.parse(readFileSync(path.resolve(import.meta.dirname, '../../../backend/evals/ground_truth.json'), 'utf8'))
+  const truth = JSON.parse(readFileSync(path.resolve(import.meta.dirname, '../../../backend/data/datasets/default/ground_truth.json'), 'utf8'))
   const { container } = render(<Answer text={truth.scenarios.S5.text + '\n\n' + [
     '[click](javascript:alert%281%29)',
     '![tracking](https://evil.example/pixel)',

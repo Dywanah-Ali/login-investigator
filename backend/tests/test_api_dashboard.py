@@ -1,5 +1,5 @@
 """The dashboard endpoints, called from outside through FastAPI's test client (ticket 12). Shapes come
-from docs/api-contract.md. Expected values come from evals/ground_truth.json or are written out by
+from docs/api-contract.md. Expected values come from data/datasets/default/ground_truth.json or are written out by
 hand, never recomputed the way the code does.
 """
 
@@ -351,10 +351,10 @@ def test_csv_contains_the_same_filtered_rows_in_the_same_order(client):
 
 
 def test_csv_keeps_formula_protection_at_the_http_boundary(tmp_path):
-    path = tmp_path / 'log.csv'
+    path = tmp_path / 'logins.csv'
     path.write_text('timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent\n'
                     '2026-10-01T00:00:00Z,=1+1,203.0.113.10,GB,failure,bad_password,+cmd\n')
-    settings = Settings.from_env({'LI_LOG_PATH': str(path), 'LI_MEMORY_PATH': str(tmp_path / 'm.sqlite')})
+    settings = Settings.from_env({'LI_DATASET_DIR': str(path.parent), 'LI_MEMORY_PATH': str(tmp_path / 'm.sqlite')})
     with TestClient(create_app(settings)) as api:
         raw = api.get('/api/explorer').json()['rows'][0]
         downloaded = list(csv.DictReader(io.StringIO(api.get('/api/explorer.csv').text)))[0]

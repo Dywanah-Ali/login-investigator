@@ -18,6 +18,11 @@ backend and a React frontend built with shadcn/ui.
 The core in `backend/login_investigator` is copied from v1 unchanged and imports neither Streamlit
 nor FastAPI. A boundary test enforces that.
 
+The default dataset lives in `backend/data/datasets/default/`. Set `LI_DATASET_DIR` to select
+another folder containing `logins.csv`; this replaces the former `LI_LOG_PATH` setting. The
+generator writes the default log and the Port's answer key together in that folder. The Port's
+evaluation keeps using that default answer key and its frozen questions.
+
 ## Requirements
 
 - Python 3.12 and [uv](https://docs.astral.sh/uv/)

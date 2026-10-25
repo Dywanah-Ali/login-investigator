@@ -19,7 +19,7 @@ from login_investigator.reputation import lookup
 from tests.test_agent import FakeModel, tool_call
 
 QUESTIONS = {q["id"]: q for q in load_questions()}
-TRUTH = json.loads((REPO_ROOT / "evals" / "ground_truth.json").read_text())["scenarios"]
+TRUTH = json.loads((REPO_ROOT / "data" / "datasets" / "default" / "ground_truth.json").read_text())["scenarios"]
 
 
 def check(question: str, check_id: str) -> dict:

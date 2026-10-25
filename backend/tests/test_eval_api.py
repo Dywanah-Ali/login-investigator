@@ -14,12 +14,20 @@ from login_investigator import agent
 from tests.test_agent import FakeModel, REPORT, tool_call
 
 
-def test_eval_server_uses_temporary_memory_and_cannot_reload_real_keys(monkeypatch):
+def test_eval_server_uses_temporary_memory_and_cannot_reload_real_keys(monkeypatch, tmp_path):
     # A child does not inherit pytest's in-process guard. Even with a key in the parent,
     # the eval server must never recover the AbuseIPDB key from either source.
     monkeypatch.setenv("ABUSEIPDB_API_KEY", "fake-parent-key")
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     monkeypatch.setenv("LI_MEMORY_PATH", "/not-the-eval-memory/cases.sqlite")
+    folder = tmp_path / "dataset"
+    folder.mkdir()
+    (folder / "logins.csv").write_text(
+        "timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent\n"
+        "2026-10-01T09:00:00Z,alice,203.0.113.10,GB,success,,test-agent\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("LI_DATASET_DIR", str(folder))
     # Observe the operating-system boundary while still launching the real child.
     popen = api_runner.subprocess.Popen
     child_env = {}
@@ -35,11 +43,13 @@ def test_eval_server_uses_temporary_memory_and_cannot_reload_real_keys(monkeypat
         memory = Path(child_env["LI_MEMORY_PATH"])
         assert memory.is_file()
         assert client.get("/api/dataset").status_code == 200
+        assert client.get("/api/overview").json()["summary"]["total"] == 1
         response = client.post("/api/investigations", json={"question": "Anything suspicious?"})
         assert response.status_code == 503
         assert response.json()["error"]["code"] == "agent_unavailable"
         url = str(client.base_url)
     assert not memory.exists()
+    assert (folder / "logins.csv").is_file()  # cleanup removes memory, never the dataset
     # The child is stopped and its listening socket is closed on leaving the context.
     try:
         httpx.get(url, timeout=1, trust_env=False)

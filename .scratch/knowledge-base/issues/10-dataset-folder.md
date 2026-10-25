@@ -1,7 +1,7 @@
 # 10: The dataset folder
 
 Type: build (prefactor)
-Status: ready-for-agent
+Status: claimed
 Blocked by: none
 Phase: 0
 
@@ -38,3 +38,9 @@ the ground so tickets 11 and 12 only add to the folder.
       findings triaged.
 
 ## Comments
+
+### 2026-10-26 — Implementation started
+
+Testing at the spec's agreed doors 1 (generator), 4 (API startup and dataset responses), and 6
+(eval runner). Review baseline: `ec2acec26d3f17d5f0ee3daaf97608c42c85dcd5`. This ticket relocates
+the existing files without changing their contents or the Port's questions and grading rules.

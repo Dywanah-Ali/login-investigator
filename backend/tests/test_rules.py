@@ -1,6 +1,6 @@
 """Gate 1: the rules catch S1 to S4, and flag nothing else.
 
-Expected values come from evals/ground_truth.json. Threshold edge cases use small made-up logs.
+Expected values come from data/datasets/default/ground_truth.json. Threshold edge cases use small made-up logs.
 """
 
 import ipaddress

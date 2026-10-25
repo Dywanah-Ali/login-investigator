@@ -39,7 +39,7 @@ def no_network(monkeypatch):
 
 @pytest.fixture
 def tiny_log(tmp_path):
-    path = tmp_path / "tiny.csv"
+    path = tmp_path / "logins.csv"
     lines = [",".join(generator.COLUMNS)]
     lines += [",".join((*row[:5], row[5], "Mozilla/5.0")) for row in TINY_LOG]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -53,7 +53,7 @@ def settings_for(tmp_path, **environ) -> Settings:
 def test_the_search_and_rules_tools_read_the_configured_log(monkeypatch, tmp_path, tiny_log):
     """The tools share the dashboards' startup load: the right counts, and no load of their own.
     A second load of the same file would give the same counts, so the loads are counted too."""
-    with TestClient(create_app(settings_for(tmp_path, LI_LOG_PATH=str(tiny_log)))) as client:
+    with TestClient(create_app(settings_for(tmp_path, LI_DATASET_DIR=str(tiny_log.parent)))) as client:
         own_loads = []
         monkeypatch.setattr(tools, "load_log", lambda *a, **k: own_loads.append("log"))
         monkeypatch.setattr(tools, "detect_all", lambda *a, **k: own_loads.append("rules"))
@@ -83,9 +83,9 @@ def test_the_reputation_tool_reads_the_configured_folder(tmp_path):
 def test_a_log_that_fails_validation_is_refused_never_replaced_by_the_default(tmp_path):
     """Author's ruling, 17 Oct: a failure stays inside the part it belongs to. The log tools
     refuse with fixed text; the reputation tool, which needs no log, keeps working."""
-    bad_log = tmp_path / "bad.csv"
+    bad_log = tmp_path / "logins.csv"
     bad_log.write_text("timestamp_utc,username\n2026-10-01T00:00:00Z,alice\n", encoding="utf-8")
-    with TestClient(create_app(settings_for(tmp_path, LI_LOG_PATH=str(bad_log)))):
+    with TestClient(create_app(settings_for(tmp_path, LI_DATASET_DIR=str(bad_log.parent)))):
         searched = run(search_logins, user="alice")
         found = run(find_suspicious_activity)
         looked_up = run(lookup_ip_reputation, ip="8.8.8.8")
@@ -95,7 +95,7 @@ def test_a_log_that_fails_validation_is_refused_never_replaced_by_the_default(tm
 
 def test_after_shutdown_the_tools_read_the_default_log_again(tmp_path, tiny_log, truth):
     """No app leaves its data behind for the next test, or for the eval runner's direct mode."""
-    with TestClient(create_app(settings_for(tmp_path, LI_LOG_PATH=str(tiny_log)))):
+    with TestClient(create_app(settings_for(tmp_path, LI_DATASET_DIR=str(tiny_log.parent)))):
         pass
     assert run(search_logins)["data"]["total"] == truth["row_count"]
 
@@ -106,6 +106,6 @@ def test_a_startup_that_fails_leaves_nothing_behind(monkeypatch, tmp_path, tiny_
         raise OSError("the memory file cannot be opened")
     monkeypatch.setattr(investigations, "open_memory", broken)
     with pytest.raises(OSError):
-        with TestClient(create_app(settings_for(tmp_path, LI_LOG_PATH=str(tiny_log)))):
+        with TestClient(create_app(settings_for(tmp_path, LI_DATASET_DIR=str(tiny_log.parent)))):
             pass
     assert run(search_logins)["data"]["total"] == truth["row_count"]

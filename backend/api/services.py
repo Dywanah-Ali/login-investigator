@@ -50,8 +50,9 @@ class Services:
 
 def start(settings: Settings) -> Services:
     dataset, dataset_error = None, None
+    log_path = settings.dataset_dir / "logins.csv"
     try:
-        frame = loader.load_log(settings.log_path)
+        frame = loader.load_log(log_path)
         # The rules need each user's whole history, so they run once on the whole log.
         dataset = Dataset(frame=frame, findings=rules.detect_all(frame),
                           facts=dataset_facts(frame))
@@ -61,7 +62,7 @@ def start(settings: Settings) -> Services:
         # missing-file message holds the full path, which can name the machine's user (bug log
         # B-003), and its row messages quote the bad rows' raw log values (B-008).
         dataset_error = ("The log failed validation. The server log lists the problems."
-                         if settings.log_path.is_file()
+                         if log_path.is_file()
                          else "The configured log file was not found.")
 
     memory = investigations.open_memory(settings.memory_path)

@@ -1,6 +1,6 @@
 """The logic v1 kept in its Streamlit screens, now in the core so the API and the screens can
 never disagree (decided in ticket 01, moved in ticket 11). Adapted from v1's tests/test_app.py. Expected values
-come from evals/ground_truth.json or are written out by hand, never recomputed the way the code does.
+come from data/datasets/default/ground_truth.json or are written out by hand, never recomputed the way the code does.
 """
 
 from datetime import date

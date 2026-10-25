@@ -66,7 +66,7 @@ def git_commit() -> str:
         return subprocess.run(["git", *args], capture_output=True, text=True).stdout.strip()
     dirty = git("status", "--porcelain", "--", "login_investigator", "api", "evals/run.py",
                 "evals/api_runner.py", "evals/scoring.py", "evals/questions.json",
-                "evals/ground_truth.json", "pyproject.toml", "uv.lock")
+                "data/datasets/default", "pyproject.toml", "uv.lock")
     return git("rev-parse", "--short", "HEAD") + ("+changes" if dirty else "")
 
 

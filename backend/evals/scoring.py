@@ -24,9 +24,11 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from login_investigator.generator import GROUND_TRUTH_PATH
+
 KINDS = ("has", "regex", "not", "tool", "report")
 QUESTIONS = Path(__file__).parent / "questions.json"
-GROUND_TRUTH = Path(__file__).parent / "ground_truth.json"
+GROUND_TRUTH = GROUND_TRUTH_PATH
 _NAME = re.compile(r"\$([A-Z_]+)")
 _QUOTED = re.compile(r'"[^"]*"|“[^”]*”')
 

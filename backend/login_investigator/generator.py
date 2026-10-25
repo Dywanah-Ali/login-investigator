@@ -22,8 +22,9 @@ CAPTURED_AT = datetime(2026, 10, 8, 9, 0, tzinfo=timezone.utc)
 WINDOW_START = CAPTURED_AT - timedelta(days=7)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-LOG_PATH = REPO_ROOT / "data" / "logins.csv"
-GROUND_TRUTH_PATH = REPO_ROOT / "evals" / "ground_truth.json"
+DATASET_DIR = REPO_ROOT / "data" / "datasets" / "default"
+LOG_PATH = DATASET_DIR / "logins.csv"
+GROUND_TRUTH_PATH = DATASET_DIR / "ground_truth.json"
 
 COLUMNS = [
     "timestamp_utc",

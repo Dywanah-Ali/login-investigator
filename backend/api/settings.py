@@ -1,7 +1,7 @@
 """Configuration from environment variables, so the eval runner can isolate a run. The defaults are
 the core's own paths, so v2 runs on v1's data with nothing set. The two API keys are not read here:
 the core reads them where it uses them, as in v1. The dashboards and the agent's tools read the
-same `log_path` and `reputation_dir`: startup hands the loaded log to the tools (ticket 22).
+same `dataset_dir` and `reputation_dir`: startup hands the loaded log to the tools (ticket 22).
 """
 
 from __future__ import annotations
@@ -11,14 +11,14 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
-from login_investigator.generator import LOG_PATH
+from login_investigator.generator import DATASET_DIR
 from login_investigator.investigations import MEMORY_PATH
 from login_investigator.reputation import SAVED_DIR
 
 
 @dataclass(frozen=True)
 class Settings:
-    log_path: Path
+    dataset_dir: Path
     memory_path: Path
     reputation_dir: Path
 
@@ -29,7 +29,7 @@ class Settings:
             return Path(value) if value else default
 
         return cls(
-            log_path=path("LI_LOG_PATH", LOG_PATH),
+            dataset_dir=path("LI_DATASET_DIR", DATASET_DIR),
             memory_path=path("LI_MEMORY_PATH", MEMORY_PATH),
             reputation_dir=path("LI_REPUTATION_DIR", SAVED_DIR),
         )
