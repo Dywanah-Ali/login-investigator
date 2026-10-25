@@ -191,7 +191,7 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is tickets 10 and 13**, which have no blockers; one session
+line holds its edges. **The frontier is tickets 11, 13 and 14**, which have no unresolved blockers; one session
 works at a time, so first by number wins.
 
 ### Build tickets resolved
@@ -203,6 +203,14 @@ works at a time, so first by number wins.
   command. Rulings on the way: Codex's review is not a gate (tickets close on the builder's own
   `mp-code-review`); table access from ticket 17 through SQLAlchemy Core; the Port's eval skipped
   for this ticket.
+
+- [10 The dataset folder](issues/10-dataset-folder.md)
+  (26 October 2026): `LI_DATASET_DIR` replaces `LI_LOG_PATH`; the default log and Port answer key
+  live together in `backend/data/datasets/default/`, moved byte-identically. Generator, API,
+  tools, scorer and test readers follow the move. Seed README added. Evidence: 423 backend tests,
+  149 frontend tests on the final rerun, clean typechecks, Standards and Spec review with no
+  findings; unchanged Port eval 55/57 overall and 15/15 security meets its gates. Explorer timeouts
+  and two inaccurate model answers remain recorded outside scope in B-066, B-070 and B-073.
 
 ## Not yet specified
 

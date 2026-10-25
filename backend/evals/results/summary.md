@@ -19,3 +19,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-17 18:53 | 35d4d98f | 84065b9+changes | 19 x 3 | 98% | 100% | yes | api: T18 full API benchmark, unchanged v1 prompt and grader |
 | 2026-10-19 11:03 | 4caada27 | 9d28987+changes | 19 x 3 | 96% | 100% | yes | api: required-searches-and-report-order |
 | 2026-10-19 11:07 | 7ff8e5ae | 9d28987+changes | 19 x 3 | 98% | 100% | yes | api: scope-preserving-required-searches-and-report-order |
+| 2026-10-25 22:08 | 7ff8e5ae | ab8583f | 19 x 3 | 96% | 100% | yes | api: T10 dataset folder relocation; unchanged Port exam |

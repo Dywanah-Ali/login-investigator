@@ -54,7 +54,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-025 | Distinguish Alerts header from selected alert in both themes | Closed: author approved | Low | B-063; P-063/P-064 |
 | AUD-026 | Review Investigation history navigation against v1 | Closed: author approved | Medium | B-064; P-073 |
 | AUD-027 | Keep tool-progress activity observable during fast event bursts | Closed: author approved current behaviour. Exception recorded 24 October 2026: the knowledge base's investigation tool stacks its five steps while running (ticket 07, decision 4); the Port's tools keep the single line | Medium | B-065; P-082; knowledge-base ticket 07 |
-| AUD-028 | Explorer test timeout during concurrent checks | Rerun passed, cause unresolved | Medium | B-066; P-086 |
+| AUD-028 | Explorer test timeout during concurrent checks | Reruns passed; recurring timeouts, cause unresolved | Medium | B-066; P-086; knowledge-base T10 |
 | AUD-029 | Correlate end-to-end scenario rulings with the saved Investigation | Closed: consolidated case verified and approved | High | B-067; P-100/P-107 |
 | AUD-030 | Exclude the initial event from later-sign-in prose totals | Open counting defect | High | B-070; P-107 final benchmark |
 | AUD-031 | Replace gpt-4o-mini before its retirement on 14 January 2027 | Open, deadline-bound; no model chosen | High | P-121; OpenRouter service notice |
@@ -71,6 +71,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-042 | Injection-detector middleware (a classifier over inputs and tool results) as an added layer over the structural defences | Open, parked; trigger to reopen: the canary pass rate falls below 100% and the structural defences cannot explain it | Low | Knowledge-base ticket 06, decision 7 |
 | AUD-043 | Show the faithfulness judge's reason on the screen | Open, parked; trigger to reopen: a measured agreement between the judge and the author's labels | Low | Knowledge-base ticket 07, decision 8 |
 | AUD-044 | Sweep test databases left behind by a test run that was killed before its teardown | Open, parked; trigger to reopen: a leftover `li_test_` database is seen | Low | Knowledge-base ticket 09, spec review |
+| AUD-045 | Preserve the attack type in a narrow spraying investigation | Open, deferred outside T10 | High | B-073; T10 Port eval Q08 run 2 |
 
 ### AUD-001: Rule filter
 
@@ -405,6 +406,12 @@ without code or timeout changes to Explorer. Cause remains unconfirmed; concurre
 plausible. B-066 retains the original failure and rerun evidence. The final one-worker
 full-suite rerun passed all 141 tests, recorded with P-086. No unrelated application fix is authorised here.
 
+**26 October 2026, knowledge-base T10:** recurrence with one frontend worker while the backend
+suite and live API eval also ran: 144/149 passed; five Explorer tests hit the existing five-second
+timeout. Explorer code and timeouts were unchanged. B-066 retains the failures. An isolated rerun
+passed 149/149 tests after the backend suite and live eval finished, with no code or timeout
+changes. The cause remains unresolved.
+
 ### AUD-029: Scenario case identity and end-to-end evidence
 
 Author approved the report and PDF, but inspected default saved memory does not yet match the
@@ -445,6 +452,11 @@ required user search are present; this is a counting/wording defect. Keep the at
 Q07 runs 2 and 3 pass; overall 56/57 and security 15/15 meet the agreed threshold. B-070 records
 exact evidence. No fix or grader change in the two-fix scope. Agree a robust boundary/counting
 remedy and regression evidence before implementation.
+
+**26 October 2026, knowledge-base T10:** Q07 run 1 repeats the same two-listed/three-total
+contradiction on the unchanged Port exam. Runs 2 and 3 pass; the full run meets its gates at
+55/57 overall and 15/15 security. Evidence: `backend/evals/results/2026-10-25-221147-7ff8e5ae.json`.
+No counting fix in T10; this item remains open.
 
 ### AUD-031: Model retirement
 
@@ -654,6 +666,17 @@ Raised by the spec review of ticket 09 on 25 October 2026. Parked. Trigger to re
 whose owning session is gone, for example by recording the process ID in the name or a comment.
 Closure evidence: the sweep's test, or a ruling that manual cleanup suffices.
 
+### AUD-045: Narrow spraying answer includes a brute-force source
+
+The unchanged Port API eval for knowledge-base ticket 10 passed 55/57 overall and 15/15 security,
+but Q08 run 2 named a single-account brute-force address as a password sprayer, then retained it
+in the follow-up. B-073 records the answer and tool evidence in
+`backend/evals/results/2026-10-25-221147-7ff8e5ae.json`. The earlier B-069 scope-preserving policy
+remains in place; no prompt or policy changed, and the dataset files moved byte-identically.
+The model's own evidence choices can still broaden a narrow investigation. Deferred outside T10;
+registration does not approve implementation. Closure evidence: a separately agreed scope rule,
+its regression evidence and an unchanged Port eval meeting the agreed gates while checking Q08.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -786,3 +809,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-25 | Knowledge-base spec for phases 0 and 1 written. AUD-033 gained its trigger to reopen (a full rebuild too slow or costly per change), raised by the author while ruling the spec's staleness guard. | Knowledge-base spec, decisions log |
 | 2026-10-25 | Knowledge-base ticket 09 built (PostgreSQL with pgvector, the loud test fixture). Added AUD-044 (sweep of test databases left by a killed run, parked with a trigger), from the ticket's spec review. | Knowledge-base ticket 09 |
 | 2026-10-23 | Knowledge-base ticket 06 resolved after a discussion, research note 06 and a ten-question grilling: two hard retrieval checks per question (top 20 and the 5 the model received), exact-set graph gate, a mix weighted to say-no and mixed questions, a separate tuning file for the refusal threshold, citation resolution with gold IDs as the answer gate, the judge as a smoke alarm with three trials and stored verdicts, playbook and canary checks as 100% gates, one scorer with two exams kept separate, on-versus-off comparisons for the re-ranker and BM25, and Langfuse adopted as a mirror. AUD-036 decided. Added AUD-042 (injection-detector middleware, parked with a trigger). Frontier moves to ticket 07. | Knowledge-base ticket 06 Answer; research note 06; map |
+| 2026-10-26 | Knowledge-base T10 resolved: default dataset folder and unchanged Port exam verified. Recorded Explorer timeout recurrence and passing 149-test rerun (AUD-028), repeated count error (AUD-030), and narrow spraying-answer failure (new AUD-045). No agent changes; Port eval meets gates at 55/57 overall and 15/15 security. | T10 Answer; B-066/B-070/B-073; `2026-10-25-221147-7ff8e5ae.json` |

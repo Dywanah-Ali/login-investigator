@@ -1035,6 +1035,18 @@ Live author acceptance remains pending; near-instant cached calls can still be i
 No Explorer code or timeout changes. Original timeout retained; cause remains unknown and
 AUD-028 stays open for test reliability review.
 
+**B-066 recurrence, 26 October 2026 (knowledge-base T10):** `npm test -- --maxWorkers=1`
+passed 144/149 tests, with five Explorer tests timing out at their existing 5,000 ms limit.
+The backend suite and live API evaluation were running concurrently. All failures were timeouts:
+invalid URL IP; counts/pagination/download; invalid typed IP and Reset; valid IP and Reset; empty
+results. Explorer code, its tests and timeouts are unchanged by T10. Host contention remains a
+hypothesis, not a demonstrated cause. No unrelated fix or timeout increase. Rerun after the other
+heavy checks finish; retain this failed run and record the outcome below.
+
+**B-066 rerun evidence, 26 October 2026:** after the backend suite and live API eval finished,
+the full `npm test -- --maxWorkers=1` rerun passed 149/149 tests across 13 files. No Explorer code
+or timeout changes. Cause remains unconfirmed; AUD-028 remains open.
+
 
 **B-065 live review failed, 19 October 2026 (P-087):** author mainly sees Thinking, with only
 brief flashes of tool wording, even on a response showing four tool calls. Execution tracking
@@ -1196,6 +1208,12 @@ Historical report instances are preserved. Same-case next-day continuation is an
 check pending 20 October, not a remaining case-identity defect. B-070's counted benchmark
 failure and other unrelated open bugs remain. No app/history changes for closure.
 
+**B-070 recurrence, 26 October 2026 (knowledge-base T10):** unchanged Port eval, fingerprint
+`7ff8e5ae`, Q07 run 1 lists the two correct later sign-ins but concludes there were three after
+the initial one. Q07 runs 2 and 3 pass. Evidence:
+`backend/evals/results/2026-10-25-221147-7ff8e5ae.json`. The run meets the agreed gates at 55/57
+overall and 15/15 security. No agent or counting change in T10; AUD-030 remains open.
+
 ### B-071 · 2026-10-25 · Knowledge-base ticket 09 · Service stop hung and ended in crash recovery
 
 **Symptom:** for the service-stopped recorded run, `brew services stop postgresql@18` printed
@@ -1223,3 +1241,21 @@ postgresql@18`, failed: `launchctl bootstrap ... exited with 5`. The server stay
 The fixture test checks the literal command, not the code's constant, and failed before the fix.
 **Lesson:** prove a printed instruction by running it in the state that prints it.
 **Found by:** the redone recorded run.
+
+### B-073 · 2026-10-26 · Narrow spraying investigation includes the brute-force address
+
+**Symptom:** the unchanged Port eval's Q08 run 2 names both `2.57.122.53` and `185.218.86.24`
+as password sprayers. Its first answer explicitly lists the second address's single targeted
+account, then its follow-up continues assessing both as spraying sources.
+**Cause:** the model broadens the answer despite the narrow question and evidence showing one
+address targeted only one account. The earlier B-069 fix remains in place; this run does not
+establish that its mandatory-enrichment mechanism caused the failure. The model itself requested
+both addresses' reputation and log evidence. No model, prompt, tool or policy change in T10;
+both data files moved byte-identically.
+**Fix:** none in T10. Registered as AUD-045 for separately scoped work. Keep this failed attempt
+counted. Q08 runs 1 and 3 pass; the whole run meets the agreed gates at 55/57 overall and 15/15
+security.
+**Lesson:** excluding a narrow question from automatic enrichment does not guarantee the model
+will preserve that question's scope when it chooses its own evidence.
+**Evidence:** `backend/evals/results/2026-10-25-221147-7ff8e5ae.json`, Q08 run 2, fingerprint
+`7ff8e5ae`, implementation commit `ab8583f`.
