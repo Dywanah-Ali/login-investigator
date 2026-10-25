@@ -12,6 +12,9 @@ import pytest
 
 from login_investigator import agent, reputation
 
+# The database fixture's own tests run small pytest sessions inside a test (knowledge-base ticket 09).
+pytest_plugins = ["pytester"]
+
 _guard = pytest.MonkeyPatch()
 
 

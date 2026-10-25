@@ -1195,3 +1195,31 @@ B-069 (scope regression) are closed with the implementation/regression evidence 
 Historical report instances are preserved. Same-case next-day continuation is an acceptance
 check pending 20 October, not a remaining case-identity defect. B-070's counted benchmark
 failure and other unrelated open bugs remain. No app/history changes for closure.
+
+### B-071 · 2026-10-25 · Knowledge-base ticket 09 · Service stop hung and ended in crash recovery
+
+**Symptom:** for the service-stopped recorded run, `brew services stop postgresql@18` printed
+"Unable to stop". The server sat in "shutting down" for two minutes, its process then ended
+abruptly, and the next start ran automatic crash recovery. The recorded run met a server rejecting
+connections while closing, not a stopped one.
+**Cause:** `brew services stop` asks for a smart shutdown, which waits for every client to leave.
+pgAdmin held three connections. The service file gives the process `ExitTimeOut` 120 seconds, after
+which macOS kills it.
+**Fix:** recovery completed with no errors (two harmless warnings about a dropped test database's
+folder). The run was redone after a fast stop, `pg_ctl -D /usr/local/var/postgresql@18 stop -m
+fast`, which disconnects clients and shuts down cleanly.
+**Lesson:** stop a PostgreSQL that has clients with a fast shutdown, never a smart one. Ask the author
+first: the `fastapi` project shares the server.
+**Found by:** manual check of the server log after the run.
+
+### B-072 · 2026-10-25 · Knowledge-base ticket 09 · The fixture's start command failed after a fast stop
+
+**Symptom:** after the fast stop above, the command the fixture prints, `brew services start
+postgresql@18`, failed: `launchctl bootstrap ... exited with 5`. The server stayed down until
+`brew services restart postgresql@18`.
+**Cause:** `pg_ctl stop` stops the server but leaves the service registered with macOS, and
+`start` refuses to register it twice. `start` works only after `brew services stop`.
+**Fix:** the fixture now prints `brew services restart postgresql@18`, which works in both cases.
+The fixture test checks the literal command, not the code's constant, and failed before the fix.
+**Lesson:** prove a printed instruction by running it in the state that prints it.
+**Found by:** the redone recorded run.

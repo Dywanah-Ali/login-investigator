@@ -4,6 +4,7 @@ import json
 
 import pandas as pd
 import pytest
+from postgres_fixture import fresh_database  # noqa: F401  (shared with the tests that need it)
 
 from login_investigator import generator
 from login_investigator.loader import load_log

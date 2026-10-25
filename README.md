@@ -23,6 +23,8 @@ nor FastAPI. A boundary test enforces that.
 - Python 3.12 and [uv](https://docs.astral.sh/uv/)
 - Node.js 20.19 or later, with npm
 - An OpenRouter API key for the agent, and optionally an AbuseIPDB API key
+- For the knowledge base's tests: PostgreSQL 18 from Homebrew, running as a service, with pgvector
+  (`brew install pgvector`)
 
 ## Setup
 
@@ -30,6 +32,10 @@ nor FastAPI. A boundary test enforces that.
 cd backend
 uv sync                 # installs Python 3.12 and the exact versions in uv.lock
 cp env.example .env     # then put your keys into .env, which is git-ignored
+
+# Once, as your PostgreSQL superuser: makes the limited role li_admin and the pgvector template.
+# It asks you to choose li_admin's password; put it in .env as LI_PG_PASSWORD.
+/usr/local/opt/postgresql@18/bin/psql -U postgres -d postgres -f setup/postgres-setup.sql
 
 cd ../frontend
 npm ci                  # installs the exact versions in package-lock.json
@@ -46,6 +52,10 @@ cd ../frontend
 npm test
 npm run typecheck       # must report no errors
 ```
+
+A test that needs PostgreSQL gets a fresh database for the test session, copied from the template
+and dropped afterwards. When the service is down, such a test fails with the command that starts
+it, `brew services restart postgresql@18`; it never skips. Every other test runs without the service.
 
 Files copied from v1 that the type checker flags are on a "not yet checked" list in
 `backend/pyproject.toml`. The list only shrinks: new files never go on it.

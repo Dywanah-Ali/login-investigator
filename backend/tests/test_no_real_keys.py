@@ -19,7 +19,7 @@ from fastapi.testclient import TestClient
 
 from api.app import create_app
 from api.settings import Settings
-from login_investigator import agent, reputation
+from login_investigator import agent, postgres, reputation
 
 
 @pytest.fixture(scope="module")
@@ -45,3 +45,15 @@ def test_starting_the_app_puts_no_key_into_the_test_environment(services):
 def test_building_the_model_finds_no_key():
     with pytest.raises(RuntimeError, match="is not set"):
         agent.make_model()
+
+
+def test_reading_the_database_settings_leaves_the_password_out_of_the_environment_and_repr(
+    tmp_path, monkeypatch
+):
+    """The PostgreSQL password (knowledge-base ticket 09) is read from `.env` for the database
+    fixture, but never copied into the process environment, and never shown when printed."""
+    monkeypatch.delenv(postgres.PASSWORD_NAME, raising=False)
+    env_file = tmp_path / ".env"
+    env_file.write_text(f"{postgres.PASSWORD_NAME}=from-the-file\n", encoding="utf-8")
+    settings = postgres.ServerSettings.from_env(env_file=env_file)
+    assert (postgres.PASSWORD_NAME in os.environ, "from-the-file" in repr(settings)) == (False, False)

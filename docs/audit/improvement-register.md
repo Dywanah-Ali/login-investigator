@@ -70,6 +70,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-041 | Structured agent answer (text plus a list of citation labels) so the citation gate reads a list instead of parsing prose | Open, build-time option in phase 0 | Low | Knowledge-base ticket 05, conditions |
 | AUD-042 | Injection-detector middleware (a classifier over inputs and tool results) as an added layer over the structural defences | Open, parked; trigger to reopen: the canary pass rate falls below 100% and the structural defences cannot explain it | Low | Knowledge-base ticket 06, decision 7 |
 | AUD-043 | Show the faithfulness judge's reason on the screen | Open, parked; trigger to reopen: a measured agreement between the judge and the author's labels | Low | Knowledge-base ticket 07, decision 8 |
+| AUD-044 | Sweep test databases left behind by a test run that was killed before its teardown | Open, parked; trigger to reopen: a leftover `li_test_` database is seen | Low | Knowledge-base ticket 09, spec review |
 
 ### AUD-001: Rule filter
 
@@ -641,6 +642,18 @@ does not yet trust. Parked. Trigger to reopen: a measured agreement (kappa) betw
 the author's labels on the stored verdicts, at a level the author accepts. Closure evidence: a
 screen decision in its own ticket, with the kappa that justified it.
 
+### AUD-044: Leftover test databases after a killed run
+
+Ticket 09's fixture drops each session's database at the end of the session, after passing and
+failing tests alike, and a test proves it. A run killed before its teardown (the process ended by
+force, the machine switched off) leaves its `li_test_<12 hex>` database on the server. Nothing
+sweeps them, on purpose: a sweep at session start would also drop the database of another test
+session running at the same time, and the project allows parallel sessions on separate tickets.
+Raised by the spec review of ticket 09 on 25 October 2026. Parked. Trigger to reopen: a leftover
+`li_test_` database is seen in pgAdmin or `pg_database`. A safe sweep would drop only databases
+whose owning session is gone, for example by recording the process ID in the name or a comment.
+Closure evidence: the sweep's test, or a ruling that manual cleanup suffices.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -771,4 +784,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-22 | AUD-032 parking reaffirmed by the author; trigger to reopen set to phase 2 (history), when past investigations become knowledge. | Author, after ticket 05 |
 | 2026-10-24 | Knowledge-base ticket 07 resolved, prototype first then an eight-point grilling with the prototype open, plus a ninth decision the author raised: the chat is the screen with a finding ID column on Alerts; citations in an evidence panel built from the artifact and downloadable; one line per hop; radii as counts first; the investigation tool's steps stack while running (an exception to AUD-027, noted on its row) with a build condition to study Anthropic's and OpenAI's progress patterns; letters L, G, D; judge's reason off the screen; a five-level visual hierarchy. Added AUD-043 (judge's reason on screen, parked with a trigger). All decision tickets resolved; frontier moves to the spec. | Knowledge-base ticket 07 Answer; prototype; map |
 | 2026-10-25 | Knowledge-base spec for phases 0 and 1 written. AUD-033 gained its trigger to reopen (a full rebuild too slow or costly per change), raised by the author while ruling the spec's staleness guard. | Knowledge-base spec, decisions log |
+| 2026-10-25 | Knowledge-base ticket 09 built (PostgreSQL with pgvector, the loud test fixture). Added AUD-044 (sweep of test databases left by a killed run, parked with a trigger), from the ticket's spec review. | Knowledge-base ticket 09 |
 | 2026-10-23 | Knowledge-base ticket 06 resolved after a discussion, research note 06 and a ten-question grilling: two hard retrieval checks per question (top 20 and the 5 the model received), exact-set graph gate, a mix weighted to say-no and mixed questions, a separate tuning file for the refusal threshold, citation resolution with gold IDs as the answer gate, the judge as a smoke alarm with three trials and stored verdicts, playbook and canary checks as 100% gates, one scorer with two exams kept separate, on-versus-off comparisons for the re-ranker and BM25, and Langfuse adopted as a mirror. AUD-036 decided. Added AUD-042 (injection-detector middleware, parked with a trigger). Frontier moves to ticket 07. | Knowledge-base ticket 06 Answer; research note 06; map |
