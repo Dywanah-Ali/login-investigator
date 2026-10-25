@@ -119,3 +119,9 @@ Known gaps retained outside scope: Explorer timeout recurrence B-066/AUD-028, co
 B-070/AUD-030, and narrow spraying answer B-073/AUD-045. No unresolved T10 review findings.
 Implementation commit `ab8583f`; evidence and closure recorded in a follow-up local commit.
 Nothing pushed. The frontier is 11, 13 and 14; first by number is 11.
+
+### 2026-10-26 — Author confirmation
+
+After the backend restart guidance and suggested web-app check, the author reported "i think we
+are good" and explicitly requested T10 be marked resolved. Author acceptance recorded; status
+remains resolved. Next ticket by number is 11.
