@@ -191,8 +191,18 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is ticket 09, 10 and 13**, which have no blockers; one session
+line holds its edges. **The frontier is tickets 10 and 13**, which have no blockers; one session
 works at a time, so first by number wins.
+
+### Build tickets resolved
+
+- [09 PostgreSQL with pgvector, and the loud test fixture](issues/09-postgres-pgvector-and-test-fixture.md)
+  (25 October 2026): pgvector 0.8.7 on the Homebrew PostgreSQL 18.6, psycopg 3.3.6 pinned; a
+  limited role `li_admin` and a pgvector template `li_template` from a one-time setup; each test
+  session gets its own copy, dropped at the end; a stopped service fails loudly with the restart
+  command. Rulings on the way: Codex's review is not a gate (tickets close on the builder's own
+  `mp-code-review`); table access from ticket 17 through SQLAlchemy Core; the Port's eval skipped
+  for this ticket.
 
 ## Not yet specified
 

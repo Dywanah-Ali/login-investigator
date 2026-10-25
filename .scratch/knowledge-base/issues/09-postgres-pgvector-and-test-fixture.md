@@ -1,7 +1,7 @@
 # 09: PostgreSQL with pgvector, and the loud test fixture
 
 Type: build
-Status: claimed
+Status: resolved
 Blocked by: none
 Phase: 0
 
@@ -32,10 +32,11 @@ without the service.
 - [x] With the service stopped, a test that needs the database fails (never skips) with a message
       carrying the exact start command. Proven by a recorded run.
 - [x] The existing tests still run with the service stopped.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged. *Type checker, code review, backend and frontend tests done; the Port's eval
-      outstanding, see Answer. Codex's review was dropped by the author's ruling of 25 October 2026.*
+      findings triaged. *Type checker, code review, backend and frontend tests done. The Port's eval
+      was not run, by the author's ruling of 25 October 2026: no agent code changed. Codex's review
+      was dropped by the author's ruling of the same day.*
 
 ## Answer
 
@@ -57,9 +58,8 @@ connections. The core module is `login_investigator/postgres.py` (settings, serv
 create and drop); the fixture is `tests/postgres_fixture.py`, imported by `tests/conftest.py`.
 The template's pgvector version is pinned by a test at 0.8.7.
 
-Outstanding before `resolved`:
-- The Port's eval, if the author wants it run: the change touches no agent code, but the safety
-  net names it.
+Resolved on 25 October 2026. The Port's eval was skipped by the author's ruling: the change
+touches no agent code, model, prompt or tool, so the agent's behaviour cannot have moved.
 
 Review findings not fixed, by choice: the ping treats every non-OK answer alike, so a server that is
 shutting down or a mistyped host also gets the start command (the message names host and port);
