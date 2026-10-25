@@ -733,8 +733,8 @@ work proves it is done.
   the real PostgreSQL, built fresh per session and failing loudly. Only the eval's retrieval layer
   and the one-string embedder check call OpenRouter (T03 conditions).
 - **Doors 1 to 5 are code, gated by tests and the build loop's two-axis code review**
-  (standards and spec, findings triaged; Matt Pocock's skill, `mp-code-review` in Claude Code and
-  `code-review` in Codex). **[author's ruling, 25 October 2026]** Whichever agent builds a ticket
+  (standards and spec, findings triaged; Matt Pocock's skill, `mp-code-review` in both Claude Code
+  and Codex). **[author's ruling, 25 October 2026]** Whichever agent builds a ticket
   runs this review itself; no review by the other agent is required. Door 6 is the agent's
   judgement, gated by the eval set (the author's verification rule). A change to the agent's
   behaviour is accepted only on an eval run (project rules).
@@ -835,3 +835,4 @@ them.
 | 2026-10-25 | Fixes from the review with no ruling needed: twins' scheduling restored (R8), kappa report restored (R7), first questions before retrieval in the build order (R5), "saved" removed from the reputation sentence (R12), Investigation used for the saved object and Dataset moved to the new terms (R13) | Each restores what the source tickets, the map, the code or the glossary already say |
 | 2026-10-25 | Author's ruling at ticket 09: build tickets close on the safety net, a clean type checker and the build loop's two-axis code review (`mp-code-review`) with its findings triaged. Codex's review is removed from the standing criteria of tickets 09 to 41, from the Testing Decisions and from the reviewer's user stories | Claude wrote "independent review by Codex" into this spec from the author's global defaults without a ruling; the author ruled that default does not apply to this project |
 | 2026-10-25 | Author's ruling: Matt Pocock's skills go back to their original names in Claude Code (`implement`, `tdd`, `to-tickets` and the rest), matching Codex's copies; only Claude Code's review keeps `mp-code-review`. Live references in this spec and tickets 09 to 41 name the review for both builders; dated history keeps the names used at the time | Codex builds some tickets too, so a closing condition must name a skill both builders have; Claude Code ships a built-in `code-review`, so that one name would clash |
+| 2026-10-25 | Author's ruling: Codex's copy of the review skill is renamed `code-review` to `mp-code-review` too, with its two callers (`implement`, `tdd`) updated, so both builders share every name. Tickets 09 to 41 name the review once, `mp-code-review` | One name per skill for both builders, with no exception to remember |

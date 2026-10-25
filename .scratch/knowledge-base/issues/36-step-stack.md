@@ -34,7 +34,7 @@ quick tools keep their single status line.
 - [ ] Door 5 tests with the fake API cover the stack, the error state and the fold.
 - [ ] The author's screenshot review in light and dark mode is recorded as a dated line.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review has run with its findings triaged
-      (`mp-code-review` in Claude Code, `code-review` in Codex).
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

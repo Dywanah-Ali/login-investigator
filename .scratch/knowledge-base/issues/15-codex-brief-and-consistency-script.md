@@ -34,7 +34,7 @@ world's tables, so facts in the corpus are checked by code and humans read only 
 - [ ] Nothing in the brief names a real company or person.
 - [ ] The author reads the brief before it goes to Codex; a dated line records it.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review has run with its findings triaged
-      (`mp-code-review` in Claude Code, `code-review` in Codex).
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

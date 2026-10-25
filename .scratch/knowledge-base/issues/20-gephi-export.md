@@ -26,8 +26,8 @@ in Gephi Lite to inspect the synthetic organisation by eye. There is no download
 - [ ] Test: no attribute is named `id`, `label` or `pid`.
 - [ ] The author opens the whole-graph file in Gephi Lite; a dated line records the look.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review has run with its findings triaged
-      (`mp-code-review` in Claude Code, `code-review` in Codex).
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments
 

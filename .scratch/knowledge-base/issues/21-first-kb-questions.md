@@ -31,7 +31,7 @@ any search runs, so the exam cannot be fitted to the results.
       world's files, and every question has gold IDs or a verdict.
 - [ ] The file is committed before ticket 22's first search run; the commit order is the evidence.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review has run with its findings triaged
-      (`mp-code-review` in Claude Code, `code-review` in Codex).
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

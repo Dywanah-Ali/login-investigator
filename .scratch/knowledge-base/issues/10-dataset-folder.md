@@ -34,7 +34,7 @@ the ground so tickets 11 and 12 only add to the folder.
 - [ ] The eval runner's isolation works the same way with a folder.
 - [ ] The backend tests, the frontend tests and the Port's eval pass unchanged.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review has run with its findings triaged
-      (`mp-code-review` in Claude Code, `code-review` in Codex).
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

@@ -28,7 +28,7 @@ edge the walk returned but the answer never cited says so, with its record ID.
 - [ ] The author checks on S6 that every drawn edge matches a hop line or a "walked, not cited" line;
       a dated line records it.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review has run with its findings triaged
-      (`mp-code-review` in Claude Code, `code-review` in Codex).
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments
