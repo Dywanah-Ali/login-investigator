@@ -183,8 +183,16 @@ The decision tickets are complete. The [spec for phases 0 and 1](spec.md) was wr
 25 October 2026 with `mp-to-spec`, after the author agreed six test doors and ruled eight points no
 ticket had decided (twins B2 and B3, the `default` dataset folder, the Port's answer key kept, fake
 embedder and re-ranker in tests, the phase split, the ID formats, and a staleness guard on the
-app's database). **The frontier is cutting the spec into build tickets (`mp-to-tickets`)**,
-numbered from 09.
+app's database). The spec was revised the same day after Codex's review.
+
+### Build tickets cut (25 October 2026)
+
+The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the author kept that
+granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
+for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
+42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
+line holds its edges. **The frontier is ticket 09, 10 and 13**, which have no blockers; one session
+works at a time, so first by number wins.
 
 ## Not yet specified
 
@@ -205,7 +213,8 @@ numbered from 09.
 - The graph integrity check (tables and chunk links against the built NetworkX graph): a phase 0
   build item, recorded in ticket 06's comments on 24 October 2026; the GEXF export test compares
   against it (ticket 08, decision 9).
-- The spec for phases 0 and 1: written, [spec.md](spec.md). The build tickets: next.
+- The spec for phases 0 and 1: written, [spec.md](spec.md). The build tickets: cut, 09 to 42 under
+  `issues/`.
 
 ## Out of scope
 
