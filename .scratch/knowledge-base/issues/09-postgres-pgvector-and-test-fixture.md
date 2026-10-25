@@ -33,8 +33,8 @@ without the service.
       carrying the exact start command. Proven by a recorded run.
 - [x] The existing tests still run with the service stopped.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged. *Type checker, code review, backend and frontend tests done; the Port's eval
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex). *Type checker, code review, backend and frontend tests done; the Port's eval
       outstanding, see Answer. Codex's review was dropped by the author's ruling of 25 October 2026.*
 
 ## Answer

@@ -6,7 +6,7 @@ read in full with their comments. Source of truth for this initiative's scope fr
 The API contract in `docs/api-contract.md` is part of this spec by reference; the additions it
 needs are listed under "API contract changes" and are made in the build ticket that first needs
 them. Existing terms (Investigation, Finding, Alert, Rule severity) are defined in the root
-`GLOSSARY.md`; new terms, Dataset among them, are listed under Further Notes for `mp-domain-modeling`.
+`GLOSSARY.md`; new terms, Dataset among them, are listed under Further Notes for `domain-modeling`.
 Revised on 25 October 2026 after Codex's review; the triage and the author's six rulings are in
 `reviews/spec-review-2026-10-25-triage.md`.
 
@@ -733,8 +733,9 @@ work proves it is done.
   the real PostgreSQL, built fresh per session and failing loudly. Only the eval's retrieval layer
   and the one-string embedder check call OpenRouter (T03 conditions).
 - **Doors 1 to 5 are code, gated by tests and the build loop's two-axis code review**
-  (`mp-code-review`: standards and spec, findings triaged). **[author's ruling, 25 October 2026]**
-  No Codex review is required for this project. Door 6 is the agent's
+  (standards and spec, findings triaged; Matt Pocock's skill, `mp-code-review` in Claude Code and
+  `code-review` in Codex). **[author's ruling, 25 October 2026]** Whichever agent builds a ticket
+  runs this review itself; no review by the other agent is required. Door 6 is the agent's
   judgement, gated by the eval set (the author's verification rule). A change to the agent's
   behaviour is accepted only on an eval run (project rules).
 - **The safety net**: the backend tests, the frontend tests and the Port's eval pass after every
@@ -766,7 +767,7 @@ work proves it is done.
 
 ## Further Notes
 
-**Build order handed off by the tickets** (T04, T05, T06, T07, T08 hand-offs). `mp-to-tickets` cuts
+**Build order handed off by the tickets** (T04, T05, T06, T07, T08 hand-offs). `to-tickets` cuts
 it into tracer-bullet tickets; the order is the dependency floor, not the ticket list.
 
 | # | Item | Phase |
@@ -795,7 +796,7 @@ calibration and the full question set, because phase 1's gate is the author's lo
 screen. **[review ruling 5]** The Alerts `finding_id` field is one of those API additions; the
 core's finding ID it carries is built in phase 0.
 
-**New terms for the glossary** (for `mp-domain-modeling`, not added by this spec): knowledge base,
+**New terms for the glossary** (for `domain-modeling`, not added by this spec): knowledge base,
 playbook, investigation package, artifact, blast radius, peer, benign twin, verdict (`none`, `weak`,
 `found`), citation label, evidence panel, absent topic, canary, build, staleness guard, dataset,
 integrity check.
@@ -833,3 +834,4 @@ them.
 | 2026-10-25 | Build tickets 09 to 42 cut from this spec with `mp-to-tickets`; the author kept the 34-ticket granularity | Each ticket fits one fresh session |
 | 2026-10-25 | Fixes from the review with no ruling needed: twins' scheduling restored (R8), kappa report restored (R7), first questions before retrieval in the build order (R5), "saved" removed from the reputation sentence (R12), Investigation used for the saved object and Dataset moved to the new terms (R13) | Each restores what the source tickets, the map, the code or the glossary already say |
 | 2026-10-25 | Author's ruling at ticket 09: build tickets close on the safety net, a clean type checker and the build loop's two-axis code review (`mp-code-review`) with its findings triaged. Codex's review is removed from the standing criteria of tickets 09 to 41, from the Testing Decisions and from the reviewer's user stories | Claude wrote "independent review by Codex" into this spec from the author's global defaults without a ruling; the author ruled that default does not apply to this project |
+| 2026-10-25 | Author's ruling: Matt Pocock's skills go back to their original names in Claude Code (`implement`, `tdd`, `to-tickets` and the rest), matching Codex's copies; only Claude Code's review keeps `mp-code-review`. Live references in this spec and tickets 09 to 41 name the review for both builders; dated history keeps the names used at the time | Codex builds some tickets too, so a closing condition must name a skill both builders have; Claude Code ships a built-in `code-review`, so that one name would clash |

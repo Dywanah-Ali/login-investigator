@@ -32,7 +32,7 @@ wins if refusal stops working with it.
 - [ ] A switch that loses is left off, and the code path that serves it is either kept behind the
       switch or removed, with the choice recorded.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex).
 
 ## Comments

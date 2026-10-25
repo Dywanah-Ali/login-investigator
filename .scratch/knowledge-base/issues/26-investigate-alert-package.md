@@ -38,7 +38,7 @@ progress per internal step, so the screen can later stack the steps while they r
 - [ ] Parallel tool calls stay on.
 - [ ] Agent tests use the fake model; the Port's eval passes.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex).
 
 ## Comments

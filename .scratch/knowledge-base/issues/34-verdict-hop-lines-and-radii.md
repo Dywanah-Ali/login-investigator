@@ -37,7 +37,7 @@ link opens the full list in the evidence panel.
 - [ ] The author's screenshot review in light and dark mode settles the exact colours and is recorded
       as a dated line.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex).
 
 ## Comments

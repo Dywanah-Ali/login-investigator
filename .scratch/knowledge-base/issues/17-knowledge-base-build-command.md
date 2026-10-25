@@ -45,7 +45,7 @@ and the own corpus flows in with no code change once ticket 16 delivers it.
 - [ ] The first real build's time and cost are measured and recorded.
 - [ ] The core-boundary test covers the new modules.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex).
 
 ## Comments

@@ -30,7 +30,7 @@ behaves as ticket 22 left it.
 - [ ] Door 2 tests use a fake re-ranker; one real call is recorded.
 - [ ] The retrieval runner records re-ranker scores and the chunks kept.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex).
 
 ## Comments

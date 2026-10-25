@@ -33,7 +33,7 @@ the author.
 - [ ] The judge prompt and model are hashed into the fingerprint.
 - [ ] Cohen's kappa is computed in code; a test checks it on known values.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex).
 
 ## Comments

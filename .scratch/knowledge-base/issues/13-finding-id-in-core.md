@@ -30,7 +30,7 @@ answer key point at these IDs. The Alerts screen does not show it yet; that is t
 - [ ] The Alerts API reply is unchanged in this ticket.
 - [ ] The Port's eval passes.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+      under the type checker, and the two-axis code review has run with its findings triaged
+      (`mp-code-review` in Claude Code, `code-review` in Codex).
 
 ## Comments
