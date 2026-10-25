@@ -289,7 +289,7 @@ questions, and the author accepts the live screen. The initiative closes there.
 85. As the author, I want my judge labels made in Langfuse to come back only through an export script
     into a repo file, so that nothing at runtime reads from Langfuse.
 
-**The reviewer (Codex)**
+**The reviewer (the build loop's code review)**
 
 86. As the reviewer, I want each build ticket to name the decision it implements, so that I can check
     the code against the decision and not against my guess.
@@ -732,7 +732,9 @@ work proves it is done.
   the agent tests hand in a fake model, so the test suite stays key-free and offline. It still needs
   the real PostgreSQL, built fresh per session and failing loudly. Only the eval's retrieval layer
   and the one-string embedder check call OpenRouter (T03 conditions).
-- **Doors 1 to 5 are code, gated by tests and independent review by Codex.** Door 6 is the agent's
+- **Doors 1 to 5 are code, gated by tests and the build loop's two-axis code review**
+  (`mp-code-review`: standards and spec, findings triaged). **[author's ruling, 25 October 2026]**
+  No Codex review is required for this project. Door 6 is the agent's
   judgement, gated by the eval set (the author's verification rule). A change to the agent's
   behaviour is accepted only on an eval run (project rules).
 - **The safety net**: the backend tests, the frontend tests and the Port's eval pass after every
@@ -830,3 +832,4 @@ them.
 | 2026-10-25 | Author's ruling at the ticket cut: every phase 1 build ticket waits for ticket 29, phase 0's gate | The map proves each phase before the next is built; a screen built on unproven retrieval may need rework |
 | 2026-10-25 | Build tickets 09 to 42 cut from this spec with `mp-to-tickets`; the author kept the 34-ticket granularity | Each ticket fits one fresh session |
 | 2026-10-25 | Fixes from the review with no ruling needed: twins' scheduling restored (R8), kappa report restored (R7), first questions before retrieval in the build order (R5), "saved" removed from the reputation sentence (R12), Investigation used for the saved object and Dataset moved to the new terms (R13) | Each restores what the source tickets, the map, the code or the glossary already say |
+| 2026-10-25 | Author's ruling at ticket 09: build tickets close on the safety net, a clean type checker and the build loop's two-axis code review (`mp-code-review`) with its findings triaged. Codex's review is removed from the standing criteria of tickets 09 to 41, from the Testing Decisions and from the reviewer's user stories | Claude wrote "independent review by Codex" into this spec from the author's global defaults without a ruling; the author ruled that default does not apply to this project |

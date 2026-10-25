@@ -33,8 +33,9 @@ without the service.
       carrying the exact start command. Proven by a recorded run.
 - [x] The existing tests still run with the service stopped.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change. *Safety net and type checker done; the
-      Port's eval and Codex's review outstanding, see Answer.*
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged. *Type checker, code review, backend and frontend tests done; the Port's eval
+      outstanding, see Answer. Codex's review was dropped by the author's ruling of 25 October 2026.*
 
 ## Answer
 
@@ -57,7 +58,6 @@ create and drop); the fixture is `tests/postgres_fixture.py`, imported by `tests
 The template's pgvector version is pinned by a test at 0.8.7.
 
 Outstanding before `resolved`:
-- Codex's review of the change.
 - The Port's eval, if the author wants it run: the change touches no agent code, but the safety
   net names it.
 

@@ -32,6 +32,7 @@ has nothing on a question.
       that threshold is recorded for ticket 41.
 - [ ] The `none` rule is switched on; the say-no checks on the first questions pass.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change.
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

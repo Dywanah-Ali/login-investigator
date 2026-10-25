@@ -32,6 +32,7 @@ it does not match the database, the server does not start, and its message names
       test proves the server refuses to start.
 - [ ] The API contract records the startup failure.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change.
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

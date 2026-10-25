@@ -44,6 +44,7 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
       kept as evidence.
 - [ ] The map records phase 0's gate as passed, with the run files named.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change.
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

@@ -34,6 +34,7 @@ the step that could not run and why.
 - [ ] The Port's policy tests pass unchanged; the report keeps its shape, PDF and severity scale.
 - [ ] Agent tests use the fake model; the Port's eval passes.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change.
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

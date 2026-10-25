@@ -35,6 +35,7 @@ and the author's labels come back only through an export script into a repo file
 - [ ] One real eval run is visible in Langfuse; a dated line records the author's look, and AUD-036 is
       closed with that evidence.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change.
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

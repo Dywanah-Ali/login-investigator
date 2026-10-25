@@ -30,6 +30,7 @@ line and gold IDs or an expected verdict.
 - [ ] The full file runs through the eval; the results are recorded per question, and every failure
       is fixed or logged in the bug log with its cause.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change.
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments

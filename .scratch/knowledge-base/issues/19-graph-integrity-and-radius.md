@@ -47,6 +47,7 @@ it gives exactly the S6 radius written in `truth.json`.
 - [ ] A test recomputes S6's radius from the tables through that function and matches `truth.json`
       exactly.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and Codex reviews the change.
+      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
+      findings triaged.
 
 ## Comments
