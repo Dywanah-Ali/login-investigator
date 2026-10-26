@@ -83,7 +83,8 @@ def test_a_bad_row_never_sends_its_log_values_back(tmp_path, memory_path):
     travel inside a sentence, so the client gets fixed text (author's ruling, ticket 13; B-008)."""
     hostile = "<script>alert(1)</script>"
     row = {"timestamp_utc": "2026-10-01T00:00:00Z", "username": "alice", "source_ip": hostile,
-           "country": "GB", "outcome": "success", "failure_reason": "", "user_agent": "x"}
+           "country": "GB", "outcome": "success", "failure_reason": "", "user_agent": "x",
+           "device_id": "", "mfa_result": "pass"}
     bad_log = tmp_path / "logins.csv"
     bad_log.write_text(",".join(generator.COLUMNS) + "\n"
                        + ",".join(row[column] for column in generator.COLUMNS) + "\n",

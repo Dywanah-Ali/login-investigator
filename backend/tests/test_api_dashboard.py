@@ -352,8 +352,9 @@ def test_csv_contains_the_same_filtered_rows_in_the_same_order(client):
 
 def test_csv_keeps_formula_protection_at_the_http_boundary(tmp_path):
     path = tmp_path / 'logins.csv'
-    path.write_text('timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent\n'
-                    '2026-10-01T00:00:00Z,=1+1,203.0.113.10,GB,failure,bad_password,+cmd\n')
+    path.write_text('timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent,'
+                    'device_id,mfa_result\n'
+                    '2026-10-01T00:00:00Z,=1+1,203.0.113.10,GB,failure,bad_password,+cmd,,none\n')
     settings = Settings.from_env({'LI_DATASET_DIR': str(path.parent), 'LI_MEMORY_PATH': str(tmp_path / 'm.sqlite')})
     with TestClient(create_app(settings)) as api:
         raw = api.get('/api/explorer').json()['rows'][0]

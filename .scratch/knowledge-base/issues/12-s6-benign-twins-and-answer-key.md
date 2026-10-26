@@ -50,3 +50,8 @@ the knowledge base's answer key, `truth.json`, from the planted stories.
       findings triaged.
 
 ## Comments
+
+- 2026-10-26, author's ruling at ticket 11: this ticket adds the sign-ins that come through the VPN
+  pool, handing the four addresses out in turn so that several users share one address in a week
+  (T04 d5). Ticket 11 only wrote the pool into the networks table. The VPN rows change whole-log
+  counts, which this ticket already owns.

@@ -34,3 +34,7 @@ ticket 24: typed, read-only, fenced, short content for the model and a full arti
       findings triaged.
 
 ## Comments
+
+- 2026-10-26, consequence of the author's ruling at ticket 11: `device_id` is empty on attacker rows
+  and on employee sign-ins from a phone. `find_peers` never treats an empty device as shared, so two
+  sign-ins from unregistered machines are not peers by device.

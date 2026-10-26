@@ -25,8 +25,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DATASET_DIR = REPO_ROOT / "data" / "datasets" / "default"
 LOG_PATH = DATASET_DIR / "logins.csv"
 GROUND_TRUTH_PATH = DATASET_DIR / "ground_truth.json"
+ORG_DIR = DATASET_DIR / "org"
 
-COLUMNS = [
+PORT_COLUMNS = [
     "timestamp_utc",
     "username",
     "source_ip",
@@ -35,6 +36,14 @@ COLUMNS = [
     "failure_reason",
     "user_agent",
 ]
+COLUMNS = PORT_COLUMNS + [
+    "device_id",  # empty when the device is not in the register: attackers, personal phones
+    "mfa_result",
+]
+# pass, fail, none (not prompted) or denied (prompt refused; reserved for MFA fatigue, unused).
+MFA_RESULTS = ("pass", "fail", "none", "denied")
+# Accounts never prompted for MFA. Ticket 12 adds S6's target.
+MFA_EXCEPTIONS = ("daniel.hughes",)
 
 # Reserved documentation addresses (RFC 5737). No real machine uses them, so normal users can
 # never point at a real person.
@@ -47,6 +56,7 @@ S1_IP = "185.218.86.24"  # NL hosting: brute force, then the compromise (S3)
 S2_IP = "2.57.122.53"  # RO hosting: password spraying
 S4_IP = "91.142.73.116"  # RU hosting: sign-in from a new country
 ATTACKER_COUNTRY = {S1_IP: "NL", S2_IP: "RO", S4_IP: "RU"}
+ATTACKER_IPS = tuple(ATTACKER_COUNTRY)
 
 DECOY_TRUSTED = "8.8.8.8"  # score 0, many reports, whitelisted
 DECOY_CLEAN = "165.225.38.10"  # score 0, no reports (corporate proxy)
@@ -249,6 +259,173 @@ def _scenario_s4() -> list[dict]:
     return [_row(S4_TIME, S4_TARGET, S4_IP, "RU", "success", "", S4_AGENT)]
 
 
+# The organisation (knowledge-base ticket 04, decisions 2 to 5). It is drawn with its own random
+# stream, so adding it cannot shift a single value in the Port's rows.
+
+# Department sizes in the UK; each department also gets exactly one of the six US users.
+UK_DEPARTMENT_SIZES = {"Engineering": 11, "Sales": 9, "Operations": 8, "Finance": 6, "IT": 6,
+                       "HR": 4}
+# (slug, name, kind, department its members come from, number of members)
+GROUPS = [
+    ("all-staff", "All Staff", "baseline", None, None),
+    ("it-admins", "IT Admins", "privileged", "IT", 4),
+    ("finance-approvers", "Finance Approvers", "privileged", "Finance", 4),
+    ("hr-data-owners", "HR Data Owners", "privileged", "HR", 3),
+]
+# (slug, name, sensitivity, the group granted it). The owner is drawn from the group that holds
+# the asset; for the baseline assets, from IT Admins, who run them.
+ASSETS = [
+    ("email", "email", "internal", "all-staff"),
+    ("intranet", "intranet", "internal", "all-staff"),
+    ("file-share", "file share", "confidential", "all-staff"),
+    ("identity-provider", "identity provider", "restricted", "it-admins"),
+    ("vpn-gateway", "VPN gateway", "confidential", "it-admins"),
+    ("domain-controller", "domain controller", "restricted", "it-admins"),
+    ("backup-server", "backup server", "restricted", "it-admins"),
+    ("payments-system", "payments system", "restricted", "finance-approvers"),
+    ("erp", "ERP", "confidential", "finance-approvers"),
+    ("hr-system", "HR system", "restricted", "hr-data-owners"),
+]
+# Both shared machines stand in the UK office. The meeting-room PC is used by three people from
+# three departments; the warehouse terminal by three people from Operations.
+MEETING_ROOM_PC = "dev-meeting-room-pc"
+WAREHOUSE_TERMINAL = "dev-warehouse-terminal"
+SHARED_MACHINES = [
+    (MEETING_ROOM_PC, "meeting-room-pc", "MR-PC-01"),
+    (WAREHOUSE_TERMINAL, "warehouse-terminal", "WH-TERM-01"),
+]
+# The share of a shared-machine user's UK office sign-ins made on that machine.
+SHARED_MACHINE_SHARE = 0.3
+VPN_POOL = ["203.0.113.51", "203.0.113.52", "203.0.113.53", "203.0.113.54"]
+
+TABLE_COLUMNS = {
+    "people": ["person_id", "username", "display_name", "department", "country"],
+    "groups": ["group_id", "name", "kind"],
+    "memberships": ["membership_id", "group_id", "person_id"],
+    "assets": ["asset_id", "name", "sensitivity", "owner_id"],
+    "grants": ["grant_id", "group_id", "asset_id"],
+    "devices": ["device_id", "kind", "name"],
+    "device_assignments": ["assignment_id", "device_id", "person_id"],
+    "networks": ["network_id", "address", "kind", "name", "person_id"],
+}
+
+
+def person_id(username: str) -> str:
+    return f"user-{username}"
+
+
+def laptop_id(username: str) -> str:
+    return f"dev-laptop-{username}"
+
+
+def _display_name(username: str) -> str:
+    return " ".join(part.capitalize() for part in username.split("."))
+
+
+def _laptop_name(username: str) -> str:
+    first, last = username.split(".")
+    return f"LT-{first[0]}{last}".upper()
+
+
+def _organisation(seed: int, users: list[User]) -> dict[str, list[dict]]:
+    rng = random.Random(f"{seed}:organisation")
+    uk = list(UK_USERS)
+    rng.shuffle(uk)
+    department = {}
+    for name, size in UK_DEPARTMENT_SIZES.items():
+        for username in uk[:size]:
+            department[username] = name
+        uk = uk[size:]
+    us_departments = list(UK_DEPARTMENT_SIZES)
+    rng.shuffle(us_departments)
+    for (username, _), name in zip(US_USERS, us_departments):
+        department[username] = name
+
+    people = [{"person_id": person_id(u.username), "username": u.username,
+               "display_name": _display_name(u.username), "department": department[u.username],
+               "country": u.country} for u in users]
+    in_department = {name: sorted(u for u, d in department.items() if d == name)
+                     for name in UK_DEPARTMENT_SIZES}
+
+    groups, memberships, members = [], [], {}
+    for slug, name, kind, source, size in GROUPS:
+        groups.append({"group_id": f"group-{slug}", "name": name, "kind": kind})
+        chosen = ([u.username for u in users] if source is None
+                  else sorted(rng.sample(in_department[source], size)))
+        members[slug] = chosen
+        memberships += [{"membership_id": f"mem-{slug}-{username}", "group_id": f"group-{slug}",
+                         "person_id": person_id(username)} for username in chosen]
+
+    assets, grants = [], []
+    for slug, name, sensitivity, holder in ASSETS:
+        owners = members["it-admins" if holder == "all-staff" else holder]
+        assets.append({"asset_id": f"asset-{slug}", "name": name, "sensitivity": sensitivity,
+                       "owner_id": person_id(rng.choice(owners))})
+        grants.append({"grant_id": f"grant-{holder}-{slug}", "group_id": f"group-{holder}",
+                       "asset_id": f"asset-{slug}"})
+
+    devices, assignments = [], []
+    for u in users:
+        devices.append({"device_id": laptop_id(u.username), "kind": "laptop",
+                        "name": _laptop_name(u.username)})
+        assignments.append({"assignment_id": f"asg-laptop-{u.username}",
+                            "device_id": laptop_id(u.username),
+                            "person_id": person_id(u.username)})
+    meeting_room = [rng.choice([u for u in in_department[name] if u in UK_USERS])
+                    for name in sorted(rng.sample(sorted(in_department), 3))]
+    warehouse = sorted(rng.sample([u for u in in_department["Operations"]
+                                   if u in UK_USERS and u not in meeting_room], 3))
+    for (device, slug, name), shared_by in zip(SHARED_MACHINES, (sorted(meeting_room), warehouse)):
+        devices.append({"device_id": device, "kind": "shared", "name": name})
+        assignments += [{"assignment_id": f"asg-{slug}-{username}", "device_id": device,
+                         "person_id": person_id(username)} for username in shared_by]
+
+    networks = [
+        {"network_id": "net-uk-office", "address": UK_OFFICE_IP, "kind": "office",
+         "name": "UK office", "person_id": ""},
+        {"network_id": "net-us-office", "address": US_OFFICE_IP, "kind": "office",
+         "name": "US office", "person_id": ""},
+        {"network_id": "net-corporate-proxy", "address": DECOY_CLEAN, "kind": "proxy",
+         "name": "Corporate proxy", "person_id": ""},
+        {"network_id": "net-cloud-egress", "address": DECOY_BORDERLINE, "kind": "cloud",
+         "name": "Cloud egress", "person_id": ""},
+        {"network_id": "net-public-resolver", "address": DECOY_TRUSTED, "kind": "public",
+         "name": "Public resolver address", "person_id": ""},
+    ]
+    networks += [{"network_id": f"net-home-{u.username}", "address": u.home_ip, "kind": "home",
+                  "name": f"Home of {_display_name(u.username)}",
+                  "person_id": person_id(u.username)} for u in users if u.home_ip]
+    # Handed out in this order, so one address serves several people in a week.
+    networks += [{"network_id": f"net-vpn-{n}", "address": address, "kind": "vpn",
+                  "name": f"VPN pool address {n}", "person_id": ""}
+                 for n, address in enumerate(VPN_POOL, start=1)]
+
+    return {"people": people, "groups": groups, "memberships": memberships, "assets": assets,
+            "grants": grants, "devices": devices, "device_assignments": assignments,
+            "networks": networks}
+
+
+def _add_device_and_mfa(seed: int, rows: list[dict], tables: dict[str, list[dict]]) -> None:
+    """Fill the two new columns on every row, from a random stream of their own."""
+    rng = random.Random(f"{seed}:devices")
+    shared = {}
+    for a in tables["device_assignments"]:
+        if not a["device_id"].startswith("dev-laptop-"):
+            shared[a["person_id"]] = a["device_id"]
+    for row in rows:
+        if row["source_ip"] in ATTACKER_IPS or row["user_agent"] in PHONE_AGENTS:
+            device = ""  # never registered: the attacker's machine, a personal phone
+        elif (person_id(row["username"]) in shared and row["source_ip"] == UK_OFFICE_IP
+              and rng.random() < SHARED_MACHINE_SHARE):
+            device = shared[person_id(row["username"])]
+        else:
+            device = laptop_id(row["username"])
+        row["device_id"] = device
+        # A failed password never reaches MFA; an account on the exception list is never asked.
+        prompted = row["outcome"] == "success" and row["username"] not in MFA_EXCEPTIONS
+        row["mfa_result"] = "pass" if prompted else "none"
+
+
 def _in_window(row: dict) -> bool:
     return _ts(WINDOW_START) <= row["timestamp_utc"] < _ts(CAPTURED_AT)
 
@@ -329,8 +506,16 @@ def _ground_truth(rows: list[dict], seed: int) -> dict:
     }
 
 
-def generate(seed: int = SEED) -> tuple[list[dict], dict]:
-    """Build the log rows and the ground truth. Same seed, same result."""
+@dataclass(frozen=True)
+class World:
+    """Everything one seed produces: the log, the Port's answer key and the organisation."""
+    rows: list[dict]
+    ground_truth: dict
+    tables: dict[str, list[dict]]  # table name -> rows, as written under org/
+
+
+def generate(seed: int = SEED) -> World:
+    """Build the world. Same seed, same result."""
     rng = random.Random(seed)
     users = _build_users(rng)
     rows = _normal_activity(rng, users)
@@ -338,26 +523,34 @@ def generate(seed: int = SEED) -> tuple[list[dict], dict]:
     rows += _scenario_s2(rng)
     rows += _scenario_s4()
     rows = sorted((r for r in rows if _in_window(r)), key=_sort_key)
-    return rows, _ground_truth(rows, seed)
+    tables = _organisation(seed, users)
+    _add_device_and_mfa(seed, rows, tables)
+    return World(rows=rows, ground_truth=_ground_truth(rows, seed), tables=tables)
 
 
-def write(rows: list[dict], truth: dict, log_path: Path, truth_path: Path) -> None:
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    truth_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(log_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=COLUMNS, lineterminator="\n")
+def _write_csv(path: Path, columns: list[str], rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=columns, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
-    with open(truth_path, "w", encoding="utf-8") as f:
-        json.dump(truth, f, indent=2)
+
+
+def write(world: World, dataset_dir: Path) -> None:
+    """Write the world into a dataset folder, with the same file names as `default`."""
+    _write_csv(dataset_dir / LOG_PATH.name, COLUMNS, world.rows)
+    with open(dataset_dir / GROUND_TRUTH_PATH.name, "w", encoding="utf-8") as f:
+        json.dump(world.ground_truth, f, indent=2)
         f.write("\n")
+    for name, rows in world.tables.items():
+        _write_csv(dataset_dir / ORG_DIR.name / f"{name}.csv", TABLE_COLUMNS[name], rows)
 
 
 def main() -> None:
-    rows, truth = generate()
-    write(rows, truth, LOG_PATH, GROUND_TRUTH_PATH)
-    print(f"Wrote {len(rows)} rows to {LOG_PATH.relative_to(REPO_ROOT)}")
-    print(f"Wrote ground truth to {GROUND_TRUTH_PATH.relative_to(REPO_ROOT)}")
+    world = generate()
+    write(world, DATASET_DIR)
+    print(f"Wrote {len(world.rows)} rows and the organisation to "
+          f"{DATASET_DIR.relative_to(REPO_ROOT)}")
 
 
 if __name__ == "__main__":

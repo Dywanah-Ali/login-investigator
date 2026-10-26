@@ -8,6 +8,7 @@ import pandas as pd
 
 from login_investigator.loader import (
     ALLOWED_OUTCOMES,
+    RECORD_FIELDS,
     TIMESTAMP_FORMAT,
     account_key,
     parse_window,
@@ -112,7 +113,7 @@ def export_csv(rows: pd.DataFrame) -> str:
     Log fields are untrusted, so any text value that a spreadsheet would run as a formula gets a
     leading apostrophe, which spreadsheets show as plain text. Everything else is unchanged.
     """
-    records = pd.DataFrame(to_records(rows), columns=list(rows.columns))
+    records = pd.DataFrame(to_records(rows), columns=RECORD_FIELDS)
 
     def neutralise(value):
         if isinstance(value, str) and value.startswith(_FORMULA_STARTS):

@@ -41,7 +41,7 @@ def no_network(monkeypatch):
 def tiny_log(tmp_path):
     path = tmp_path / "logins.csv"
     lines = [",".join(generator.COLUMNS)]
-    lines += [",".join((*row[:5], row[5], "Mozilla/5.0")) for row in TINY_LOG]
+    lines += [",".join((*row[:5], row[5], "Mozilla/5.0", "", "none")) for row in TINY_LOG]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return path
 

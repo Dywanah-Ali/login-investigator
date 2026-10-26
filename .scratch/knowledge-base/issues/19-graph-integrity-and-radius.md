@@ -51,3 +51,7 @@ it gives exactly the S6 radius written in `truth.json`.
       findings triaged.
 
 ## Comments
+
+- 2026-10-26, consequence of the author's ruling at ticket 11: `device_id` is empty on attacker rows
+  and on employee sign-ins from a phone. An empty value is not a device: it makes no device edge,
+  and rows with an empty device are never peers of each other by device.

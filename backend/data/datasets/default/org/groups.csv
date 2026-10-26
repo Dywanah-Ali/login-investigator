@@ -1,0 +1,5 @@
+group_id,name,kind
+group-all-staff,All Staff,baseline
+group-it-admins,IT Admins,privileged
+group-finance-approvers,Finance Approvers,privileged
+group-hr-data-owners,HR Data Owners,privileged

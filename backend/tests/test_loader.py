@@ -114,6 +114,8 @@ def test_bad_timestamps_are_refused(tmp_path, real_rows, value, why):
     ("country", "Russia", "is not a two-letter country code"),
     ("country", "gb", "is not a two-letter country code"),
     ("username", "  ", "is empty"),
+    ("mfa_result", "skipped", "is not one of pass, fail, none, denied"),
+    ("mfa_result", "", "is not one of pass, fail, none, denied"),
 ])
 def test_bad_values_are_refused(tmp_path, real_rows, column, value, why):
     path = broken(tmp_path, real_rows, 5, column, value)

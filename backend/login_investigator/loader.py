@@ -14,8 +14,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from login_investigator.generator import COLUMNS, LOG_PATH
+from login_investigator.generator import COLUMNS, LOG_PATH, MFA_RESULTS, PORT_COLUMNS
 
+# The fields a row carries when it leaves the core: to the screens, the CSV download and the
+# agent's tools. The knowledge base's new columns stay inside until a contract names them.
+RECORD_FIELDS = PORT_COLUMNS
 ALLOWED_OUTCOMES = ("failure", "success")
 ALLOWED_FAILURE_REASONS = ("bad_password", "unknown_user")
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -103,6 +106,9 @@ def _find_problems(df: pd.DataFrame, timestamps: pd.Series) -> list[str]:
         elif outcome == "failure" and reason not in ALLOWED_FAILURE_REASONS:
             bad("failure_reason",
                 f"{reason!r} is not one of {', '.join(ALLOWED_FAILURE_REASONS)}")
+
+        if row["mfa_result"] not in MFA_RESULTS:
+            bad("mfa_result", f"{row['mfa_result']!r} is not one of {', '.join(MFA_RESULTS)}")
     return problems
 
 
@@ -148,9 +154,10 @@ def account_key(usernames: pd.Series) -> pd.Series:
 
 
 def to_records(rows: pd.DataFrame) -> list[dict]:
-    """Turn log rows into plain dicts with ISO timestamps, ready for JSON. Values stay raw."""
+    """Turn log rows into plain dicts with ISO timestamps, ready for JSON. Values stay raw; only
+    the record fields are kept."""
     records = []
-    for row in rows.to_dict("records"):
+    for row in rows[RECORD_FIELDS].to_dict("records"):
         row["timestamp_utc"] = row["timestamp_utc"].strftime(TIMESTAMP_FORMAT)
         records.append(row)
     return records

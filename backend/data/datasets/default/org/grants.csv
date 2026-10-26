@@ -1,0 +1,11 @@
+grant_id,group_id,asset_id
+grant-all-staff-email,group-all-staff,asset-email
+grant-all-staff-intranet,group-all-staff,asset-intranet
+grant-all-staff-file-share,group-all-staff,asset-file-share
+grant-it-admins-identity-provider,group-it-admins,asset-identity-provider
+grant-it-admins-vpn-gateway,group-it-admins,asset-vpn-gateway
+grant-it-admins-domain-controller,group-it-admins,asset-domain-controller
+grant-it-admins-backup-server,group-it-admins,asset-backup-server
+grant-finance-approvers-payments-system,group-finance-approvers,asset-payments-system
+grant-finance-approvers-erp,group-finance-approvers,asset-erp
+grant-hr-data-owners-hr-system,group-hr-data-owners,asset-hr-system

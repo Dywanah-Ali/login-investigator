@@ -23,8 +23,9 @@ def test_eval_server_uses_temporary_memory_and_cannot_reload_real_keys(monkeypat
     folder = tmp_path / "dataset"
     folder.mkdir()
     (folder / "logins.csv").write_text(
-        "timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent\n"
-        "2026-10-01T09:00:00Z,alice,203.0.113.10,GB,success,,test-agent\n",
+        "timestamp_utc,username,source_ip,country,outcome,failure_reason,user_agent,device_id,"
+        "mfa_result\n"
+        "2026-10-01T09:00:00Z,alice,203.0.113.10,GB,success,,test-agent,,pass\n",
         encoding="utf-8",
     )
     monkeypatch.setenv("LI_DATASET_DIR", str(folder))

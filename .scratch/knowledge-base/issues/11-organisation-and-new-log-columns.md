@@ -33,8 +33,10 @@ before.
 - [ ] Every record carries an ID written by the generator, the same on every run.
 - [ ] The log gains `device_id` and `mfa_result` (`pass`, `fail`, `none`, `denied`; `denied` reserved
       and unused); the loader's column list comes from the generator.
-- [ ] A test proves the tables and the log agree: every user is in people, every `device_id` is in
-      the register and assigned to that user or a shared machine they use.
+- [ ] A test proves the tables and the log agree: every user is in people, every filled-in
+      `device_id` is in the register and assigned to that user or a shared machine they use.
+- [ ] `device_id` is empty on every attacker row and on every employee sign-in from a phone, and
+      on no other row (spec rulings, 26 October 2026).
 - [ ] The API replies do not change: the new columns are not returned to the screen unless the
       contract says so.
 - [ ] The four rules' logic and tests are unchanged; the Port's eval passes.
@@ -43,3 +45,14 @@ before.
       findings triaged.
 
 ## Comments
+
+- 2026-10-26, author's ruling before the build: unregistered devices leave `device_id` empty. The
+  ticket's first wording would have put the victim's own laptop on attacker rows. Attacker rows are
+  empty, and so is a small seeded share of ordinary employee rows (personal or public devices), so an
+  empty value is a clue and never proof, as in real sign-in logs. Recorded in the spec's decisions log.
+- 2026-10-26, author's ruling at the build: this ticket writes the four VPN pool addresses into the
+  networks table in their hand-out order and adds no log rows. The VPN sign-ins are new rows, so they
+  move to ticket 12 with S6 and the twins, where whole-log counts may change.
+- 2026-10-26, author's ruling at the build, amending the first comment: measured, 124 of the 1,616
+  employee rows (7.7%) come from a phone and the register holds no phones. The empty employee rows
+  are exactly those phone sign-ins, with no further random share.
