@@ -75,6 +75,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-046 | Require reputation lookups in a broad compromise answer | Open, deferred outside T11 | Medium | B-074; T11 Port eval Q04 run 3 |
 | AUD-047 | Preserve each spray source's success outcome and total in broad answers | Open, deferred outside T12 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
 | AUD-048 | Decide whether the finding ID reaches the agent's detection tool when ticket 32 adds it to the Alerts reply | Open, for ticket 32's builder | Medium | Knowledge-base T13 spec review |
+| AUD-049 | Stop sending finding counts the Alerts screen never shows | Open, parked until the author reopens it | Low | Knowledge-base ticket 43 scoping |
 
 ### AUD-001: Rule filter
 
@@ -691,7 +692,9 @@ outside T11; registration does not approve implementation. Closure evidence: an 
 when reputation lookups are required, its regression evidence and an unchanged Port eval meeting
 the agreed gates while checking Q04. Recurrence: T12 Q04 fails the lookup checks in all three
 runs; see the B-074 recurrence and the 2026-10-26-112540 eval artifact. T13 repeats it in all three
-runs with no agent change (2026-10-26-131223 artifact).
+runs with no agent change (2026-10-26-131223 artifact). Scoped on 26 October 2026 in
+knowledge-base ticket 43: the code hook enforces searches but not lookups, and Q04's checks never
+ask about S6's compromise of amelia.ward, which no T13 run states.
 
 ### AUD-047: Outcomes lost in a broad answer about two spray sources
 
@@ -704,7 +707,9 @@ behaviour decision and evidence that a broad answer preserves each source's fail
 counts, alongside the unchanged Port and direct-S6 checks. Registration is not approval to build.
 Recurrence: T13's unchanged agent fails Q02 in all three runs (2026-10-26-131223 artifact). With
 Q04 also at 0/3, the Port eval met its 90% gate at 57/63 with no spare run: one more failure
-anywhere would fail the gate on behaviour no ticket has changed.
+anywhere would fail the gate on behaviour no ticket has changed. Scoped on 26 October 2026 in
+knowledge-base ticket 43: the search returned S6's successes but the model kept the finding's
+failure-only count, and Q02's no-success check is stale now that one spray succeeded.
 
 ### AUD-048: The finding ID and the agent's detection tool
 
@@ -714,6 +719,18 @@ requires "The Alerts reply gains `finding_id` and nothing else". Adding the fiel
 would also change what the agent sees, which is an agent behaviour change gated by an eval run.
 Ticket 32's builder decides, with the author, whether the route adds the field or the tool carries
 it too. Closure evidence: that decision recorded in ticket 32, and its eval run if the tool changes.
+Note for ticket 32, 26 October 2026: ticket 43 makes the agent's detection output differ from
+`to_dict()` by one agent-only field per finding (spec decisions log, same date), so the tool no
+longer returns `to_dict()` alone.
+
+### AUD-049: Finding counts the Alerts screen never shows
+
+Found while scoping ticket 43. The Alerts reply sends `failure_count` and `success_count` for every
+finding, but the Alerts table shows only `event_count` (`frontend/src/components/alerts-table.tsx`).
+The project rule says the API returns only the fields the screen needs. A spraying finding's
+`success_count` is also always 0 by construction, so a future screen that showed it would mislead.
+Outside ticket 43's scope; registration is not approval. Closure evidence: the author's decision to
+remove, show or relabel the fields, and its tests.
 
 ## Longer-term capabilities already named in the spec
 

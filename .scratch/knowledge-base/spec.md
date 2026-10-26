@@ -368,7 +368,8 @@ questions, and the author accepts the live screen. The initiative closes there.
   name, the two never-mentioned users. Written into `truth.json`.
 - **The Port's exam after regeneration** (T04 d17): the Port's eval questions pass unchanged; where a
   new story changes a whole-log count, the expected value is updated with its reason recorded.
-  Port-level questions are added for S6 only. This gate passes before any corpus or retrieval work.
+  Port-level questions are added for S6 only. Ticket 43 extends the exception to expected facts:
+  Q02 and Q04 gain checks for S6, with nothing removed (decisions log, 26 October 2026). This gate passes before any corpus or retrieval work.
 
 ### The corpus (T03, T04)
 
@@ -516,7 +517,9 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 ### The agent, its tools and its playbook (T05)
 
-- **Seven typed tools in one tuple** (T05 d1): the Port's three unchanged, plus
+- **Seven typed tools in one tuple** (T05 d1): the Port's three unchanged except one added field
+  (ticket 43: each finding in `find_suspicious_activity`'s output carries what its address did
+  overall, for the agent only; the core finding and the Alerts reply are unchanged), plus
   `investigate_alert(finding_id)`, `lookup_account(account_id)`,
   `find_peers(account_id | device_id | network)` and
   `search_corpus(question, doc_type, technique_id)`. No router tool, no sub-agent. All hand-written,
@@ -867,3 +870,5 @@ them.
 | 2026-10-26 | Author chose S4 option 2: keep MFA passed and explain an unexpected prompt approved by Olivia, supported by one additional incident record. Own corpus grows from 27 to 28 documents; T12 reserves its ID, T15 defines its evidence and T16 delivers it | A passed authentication step does not establish the account owner's intent. Separate log observations, user statement and responder assessment; leave credential acquisition unknown. No application code or dataset changed in this decision session |
 | 2026-10-26 | Author deferred the expanded S4 authentication-attack story as premature for this phase. Supersedes the option-2 implementation requirement above: no additional incident document, no new email, web or SIEM evidence requirement; own corpus restored to 27. S4 authentication explanation remains open and existing dataset unchanged | The proposed explanation requires evidence beyond the current login dataset. Olivia's unsolicited statement was rejected as too convenient; no replacement mechanism has been agreed |
 | 2026-10-26 | Author agreed S4 is an intentionally unresolved suspicious sign-in. Keep the event and MFA pass; no exception, added incident record or telemetry source. T12 records the known facts and unknowns in the KB answer key; KB evaluation accepts uncertainty without demanding compromise or a mechanism | Supersedes the earlier open S4 question. A source address does not establish physical location, and authentication success does not establish authorisation. No dataset or application code changed |
+| 2026-10-26 | Author's ruling at ticket 43: T05 d1's "the Port's three tools unchanged" gains one exception. `find_suspicious_activity` adds one agent-only field per finding with what the finding's address did overall (successes, failures, the accounts it signed in to). `Finding`, `Finding.to_dict()` and the Alerts reply stay unchanged | Each rule builds its finding from its own rows only, so a spraying finding's `success_count` is always 0; the agent read S6 as a spray that got nowhere, though it signed in to amelia.ward three times (AUD-047). A prompt line alone was judged unreliable; changing the core finding would break ticket 32's "`finding_id` and nothing else" |
+| 2026-10-26 | Author's ruling at ticket 43: the frozen Port question file (T06 d8) changes in place for Q02 and Q04 only. Each gains checks for S6 (Q02: names `45.148.10.80` and amelia.ward, states three successes; Q04: names amelia.ward, looks up `45.148.10.80`); no check is removed. T04 d17's exception is read as covering expected facts, not only counts | S6 made Q02's "no attempt succeeded" half false and left Q04 blind to the one account the grown world compromises: in T13 no Q04 answer named amelia.ward, and the eval could not see it. Duplicate S6 questions would leave the stale check in place |

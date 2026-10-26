@@ -194,6 +194,12 @@ for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 t
 line holds its edges. **The frontier is tickets 14 and 15**, which have no unresolved blockers; one session
 works at a time, so first by number wins.
 
+Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
+(Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling.
+All six rulings were made the same day and it is ready to build: the code hook adds the missing
+reputation lookups, the detection tool gives the agent each address's real outcomes, and Q02 and
+Q04 gain checks for S6 (spec decisions log, 26 October 2026).
+
 ### Build tickets resolved
 
 - [09 PostgreSQL with pgvector, and the loud test fixture](issues/09-postgres-pgvector-and-test-fixture.md)
