@@ -345,6 +345,8 @@ def test_s6_sprays_then_signs_in_three_times_on_an_it_admin(world):
     assert len(successes) == 3
     assert {r["username"] for r in successes} == {story["user"]}
     assert failures[-1]["timestamp_utc"] < successes[0]["timestamp_utc"]
+    assert [r["timestamp_utc"] for r in successes] == story["success_times"]
+    assert failures[-1]["timestamp_utc"] == story["last_failure"]
     assert {r["mfa_result"] for r in successes} == {"none"}
     assert {r["device_id"] for r in rows} == {""}
     assert any(m["group_id"] == "group-it-admins"
@@ -352,13 +354,19 @@ def test_s6_sprays_then_signs_in_three_times_on_an_it_admin(world):
                for m in world.tables["memberships"])
 
 
-def test_approved_travel_trips_new_country_without_uk_activity_during_the_trip(world, tmp_path):
+@pytest.fixture(scope="module")
+def generated_findings(world, tmp_path_factory):
     from login_investigator.loader import load_log
     from login_investigator.rules import detect_all
 
+    folder = tmp_path_factory.mktemp("generated-findings")
+    g.write(world, folder)
+    return detect_all(load_log(folder / "logins.csv"))
+
+
+def test_approved_travel_trips_new_country_without_uk_activity_during_the_trip(world, generated_findings):
     trip = world.truth["twins"]["B1"]
-    g.write(world, tmp_path)
-    findings = detect_all(load_log(tmp_path / "logins.csv"))
+    findings = generated_findings
     abroad = [r for r in world.rows if r["username"] == trip["user"]
               and r["timestamp_utc"][:10] in {"2026-10-02", "2026-10-03", "2026-10-04"}
               and r["source_ip"] not in ATTACKER_IPS | {g.S6_IP}]
@@ -371,14 +379,9 @@ def test_approved_travel_trips_new_country_without_uk_activity_during_the_trip(w
     assert not [f for f in findings if str(f.first_seen).startswith("2026-10-03")]
 
 
-def test_reset_burst_is_benign_but_trips_both_existing_rules(world, tmp_path):
-    from login_investigator.loader import load_log
-    from login_investigator.rules import detect_all
-
+def test_reset_burst_is_benign_but_trips_both_existing_rules(world, generated_findings):
     burst = world.truth["twins"]["B2"]
-    g.write(world, tmp_path)
-    log = load_log(tmp_path / "logins.csv")
-    findings = detect_all(log)
+    findings = generated_findings
     assert {f.rule for f in findings if burst["user"] in f.users and f.rule != "password_spraying"} == {
         "brute_force", "success_after_failures"}
     rows = [r for r in world.rows if r["username"] == burst["user"]
@@ -390,13 +393,9 @@ def test_reset_burst_is_benign_but_trips_both_existing_rules(world, tmp_path):
     assert burst["clearing_document_id"] == "rec-helpdesk-reset"
 
 
-def test_laptop_swap_is_registered_and_fires_no_rule(world, tmp_path):
-    from login_investigator.loader import load_log
-    from login_investigator.rules import detect_all
-
+def test_laptop_swap_is_registered_and_fires_no_rule(world, generated_findings):
     swap = world.truth["twins"]["B3"]
-    g.write(world, tmp_path)
-    findings = detect_all(load_log(tmp_path / "logins.csv"))
+    findings = generated_findings
     assert not [f for f in findings if swap["user"] in f.users and f.rule != "password_spraying"]
     rows = [r for r in world.rows if r["username"] == swap["user"] and r["device_id"]]
     assert {r["device_id"] for r in rows if r["timestamp_utc"] < "2026-10-04T12:00:00Z"} == {

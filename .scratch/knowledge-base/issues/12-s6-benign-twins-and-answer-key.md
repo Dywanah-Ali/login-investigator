@@ -91,3 +91,34 @@ the knowledge base's answer key, `truth.json`, from the planted stories.
   Original rule tests now identify their original scenario by address rather than assuming
   one finding per rule. No rule, agent prompt, API contract or existing eval question changed.
   Two Port-level questions added for S6 (Q20 detection, Q21 successful sign-ins).
+
+
+## Review
+
+Fixed point: `cbc0e8b87b4f30ff66905eb1ae5fbed16fedbb07`. Reviewed implementation commit
+`0d98d2e` with `git diff cbc0e8b...HEAD`; two independent read-only subagents used by
+`mp-code-review`.
+
+### Standards
+
+No hard violations. Three judgement calls: repeated story timing/count facts could drift;
+generator tests repeat expensive write/load/detect setup; API tests repeat a scenario-rule map.
+All three addressed: named constants feed both rows and answer-key timestamps/counts; a
+module-scoped fixture exercises the same public generator/loader/rules seam once; extra aliases
+are kept only where used. Literal expectations remain independent in tests. Targeted checks pass.
+
+### Spec
+
+No implementation findings. S6, twins, VPN rows, both keys and saved reputation match the spec;
+original planted events preserve their seven fields. S4 follows the final intentionally
+unresolved ruling. Paths come from the planted grant and VPN plans; independent radius
+recomputation stays in T19. Full-suite and eval evidence are tracked below before closure.
+
+Review totals: Standards 0 hard violations and 3 judgement calls, all fixed; Spec 0 findings.
+
+### Evaluation evidence
+
+`backend/evals/results/2026-10-26-112540-7ff8e5ae.json`, API mode, three runs per question,
+unchanged agent fingerprint `7ff8e5ae`: 58/63 overall (92%, gate 90%), security 15/15 (100%).
+Original 19 questions 52/57; Q20 and Q21 6/6. Five failures kept: Q02 runs 2 and 3 (B-076,
+AUD-047) and Q04 all runs (B-074 recurrence, AUD-046). No prompt or policy fix in this ticket.

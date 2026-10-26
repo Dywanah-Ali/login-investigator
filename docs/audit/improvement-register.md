@@ -73,6 +73,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-044 | Sweep test databases left behind by a test run that was killed before its teardown | Open, parked; trigger to reopen: a leftover `li_test_` database is seen | Low | Knowledge-base ticket 09, spec review |
 | AUD-045 | Preserve the attack type in a narrow spraying investigation | Open, deferred outside T10 | High | B-073; T10 Port eval Q08 run 2 |
 | AUD-046 | Require reputation lookups in a broad compromise answer | Open, deferred outside T11 | Medium | B-074; T11 Port eval Q04 run 3 |
+| AUD-047 | Preserve each spray source's success outcome and total in broad answers | Open, deferred outside T12 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
 
 ### AUD-001: Rule filter
 
@@ -687,7 +688,18 @@ attacker addresses without looking up any of their reputations. B-074 records it
 `backend/evals/results/2026-10-26-095844-7ff8e5ae.json`. T11 left the tools' outputs unchanged. Deferred
 outside T11; registration does not approve implementation. Closure evidence: an agreed rule for
 when reputation lookups are required, its regression evidence and an unchanged Port eval meeting
-the agreed gates while checking Q04.
+the agreed gates while checking Q04. Recurrence: T12 Q04 fails the lookup checks in all three
+runs; see the B-074 recurrence and the 2026-10-26-112540 eval artifact.
+
+### AUD-047: Outcomes lost in a broad answer about two spray sources
+
+T12's eval passes its overall and security gates, but Q02 runs 2 and 3 omit S2's explicit
+no-success conclusion and describe S6 as 20 total attempts despite 20 failures plus three
+successes in the log. The direct S6 questions pass 6/6. See B-076 and
+`backend/evals/results/2026-10-26-112540-7ff8e5ae.json`. The generator and API tests agree on the
+rows; the agent code is unchanged. Deferred outside T12. Closure needs a separately scoped
+behaviour decision and evidence that a broad answer preserves each source's failure and success
+counts, alongside the unchanged Port and direct-S6 checks. Registration is not approval to build.
 
 ## Longer-term capabilities already named in the spec
 
@@ -823,3 +835,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-23 | Knowledge-base ticket 06 resolved after a discussion, research note 06 and a ten-question grilling: two hard retrieval checks per question (top 20 and the 5 the model received), exact-set graph gate, a mix weighted to say-no and mixed questions, a separate tuning file for the refusal threshold, citation resolution with gold IDs as the answer gate, the judge as a smoke alarm with three trials and stored verdicts, playbook and canary checks as 100% gates, one scorer with two exams kept separate, on-versus-off comparisons for the re-ranker and BM25, and Langfuse adopted as a mirror. AUD-036 decided. Added AUD-042 (injection-detector middleware, parked with a trigger). Frontier moves to ticket 07. | Knowledge-base ticket 06 Answer; research note 06; map |
 | 2026-10-26 | Knowledge-base T10 resolved: default dataset folder and unchanged Port exam verified. Recorded Explorer timeout recurrence and passing 149-test rerun (AUD-028), repeated count error (AUD-030), and narrow spraying-answer failure (new AUD-045). No agent changes; Port eval meets gates at 55/57 overall and 15/15 security. | T10 Answer; B-066/B-070/B-073; `2026-10-25-221147-7ff8e5ae.json` |
 | 2026-10-26 | Knowledge-base T11 resolved: organisation tables and two internal log columns, Port rows byte-identical in their old columns, tools and API unchanged. Port eval meets gates at 53/57 overall and 15/15 security. Recurrences of AUD-030 (Q07) and AUD-045 (Q08 runs 2 and 3); new AUD-046 (Q04 run 3 skipped reputation lookups). | T11 Answer; B-070/B-073/B-074; `2026-10-26-095844-7ff8e5ae.json` |
+| 2026-10-26 | T12 eval meets gates at 58/63 overall and 15/15 security; S6 questions 6/6. Recorded B-074/AUD-046 recurrence in all Q04 runs and new B-076/AUD-047 for broad spraying outcome/count omissions. Existing six frontend lint warnings persist as AUD-009. | T12; `2026-10-26-112540-7ff8e5ae.json` |

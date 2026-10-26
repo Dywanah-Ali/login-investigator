@@ -127,6 +127,13 @@ S1_FAILURES = 150
 S1_START = datetime(2026, 10, 8, 1, 12, 7, tzinfo=timezone.utc)
 S2_START = datetime(2026, 10, 6, 3, 4, 0, tzinfo=timezone.utc)
 S4_TIME = datetime(2026, 10, 6, 13, 47, 12, tzinfo=timezone.utc)
+S6_START = datetime(2026, 10, 7, 2, 0, tzinfo=timezone.utc)
+S6_ACCOUNTS = 20
+S6_ATTEMPT_SECONDS = 20
+S6_SUCCESS_MINUTES = (10, 15, 20)
+RESET_START = datetime(2026, 10, 5, 6, 0, tzinfo=timezone.utc)
+RESET_FAILURES = 20
+RESET_ATTEMPT_SECONDS = 30
 
 
 @dataclass
@@ -542,12 +549,12 @@ def generate(seed: int = SEED) -> World:
     target = admins[0]
     rng_s6 = random.Random(f"{seed}:s6")
     candidates = [u.username for u in users if u.username not in (S1_TARGET, S4_TARGET, target)]
-    targets = sorted([target] + rng_s6.sample(candidates, 19))
-    start = datetime(2026, 10, 7, 2, 0, tzinfo=timezone.utc)
+    targets = sorted([target] + rng_s6.sample(candidates, S6_ACCOUNTS - 1))
+    start = S6_START
     for i, username in enumerate(targets):
-        rows.append(_row(start + timedelta(seconds=i * 20), username, S6_IP, "NL", "failure",
+        rows.append(_row(start + timedelta(seconds=i * S6_ATTEMPT_SECONDS), username, S6_IP, "NL", "failure",
                          "bad_password", S2_AGENT))
-    for minute in (10, 15, 20):
+    for minute in S6_SUCCESS_MINUTES:
         rows.append(_row(start + timedelta(minutes=minute), target, S6_IP, "NL", "success", "",
                          S2_AGENT))
     # Approved travel changes only the ordinary rows of this employee during the trip.
@@ -566,10 +573,10 @@ def generate(seed: int = SEED) -> World:
     unused = [u for u in UK_USERS if u not in (S1_TARGET, S4_TARGET, target, traveller)]
     reset_user = "oliver.hayes" if "oliver.hayes" in unused else unused[0]
     reset_ip = next(u.home_ip for u in users if u.username == reset_user)
-    reset_start = datetime(2026, 10, 5, 6, 0, tzinfo=timezone.utc)
-    for i in range(21):
-        success = i == 20
-        rows.append(_row(reset_start + timedelta(seconds=i * 30), reset_user, reset_ip,
+    reset_start = RESET_START
+    for i in range(RESET_FAILURES + 1):
+        success = i == RESET_FAILURES
+        rows.append(_row(reset_start + timedelta(seconds=i * RESET_ATTEMPT_SECONDS), reset_user, reset_ip,
                          "GB", "success" if success else "failure",
                          "" if success else "bad_password", DESKTOP_AGENTS[0]))
     unused = [u for u in unused if u != reset_user and _person_id(u) not in shared_users]
@@ -627,9 +634,9 @@ def generate(seed: int = SEED) -> World:
     paths += [[_person_id(target), network, peer] for peer in sorted(network_peers)]
     scenarios["S6"] = {
         "type": "password_spraying", "attacker_ip": S6_IP, "country": "NL", "user": target,
-        "targets": targets, "failures": 20, "successes": 3,
-        "first_seen": _ts(start), "last_failure": _ts(start + timedelta(seconds=19 * 20)),
-        "success_times": [_ts(start + timedelta(minutes=n)) for n in (10, 15, 20)],
+        "targets": targets, "failures": S6_ACCOUNTS, "successes": len(S6_SUCCESS_MINUTES),
+        "first_seen": _ts(start), "last_failure": _ts(start + timedelta(seconds=(S6_ACCOUNTS - 1) * S6_ATTEMPT_SECONDS)),
+        "success_times": [_ts(start + timedelta(minutes=n)) for n in S6_SUCCESS_MINUTES],
         "verdict": "compromised", "mfa_result": "none",
         "expected_document_ids": ["reg-mfa-exceptions", "run-password-spray-response",
                                   "run-compromised-account-response"],
@@ -647,9 +654,9 @@ def generate(seed: int = SEED) -> World:
     }
     truth["twins"]["B1"].update({"country": "DE", "address": "203.0.113.70",
                                   "days": sorted(travel_days)})
-    truth["twins"]["B2"].update({"address": reset_ip, "failures": 20,
+    truth["twins"]["B2"].update({"address": reset_ip, "failures": RESET_FAILURES,
                                   "first_seen": _ts(reset_start),
-                                  "success_time": _ts(reset_start + timedelta(minutes=10)),
+                                  "success_time": _ts(reset_start + timedelta(seconds=RESET_FAILURES * RESET_ATTEMPT_SECONDS)),
                                   "device_id": _laptop_id(reset_user)})
     truth["twins"]["B3"]["swap_time"] = _ts(swap_at)
     truth.update({

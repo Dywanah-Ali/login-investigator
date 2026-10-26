@@ -225,9 +225,7 @@ def test_filters_narrow_the_alerts(client, s, filters, expected):
     at least one of its events is in the view. The success filter keeps S3, whose last event is
     the success, and drops S1, which has none."""
     rules = {"S1": s["S1"]["type"], "S2": s["S2"]["type"], "S3": s["S3"]["type"],
-             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"],
-             "S6": "password_spraying", "S6-new-country": "new_country",
-             "B1": "new_country", "B2": "brute_force", "B2-success": "success_after_failures"}
+             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"]}
     assert [a["rule"] for a in alerts(client, **filters)] == [rules[key] for key in expected]
 
 

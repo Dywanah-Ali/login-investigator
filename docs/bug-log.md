@@ -1296,3 +1296,26 @@ UK users. The initial twin selection also assumed preferred names could never be
 available users for the twins with a fallback when a preferred name is already taken.
 **Lesson:** seeded variation must preserve story preconditions, not just repeatable output.
 **Found by:** a second-seed generator probe and the failing-then-passing generator regression.
+
+
+### B-076 · 2026-10-26 · Knowledge-base T12 · Broad spraying answer loses outcomes across two sources
+
+**Symptom:** Q02 runs 2 and 3 omit an explicit no-success conclusion for S2. Both describe S6 as
+20 total attempts, although the planted source has 20 failed attempts and three successful
+sign-ins (23 total). Run 2 extends its last-seen time through S6's final success but omits those
+successes. Q20 and Q21 pass all three runs, including Q21's direct three-success question.
+**Cause:** the precise model failure is not established. Broad answers combine two spray sources;
+the detection finding counts failed attempts only, while the sign-in search supplies all outcomes.
+The model called both searches but its prose did not reconcile them. No generator inconsistency
+was found, and the agent and tool code are unchanged.
+**Fix:** none in T12; retain both failed scores and defer agent behaviour work. AUD-047 tracks it.
+**Lesson:** a correct direct lookup does not prove a broad multi-source summary preserves outcomes.
+**Evidence:** `backend/evals/results/2026-10-26-112540-7ff8e5ae.json`, Q02 runs 2 and 3;
+58/63 overall, 15/15 security; original 19 questions 52/57 and both new S6 questions 6/6.
+
+**B-074 recurrence, 26 October 2026 (knowledge-base T12):** Q04 runs 1, 2 and 3 perform the rules
+and six address searches, but no reputation lookups. All three original required-lookup checks
+fail in each run. The changed world includes the benign twins and S6; no agent or prompt change.
+The answers also fail to identify S6's successful sign-ins in their broad summary, despite the
+correct direct Q21 answers. Cause not established; no fix in T12. AUD-046 remains open. Evidence:
+`backend/evals/results/2026-10-26-112540-7ff8e5ae.json`.
