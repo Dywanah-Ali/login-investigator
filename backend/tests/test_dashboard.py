@@ -55,7 +55,7 @@ def test_dataset_facts_match_the_ground_truth(log, truth):
 def test_the_pickers_get_every_country_and_user_once_in_order(log, s):
     """The country list and the user count are pinned from the seeded log (seed 20261008)."""
     facts = dataset_facts(log)
-    assert facts.countries == ("GB", "NL", "RO", "RU", "US")
+    assert facts.countries == ("DE", "GB", "NL", "RO", "RU", "US")
     assert list(facts.users) == sorted(facts.users)
     assert len(facts.users) == len(set(facts.users)) == 57
     assert {s["S1"]["target_user"], s["S4"]["user"], *s["S2"]["unknown_usernames"]} <= set(
@@ -84,8 +84,13 @@ def test_the_whole_log_lists_every_alert_newest_first(log, s, findings):
         ("success_after_failures", s["S3"]["attacker_ip"]),  # S3, 8 Oct 02:32:20
         ("new_country", attacker),                           # same sign-in, 8 Oct 02:32:20
         ("brute_force", attacker),                           # S1, 8 Oct 02:31:44
+        ("new_country", "45.148.10.80"),                    # S6, 7 Oct 02:10
+        ("password_spraying", "45.148.10.80"),              # S6, 7 Oct 02:06:20
         ("new_country", s["S4"]["ip"]),                      # S4, 6 Oct 13:47:12
         ("password_spraying", s["S2"]["attacker_ip"]),       # S2, 6 Oct 03:17:29
+        ("success_after_failures", "198.51.100.30"),       # B2, 5 Oct 06:10
+        ("brute_force", "198.51.100.30"),                  # B2, 5 Oct 06:09:30
+        ("new_country", "203.0.113.70"),                   # B1, 2 Oct 08:17:18
     ]
 
 
@@ -98,7 +103,9 @@ def test_a_user_filter_keeps_only_that_users_alerts(log, s, findings):
 def test_a_rule_filter_keeps_only_that_rules_alerts_newest_first(log, s, findings):
     assert rule_and_ip(alerts_for_view(findings, log, rule="new_country")) == [
         ("new_country", s["S1"]["attacker_ip"]),  # 8 Oct
+        ("new_country", "45.148.10.80"),          # 7 Oct
         ("new_country", s["S4"]["ip"]),           # 6 Oct
+        ("new_country", "203.0.113.70"),          # 2 Oct
     ]
 
 

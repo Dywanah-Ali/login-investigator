@@ -3,7 +3,7 @@
   "seed": 20261008,
   "captured_at": "2026-10-08T09:00:00Z",
   "window_start": "2026-10-01T09:00:00Z",
-  "row_count": 1856,
+  "row_count": 1948,
   "scenarios": {
     "S1": {
       "type": "brute_force",

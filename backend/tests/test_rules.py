@@ -1,4 +1,4 @@
-"""Gate 1: the rules catch S1 to S4, and flag nothing else.
+"""Gate 1: the rules catch the planted attacks and benign twins, and flag nothing else.
 
 Expected values come from data/datasets/default/ground_truth.json. Threshold edge cases use small made-up logs.
 """
@@ -40,7 +40,7 @@ def by_rule(findings, rule):
 
 
 def test_s1_brute_force_is_caught(findings, s):
-    [f] = by_rule(findings, BRUTE_FORCE)
+    [f] = [f for f in by_rule(findings, BRUTE_FORCE) if s["S1"]["attacker_ip"] in f.ips]
     assert f.ips == (s["S1"]["attacker_ip"],)
     assert f.users == (s["S1"]["target_user"],)
     assert f.failure_count == s["S1"]["failures"]
@@ -50,7 +50,7 @@ def test_s1_brute_force_is_caught(findings, s):
 
 def test_s5_injection_rows_count_toward_s1(log, findings, s):
     """The instruction-like rows are data: they sit inside the S1 burst and are counted."""
-    [f] = by_rule(findings, BRUTE_FORCE)
+    [f] = [f for f in by_rule(findings, BRUTE_FORCE) if s["S1"]["attacker_ip"] in f.ips]
     for moment in s["S5"]["times"]:
         assert f.first_seen <= ts(moment) <= f.last_seen
     s1_failures = log[(log["source_ip"] == s["S1"]["attacker_ip"])
@@ -60,7 +60,7 @@ def test_s5_injection_rows_count_toward_s1(log, findings, s):
 
 
 def test_s2_password_spraying_is_caught(findings, s):
-    [f] = by_rule(findings, PASSWORD_SPRAYING)
+    [f] = [f for f in by_rule(findings, PASSWORD_SPRAYING) if s["S2"]["attacker_ip"] in f.ips]
     assert f.ips == (s["S2"]["attacker_ip"],)
     assert len(f.users) == s["S2"]["accounts_tried"]
     assert set(s["S2"]["unknown_usernames"]) <= set(f.users)
@@ -71,7 +71,7 @@ def test_s2_password_spraying_is_caught(findings, s):
 
 
 def test_s3_success_after_failures_is_caught(findings, s):
-    [f] = by_rule(findings, SUCCESS_AFTER_FAILURES)
+    [f] = [f for f in by_rule(findings, SUCCESS_AFTER_FAILURES) if s["S3"]["attacker_ip"] in f.ips]
     assert f.ips == (s["S3"]["attacker_ip"],)
     assert f.users == (s["S3"]["user"],)
     assert f.success_count == 1
@@ -100,12 +100,13 @@ def test_s3_compromise_also_counts_as_a_new_country(findings, s):
 def test_exactly_the_planted_findings_and_no_others(findings):
     counts = {rule: len(by_rule(findings, rule)) for rule in
               (BRUTE_FORCE, PASSWORD_SPRAYING, SUCCESS_AFTER_FAILURES, NEW_COUNTRY)}
-    assert counts == {BRUTE_FORCE: 1, PASSWORD_SPRAYING: 1, SUCCESS_AFTER_FAILURES: 1,
-                      NEW_COUNTRY: 2}
+    assert counts == {BRUTE_FORCE: 2, PASSWORD_SPRAYING: 2, SUCCESS_AFTER_FAILURES: 2,
+                      NEW_COUNTRY: 4}
 
 
-def test_only_attacker_ips_are_flagged(findings, s):
-    attackers = {s["S1"]["attacker_ip"], s["S2"]["attacker_ip"], s["S4"]["ip"]}
+def test_only_planted_attack_and_twin_ips_are_flagged(findings, s):
+    attackers = {s["S1"]["attacker_ip"], s["S2"]["attacker_ip"], s["S4"]["ip"],
+                 "45.148.10.80", "203.0.113.70", "198.51.100.30"}
     flagged = {ip for f in findings for ip in f.ips}
     assert flagged <= attackers
 
@@ -116,15 +117,15 @@ def test_decoy_ips_are_never_flagged(findings, truth):
         assert decoy["ip"] not in flagged
 
 
-def test_reserved_addresses_of_normal_staff_are_never_flagged(findings):
-    for f in findings:
-        for ip in f.ips:
-            assert ipaddress.ip_address(ip).is_global, f"normal staff address {ip} flagged"
+def test_only_the_two_benign_twins_flag_reserved_staff_addresses(findings):
+    reserved = {ip for f in findings for ip in f.ips if not ipaddress.ip_address(ip).is_global}
+    assert reserved == {"203.0.113.70", "198.51.100.30"}
 
 
 def test_normal_users_are_never_flagged(findings, s):
-    """Outside the spraying list, only the two planted victims may appear."""
-    victims = {s["S1"]["target_user"], s["S4"]["user"]}
+    """Outside the spraying lists, only planted victims and rule-tripping twins may appear."""
+    victims = {s["S1"]["target_user"], s["S4"]["user"],
+               "amelia.ward", "maya.patel", "oliver.hayes"}
     for f in findings:
         if f.rule != PASSWORD_SPRAYING:
             assert set(f.users) <= victims, f.summary
@@ -210,7 +211,7 @@ def test_every_finding_has_the_shared_shape_and_is_json_ready(findings):
 
 
 def test_evidence_shows_the_start_and_the_end(findings, s):
-    [f] = by_rule(findings, SUCCESS_AFTER_FAILURES)
+    [f] = [f for f in by_rule(findings, SUCCESS_AFTER_FAILURES) if s["S3"]["attacker_ip"] in f.ips]
     assert f.evidence[-1]["timestamp_utc"] == s["S3"]["time"]
     assert f.evidence[-1]["outcome"] == "success"
 

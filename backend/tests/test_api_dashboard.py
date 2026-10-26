@@ -35,7 +35,7 @@ def test_dataset_facts_match_the_ground_truth(client, truth, s):
     assert body["label"] == "Synthetic data"
     assert body["first_date"] == "2026-10-01"
     assert body["last_date"] == "2026-10-08"
-    assert body["countries"] == ["GB", "NL", "RO", "RU", "US"]
+    assert body["countries"] == ["DE", "GB", "NL", "RO", "RU", "US"]
     assert len(body["users"]) == 57
     assert body["users"] == sorted(body["users"])
     assert {s["S1"]["target_user"], s["S4"]["user"]} <= set(body["users"])
@@ -86,7 +86,7 @@ def test_the_overview_of_the_whole_log_has_the_contract_shape_and_nothing_more(c
     assert body["summary"]["total"] == truth["row_count"]
     assert 0 < body["summary"]["failures"] < truth["row_count"]
     assert body["summary"]["distinct_users"] == 57
-    assert body["alert_count"] == 5  # S1 to S4, plus the new-country alert of S3's sign-in
+    assert body["alert_count"] == 10  # Original five, two S6, B1, and two B2 findings
     assert body["top_failed_ips"][:2] == [
         {"source_ip": s["S1"]["attacker_ip"], "failures": s["S1"]["failures"], "accounts": 1},
         {"source_ip": s["S2"]["attacker_ip"], "failures": s["S2"]["attempts"],
@@ -176,7 +176,8 @@ def test_s1_to_s4_appear_in_alerts_newest_first(client, s):
     """Adapted from v1's "S1 to S4 appear in alerts" and "alerts newest first". The order is
     written out by hand from the ground truth's times: S3's success and its sign-in from a new
     country share the last second, and the core breaks that tie by rule, newest first."""
-    found = alerts(client)
+    found = [a for a in alerts(client)
+             if set(a["ips"]) <= {s["S1"]["attacker_ip"], s["S2"]["attacker_ip"], s["S4"]["ip"]}]
     assert [(a["rule"], a["last_seen"]) for a in found] == [
         (s["S3"]["type"], s["S3"]["time"]),
         (s["S4"]["type"], s["S3"]["time"]),  # S3's sign-in is also the user's first from NL
@@ -224,24 +225,28 @@ def test_filters_narrow_the_alerts(client, s, filters, expected):
     at least one of its events is in the view. The success filter keeps S3, whose last event is
     the success, and drops S1, which has none."""
     rules = {"S1": s["S1"]["type"], "S2": s["S2"]["type"], "S3": s["S3"]["type"],
-             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"]}
+             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"],
+             "S6": "password_spraying", "S6-new-country": "new_country",
+             "B1": "new_country", "B2": "brute_force", "B2-success": "success_after_failures"}
     assert [a["rule"] for a in alerts(client, **filters)] == [rules[key] for key in expected]
 
 
 @pytest.mark.parametrize(("filters", "expected"), [
     # Ticket 26. Pinned by hand from the ground truth, as above.
-    ({"rule": "new_country"}, ["S3-new-country", "S4"]),
-    ({"rule": "brute_force"}, ["S1"]),
+    ({"rule": "new_country"}, ["S3-new-country", "S6-new-country", "S4", "B1"]),
+    ({"rule": "brute_force"}, ["S1", "B2"]),
     ({"rule": "new_country", "from": "2026-10-06", "to": "2026-10-06"}, ["S4"]),
     ({"rule": "password_spraying", "country": "ro"}, ["S2"]),
     ({"rule": "brute_force", "outcome": "success"}, []),  # S1 has no success
     ({"rule": "success_after_failures", "user": "OLIVIA.BENNETT"}, []),
-    ({"rule": ""}, ["S3", "S3-new-country", "S1", "S4", "S2"]),  # an empty box means all
-    ({"rule": "  "}, ["S3", "S3-new-country", "S1", "S4", "S2"]),
+    ({"rule": ""}, ["S3", "S3-new-country", "S1", "S6-new-country", "S6", "S4", "S2", "B2-success", "B2", "B1"]),  # an empty box means all
+    ({"rule": "  "}, ["S3", "S3-new-country", "S1", "S6-new-country", "S6", "S4", "S2", "B2-success", "B2", "B1"]),
 ])
 def test_a_rule_filter_composes_with_the_other_filters(client, s, filters, expected):
     rules = {"S1": s["S1"]["type"], "S2": s["S2"]["type"], "S3": s["S3"]["type"],
-             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"]}
+             "S4": s["S4"]["type"], "S3-new-country": s["S4"]["type"],
+             "S6": "password_spraying", "S6-new-country": "new_country",
+             "B1": "new_country", "B2": "brute_force", "B2-success": "success_after_failures"}
     assert [a["rule"] for a in alerts(client, **filters)] == [rules[key] for key in expected]
 
 
@@ -436,4 +441,15 @@ def test_reset_restores_the_whole_log_on_all_three_screens(client, truth):
     assert initial['/api/overview']['summary']['total'] == truth['row_count']
     assert initial['/api/explorer']['summary']['total'] == truth['row_count']
     assert len(initial['/api/explorer']['rows']) == truth['row_count']
-    assert len(initial['/api/alerts']['alerts']) == 5
+    assert len(initial['/api/alerts']['alerts']) == 10
+
+
+def test_t12_stories_reach_alerts_and_device_swap_does_not(client):
+    found = alerts(client)
+    assert any(a["rule"] == "password_spraying" and a["ips"] == ["45.148.10.80"]
+               and len(a["users"]) == 20 for a in found)
+    assert any(a["rule"] == "new_country" and a["users"] == ["maya.patel"]
+               and a["evidence"][0]["country"] == "DE" for a in found)
+    assert {a["rule"] for a in found if a["users"] == ["oliver.hayes"]} == {
+        "brute_force", "success_after_failures"}
+    assert not [a for a in found if a["users"] == ["james.carter"]]

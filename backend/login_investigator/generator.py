@@ -52,8 +52,9 @@ UK_HOME_PREFIX = "198.51.100."
 # Real addresses. Their AbuseIPDB responses are saved in data/ip_reputation/.
 S1_IP = "185.218.86.24"  # NL hosting: brute force, then the compromise (S3)
 S2_IP = "2.57.122.53"  # RO hosting: password spraying
+S6_IP = "45.148.10.80"  # NL hosting: successful password spray (saved AbuseIPDB response)
 S4_IP = "91.142.73.116"  # RU hosting: sign-in from a new country
-ATTACKER_COUNTRY = {S1_IP: "NL", S2_IP: "RO", S4_IP: "RU"}
+ATTACKER_COUNTRY = {S1_IP: "NL", S2_IP: "RO", S4_IP: "RU", S6_IP: "NL"}
 ATTACKER_IPS = tuple(ATTACKER_COUNTRY)
 
 DECOY_TRUSTED = "8.8.8.8"  # score 0, many reports, whitelisted
@@ -84,8 +85,9 @@ US_USERS = [
 
 S1_TARGET = "daniel.hughes"
 S4_TARGET = "olivia.bennett"
-# Accounts never prompted for MFA. Ticket 12 adds S6's target.
-MFA_EXCEPTIONS = (S1_TARGET,)
+# Default-world exceptions. Other seeds choose S6's target from their own IT Admins group.
+S6_TARGET = "amelia.ward"
+MFA_EXCEPTIONS = (S1_TARGET, S6_TARGET)
 S2_UNKNOWN_USERNAMES = [
     "admin", "administrator", "test", "it.support", "backup", "info", "helpdesk",
 ]
@@ -410,7 +412,8 @@ def _organisation(seed: int, users: list[User]) -> dict[str, list[dict]]:
             "networks": networks}
 
 
-def _add_device_and_mfa(seed: int, rows: list[dict], tables: dict[str, list[dict]]) -> None:
+def _add_device_and_mfa(seed: int, rows: list[dict], tables: dict[str, list[dict]],
+                        mfa_exceptions: tuple[str, ...] = MFA_EXCEPTIONS) -> None:
     """Fill the two new columns on every row, from a random stream of their own."""
     rng = random.Random(f"{seed}:devices")
     shared_kind = {d["device_id"] for d in tables["devices"] if d["kind"] == "shared"}
@@ -427,7 +430,7 @@ def _add_device_and_mfa(seed: int, rows: list[dict], tables: dict[str, list[dict
             device = _laptop_id(row["username"])
         row["device_id"] = device
         # A failed password never reaches MFA; an account on the exception list is never asked.
-        prompted = row["outcome"] == "success" and row["username"] not in MFA_EXCEPTIONS
+        prompted = row["outcome"] == "success" and row["username"] not in mfa_exceptions
         row["mfa_result"] = "pass" if prompted else "none"
 
 
@@ -517,6 +520,7 @@ class World:
     rows: list[dict]
     ground_truth: dict
     tables: dict[str, list[dict]]  # table name -> rows, as written under org/
+    truth: dict  # Knowledge-base answer key; never exposed to the agent.
 
 
 def generate(seed: int = SEED) -> World:
@@ -529,8 +533,138 @@ def generate(seed: int = SEED) -> World:
     rows += _scenario_s4()
     rows = sorted((r for r in rows if _in_window(r)), key=_sort_key)
     tables = _organisation(seed, users)
-    _add_device_and_mfa(seed, rows, tables)
-    return World(rows=rows, ground_truth=_ground_truth(rows, seed), tables=tables)
+    shared_users = {a["person_id"] for a in tables["device_assignments"]
+                    if a["device_id"] in (MEETING_ROOM_PC, WAREHOUSE_TERMINAL)}
+    admins = sorted(m["person_id"].removeprefix("user-") for m in tables["memberships"]
+                    if m["group_id"] == "group-it-admins"
+                    and m["person_id"] not in shared_users | {_person_id(S1_TARGET), _person_id(S4_TARGET)}
+                    and m["person_id"].removeprefix("user-") in UK_USERS)
+    target = admins[0]
+    rng_s6 = random.Random(f"{seed}:s6")
+    candidates = [u.username for u in users if u.username not in (S1_TARGET, S4_TARGET, target)]
+    targets = sorted([target] + rng_s6.sample(candidates, 19))
+    start = datetime(2026, 10, 7, 2, 0, tzinfo=timezone.utc)
+    for i, username in enumerate(targets):
+        rows.append(_row(start + timedelta(seconds=i * 20), username, S6_IP, "NL", "failure",
+                         "bad_password", S2_AGENT))
+    for minute in (10, 15, 20):
+        rows.append(_row(start + timedelta(minutes=minute), target, S6_IP, "NL", "success", "",
+                         S2_AGENT))
+    # Approved travel changes only the ordinary rows of this employee during the trip.
+    # The Port's planted rows keep every original field.
+    sales = [p["username"] for p in tables["people"] if p["department"] == "Sales"
+             and p["country"] == "GB" and p["username"] not in (S1_TARGET, S4_TARGET, target)]
+    traveller = "maya.patel" if "maya.patel" in sales else sorted(sales)[0]
+    travel_days = {"2026-10-02", "2026-10-03", "2026-10-04"}
+    for row in rows:
+        if (row["username"] == traveller and row["timestamp_utc"][:10] in travel_days
+                and row["source_ip"] not in ATTACKER_IPS):
+            row["source_ip"], row["country"] = "203.0.113.70", "DE"
+    for day in (2, 3, 4):
+        rows.append(_row(datetime(2026, 10, day, 14, tzinfo=timezone.utc), traveller,
+                         "203.0.113.70", "DE", "success", "", DESKTOP_AGENTS[0]))
+    unused = [u for u in UK_USERS if u not in (S1_TARGET, S4_TARGET, target, traveller)]
+    reset_user = "oliver.hayes" if "oliver.hayes" in unused else unused[0]
+    reset_ip = next(u.home_ip for u in users if u.username == reset_user)
+    reset_start = datetime(2026, 10, 5, 6, 0, tzinfo=timezone.utc)
+    for i in range(21):
+        success = i == 20
+        rows.append(_row(reset_start + timedelta(seconds=i * 30), reset_user, reset_ip,
+                         "GB", "success" if success else "failure",
+                         "" if success else "bad_password", DESKTOP_AGENTS[0]))
+    unused = [u for u in unused if u != reset_user and _person_id(u) not in shared_users]
+    swap_user = "james.carter" if "james.carter" in unused else unused[0]
+    replacement = f"dev-laptop-replacement-{swap_user}"
+    tables["devices"].append({"device_id": replacement, "kind": "laptop",
+                              "name": _laptop_name(swap_user) + "-R2"})
+    tables["device_assignments"].append({"assignment_id": f"asg-laptop-replacement-{swap_user}",
+                                         "device_id": replacement,
+                                         "person_id": _person_id(swap_user)})
+    swap_at = datetime(2026, 10, 4, 12, tzinfo=timezone.utc)
+    rows.append(_row(swap_at, swap_user, UK_OFFICE_IP, "GB", "success", "", DESKTOP_AGENTS[0]))
+    # Explicitly planted shared-ground facts. They are the gold for the later graph walk;
+    # neither paths nor peers are obtained by running that walk backwards.
+    vpn_users = list(UK_USERS)
+    vpn_at = datetime(2026, 10, 7, 11, tzinfo=timezone.utc)
+    for i, username in enumerate(vpn_users):
+        rows.append(_row(vpn_at + timedelta(minutes=i), username, VPN_POOL[i % 4], "GB",
+                         "success", "", DESKTOP_AGENTS[0]))
+    rows.sort(key=_sort_key)
+    _add_device_and_mfa(seed, rows, tables, (S1_TARGET, target))
+    for row in rows:
+        if (row["username"] == swap_user and row["device_id"] == _laptop_id(swap_user)
+                and row["timestamp_utc"] >= _ts(swap_at)):
+            row["device_id"] = replacement
+    truth = {"scenarios": {"S6": {"attacker_ip": S6_IP, "user": target}},
+             "twins": {"B1": {"user": traveller, "verdict": "benign",
+                                "clearing_document_id": "rec-approved-travel"},
+                       "B2": {"user": reset_user, "verdict": "benign",
+                              "clearing_document_id": "rec-helpdesk-reset"},
+                       "B3": {"user": swap_user, "verdict": "benign",
+                              "old_device_id": _laptop_id(swap_user),
+                              "new_device_id": replacement,
+                              "clearing_document_id": "rec-laptop-handover"}}}
+    port_truth = _ground_truth(rows, seed)
+    scenarios = {key: dict(value) for key, value in port_truth["scenarios"].items()}
+    scenarios["S4"].update({
+        "verdict": "unresolved", "outcome": "success", "mfa_result": "pass",
+        "unknowns": ["authorisation", "compromise", "physical_location", "mfa_actor",
+                     "access_mechanism"],
+        "expected_assessment": "Suspicious new-country sign-in warrants investigation; "
+                               "the available evidence cannot establish authorisation or compromise.",
+    })
+    target_groups = sorted(m["group_id"] for m in tables["memberships"]
+                           if m["person_id"] == _person_id(target))
+    # ASSETS is the planted grant plan, not a shortest-path or radius calculation.
+    asset_groups = [(f"asset-{slug}", f"group-{holder}")
+                    for slug, _, _, holder in ASSETS if f"group-{holder}" in target_groups]
+    target_vpn_index = vpn_users.index(target) % 4
+    network_peers = [_person_id(u) for i, u in enumerate(vpn_users)
+                     if i % 4 == target_vpn_index and u != target]
+    paths = [[_person_id(target), group] for group in target_groups]
+    paths += [[_person_id(target), group, asset] for asset, group in asset_groups]
+    network = f"net-vpn-{target_vpn_index + 1}"
+    paths += [[_person_id(target), network, peer] for peer in sorted(network_peers)]
+    scenarios["S6"] = {
+        "type": "password_spraying", "attacker_ip": S6_IP, "country": "NL", "user": target,
+        "targets": targets, "failures": 20, "successes": 3,
+        "first_seen": _ts(start), "last_failure": _ts(start + timedelta(seconds=19 * 20)),
+        "success_times": [_ts(start + timedelta(minutes=n)) for n in (10, 15, 20)],
+        "verdict": "compromised", "mfa_result": "none",
+        "expected_document_ids": ["reg-mfa-exceptions", "run-password-spray-response",
+                                  "run-compromised-account-response"],
+        "blast_radius": {
+            "groups": target_groups, "assets": sorted(a for a, _ in asset_groups),
+            "device_peers": [], "network_peers": sorted(network_peers),
+            "device_id": _laptop_id(target), "network_id": network,
+            "network_address": VPN_POOL[target_vpn_index],
+            "paths": paths,
+            "basis": "Planted memberships, grant plan and VPN hand-out order; "
+                     "shared address is context, not proof of compromise. "
+                     "The attacker device is unregistered and supplies no device peer edge.",
+            "used_address_filter": "To be fixed and verified by the graph-build ticket (T18).",
+        },
+    }
+    truth["twins"]["B1"].update({"country": "DE", "address": "203.0.113.70",
+                                  "days": sorted(travel_days)})
+    truth["twins"]["B2"].update({"address": reset_ip, "failures": 20,
+                                  "first_seen": _ts(reset_start),
+                                  "success_time": _ts(reset_start + timedelta(minutes=10)),
+                                  "device_id": _laptop_id(reset_user)})
+    truth["twins"]["B3"]["swap_time"] = _ts(swap_at)
+    truth.update({
+        "note": "Evaluation-only answer key. Never supplied to the investigator's tools or model.",
+        "seed": seed, "captured_at": _ts(CAPTURED_AT), "scenarios": scenarios,
+        "mfa_exceptions": [S1_TARGET, target], "memberships": tables["memberships"],
+        "leaver": "finn.archer", "never_mentioned_users": ["poppy.lowe", "laura.fischer"],
+        "absent_topics": [
+            {"kind": "incident_writeups", "description": "No incident write-ups in phases 0 and 1"},
+            {"kind": "asset_governance", "asset_id": "asset-backup-server"},
+            {"kind": "policy", "topic": "data retention"},
+            {"kind": "users", "usernames": ["poppy.lowe", "laura.fischer"]},
+        ],
+    })
+    return World(rows=rows, ground_truth=port_truth, tables=tables, truth=truth)
 
 
 def _write_csv(path: Path, columns: list[str], rows: list[dict]) -> None:
@@ -546,6 +680,9 @@ def write(world: World, dataset_dir: Path) -> None:
     _write_csv(dataset_dir / LOG_PATH.name, COLUMNS, world.rows)
     with open(dataset_dir / GROUND_TRUTH_PATH.name, "w", encoding="utf-8") as f:
         json.dump(world.ground_truth, f, indent=2)
+        f.write("\n")
+    with open(dataset_dir / "truth.json", "w", encoding="utf-8") as f:
+        json.dump(world.truth, f, indent=2)
         f.write("\n")
     for name, rows in world.tables.items():
         _write_csv(dataset_dir / ORG_DIR.name / f"{name}.csv", TABLE_COLUMNS[name], rows)

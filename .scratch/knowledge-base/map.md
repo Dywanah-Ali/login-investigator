@@ -219,7 +219,9 @@ works at a time, so first by number wins.
   personal phones (124 rows), VPN sign-ins moved to ticket 12, cross-cutting privileged groups.
   Evidence: 438 backend and 149 frontend tests, clean types, two-axis review triaged; Port eval
   53/57 and 15/15 meets its gates. Q04 run 3 skipping reputation lookups is new as B-074 (AUD-046).
-  S4's MFA `pass` is an open question on ticket 12.
+  S4 is intentionally unresolved by the author's subsequent ruling: preserve MFA `pass`, flag
+  the unusual sign-in, and leave authorisation and mechanism unknown. T12 records these evidence
+  limits in the answer key; no extra document or telemetry source. Corpus stays at 27 own documents.
 
 ## Not yet specified
 

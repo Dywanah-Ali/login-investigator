@@ -321,6 +321,16 @@ questions, and the author accepts the live screen. The initiative closes there.
   and succeeds once on an IT Admins member, on a day that overlaps neither S1 nor S2, followed by
   two more sign-ins from that address. Both compromised accounts (S3's and S6's targets) are on the
   documented MFA exception list, so their rows carry `mfa_result = none`.
+- **[author's ruling, 26 October 2026] S4 is intentionally unresolved.** Keep the existing
+  successful sign-in to Olivia's account from the Russian source address and `mfa_result = pass`.
+  Do not add her to the MFA exception list. The event warrants investigation for its unusual
+  country, but the available evidence establishes neither authorisation nor compromise, Olivia's
+  physical location, who completed MFA, or an attack mechanism. The knowledge-base answer key
+  records these limits explicitly; evaluation accepts a suspicious event with an unknown cause
+  and must not demand confirmed compromise or a named MFA attack. This is an evidence limit on
+  an existing story, not a fifth absent topic or a new retrieval verdict. No new incident record,
+  email, web or SIEM data is required; the corpus stays at 27 own documents. The Port's original
+  events and ground-truth shape remain unchanged.
 - **Three benign twins** (T04 d8), each cleared by one document: B1 approved travel (a Sales user in
   Germany for three days, travel notice), B2 reset burst (a user failing repeatedly from their own
   laptop, then succeeding, helpdesk ticket), B3 laptop swap (a user's rows switch `device_id`
@@ -854,3 +864,6 @@ them.
 | 2026-10-26 | Author's ruling at ticket 11: the sign-ins that come through the VPN pool are new log rows added in ticket 12, with S6 and the twins. Ticket 11 writes the four pool addresses into the networks table in their hand-out order | The Port's rows cannot change their addresses, so VPN sign-ins are new rows that change whole-log counts; ticket 12 already owns count changes, so every count moves once, in one ticket |
 | 2026-10-26 | Author's ruling at ticket 11, amending the device ruling above: the empty employee rows are exactly the phone sign-ins (124 rows, 7.7%), with no further random share | Measured at the build: the register holds no phones, and the Port's user-agent text cannot change, so a laptop ID on an iPhone row would be wrong; every empty value then has a visible reason in its own row. Adding company phones to the register was not taken. Consequence noted on tickets 19 and 25: an empty device ID is not a device, so it makes no device edge and two empty rows are never peers by device |
 | 2026-10-26 | Author's ruling at ticket 11's review: each privileged group has one member from outside its home department. IT Admins take one from Engineering; Finance Approvers one from Operations and HR Data Owners one from Finance, chosen by Claude for fit | T04 d2 calls the groups cross-cutting; drawn from one department only they were sub-departments. Raised by the spec review |
+| 2026-10-26 | Author chose S4 option 2: keep MFA passed and explain an unexpected prompt approved by Olivia, supported by one additional incident record. Own corpus grows from 27 to 28 documents; T12 reserves its ID, T15 defines its evidence and T16 delivers it | A passed authentication step does not establish the account owner's intent. Separate log observations, user statement and responder assessment; leave credential acquisition unknown. No application code or dataset changed in this decision session |
+| 2026-10-26 | Author deferred the expanded S4 authentication-attack story as premature for this phase. Supersedes the option-2 implementation requirement above: no additional incident document, no new email, web or SIEM evidence requirement; own corpus restored to 27. S4 authentication explanation remains open and existing dataset unchanged | The proposed explanation requires evidence beyond the current login dataset. Olivia's unsolicited statement was rejected as too convenient; no replacement mechanism has been agreed |
+| 2026-10-26 | Author agreed S4 is an intentionally unresolved suspicious sign-in. Keep the event and MFA pass; no exception, added incident record or telemetry source. T12 records the known facts and unknowns in the KB answer key; KB evaluation accepts uncertainty without demanding compromise or a mechanism | Supersedes the earlier open S4 question. A source address does not establish physical location, and authentication success does not establish authorisation. No dataset or application code changed |

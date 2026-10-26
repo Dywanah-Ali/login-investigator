@@ -1,0 +1,19 @@
+{
+  "data": {
+    "ipAddress": "45.148.10.80",
+    "isPublic": true,
+    "ipVersion": 4,
+    "isWhitelisted": false,
+    "abuseConfidenceScore": 100,
+    "countryCode": "NL",
+    "usageType": "Data Center/Web Hosting/Transit",
+    "isp": "TECHOFF SRV LIMITED",
+    "domain": "dmzhost.co",
+    "hostnames": [],
+    "isTor": false,
+    "totalReports": 1524,
+    "numDistinctUsers": 435,
+    "lastReportedAt": "2026-10-26T11:06:18+00:00"
+  },
+  "fetchedAt": "2026-10-26T11:12:34+00:00"
+}

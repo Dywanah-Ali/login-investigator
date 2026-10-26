@@ -208,6 +208,58 @@
         {"id": "recommends the step", "regex": "$RECOMMENDS"},
         {"id": "names the account", "has": "daniel.hughes"}
       ]
+    },
+    {
+      "id": "Q20",
+      "category": "detection",
+      "turns": [
+        "What suspicious activity happened on 7 October?"
+      ],
+      "checks": [
+        {
+          "id": "names the new spraying IP",
+          "has": "45.148.10.80"
+        },
+        {
+          "id": "identifies password spraying",
+          "regex": "spray"
+        },
+        {
+          "id": "names the successful target",
+          "has": "amelia.ward"
+        },
+        {
+          "id": "searched 7 October",
+          "tool": "find_suspicious_activity",
+          "args_prefix": {
+            "start": "2026-10-07"
+          }
+        }
+      ]
+    },
+    {
+      "id": "Q21",
+      "category": "pivot",
+      "turns": [
+        "Did 45.148.10.80 get into an account? How many successful sign-ins did it make?"
+      ],
+      "checks": [
+        {
+          "id": "names the compromised account",
+          "has": "amelia.ward"
+        },
+        {
+          "id": "counts three successful sign-ins",
+          "regex": "\\b(three|3)\\b[^.\\n]{0,50}\\b(success\\w*|sign.ins?|logins?)|\\b(success\\w*|sign.ins?|logins?)\\b[^.\\n]{0,35}\\b(three|3)\\b"
+        },
+        {
+          "id": "searched the new attacker IP",
+          "tool": "search_logins",
+          "args": {
+            "ip": "45.148.10.80"
+          }
+        }
+      ]
     }
   ]
 }

@@ -1285,3 +1285,14 @@ records this failure for Q04.
 required-searches policy covers log searches, not lookups.
 **Evidence:** `backend/evals/results/2026-10-26-095844-7ff8e5ae.json`, Q04 run 3; review-fix commit
 `0beda3f`. The run meets the agreed gates at 53/57 overall and 15/15 security.
+
+
+### B-075 · 2026-10-26 · Knowledge-base T12 · Alternate seed chose an incompatible S6 target
+
+**Symptom:** `generate(20261009)` failed while writing S6's VPN context.
+**Cause:** the first IT Admins member could be a US user, while the planted VPN activity covers
+UK users. The initial twin selection also assumed preferred names could never be used by S6.
+**Fix:** choose a UK IT Admins member without a shared-device assignment, and select distinct
+available users for the twins with a fallback when a preferred name is already taken.
+**Lesson:** seeded variation must preserve story preconditions, not just repeatable output.
+**Found by:** a second-seed generator probe and the failing-then-passing generator regression.

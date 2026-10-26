@@ -10,12 +10,12 @@ import pytest
 
 from login_investigator import generator as g
 
-ATTACKER_IPS = {g.S1_IP, g.S2_IP, g.S4_IP}
+ATTACKER_IPS = {g.S1_IP, g.S2_IP, g.S4_IP, g.S6_IP}
 DECOY_IPS = set(g.DECOY_IPS)
 
-# SHA-256 of logins.csv as committed before knowledge-base ticket 11 (commit e57d11d), when the log
-# had only the Port's seven columns.
-PORT_LOG_SHA256 = "920f501fc32b12ffb94286425909a920aa790926f8186316a78c943a58d389ea"
+# SHA-256 of the original S1 to S5 rows projected to the Port's seven columns at cbc0e8b.
+# T12 adds rows and relocates B1's ordinary travel rows; the original planted stories stay exact.
+PORT_LOG_SHA256 = "5f9a7210625e3cbf6177bbf66d00eda49659b888008ac72274e3adc6b7c6e225"
 PORT_COLUMNS = ["timestamp_utc", "username", "source_ip", "country", "outcome",
                 "failure_reason", "user_agent"]
 
@@ -51,12 +51,12 @@ def test_committed_files_match_the_generator(tmp_path, world):
 
 
 def test_port_rows_keep_their_old_values(world):
-    """The Port's columns are byte for byte what they were before the organisation was added."""
+    """The original planted stories keep every Port value, including the injection text."""
     out = io.StringIO()
     writer = csv.DictWriter(out, fieldnames=PORT_COLUMNS, extrasaction="ignore",
                             lineterminator="\n")
     writer.writeheader()
-    writer.writerows(world.rows)
+    writer.writerows(r for r in world.rows if r["source_ip"] in {g.S1_IP, g.S2_IP, g.S4_IP})
     assert hashlib.sha256(out.getvalue().encode("utf-8")).hexdigest() == PORT_LOG_SHA256
 
 
@@ -140,7 +140,9 @@ def test_normal_noise_stays_far_below_attack_patterns(generated):
     """No benign user or address should look like brute force or spraying by accident."""
     rows, _ = generated
     benign_failures = [r for r in rows
-                       if r["outcome"] == "failure" and r["source_ip"] not in ATTACKER_IPS]
+                       if r["outcome"] == "failure" and r["source_ip"] not in ATTACKER_IPS
+                       and not (r["username"] == "oliver.hayes"
+                                and r["timestamp_utc"].startswith("2026-10-05T06:"))]
     per_user_day = Counter((r["username"], r["timestamp_utc"][:10]) for r in benign_failures)
     assert max(per_user_day.values()) <= 4
     users_per_ip_failing = Counter()
@@ -248,8 +250,8 @@ def test_one_laptop_each_and_two_shared_machines_used_by_three(org):
         users_of.setdefault(a["device_id"], []).append(people[a["person_id"]])
     laptops = [d for d in devices.values() if d["kind"] == "laptop"]
     shared = [d for d in devices.values() if d["kind"] == "shared"]
-    assert len(laptops) == 50 and len(shared) == 2 and len(devices) == 52
-    assert sorted(len(users_of[d["device_id"]]) for d in laptops) == [1] * 50
+    assert len(laptops) == 51 and len(shared) == 2 and len(devices) == 53
+    assert sorted(len(users_of[d["device_id"]]) for d in laptops) == [1] * 51
     assert {users_of[d["device_id"]][0]["username"] for d in laptops} == {
         p["username"] for p in people.values()}
     for d in shared:
@@ -293,7 +295,7 @@ def test_mfa_result_follows_the_outcome_and_the_exception_list(generated):
     assert {r["mfa_result"] for r in rows
             if r["username"] == g.S1_TARGET and r["outcome"] == "success"} == {"none"}
     others = {r["mfa_result"] for r in rows
-              if r["username"] != g.S1_TARGET and r["outcome"] == "success"}
+              if r["username"] not in g.MFA_EXCEPTIONS and r["outcome"] == "success"}
     assert others == {"pass"}
     # `denied` is reserved for MFA fatigue and unused.
     assert "denied" not in {r["mfa_result"] for r in rows}
@@ -332,3 +334,132 @@ def test_each_shared_machine_is_used_in_the_log_by_all_three_of_its_users(genera
         on_it = [r for r in rows if r["device_id"] == device]
         assert {r["username"] for r in on_it} == expected, device
         assert {r["source_ip"] for r in on_it} == {g.UK_OFFICE_IP}, device
+
+
+def test_s6_sprays_then_signs_in_three_times_on_an_it_admin(world):
+    story = world.truth["scenarios"]["S6"]
+    rows = [r for r in world.rows if r["source_ip"] == story["attacker_ip"]]
+    failures = [r for r in rows if r["outcome"] == "failure"]
+    successes = [r for r in rows if r["outcome"] == "success"]
+    assert len({r["username"] for r in failures}) == 20
+    assert len(successes) == 3
+    assert {r["username"] for r in successes} == {story["user"]}
+    assert failures[-1]["timestamp_utc"] < successes[0]["timestamp_utc"]
+    assert {r["mfa_result"] for r in successes} == {"none"}
+    assert {r["device_id"] for r in rows} == {""}
+    assert any(m["group_id"] == "group-it-admins"
+               and m["person_id"] == f"user-{story['user']}"
+               for m in world.tables["memberships"])
+
+
+def test_approved_travel_trips_new_country_without_uk_activity_during_the_trip(world, tmp_path):
+    from login_investigator.loader import load_log
+    from login_investigator.rules import detect_all
+
+    trip = world.truth["twins"]["B1"]
+    g.write(world, tmp_path)
+    findings = detect_all(load_log(tmp_path / "logins.csv"))
+    abroad = [r for r in world.rows if r["username"] == trip["user"]
+              and r["timestamp_utc"][:10] in {"2026-10-02", "2026-10-03", "2026-10-04"}
+              and r["source_ip"] not in ATTACKER_IPS | {g.S6_IP}]
+    assert {r["country"] for r in abroad} == {"DE"}
+    assert {r["timestamp_utc"][:10] for r in abroad} == {
+        "2026-10-02", "2026-10-03", "2026-10-04"}
+    matches = [f for f in findings if f.rule == "new_country" and trip["user"] in f.users]
+    assert len(matches) == 1
+    assert str(matches[0].first_seen).startswith("2026-10-02")
+    assert not [f for f in findings if str(f.first_seen).startswith("2026-10-03")]
+
+
+def test_reset_burst_is_benign_but_trips_both_existing_rules(world, tmp_path):
+    from login_investigator.loader import load_log
+    from login_investigator.rules import detect_all
+
+    burst = world.truth["twins"]["B2"]
+    g.write(world, tmp_path)
+    log = load_log(tmp_path / "logins.csv")
+    findings = detect_all(log)
+    assert {f.rule for f in findings if burst["user"] in f.users and f.rule != "password_spraying"} == {
+        "brute_force", "success_after_failures"}
+    rows = [r for r in world.rows if r["username"] == burst["user"]
+            and r["timestamp_utc"].startswith("2026-10-05T06:")]
+    assert len(rows) == 21
+    assert [r["outcome"] for r in rows] == ["failure"] * 20 + ["success"]
+    assert {r["device_id"] for r in rows} == {f"dev-laptop-{burst['user']}"}
+    assert burst["verdict"] == "benign"
+    assert burst["clearing_document_id"] == "rec-helpdesk-reset"
+
+
+def test_laptop_swap_is_registered_and_fires_no_rule(world, tmp_path):
+    from login_investigator.loader import load_log
+    from login_investigator.rules import detect_all
+
+    swap = world.truth["twins"]["B3"]
+    g.write(world, tmp_path)
+    findings = detect_all(load_log(tmp_path / "logins.csv"))
+    assert not [f for f in findings if swap["user"] in f.users and f.rule != "password_spraying"]
+    rows = [r for r in world.rows if r["username"] == swap["user"] and r["device_id"]]
+    assert {r["device_id"] for r in rows if r["timestamp_utc"] < "2026-10-04T12:00:00Z"} == {
+        swap["old_device_id"]}
+    assert {r["device_id"] for r in rows if r["timestamp_utc"] >= "2026-10-04T12:00:00Z"} == {
+        swap["new_device_id"]}
+    assert swap["new_device_id"] in {d["device_id"] for d in world.tables["devices"]}
+    assert swap["clearing_document_id"] == "rec-laptop-handover"
+
+
+def test_vpn_pool_is_shared_and_answer_key_is_written_without_hiding_s4_unknowns(world, tmp_path):
+    import json
+
+    g.write(world, tmp_path)
+    truth = json.loads((tmp_path / "truth.json").read_text())
+    vpn_rows = [r for r in world.rows if r["source_ip"] in g.VPN_POOL]
+    assert len(vpn_rows) == 44
+    for address in g.VPN_POOL:
+        assert len({r["username"] for r in vpn_rows if r["source_ip"] == address}) == 11
+    assert set(truth["scenarios"]) == {"S1", "S2", "S3", "S4", "S5", "S6"}
+    assert set(truth["twins"]) == {"B1", "B2", "B3"}
+    assert truth["mfa_exceptions"] == ["daniel.hughes", "amelia.ward"]
+    s4 = truth["scenarios"]["S4"]
+    assert s4["verdict"] == "unresolved"
+    assert s4["mfa_result"] == "pass"
+    assert set(s4["unknowns"]) == {"authorisation", "compromise", "physical_location",
+                                     "mfa_actor", "access_mechanism"}
+    radius = truth["scenarios"]["S6"]["blast_radius"]
+    assert radius["groups"] == ["group-all-staff", "group-it-admins"]
+    assert len(radius["assets"]) == 7
+    assert radius["device_peers"] == []
+    assert len(radius["network_peers"]) == 10
+    assert "user-amelia.ward" not in radius["network_peers"]
+    assert radius["paths"]
+    assert len(truth["absent_topics"]) == 4
+    assert len(truth["never_mentioned_users"]) == 2
+
+
+def test_new_story_days_do_not_overlap_original_stories(world):
+    old_days = {r["timestamp_utc"][:10] for r in world.rows
+                if r["source_ip"] in {g.S1_IP, g.S2_IP, g.S4_IP}}
+    truth = world.truth
+    new_days = {r["timestamp_utc"][:10] for r in world.rows if r["source_ip"] == g.S6_IP}
+    new_days.update(truth["twins"]["B1"]["days"])
+    new_days.add(truth["twins"]["B2"]["first_seen"][:10])
+    new_days.add(truth["twins"]["B3"]["swap_time"][:10])
+    assert old_days == {"2026-10-06", "2026-10-08"}
+    assert not old_days & new_days
+
+
+def test_s6_has_an_offline_reputation_response():
+    from login_investigator.reputation import lookup
+
+    result = lookup(g.S6_IP)
+    assert result["source"] == "saved"
+    assert result["abuse_confidence_score"] == 100
+    assert result["country"] == "NL"
+
+
+def test_another_seed_still_plants_a_vpn_connected_it_admin_without_role_collisions():
+    alternate = g.generate(20261009)
+    story = alternate.truth["scenarios"]["S6"]
+    assert story["user"] in g.UK_USERS
+    assert len({story["user"], *(t["user"] for t in alternate.truth["twins"].values())}) == 4
+    assert any(r["username"] == story["user"] and r["source_ip"] in g.VPN_POOL
+               for r in alternate.rows)
