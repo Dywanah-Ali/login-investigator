@@ -1,4 +1,5 @@
-"""Ensure detection findings receive their required sign-in evidence before answering."""
+"""Ensure detection findings receive their required sign-in evidence and reputation lookups before
+answering."""
 
 import ipaddress
 import json
@@ -40,6 +41,7 @@ def complete_detection_searches(state: AgentState, runtime: Runtime[Any]) -> dic
     calls: dict[str, dict[str, Any]] = {}
     required: dict[str, None] = {}
     searched: set[str] = set()
+    looked_up: set[str] = set()
     for message in messages[start:]:
         if isinstance(message, AIMessage):
             for call in message.tool_calls:
@@ -57,6 +59,10 @@ def complete_detection_searches(state: AgentState, runtime: Runtime[Any]) -> dic
                                        ("user", "start", "end", "outcome", "country")):
                     # Even a failed attempt counts: let the model explain it, never retry forever.
                     searched.add(address)
+            elif call["name"] == "lookup_ip_reputation":
+                address = _ip(call["args"].get("ip"))
+                if address:
+                    looked_up.add(address)
             elif call["name"] == "find_suspicious_activity":
                 try:
                     payload = json.loads(message.text)
@@ -73,10 +79,13 @@ def complete_detection_searches(state: AgentState, runtime: Runtime[Any]) -> dic
                             address = _ip(value)
                             if address:
                                 required[address] = None
-    missing = [address for address in required if address not in searched]
+    missing = [("search_logins", address) for address in required if address not in searched]
+    # A reserved or private address has no reputation, so it needs no lookup.
+    missing += [("lookup_ip_reputation", address) for address in required
+                if address not in looked_up and ipaddress.ip_address(address).is_global]
     if not missing:
         return None
     return {"messages": [AIMessage("", tool_calls=[
-        {"name": "search_logins", "args": {"ip": address}, "id": uuid4().hex,
-         "type": "tool_call"} for address in missing
+        {"name": name, "args": {"ip": address}, "id": uuid4().hex,
+         "type": "tool_call"} for name, address in missing
     ])], "jump_to": "tools"}

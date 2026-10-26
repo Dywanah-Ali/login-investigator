@@ -19,7 +19,7 @@ from langchain.tools import tool
 from login_investigator.loader import TIMESTAMP_FORMAT, load_log, parse_window
 from login_investigator.reputation import SAVED_DIR, ReputationError, lookup
 from login_investigator.rules import RULE_GUIDE, Finding, detect_all, in_window
-from login_investigator.search import DEFAULT_SAMPLE_ROWS
+from login_investigator.search import DEFAULT_SAMPLE_ROWS, address_activity
 from login_investigator.search import search_logins as search_core
 
 DATA_NOTE = (
@@ -138,15 +138,20 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
     try:
         start, end = parse_window(_given(start), _given(end))
         findings = in_window(list(_all_findings()), start, end)
+        log = _log()
     except ValueError as error:
         return _error(str(error))
+    # For the agent only: the Alerts reply is `to_dict()` alone (ticket 43).
+    shown = [{**f.to_dict(),
+              "address_activity": [address_activity(log, ip, start, end) for ip in f.ips]}
+             for f in findings]
     return _ok(
         "detection rules",
         {
             "window_start": None if start is None else start.strftime(TIMESTAMP_FORMAT),
             "window_end": None if end is None else end.strftime(TIMESTAMP_FORMAT),
             "finding_count": len(findings),
-            "findings": [f.to_dict() for f in findings],
+            "findings": shown,
             "rules_checked": [
                 {"rule": g.rule, "fires_when": g.fires_when} for g in RULE_GUIDE
             ],

@@ -310,3 +310,52 @@ def test_s6_question_gold_matches_the_new_answer_key():
     assert check("Q21", "names the compromised account")["has"] == s6["user"]
     assert passes(check("Q21", "counts three successful sign-ins"), Answer("Three successful sign-ins."))
     assert not passes(check("Q21", "counts three successful sign-ins"), Answer("One successful sign-in."))
+
+
+def test_q02_and_q04_s6_gold_matches_the_new_answer_key():
+    # Ticket 43, ruling 5: the grown world's S6 checks, added beside the frozen ones.
+    from login_investigator.generator import DATASET_DIR
+
+    s6 = json.loads((DATASET_DIR / "truth.json").read_text())["scenarios"]["S6"]
+    assert check("Q02", "names the second spraying IP (S6)")["has"] == s6["attacker_ip"]
+    assert check("Q02", "names the account S6 signed in to")["has"] == s6["user"]
+    assert s6["successes"] == 3 and s6["user"] in check("Q04", "says amelia.ward was compromised (S6)")["regex"].replace("\\", "")
+    assert check("Q04", "looked up 45.148.10.80 (S6)")["args"] == {"ip": s6["attacker_ip"]}
+    assert check("Q02", "says no attempt succeeded")  # kept: it still covers S2
+
+
+def test_t13_q02_answer_fails_the_s6_outcome_checks():
+    # Q02 run 1, prompt version 7ff8e5ae (T13): S6 as 20 failures, its successes never named.
+    text = ("2. IP: 45.148.10.80\n   - Total Attempts: 20 failed attempts on 20 accounts\n"
+            "In summary, there were two separate password spraying incidents involving the IPs "
+            "2.57.122.53 and 45.148.10.80.")
+    assert verdict("Q02", "names the second spraying IP (S6)", text)
+    assert not verdict("Q02", "names the account S6 signed in to", text)
+    assert not verdict("Q02", "counts S6's three successful sign-ins", text)
+
+
+def test_a_right_q02_answer_passes_every_check():
+    text = ("1. 2.57.122.53 tried 35 accounts with 88 attempts; none of them succeeded.\n"
+            "2. 45.148.10.80 tried 20 accounts, then made 3 successful sign-ins on amelia.ward.")
+    tools = [("find_suspicious_activity", {})]
+    assert all(passes(c, Answer(text, tools)) for c in QUESTIONS["Q02"]["checks"])
+
+
+@pytest.mark.parametrize("text, expected", [
+    # Q04 run 1, prompt version 7ff8e5ae (T13): named, but only as a new-country sign-in.
+    ("6. User: amelia.ward\n   - Type: new_country\n   - IP: 45.148.10.80\n"
+     "   - Event Count: 1 success", False),
+    ("amelia.ward signed in from NL for the first time.", False),  # the rule's own summary
+    ("daniel.hughes was compromised. amelia.ward signed in from NL.", False),  # another sentence
+    ("The account amelia.ward was compromised by 45.148.10.80.", True),
+    ("45.148.10.80 signed in to amelia.ward three times after the spray.", True),
+    ("Two accounts were compromised: daniel.hughes and amelia.ward.", True),
+])
+def test_q04_needs_amelia_ward_called_compromised(text, expected):
+    assert verdict("Q04", "says amelia.ward was compromised (S6)", text) is expected
+
+
+def test_q04_needs_the_s6_lookup():
+    rule = "looked up 45.148.10.80 (S6)"
+    assert verdict("Q04", rule, "", [("lookup_ip_reputation", {"ip": "45.148.10.80"})])
+    assert not verdict("Q04", rule, "", [("search_logins", {"ip": "45.148.10.80"})])

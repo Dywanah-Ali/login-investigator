@@ -66,6 +66,40 @@ def test_no_window_covers_every_planted_scenario(s):
     assert {s["S1"]["attacker_ip"], s["S2"]["attacker_ip"], s["S4"]["ip"]} <= ips
 
 
+def _s6():
+    from login_investigator.generator import DATASET_DIR
+
+    return json.loads((DATASET_DIR / "truth.json").read_text())["scenarios"]["S6"]
+
+
+def _activity(findings, rule, ip):
+    [finding] = [f for f in findings if f["rule"] == rule and f["ips"] == [ip]]
+    return finding
+
+
+def test_each_finding_shows_what_its_address_did_overall(s):
+    # T13's Q02: a spraying finding counts failures only, so S6 read as a spray that got nowhere.
+    s6, s2 = _s6(), s["S2"]
+    findings = run(find_suspicious_activity)["data"]["findings"]
+    spray = _activity(findings, "password_spraying", s6["attacker_ip"])
+    assert spray["success_count"] == 0  # the rule's own count is unchanged
+    assert spray["address_activity"] == [{
+        "ip": s6["attacker_ip"], "successes": s6["successes"], "failures": s6["failures"],
+        "signed_in_accounts": [s6["user"]]}]
+    assert _activity(findings, "password_spraying", s2["attacker_ip"])["address_activity"] == [{
+        "ip": s2["attacker_ip"], "successes": s2["successes"], "failures": s2["attempts"],
+        "signed_in_accounts": []}]
+
+
+def test_address_activity_stays_inside_the_window_asked_about():
+    s6 = _s6()
+    window = {"start": s6["first_seen"], "end": s6["success_times"][0]}
+    findings = run(find_suspicious_activity, **window)["data"]["findings"]
+    assert _activity(findings, "password_spraying", s6["attacker_ip"])["address_activity"] == [{
+        "ip": s6["attacker_ip"], "successes": 0, "failures": s6["failures"],
+        "signed_in_accounts": []}]
+
+
 def test_empty_strings_mean_no_filter():
     assert run(find_suspicious_activity, start="", end=" ") == run(find_suspicious_activity)
 

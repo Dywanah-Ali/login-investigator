@@ -55,7 +55,9 @@ to 3.
 
 ### Noticed, outside scope
 
-- Q02 run 2 gives S6's last-seen time as 02:06:20; runs 1 and 3 say 02:20:00.
+- Q02 run 2 gives S6's last-seen time as 02:06:20; runs 1 and 3 say 02:20:00. Corrected at the
+  build: `truth.json` gives S6's last failure as 02:06:20, the spraying finding's own last-seen
+  time, so run 2 was right; runs 1 and 3 gave the address's last success as the finding's time.
 - The benign twins (maya.patel, oliver.hayes) appear as suspicious in Q04. Expected until the
   clearing documents and the corpus exist (T15, T16 and phase 1).
 
@@ -173,3 +175,8 @@ check patterns for Q02 and Q04.
   rejected because they could pass with Q02 and Q04 still failing. Claude chose the window for
   `address_activity`: the tool call's own window, so the field never reports activity outside
   what the analyst asked about. All six rulings are in; status set to ready-for-agent.
+- 26 October 2026, build start (author agreed the seams): 1, the real agent loop with a fake
+  model (`test_investigation_policy.py`); 2, the detection tool on the `default` dataset
+  (`test_tools.py`), expected values from `truth.json`; 3, the eval grader
+  (`test_eval_scoring.py`), right answers pass and T13's real wrong answers fail; 4, the existing
+  Alerts API and rules tests, untouched; 5, one paid eval run.

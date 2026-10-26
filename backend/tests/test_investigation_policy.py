@@ -87,16 +87,60 @@ def test_earlier_turn_coverage_does_not_hide_searches_for_new_detection():
         searches.append(ip)
         return '{}'
 
+    @tool
+    def lookup_ip_reputation(ip: str) -> str:
+        """Count offline lookups."""
+        lookups.append(ip)
+        return '{}'
+
+    lookups = []
     model = FakeModel(responses=[tool_call('find_suspicious_activity', {}, 'first-detection'),
                                  AIMessage('First answer'),
                                  tool_call('find_suspicious_activity', {}, 'second-detection'),
                                  AIMessage('Second answer')])
-    agent = create_agent(model, [find_suspicious_activity, search_logins],
+    agent = create_agent(model, [find_suspicious_activity, search_logins, lookup_ip_reputation],
                          middleware=[complete_detection_searches], checkpointer=InMemorySaver())
     list(ask(agent, 'same-case', 'Investigate first period'))
     list(ask(agent, 'same-case', 'Investigate another period'))
     assert searches == ['185.218.86.24', '185.218.86.24']
-    assert [len(turn.tools) for turn in history(agent, 'same-case')] == [2, 2]
+    assert lookups == ['185.218.86.24', '185.218.86.24']
+    assert [len(turn.tools) for turn in history(agent, 'same-case')] == [3, 3]
+
+
+@pytest.mark.parametrize('already_looked_up', [False, True])
+def test_detection_cannot_skip_reputation_lookups_for_public_addresses(already_looked_up):
+    # T13's Q04: the model ran the rules and the hook added the searches, but no lookups ran.
+    looked_up = []
+
+    @tool
+    def find_suspicious_activity() -> str:
+        """Two public addresses and one reserved address."""
+        return json.dumps({'data': {'findings': [
+            {'ips': ['185.218.86.24']}, {'ips': ['2.57.122.53', '203.0.113.70']},
+        ]}})
+
+    @tool
+    def search_logins(ip: str) -> str:
+        """Offline sign-in evidence."""
+        return '{}'
+
+    @tool
+    def lookup_ip_reputation(ip: str) -> str:
+        """Offline reputation."""
+        looked_up.append(ip)
+        return '{}'
+
+    requests = [tool_call('find_suspicious_activity', {}).tool_calls[0]]
+    if already_looked_up:
+        requests.append(tool_call('lookup_ip_reputation', {'ip': '2.57.122.53'}, 'model').tool_calls[0])
+    model = FakeModel(responses=[AIMessage('', tool_calls=requests), AIMessage('Answer')])
+    agent = create_agent(model, [find_suspicious_activity, search_logins, lookup_ip_reputation],
+                         middleware=[complete_detection_searches], checkpointer=InMemorySaver())
+    list(ask(agent, 'broad', 'Was any account compromised this week?'))
+    assert sorted(looked_up) == ['185.218.86.24', '2.57.122.53']
+    saved = history(agent, 'broad')[0]
+    assert saved.answer == 'Answer'
+    assert sum(use.name == 'lookup_ip_reputation' for use in saved.tools) == 2
 
 
 @pytest.mark.parametrize('question', ['Which IP sprayed passwords this week?',
@@ -127,3 +171,5 @@ def test_specific_questions_do_not_get_unrelated_ip_searches(question):
                          middleware=[complete_detection_searches], checkpointer=InMemorySaver())
     list(ask(agent, 'narrow', question))
     assert searches == ['2.57.122.53']
+    assert [use.name for use in history(agent, 'narrow')[0].tools] == [
+        'find_suspicious_activity', 'search_logins']
