@@ -194,3 +194,8 @@ share an ID.
 Retained outside scope: B-076/AUD-047 and B-074/AUD-046 recur and leave the Port eval at its gate
 with no margin. AUD-048 is new, for ticket 32. Nothing pushed. The frontier is 14 and 15. T13
 unblocks no ticket on its own: 20 still needs 19, 26 needs 25 and 32 needs 29.
+
+### Author acceptance
+
+26 October 2026: "Accepted". T13 remains resolved. The recorded evaluation failures (AUD-046,
+AUD-047) and the new AUD-048 keep their status; acceptance does not claim those issues were fixed.
