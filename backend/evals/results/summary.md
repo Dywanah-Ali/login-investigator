@@ -28,3 +28,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-26 17:33 | f853f368 | b691014 | 21 x 3 | 90% | 100% | yes | api: T43 lookups, address activity, S6 checks |
 | 2026-10-26 17:33 | f853f368 | b691014 | 21 x 3 | 90% | 100% | yes | api: T43 rework grader: T43 answers, tied Q02 account check |
 | 2026-10-26 17:33 | f853f368 | b691014 | 21 x 3 | 90% | 100% | yes | api: T43 rework review fixes: T43 answers, guarded Q02 account check |
+| 2026-10-26 17:59 | 6900ff93 | cf9c8d9 | 21 x 3 | 94% | 100% | yes | api: T43 rework: hidden counts, flag prompt, tied checks |

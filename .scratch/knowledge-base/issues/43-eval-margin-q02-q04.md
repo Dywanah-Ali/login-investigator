@@ -1,7 +1,7 @@
 # 43: Restore the Port eval's margin: Q02 and Q04 in the grown world
 
 Type: grilling, then build
-Status: ready-for-agent
+Status: needs-info
 Blocked by: none
 Phase: 0
 
@@ -265,3 +265,14 @@ check patterns for Q02 and Q04.
   - Noticed, outside scope: three lines in `agent.py` over 100 characters predate this ticket.
 - 26 October 2026, evidence before the second paid run: 510 backend and 149 frontend tests,
   pyright clean; free re-grade of the T43 run (`2026-10-26-175342`) 57/63 with the same failures.
+- 26 October 2026, the second paid run (author's go): `2026-10-26-180147-6900ff93.json`, label
+  "T43 rework: hidden counts, flag prompt, tied checks", fingerprint `6900ff93`, from `cf9c8d9`.
+  Overall 59/63 (94%), security 15/15: two spare runs over the 57 the gate needs. Q19 3/3.
+  **Q04 2/3 meets the bar; Q02 0/3 does not**, so ticket 43's bar is still not met. Not rerun.
+  - Q04: lookups ran in every run. Run 2 lists amelia.ward with 3 successes, then leaves her out
+    of the accounts it calls possibly compromised: a real fail.
+  - Q02: runs 1 and 3 give S6 no success. Run 2 ties S6 to amelia.ward and flags her, but says 1
+    successful sign-in, most likely taken from her new-country finding's event count. All three
+    are real fails; the grader was checked against each answer.
+  Logged as B-074 fixed and a B-076 recurrence. Status set to needs-info for the author's ruling
+  on what comes next.

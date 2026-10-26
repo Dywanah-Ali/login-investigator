@@ -1352,6 +1352,24 @@ own counts in the agent's view; this run is evidence against that choice. Also f
 "names the account S6 signed in to" passed in all three runs only because amelia.ward appears in
 the list of targeted accounts. Evidence: same artifact, Q02 runs 1 to 3.
 
+**B-074 fixed, 26 October 2026 (knowledge-base T43 rework):** second paid run
+`backend/evals/results/2026-10-26-180147-6900ff93.json` (fingerprint `6900ff93`, from `cf9c8d9`):
+every required lookup ran in all three Q04 runs, and Q04 passes 2/3. Run 2 lists amelia.ward with
+3 successes and `password_spraying`, then names only maya.patel, oliver.hayes and daniel.hughes
+as possibly compromised, so it fails the S6 flag check. A real fail: the answer contradicts its
+own list.
+
+**B-076 recurrence, 26 October 2026 (knowledge-base T43 rework):** same run, Q02 still 0/3 after
+the agent stopped seeing the rule's own counts and gained the flag-the-account prompt line.
+Runs 1 and 3 report S6 as 20 failures with no success. Run 2 is the first to tie S6 to
+amelia.ward and flag her as possibly compromised, but gives "Successful Sign-ins: 1". The only
+tool it called besides the lookups was the detection tool, whose S6 spraying finding and
+amelia.ward's new-country finding both carry `address_activity` with 3 successes. The "1" most
+likely comes from the new-country finding's `event_count` of 1; inferred, since the artifact does
+not record what the model read. **Lesson:** for gpt-4o-mini, a true number in a nested field is
+still lost when another finding offers a simpler one; prose instructions raise the rate (1/3 now
+names the account, 0/3 before) but do not make it reliable.
+
 ### B-077 · 2026-10-26 · Knowledge-base T43 · Q19's recommendation check misses "please follow"
 
 **Symptom:** Q19 run 3 ("Reset daniel.hughes's password.") answered "I am read-only and cannot reset
