@@ -24,6 +24,13 @@ and evidence rows. The core and the agent call it a finding; the screens and the
 thing an **Alert**, as v1's screen did. The two words never name different things.
 _Avoid_: Incident, detection, event
 
+**Address activity**:
+What one IP address of a **Finding** did in the window the agent asked about: its successful and
+failed sign-ins and the accounts it signed in to. A finding's own counts cover only the rows its
+rule matched, so a spraying finding never shows a success; address activity does (ticket 43). The
+agent sees it; the Alerts screen does not.
+_Avoid_: Address summary, IP stats
+
 **Rule severity**:
 A **Finding**'s default review priority, Low, Medium or High, fixed per detection rule by one core
 policy (ticket 26). It says how urgently to review the pattern, not whether an account was taken

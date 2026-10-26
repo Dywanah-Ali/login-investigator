@@ -519,7 +519,8 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 - **Seven typed tools in one tuple** (T05 d1): the Port's three unchanged except one added field
   (ticket 43: each finding in `find_suspicious_activity`'s output carries what its address did
-  overall, for the agent only; the core finding and the Alerts reply are unchanged), plus
+  in the tool call's window, for the agent only; the core finding and the Alerts reply are
+  unchanged), plus
   `investigate_alert(finding_id)`, `lookup_account(account_id)`,
   `find_peers(account_id | device_id | network)` and
   `search_corpus(question, doc_type, technique_id)`. No router tool, no sub-agent. All hand-written,

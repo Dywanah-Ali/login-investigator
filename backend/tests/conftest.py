@@ -27,6 +27,13 @@ def s(truth):
     return truth["scenarios"]
 
 
+@pytest.fixture(scope="session")
+def s6():
+    """S6 lives only in the knowledge base's answer key, truth.json, beside ground_truth.json."""
+    with open(generator.DATASET_DIR / "truth.json", encoding="utf-8") as f:
+        return json.load(f)["scenarios"]["S6"]
+
+
 @pytest.fixture
 def make_log():
     """Build a small log in the same shape load_log returns, for threshold edge cases.

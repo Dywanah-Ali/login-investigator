@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field
 
 from login_investigator.generator import CAPTURED_AT, REPO_ROOT, WINDOW_START
 from login_investigator.loader import TIMESTAMP_FORMAT
-from login_investigator.investigation_policy import complete_detection_searches
+from login_investigator.investigation_policy import complete_detection_evidence
 from login_investigator.progress import ToolLifecycle, ToolProgress
 from login_investigator.report_order import timeline_instant
 from login_investigator.tools import TOOLS
@@ -140,7 +140,7 @@ def make_model():
 def build_agent(model, checkpointer):
     """Build once per browser session: the checkpointer, not the agent, holds the cases."""
     return create_agent(model=model, tools=list(TOOLS), system_prompt=system_prompt(),
-                        checkpointer=checkpointer, middleware=[complete_detection_searches])
+                        checkpointer=checkpointer, middleware=[complete_detection_evidence])
 
 
 def _config(thread_id: str) -> dict:

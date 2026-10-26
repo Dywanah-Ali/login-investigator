@@ -108,11 +108,12 @@ def address_activity(df, ip, start=None, end=None) -> dict:
     to. A finding's own counts cover only the rows its rule picked (a spraying finding's are all
     failures), so the agent's detection tool puts this beside each finding (ticket 43)."""
     rows = filter_logins(df, ip=ip, start=start, end=end)
+    counts = summarize(rows, limit=1)
     signed_in = rows.loc[rows["outcome"] == "success", "username"]
     return {
         "ip": ip,
-        "successes": len(signed_in),
-        "failures": int((rows["outcome"] == "failure").sum()),
+        "successes": counts.successes,
+        "failures": counts.failures,
         "signed_in_accounts": sorted(signed_in[~account_key(signed_in).duplicated()]),
     }
 

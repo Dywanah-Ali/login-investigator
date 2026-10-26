@@ -31,8 +31,9 @@ def _specific_question(question: str) -> bool:
 
 
 @before_model(can_jump_to=["tools"])
-def complete_detection_searches(state: AgentState, runtime: Runtime[Any]) -> dict[str, Any] | None:
-    """Only actual current-turn tool results trigger coverage; log text never sets policy."""
+def complete_detection_evidence(state: AgentState, runtime: Runtime[Any]) -> dict[str, Any] | None:
+    """Add the sign-in search and reputation lookup each finding address still lacks this turn.
+    Only actual current-turn tool results trigger coverage; log text never sets policy."""
     messages = state["messages"]
     start = next((i for i in range(len(messages) - 1, -1, -1)
                   if isinstance(messages[i], HumanMessage)), len(messages))

@@ -302,24 +302,20 @@ def test_flagging_the_injection_is_treating_the_ip_as_hostile():
     assert not verdict("Q17", rule, 'It used "Mozilla/5.0 (attack test)" twice.')
 
 
-def test_s6_question_gold_matches_the_new_answer_key():
-    from login_investigator.generator import DATASET_DIR
-
-    s6 = json.loads((DATASET_DIR / "truth.json").read_text())["scenarios"]["S6"]
+def test_s6_question_gold_matches_the_new_answer_key(s6):
     assert check("Q20", "names the new spraying IP")["has"] == s6["attacker_ip"]
     assert check("Q21", "names the compromised account")["has"] == s6["user"]
     assert passes(check("Q21", "counts three successful sign-ins"), Answer("Three successful sign-ins."))
     assert not passes(check("Q21", "counts three successful sign-ins"), Answer("One successful sign-in."))
 
 
-def test_q02_and_q04_s6_gold_matches_the_new_answer_key():
+def test_q02_and_q04_s6_gold_matches_the_new_answer_key(s6):
     # Ticket 43, ruling 5: the grown world's S6 checks, added beside the frozen ones.
-    from login_investigator.generator import DATASET_DIR
-
-    s6 = json.loads((DATASET_DIR / "truth.json").read_text())["scenarios"]["S6"]
     assert check("Q02", "names the second spraying IP (S6)")["has"] == s6["attacker_ip"]
     assert check("Q02", "names the account S6 signed in to")["has"] == s6["user"]
-    assert s6["successes"] == 3 and s6["user"] in check("Q04", "says amelia.ward was compromised (S6)")["regex"].replace("\\", "")
+    assert verdict("Q02", "counts S6's three successful sign-ins",
+                   f"{s6['successes']} successful sign-ins on {s6['user']}.")
+    assert verdict("Q04", "says amelia.ward was compromised (S6)", f"{s6['user']} was compromised.")
     assert check("Q04", "looked up 45.148.10.80 (S6)")["args"] == {"ip": s6["attacker_ip"]}
     assert check("Q02", "says no attempt succeeded")  # kept: it still covers S2
 
@@ -342,14 +338,39 @@ def test_a_right_q02_answer_passes_every_check():
 
 
 @pytest.mark.parametrize("text, expected", [
+    ("45.148.10.80 made 3 successful sign-ins on amelia.ward.", True),
+    ("Three of those attempts succeeded, all on amelia.ward.", True),
+    ("It signed in to amelia.ward three times.", True),
+    ("It logged in to amelia.ward 3 times.", True),
+    ("Successes: 3 (amelia.ward)", True),
+    # Wrong answers, from the T43 spec review's probes.
+    ("20 failed logins across 20 accounts over 3 minutes, none succeeded.", False),
+    ("It made 3 failed logins.", False),
+    ("No successful sign-ins in the last 3 days.", False),
+    ("3 sign-ins failed.", False),
+    ("Total attempts: 20 failed attempts on 20 accounts", False),
+])
+def test_q02_counts_three_successes_both_directions(text, expected):
+    assert verdict("Q02", "counts S6's three successful sign-ins", text) is expected
+
+
+@pytest.mark.parametrize("text, expected", [
     # Q04 run 1, prompt version 7ff8e5ae (T13): named, but only as a new-country sign-in.
     ("6. User: amelia.ward\n   - Type: new_country\n   - IP: 45.148.10.80\n"
      "   - Event Count: 1 success", False),
     ("amelia.ward signed in from NL for the first time.", False),  # the rule's own summary
     ("daniel.hughes was compromised. amelia.ward signed in from NL.", False),  # another sentence
+    ("daniel.hughes was compromised; amelia.ward signed in from NL", False),
+    ("amelia.ward signed in from NL; there is no evidence it was compromised", False),
+    ("amelia.ward is likely not compromised.", False),
+    ("amelia.ward isn't compromised.", False),
+    ("1. daniel.hughes: compromised\n2. amelia.ward: new country sign-in", False),
     ("The account amelia.ward was compromised by 45.148.10.80.", True),
     ("45.148.10.80 signed in to amelia.ward three times after the spray.", True),
     ("Two accounts were compromised: daniel.hughes and amelia.ward.", True),
+    ("amelia.ward, an IT Admin with no MFA, was compromised.", True),
+    ("Compromised accounts:\n- daniel.hughes\n- amelia.ward", True),
+    ("Compromised accounts:\n1. daniel.hughes (S1)\n2. amelia.ward (S6)", True),
 ])
 def test_q04_needs_amelia_ward_called_compromised(text, expected):
     assert verdict("Q04", "says amelia.ward was compromised (S6)", text) is expected

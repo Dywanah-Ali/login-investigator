@@ -127,7 +127,10 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
     The rules are brute force, password spraying, success after repeated failures, and sign-in
     from a new country. Each finding gives its rule, a summary, the IPs and users involved, event
     counts, first and last seen times, and evidence rows (the first and last events when there
-    are many). Start here for broad questions such as "anything suspicious?".
+    are many). A finding's counts cover only the rows its rule matched: a password spraying
+    finding counts failures only. Each finding's "address_activity" says what each of its IPs did
+    in the window: successes, failures and the accounts it signed in to. Read it to tell whether
+    an address got in. Start here for broad questions such as "anything suspicious?".
 
     Args:
         start: Start of the window, included. An explicit ISO 8601 UTC time such as

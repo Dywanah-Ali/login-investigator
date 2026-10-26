@@ -180,3 +180,26 @@ check patterns for Q02 and Q04.
   (`test_tools.py`), expected values from `truth.json`; 3, the eval grader
   (`test_eval_scoring.py`), right answers pass and T13's real wrong answers fail; 4, the existing
   Alerts API and rules tests, untouched; 5, one paid eval run.
+- 26 October 2026, build (Claude): implementation commit `d2475f8`, test first at seams 1 to 3.
+  Red before green for the hook lookups, `address_activity` and the new checks; the guard line
+  on specific questions passed at once, as it pins behaviour that already worked. One existing
+  policy test changed: each turn now also gets a lookup, so its per-turn tool count is 3.
+- 26 October 2026, `mp-code-review` on `aac502a...d2475f8`, triage:
+  - Spec, fixed: the first Q02 three-successes pattern (copied from Q21) and the Q04 compromise
+    pattern passed wrong answers and failed right ones (negations, "succeeded", "signed in to X
+    three times", markdown lists). Both became shared patterns `THREE_SUCCESSES` and
+    `AMELIA_COMPROMISED`, pinned by both-direction tables holding every reviewer probe. Spec
+    T05 d1 now says "in the tool call's window", not "overall".
+  - Spec, for the author: Q04's check says amelia.ward was compromised, stricter than ruling 5's
+    "names amelia.ward", because T13 run 1 named her only as a new-country sign-in.
+  - Standards, fixed: the detection tool's description, which the model reads, now explains
+    `address_activity`; the hook is renamed `complete_detection_evidence`; the gold test checks
+    through `passes` instead of the pattern text; `address_activity` reuses `summarize`; one
+    `s6` fixture in `conftest.py`; `_finding` rename; declaration order; a glossary entry.
+  - Standards, kept: the register and bug log update at closure, after the paid run.
+  - Noticed, outside scope: Q21's three-successes pattern has the same weaknesses as the first
+    Q02 pattern. Q21 passed 3/3 in T13; not changed here.
+- 26 October 2026, evidence before the paid run: 485 backend and 149 frontend tests, pyright
+  clean. Free re-grades of T13's saved answers (`2026-10-26-171504` before review,
+  `2026-10-26-172237` after): 57/63 and 15/15, Q02 and Q04 0/3 on exactly the new and old
+  checks, no other question affected.

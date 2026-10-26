@@ -76,6 +76,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-047 | Preserve each spray source's success outcome and total in broad answers | Open, deferred outside T12 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
 | AUD-048 | Decide whether the finding ID reaches the agent's detection tool when ticket 32 adds it to the Alerts reply | Open, for ticket 32's builder | Medium | Knowledge-base T13 spec review |
 | AUD-049 | Stop sending finding counts the Alerts screen never shows | Open, parked until the author reopens it | Low | Knowledge-base ticket 43 scoping |
+| AUD-050 | Harden Q21's three-successes check, which can pass a wrong answer | Open, parked until the author reopens it | Medium | Knowledge-base ticket 43 spec review |
 
 ### AUD-001: Rule filter
 
@@ -731,6 +732,16 @@ The project rule says the API returns only the fields the screen needs. A sprayi
 `success_count` is also always 0 by construction, so a future screen that showed it would mislead.
 Outside ticket 43's scope; registration is not approval. Closure evidence: the author's decision to
 remove, show or relabel the fields, and its tests.
+
+### AUD-050: Q21's three-successes check
+
+Ticket 43's spec review probed Q02's first three-successes pattern, a copy of Q21's, and found it
+passes wrong answers ("It made 3 failed logins", "No successful sign-ins in the last 3 days") and
+fails right ones ("Three of those attempts succeeded", "signed in to amelia.ward three times").
+Ticket 43 replaced Q02's copy with the shared `THREE_SUCCESSES` pattern and its both-direction
+tests; Q21 keeps its own pattern. Q21 passed 3/3 in T13, so no wrong score is known. Registration is
+not approval. Closure evidence: Q21 moved to the shared pattern, or the author's decision to keep
+it, and a re-grade of the last saved run.
 
 ## Longer-term capabilities already named in the spec
 

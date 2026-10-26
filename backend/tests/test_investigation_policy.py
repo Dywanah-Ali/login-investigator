@@ -9,7 +9,7 @@ from langchain_core.tools import ToolException, tool
 from langgraph.checkpoint.memory import InMemorySaver
 
 from login_investigator.agent import ask, history
-from login_investigator.investigation_policy import complete_detection_searches
+from login_investigator.investigation_policy import complete_detection_evidence
 from test_agent import FakeModel, tool_call
 
 
@@ -42,7 +42,7 @@ def test_detection_cannot_skip_missing_searches_or_repeat_completed_attempts(exi
         requests.append(tool_call('search_logins', args, 'already-searched').tool_calls[0])
     model = FakeModel(responses=[AIMessage('', tool_calls=requests), AIMessage('Answer')])
     agent = create_agent(model, [find_suspicious_activity, search_logins],
-                         middleware=[complete_detection_searches], checkpointer=InMemorySaver())
+                         middleware=[complete_detection_evidence], checkpointer=InMemorySaver())
     list(ask(agent, 'case', 'Investigate', lifecycle=True))
     assert searched.count(('185.218.86.24', None)) == 1
     assert searched.count(('2.57.122.53', None)) == 1
@@ -68,13 +68,14 @@ def test_no_findings_do_not_schedule_searches():
 
     model = FakeModel(responses=[tool_call('find_suspicious_activity', {}), AIMessage('No findings')])
     agent = create_agent(model, [find_suspicious_activity, search_logins],
-                         middleware=[complete_detection_searches], checkpointer=InMemorySaver())
+                         middleware=[complete_detection_evidence], checkpointer=InMemorySaver())
     list(ask(agent, 'empty', 'Investigate'))
     assert [use.name for use in history(agent, 'empty')[0].tools] == ['find_suspicious_activity']
 
 
 def test_earlier_turn_coverage_does_not_hide_searches_for_new_detection():
     searches = []
+    lookups = []
 
     @tool
     def find_suspicious_activity() -> str:
@@ -93,13 +94,12 @@ def test_earlier_turn_coverage_does_not_hide_searches_for_new_detection():
         lookups.append(ip)
         return '{}'
 
-    lookups = []
     model = FakeModel(responses=[tool_call('find_suspicious_activity', {}, 'first-detection'),
                                  AIMessage('First answer'),
                                  tool_call('find_suspicious_activity', {}, 'second-detection'),
                                  AIMessage('Second answer')])
     agent = create_agent(model, [find_suspicious_activity, search_logins, lookup_ip_reputation],
-                         middleware=[complete_detection_searches], checkpointer=InMemorySaver())
+                         middleware=[complete_detection_evidence], checkpointer=InMemorySaver())
     list(ask(agent, 'same-case', 'Investigate first period'))
     list(ask(agent, 'same-case', 'Investigate another period'))
     assert searches == ['185.218.86.24', '185.218.86.24']
@@ -135,7 +135,7 @@ def test_detection_cannot_skip_reputation_lookups_for_public_addresses(already_l
         requests.append(tool_call('lookup_ip_reputation', {'ip': '2.57.122.53'}, 'model').tool_calls[0])
     model = FakeModel(responses=[AIMessage('', tool_calls=requests), AIMessage('Answer')])
     agent = create_agent(model, [find_suspicious_activity, search_logins, lookup_ip_reputation],
-                         middleware=[complete_detection_searches], checkpointer=InMemorySaver())
+                         middleware=[complete_detection_evidence], checkpointer=InMemorySaver())
     list(ask(agent, 'broad', 'Was any account compromised this week?'))
     assert sorted(looked_up) == ['185.218.86.24', '2.57.122.53']
     saved = history(agent, 'broad')[0]
@@ -168,7 +168,7 @@ def test_specific_questions_do_not_get_unrelated_ip_searches(question):
         tool_call('search_logins', {'ip': '2.57.122.53'}, 'selected').tool_calls[0],
     ]), AIMessage('Focused answer')])
     agent = create_agent(model, [find_suspicious_activity, search_logins],
-                         middleware=[complete_detection_searches], checkpointer=InMemorySaver())
+                         middleware=[complete_detection_evidence], checkpointer=InMemorySaver())
     list(ask(agent, 'narrow', question))
     assert searches == ['2.57.122.53']
     assert [use.name for use in history(agent, 'narrow')[0].tools] == [
