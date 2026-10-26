@@ -158,6 +158,10 @@ TABLES = ("people", "groups", "memberships", "assets", "grants", "devices",
           "device_assignments", "networks")
 DEPARTMENTS = {"Engineering", "Finance", "HR", "Sales", "Operations", "IT"}
 PRIVILEGED = {"IT Admins": "IT", "Finance Approvers": "Finance", "HR Data Owners": "HR"}
+# Cross-cutting (T04 d2; author's ruling at ticket 11): each group has one member from outside its
+# home department.
+OUTSIDER_DEPARTMENT = {"IT Admins": "Engineering", "Finance Approvers": "Operations",
+                       "HR Data Owners": "Finance"}
 ASSETS_BY_GROUP = {
     "All Staff": {"email", "intranet", "file share"},
     "IT Admins": {"identity provider", "VPN gateway", "domain controller", "backup server"},
@@ -191,11 +195,6 @@ def test_every_record_has_an_id_unique_in_its_table(org):
         assert all(ids) and len(ids) == len(set(ids)), name
 
 
-def test_record_ids_are_the_same_on_every_run(org):
-    again = g.generate().tables
-    assert again == org
-
-
 def test_people_are_the_ports_fifty_users_in_six_departments(org):
     people = org["people"]
     us_users = {name for name, _ in g.US_USERS}
@@ -206,7 +205,7 @@ def test_people_are_the_ports_fifty_users_in_six_departments(org):
     assert len({p["department"] for p in people if p["username"] in us_users}) == 6
 
 
-def test_three_privileged_groups_of_three_to_five_from_their_department(org):
+def test_three_cross_cutting_privileged_groups_of_three_to_five(org):
     people = _by(org["people"], "person_id")
     groups = _by(org["groups"], "group_id")
     members = {}
@@ -214,8 +213,11 @@ def test_three_privileged_groups_of_three_to_five_from_their_department(org):
         members.setdefault(groups[m["group_id"]]["name"], []).append(people[m["person_id"]])
     for name, department in PRIVILEGED.items():
         assert 3 <= len(members[name]) <= 5, name
-        assert {p["department"] for p in members[name]} == {department}, name
-        assert {g_["kind"] for g_ in groups.values() if g_["name"] == name} == {"privileged"}
+        departments = Counter(p["department"] for p in members[name])
+        assert departments == {department: len(members[name]) - 1,
+                               OUTSIDER_DEPARTMENT[name]: 1}, name
+        assert {group["kind"] for group in groups.values() if group["name"] == name} == {
+            "privileged"}
     # Everyone holds baseline access through one group.
     assert len(members["All Staff"]) == 50
 

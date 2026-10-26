@@ -42,8 +42,6 @@ COLUMNS = PORT_COLUMNS + [
 ]
 # pass, fail, none (not prompted) or denied (prompt refused; reserved for MFA fatigue, unused).
 MFA_RESULTS = ("pass", "fail", "none", "denied")
-# Accounts never prompted for MFA. Ticket 12 adds S6's target.
-MFA_EXCEPTIONS = ("daniel.hughes",)
 
 # Reserved documentation addresses (RFC 5737). No real machine uses them, so normal users can
 # never point at a real person.
@@ -86,6 +84,8 @@ US_USERS = [
 
 S1_TARGET = "daniel.hughes"
 S4_TARGET = "olivia.bennett"
+# Accounts never prompted for MFA. Ticket 12 adds S6's target.
+MFA_EXCEPTIONS = (S1_TARGET,)
 S2_UNKNOWN_USERNAMES = [
     "admin", "administrator", "test", "it.support", "backup", "info", "helpdesk",
 ]
@@ -265,12 +265,13 @@ def _scenario_s4() -> list[dict]:
 # Department sizes in the UK; each department also gets exactly one of the six US users.
 UK_DEPARTMENT_SIZES = {"Engineering": 11, "Sales": 9, "Operations": 8, "Finance": 6, "IT": 6,
                        "HR": 4}
-# (slug, name, kind, department its members come from, number of members)
+# (slug, name, kind, home department, members from it, department of the one outsider). The
+# privileged groups cut across departments: each has one member from outside its home.
 GROUPS = [
-    ("all-staff", "All Staff", "baseline", None, None),
-    ("it-admins", "IT Admins", "privileged", "IT", 4),
-    ("finance-approvers", "Finance Approvers", "privileged", "Finance", 4),
-    ("hr-data-owners", "HR Data Owners", "privileged", "HR", 3),
+    ("all-staff", "All Staff", "baseline", None, 0, None),
+    ("it-admins", "IT Admins", "privileged", "IT", 3, "Engineering"),
+    ("finance-approvers", "Finance Approvers", "privileged", "Finance", 3, "Operations"),
+    ("hr-data-owners", "HR Data Owners", "privileged", "HR", 2, "Finance"),
 ]
 # (slug, name, sensitivity, the group granted it). The owner is drawn from the group that holds
 # the asset; for the baseline assets, from IT Admins, who run them.
@@ -310,11 +311,11 @@ TABLE_COLUMNS = {
 }
 
 
-def person_id(username: str) -> str:
+def _person_id(username: str) -> str:
     return f"user-{username}"
 
 
-def laptop_id(username: str) -> str:
+def _laptop_id(username: str) -> str:
     return f"dev-laptop-{username}"
 
 
@@ -338,47 +339,51 @@ def _organisation(seed: int, users: list[User]) -> dict[str, list[dict]]:
         uk = uk[size:]
     us_departments = list(UK_DEPARTMENT_SIZES)
     rng.shuffle(us_departments)
-    for (username, _), name in zip(US_USERS, us_departments):
+    for (username, _), name in zip(US_USERS, us_departments, strict=True):
         department[username] = name
 
-    people = [{"person_id": person_id(u.username), "username": u.username,
+    people = [{"person_id": _person_id(u.username), "username": u.username,
                "display_name": _display_name(u.username), "department": department[u.username],
                "country": u.country} for u in users]
     in_department = {name: sorted(u for u, d in department.items() if d == name)
                      for name in UK_DEPARTMENT_SIZES}
 
     groups, memberships, members = [], [], {}
-    for slug, name, kind, source, size in GROUPS:
+    for slug, name, kind, home, from_home, outsider_from in GROUPS:
         groups.append({"group_id": f"group-{slug}", "name": name, "kind": kind})
-        chosen = ([u.username for u in users] if source is None
-                  else sorted(rng.sample(in_department[source], size)))
+        if home is None:
+            chosen = [u.username for u in users]
+        else:
+            chosen = sorted(rng.sample(in_department[home], from_home)
+                            + [rng.choice(in_department[outsider_from])])
         members[slug] = chosen
         memberships += [{"membership_id": f"mem-{slug}-{username}", "group_id": f"group-{slug}",
-                         "person_id": person_id(username)} for username in chosen]
+                         "person_id": _person_id(username)} for username in chosen]
 
     assets, grants = [], []
     for slug, name, sensitivity, holder in ASSETS:
         owners = members["it-admins" if holder == "all-staff" else holder]
         assets.append({"asset_id": f"asset-{slug}", "name": name, "sensitivity": sensitivity,
-                       "owner_id": person_id(rng.choice(owners))})
+                       "owner_id": _person_id(rng.choice(owners))})
         grants.append({"grant_id": f"grant-{holder}-{slug}", "group_id": f"group-{holder}",
                        "asset_id": f"asset-{slug}"})
 
     devices, assignments = [], []
     for u in users:
-        devices.append({"device_id": laptop_id(u.username), "kind": "laptop",
+        devices.append({"device_id": _laptop_id(u.username), "kind": "laptop",
                         "name": _laptop_name(u.username)})
         assignments.append({"assignment_id": f"asg-laptop-{u.username}",
-                            "device_id": laptop_id(u.username),
-                            "person_id": person_id(u.username)})
+                            "device_id": _laptop_id(u.username),
+                            "person_id": _person_id(u.username)})
     meeting_room = [rng.choice([u for u in in_department[name] if u in UK_USERS])
                     for name in sorted(rng.sample(sorted(in_department), 3))]
     warehouse = sorted(rng.sample([u for u in in_department["Operations"]
                                    if u in UK_USERS and u not in meeting_room], 3))
-    for (device, slug, name), shared_by in zip(SHARED_MACHINES, (sorted(meeting_room), warehouse)):
+    for (device, slug, name), shared_by in zip(SHARED_MACHINES, (sorted(meeting_room), warehouse),
+                                               strict=True):
         devices.append({"device_id": device, "kind": "shared", "name": name})
         assignments += [{"assignment_id": f"asg-{slug}-{username}", "device_id": device,
-                         "person_id": person_id(username)} for username in shared_by]
+                         "person_id": _person_id(username)} for username in shared_by]
 
     networks = [
         {"network_id": "net-uk-office", "address": UK_OFFICE_IP, "kind": "office",
@@ -394,7 +399,7 @@ def _organisation(seed: int, users: list[User]) -> dict[str, list[dict]]:
     ]
     networks += [{"network_id": f"net-home-{u.username}", "address": u.home_ip, "kind": "home",
                   "name": f"Home of {_display_name(u.username)}",
-                  "person_id": person_id(u.username)} for u in users if u.home_ip]
+                  "person_id": _person_id(u.username)} for u in users if u.home_ip]
     # Handed out in this order, so one address serves several people in a week.
     networks += [{"network_id": f"net-vpn-{n}", "address": address, "kind": "vpn",
                   "name": f"VPN pool address {n}", "person_id": ""}
@@ -408,18 +413,18 @@ def _organisation(seed: int, users: list[User]) -> dict[str, list[dict]]:
 def _add_device_and_mfa(seed: int, rows: list[dict], tables: dict[str, list[dict]]) -> None:
     """Fill the two new columns on every row, from a random stream of their own."""
     rng = random.Random(f"{seed}:devices")
-    shared = {}
-    for a in tables["device_assignments"]:
-        if not a["device_id"].startswith("dev-laptop-"):
-            shared[a["person_id"]] = a["device_id"]
+    shared_kind = {d["device_id"] for d in tables["devices"] if d["kind"] == "shared"}
+    shared = {a["person_id"]: a["device_id"] for a in tables["device_assignments"]
+              if a["device_id"] in shared_kind}
     for row in rows:
+        person = _person_id(row["username"])
         if row["source_ip"] in ATTACKER_IPS or row["user_agent"] in PHONE_AGENTS:
             device = ""  # never registered: the attacker's machine, a personal phone
-        elif (person_id(row["username"]) in shared and row["source_ip"] == UK_OFFICE_IP
+        elif (person in shared and row["source_ip"] == UK_OFFICE_IP
               and rng.random() < SHARED_MACHINE_SHARE):
-            device = shared[person_id(row["username"])]
+            device = shared[person]
         else:
-            device = laptop_id(row["username"])
+            device = _laptop_id(row["username"])
         row["device_id"] = device
         # A failed password never reaches MFA; an account on the exception list is never asked.
         prompted = row["outcome"] == "success" and row["username"] not in MFA_EXCEPTIONS

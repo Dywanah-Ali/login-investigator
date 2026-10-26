@@ -55,3 +55,8 @@ the knowledge base's answer key, `truth.json`, from the planted stories.
   pool, handing the four addresses out in turn so that several users share one address in a week
   (T04 d5). Ticket 11 only wrote the pool into the networks table. The VPN rows change whole-log
   counts, which this ticket already owns.
+- 2026-10-26, open question for the author, raised by ticket 11's spec review: S4's success from
+  Russia carries `mfa_result = pass`, because T04 d7 makes every success `pass` except the accounts
+  on the exception list, and S4's target is not on it. The data then says the attacker passed MFA,
+  and no story explains that. Rule before `truth.json` is written: put S4's target on the exception
+  list, or keep `pass` with a recorded reason (for example, an MFA-bypassing phishing proxy).

@@ -1,11 +1,11 @@
 asset_id,name,sensitivity,owner_id
-asset-email,email,internal,user-isabel.knight
+asset-email,email,internal,user-joseph.burton
 asset-intranet,intranet,internal,user-amelia.ward
 asset-file-share,file share,confidential,user-amelia.ward
 asset-identity-provider,identity provider,restricted,user-amelia.ward
-asset-vpn-gateway,VPN gateway,confidential,user-joseph.burton
+asset-vpn-gateway,VPN gateway,confidential,user-leah.gibbons
 asset-domain-controller,domain controller,restricted,user-ruby.stevens
 asset-backup-server,backup server,restricted,user-amelia.ward
-asset-payments-system,payments system,restricted,user-ella.chapman
-asset-erp,ERP,confidential,user-mark.sullivan
-asset-hr-system,HR system,restricted,user-henry.walsh
+asset-payments-system,payments system,restricted,user-hannah.porter
+asset-erp,ERP,confidential,user-max.thornton
+asset-hr-system,HR system,restricted,user-chloe.barker

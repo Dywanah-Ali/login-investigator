@@ -56,3 +56,6 @@ before.
 - 2026-10-26, author's ruling at the build, amending the first comment: measured, 124 of the 1,616
   employee rows (7.7%) come from a phone and the register holds no phones. The empty employee rows
   are exactly those phone sign-ins, with no further random share.
+- 2026-10-26, author's ruling at the review: the privileged groups cut across departments, one
+  outsider each (IT Admins from Engineering, Finance Approvers from Operations, HR Data Owners from
+  Finance). Recorded in the spec's decisions log.
