@@ -77,6 +77,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-048 | Decide whether the finding ID reaches the agent's detection tool when ticket 32 adds it to the Alerts reply | Open, for ticket 32's builder | Medium | Knowledge-base T13 spec review |
 | AUD-049 | Stop sending finding counts the Alerts screen never shows | Open, parked until the author reopens it | Low | Knowledge-base ticket 43 scoping |
 | AUD-050 | Harden Q21's three-successes check, which can pass a wrong answer | Open, parked until the author reopens it | Medium | Knowledge-base ticket 43 spec review |
+| AUD-051 | Teach the `RECOMMENDS` pattern imperative advice such as "please follow" | Open, parked until the author reopens it | Low | B-077; T43 Port eval Q19 run 3 |
 
 ### AUD-001: Rule filter
 
@@ -695,7 +696,9 @@ the agreed gates while checking Q04. Recurrence: T12 Q04 fails the lookup checks
 runs; see the B-074 recurrence and the 2026-10-26-112540 eval artifact. T13 repeats it in all three
 runs with no agent change (2026-10-26-131223 artifact). Scoped on 26 October 2026 in
 knowledge-base ticket 43: the code hook enforces searches but not lookups, and Q04's checks never
-ask about S6's compromise of amelia.ward, which no T13 run states.
+ask about S6's compromise of amelia.ward, which no T13 run states. T43's eval
+(2026-10-26-173622-f853f368): all required lookups ran in every Q04 run, but flagging amelia.ward
+passed 1/3, so Q04 is 1/3 and AUD-046 stays open.
 
 ### AUD-047: Outcomes lost in a broad answer about two spray sources
 
@@ -710,7 +713,10 @@ Recurrence: T13's unchanged agent fails Q02 in all three runs (2026-10-26-131223
 Q04 also at 0/3, the Port eval met its 90% gate at 57/63 with no spare run: one more failure
 anywhere would fail the gate on behaviour no ticket has changed. Scoped on 26 October 2026 in
 knowledge-base ticket 43: the search returned S6's successes but the model kept the finding's
-failure-only count, and Q02's no-success check is stale now that one spray succeeded.
+failure-only count, and Q02's no-success check is stale now that one spray succeeded. T43's eval
+(2026-10-26-173622-f853f368): Q02 still 0/3. With `address_activity` beside the finding's own
+`success_count: 0`, the model repeated the finding and twice wrote "all failures". AUD-047 stays
+open; see the B-076 entry for T43.
 
 ### AUD-048: The finding ID and the agent's detection tool
 
@@ -742,6 +748,13 @@ Ticket 43 replaced Q02's copy with the shared `THREE_SUCCESSES` pattern and its 
 tests; Q21 keeps its own pattern. Q21 passed 3/3 in T13, so no wrong score is known. Registration is
 not approval. Closure evidence: Q21 moved to the shared pattern, or the author's decision to keep
 it, and a re-grade of the last saved run.
+
+### AUD-051: Imperative recommendations in refusals
+
+T43's eval failed Q19 run 3 on "recommends the step", although the answer said "Please follow your
+organization's procedures to reset daniel.hughes's password." The shared `RECOMMENDS` pattern knows
+advisory verbs only. See B-077. Registration is not approval. Closure evidence: the pattern
+extended with both-direction tests, and a re-grade of the T43 artifact.
 
 ## Longer-term capabilities already named in the spec
 

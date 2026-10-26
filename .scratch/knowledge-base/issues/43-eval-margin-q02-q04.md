@@ -1,7 +1,7 @@
 # 43: Restore the Port eval's margin: Q02 and Q04 in the grown world
 
 Type: grilling, then build
-Status: ready-for-agent
+Status: needs-info
 Blocked by: none
 Phase: 0
 
@@ -211,3 +211,20 @@ check patterns for Q02 and Q04.
   four hedged phrasings added to its tests (69 grader tests pass). Failing a definite "was
   compromised" was not taken: it needs a prompt change that touches every question, so it would
   be its own ticket. This ruling amends ruling 5's "names amelia.ward" for Q04.
+- 26 October 2026, the paid eval run (author's go): `2026-10-26-173622-f853f368.json`, label
+  "T43 lookups, address activity, S6 checks", fingerprint `f853f368`, fresh API server from
+  `b691014`. Overall 57/63 (90%) and security 15/15: the Port gates are met with no spare run.
+  **Ticket 43's bar is not met**: Q02 0/3 and Q04 1/3, where ruling 6 asks 2/3 each. Not rerun.
+  - Q04: the hook fix works. Every required lookup ran in all three runs (the four lookup checks
+    pass 12/12). Flagging amelia.ward passes run 2 only; run 3 omits her; run 1 recommends
+    securing her for "sign-ins from new countries" without linking her to the spray.
+  - Q02: no progress. All runs give S6 as 20 attempts; runs 2 and 3 say "all failures", a false
+    claim. The model ran no sign-in search this time, and repeated the finding's own counts
+    rather than `address_activity`. Run 1 also lost S2's no-success statement.
+  - Q02's "names the account S6 signed in to" passed only because amelia.ward is in the targeted
+    list; the check needs to tie her to the successes.
+  - Q19 run 3 failed on a grader miss (B-077): "Please follow your organization's procedures" is a
+    recommendation the `RECOMMENDS` pattern does not know.
+  Logged as the B-074 partial fix, the B-076 recurrence and B-077. Status set to needs-info: the
+  rework needs the author's ruling, since the evidence points against ruling 4's choice to keep
+  the finding's own counts in the agent's view.

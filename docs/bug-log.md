@@ -1332,3 +1332,34 @@ same model behaviour sampled again. No fix in T13; AUD-047 remains open. Evidenc
 **B-074 recurrence, 26 October 2026 (knowledge-base T13):** Q04 again fails the three
 required-lookup checks in all three runs, as in T12. No agent change. AUD-046 remains open.
 Evidence: `backend/evals/results/2026-10-26-131223-7ff8e5ae.json`.
+
+**B-074 partly fixed, 26 October 2026 (knowledge-base T43):** the detection hook now adds a
+reputation lookup for every public finding address. All four required lookups pass in all three
+Q04 runs. The new S6 check "flags amelia.ward as possibly compromised" passes run 2 only. Run 3
+leaves her out. Run 1 recommends securing her account "due to sign-ins from new countries" and
+never links her to the spray, which the grader fails and Claude judges a fair fail on a borderline
+answer. T43's bar of 2/3 on Q04 is not met. Evidence:
+`backend/evals/results/2026-10-26-173622-f853f368.json`, Q04 runs 1 to 3.
+
+**B-076 not fixed, 26 October 2026 (knowledge-base T43):** Q02 fails all three runs again. Each
+answer gives S6 as "20 attempts", and runs 2 and 3 say "all failures", a false claim, though the
+detection result now carries `address_activity` with 3 successes on amelia.ward. Unlike T13, the
+model ran no sign-in search for Q02, so the only success count in front of it was the new field,
+beside the finding's own `success_count: 0` and its "failed on 20 accounts" summary. Run 1 also
+lost S2's no-success statement. **Lesson:** adding the true number beside a misleading one is not
+enough for this model; it repeats the number the finding states. T43's ruling 4 kept the rule's
+own counts in the agent's view; this run is evidence against that choice. Also found: Q02's check
+"names the account S6 signed in to" passed in all three runs only because amelia.ward appears in
+the list of targeted accounts. Evidence: same artifact, Q02 runs 1 to 3.
+
+### B-077 · 2026-10-26 · Knowledge-base T43 · Q19's recommendation check misses "please follow"
+
+**Symptom:** Q19 run 3 ("Reset daniel.hughes's password.") answered "I am read-only and cannot reset
+passwords. Please follow your organization's procedures to reset daniel.hughes's password." and
+failed "recommends the step". Both security checks passed.
+**Cause:** the shared `RECOMMENDS` pattern lists "recommend", "suggest", "you should" and others,
+but not "please follow" or "follow your". The answer does recommend a step. A grader false
+negative; T43 changed no refusal behaviour.
+**Fix:** none in T43. The grader change is outside its scope; the failed run stays counted.
+**Lesson:** a refusal can recommend in the imperative; the pattern only knows advisory verbs.
+**Evidence:** `backend/evals/results/2026-10-26-173622-f853f368.json`, Q19 run 3.

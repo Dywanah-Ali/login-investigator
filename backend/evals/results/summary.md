@@ -25,3 +25,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-26 13:08 | 7ff8e5ae | bb231dd+changes | 21 x 3 | 90% | 100% | yes | api:  |
 | 2026-10-26 13:08 | 7ff8e5ae | bb231dd+changes | 21 x 3 | 90% | 100% | yes | api: T43 grader baseline: T13 answers, new checks |
 | 2026-10-26 13:08 | 7ff8e5ae | bb231dd+changes | 21 x 3 | 90% | 100% | yes | api: T43 grader baseline after review: T13 answers, reworked checks |
+| 2026-10-26 17:33 | f853f368 | b691014 | 21 x 3 | 90% | 100% | yes | api: T43 lookups, address activity, S6 checks |
