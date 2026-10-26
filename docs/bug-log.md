@@ -1440,3 +1440,39 @@ That narrow search is observable; why the model disregarded the supplied fact is
 **Fix:** none in T14. AUD-047 reopened; no prompt, grader or tool change, and no cleaner-score rerun.
 **Lesson:** a passing sample of model answers does not prove a fact will always be preserved.
 **Evidence:** `backend/evals/results/2026-10-26-202907-b70d0745.json`, Q02 run 3.
+
+### B-081 · 2026-10-26 · Codex workflow · Queued questions mistaken for missing pop-ups
+
+**Symptom:** the author could not see the interactive test-boundary question during T14 and
+reported this had happened before. The question tool returned `accepted: true`, but no answer
+arrived until the question was repeated in ordinary chat.
+**Cause:** a later harmless display test was visibly queued in the actual Login Investigator
+Codex pane as `? 1 question` with `⇧← to answer`, rather than opening as a modal dialogue.
+The author opened it and replied through the tool successfully. This establishes how the
+reproduced question was presented; the original prompt's exact earlier viewport was not captured.
+The assistant had treated successful submission as sufficient evidence that the question was
+obvious to the author. It was not.
+**Fix:** explain that Shift + Left Arrow opens a queued terminal question, and announce queued
+questions in normal commentary. If the question remains inaccessible, ask it in plain chat.
+No Codex feature flags, Herdr settings or application code were changed.
+**Lesson:** a tool acknowledgement proves submission, not user visibility. Inspect the actual
+terminal before diagnosing a rendering failure or changing global settings.
+**Evidence:** Codex CLI 0.164.0; matching Herdr client/server preview builds and current Codex
+integration; live Login Investigator pane showed the queue and shortcut. The author's structured
+reply was `Yes, I can see selectable choices`. Closed on that confirmation.
+
+### B-082 · 2026-10-26 · Herdr diagnostics · Inherited pane context points to another project
+
+**Symptom:** during B-081 diagnostics, `herdr pane current --current` resolved a VPS Manager
+pane rather than the active Login Investigator pane. Its terminal snapshot did not contain
+this conversation, even though its integration metadata identified a Codex session.
+**Cause:** not established. The inherited caller context is inconsistent with the active
+Login Investigator pane. An old session-log selection based on that context was consequently
+not reliable evidence for this pane's question events.
+**Fix:** used `herdr agent list` to find the focused pane with the exact Login Investigator
+working directory and conversation title, then used its explicit pane ID for the display test.
+Only read-only inspection was performed. No other pane was prompted, answered, moved or closed.
+The underlying context issue is deferred separately from B-081.
+**Lesson:** verify project and live conversation before trusting inherited multiplexer IDs.
+**Evidence:** `pane current` and `agent list` disagreed on the relevant pane; the explicitly
+selected Login Investigator pane contained the live diagnostic question and received the reply.

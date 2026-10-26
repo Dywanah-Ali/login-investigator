@@ -79,6 +79,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-050 | Harden Q21's three-successes check, which can pass a wrong answer | Open, parked until the author reopens it | Medium | Knowledge-base ticket 43 spec review |
 | AUD-051 | Teach the `RECOMMENDS` pattern imperative advice such as "please follow" | Open, parked until the author reopens it | Low | B-077; T43 Port eval Q19 run 3 |
 | AUD-052 | Stop the agent flagging benign twin B2 (oliver.hayes) as possibly compromised | Open, for phase 1 (clearing documents, investigation tool) | Medium | Knowledge-base ticket 43, ruling 9 spec review |
+| AUD-053 | Codex terminal question discoverability | Closed: live queued-question test opened and answered by the author | Low | B-081; author confirmation, 26 October 2026 |
+| AUD-054 | Herdr inherited pane context can identify another project | Open workflow concern, deferred; explicit pane targeting used | Medium | B-082; 26 October 2026 read-only diagnostics |
 
 ### AUD-001: Rule filter
 
@@ -781,6 +783,23 @@ knowledge-base spec requires that benign twins never slip; the Port eval has no 
 clearing document and the investigation tool's clearing section (phase 0 corpus, phase 1 tool)
 are the planned cure. Registration is not approval. Closure evidence: a knowledge-base eval
 question on B2 passing with the twin cleared.
+
+### AUD-053: Codex questions appear in a collapsed queue
+
+The author reported invisible pop-ups during T14 and earlier sessions. The reproduced question
+was present in the Login Investigator terminal as `? 1 question`, with `⇧← to answer`.
+Shift + Left Arrow opened it, and the author answered through the tool. Closed on that live
+confirmation. Future questions should be announced in normal commentary with the shortcut;
+plain chat remains the fallback. No global setting change was needed. See B-081.
+
+### AUD-054: Inherited Herdr pane identity is inconsistent
+
+During the same investigation, `--current` pointed to another project's pane. Discovery by
+working directory, live title and focus found the correct Login Investigator pane; explicit
+targeting then exposed the diagnostic question. Root cause remains unknown. Deferred rather
+than changing the multiplexer or another project's process. Until investigated, verify the live
+project and use an explicit pane ID. Closure needs an explanation and a repeatable check that
+this session's inherited caller identity resolves to its actual pane. See B-082.
 
 ## Longer-term capabilities already named in the spec
 
