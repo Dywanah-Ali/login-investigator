@@ -134,5 +134,6 @@ def write_attack_corpus(bundle: dict[str, Any], licence: bytes, dataset: Path) -
     folder = dataset / "corpus" / "attack"
     folder.mkdir(parents=True, exist_ok=True)
     for identifier, page in pages.items():
-        (folder / f"{identifier}.md").write_text(page, encoding="utf-8")
+        clean_page = "\n".join(line.rstrip() for line in page.splitlines()) + "\n"
+        (folder / f"{identifier}.md").write_text(clean_page, encoding="utf-8")
     (folder / "LICENSE.txt").write_bytes(licence)

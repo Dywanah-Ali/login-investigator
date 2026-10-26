@@ -1417,3 +1417,26 @@ the converter and proves it rejects the source without changing existing files.
 **Evidence:** `backend/tests/test_attack_corpus.py`, missing-source corruption case; initial
 run 3 passed/4 failed, corrected run 7 passed. The other failures were the intended red checks
 for source validation, implemented afterwards.
+
+### B-080 · 2026-10-26 · Knowledge-base T14 · Upstream spaces carried into generated Markdown
+
+**Symptom:** `git diff --check` reported trailing spaces in seven lines of the generated pages.
+**Cause:** the converter preserved whitespace from MITRE's source descriptions.
+**Fix:** remove trailing whitespace from generated Markdown lines. The source fixture and
+MITRE licence stay unchanged; page content and paragraph boundaries are preserved.
+**Lesson:** normalise presentation whitespace at the generated-file boundary.
+**Evidence:** converter file-boundary tests and regenerated corpus checked with
+`git diff --check`.
+
+### B-076 recurrence · 2026-10-26 · Knowledge-base T14 safety net
+
+**Symptom:** Q02 run 3 again reports S6's `45.148.10.80` as having zero successful sign-ins
+and omits Amelia's three successes. Q02 passes 2/3; Q04 passes 3/3. Overall gates still pass
+at 62/63 and 15/15 security.
+**Cause:** not newly established. The agent and its fingerprint (`b70d0745`) are unchanged.
+The answer's `search_logins` call covered only the failure window, ending at 02:06:20 UTC;
+the recorded detection-view success sentence was therefore not reflected in its conclusion.
+That narrow search is observable; why the model disregarded the supplied fact is not proven.
+**Fix:** none in T14. AUD-047 reopened; no prompt, grader or tool change, and no cleaner-score rerun.
+**Lesson:** a passing sample of model answers does not prove a fact will always be preserved.
+**Evidence:** `backend/evals/results/2026-10-26-202907-b70d0745.json`, Q02 run 3.

@@ -21,12 +21,13 @@ MITRE's licence beside them. The knowledge-base build (ticket 17) can start from
 
 ## Acceptance criteria
 
-- [ ] The script fetches the STIX bundle at the pinned version and assembles each page from its
+- [x] The script fetches the STIX bundle at the pinned version and assembles each page from its
       linked objects.
 - [ ] Each page is Markdown with the T04 d12 front matter, including the pinned version.
-- [ ] MITRE's licence sits beside the pages; the dataset README names the ATT&CK version.
-- [ ] A second run writes identical files.
-- [ ] Only the script reaches the network; its tests run on a small saved sample of the bundle.
+      All fields present; external-owner exception awaiting the author's decision.
+- [x] MITRE's licence sits beside the pages; the dataset README names the ATT&CK version.
+- [x] A second run writes identical files.
+- [x] Only the script reaches the network; its tests run on a small saved sample of the bundle.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
@@ -47,3 +48,11 @@ MITRE's licence beside them. The knowledge-base build (ticket 17) can start from
   the release, and external provenance is `owner: mitre`, `department: external`, rather
   than attributing MITRE text to a synthetic employee. Detection follows strategy-to-analytic
   links. Mitigation pages describe only their links to the nine selected techniques.
+- 26 October 2026, review and verification: [two-axis review](../reviews/14-code-review-2026-10-26.md).
+  Standards zero findings; Spec one medium finding on the external-owner convention.
+  Proposed exception awaiting the author's approval. Backend 521 passed, frontend 149 passed,
+  clean backend/frontend types, 11 focused converter/core tests after whitespace cleanup.
+  Port API eval `2026-10-26-202907-b70d0745.json`: 62/63 overall, 15/15 security;
+  Q02 2/3 and Q04 3/3. Q02 run 3 repeats B-076; AUD-047 reopened outside this ticket.
+  No agent, tool or grader changed and no cleaner-score rerun. Ticket stays claimed until
+  the external-owner decision is recorded and the review finding is settled.

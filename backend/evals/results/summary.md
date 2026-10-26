@@ -32,3 +32,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-26 18:16 | b70d0745 | 1a24a5c | 21 x 3 | 98% | 100% | yes | api: T43 ruling 9: code-built success sentence |
 | 2026-10-26 18:16 | b70d0745 | 1a24a5c | 21 x 3 | 100% | 100% | yes | api: T43 grader fix: final run, Q04 signed-into flag |
 | 2026-10-26 17:59 | 6900ff93 | cf9c8d9 | 21 x 3 | 94% | 100% | yes | api: T43 grader fix check: second run unchanged |
+| 2026-10-26 20:26 | b70d0745 | a393d7d+changes | 21 x 3 | 98% | 100% | yes | api: knowledge-base T14 pinned ATT&CK corpus safety net |

@@ -73,7 +73,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-044 | Sweep test databases left behind by a test run that was killed before its teardown | Open, parked; trigger to reopen: a leftover `li_test_` database is seen | Low | Knowledge-base ticket 09, spec review |
 | AUD-045 | Preserve the attack type in a narrow spraying investigation | Open, deferred outside T10 | High | B-073; T10 Port eval Q08 run 2 |
 | AUD-046 | Require reputation lookups in a broad compromise answer | Closed: knowledge-base T43, author accepted 26 October 2026 | Medium | B-074; T11 Port eval Q04 run 3 |
-| AUD-047 | Preserve each spray source's success outcome and total in broad answers | Closed: knowledge-base T43, author accepted 26 October 2026 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
+| AUD-047 | Preserve each spray source's success outcome and total in broad answers | Reopened: T14 safety-net recurrence; behaviour fix outside T14 | High | B-076; T12 Port eval Q02 runs 2 and 3; T14 Q02 run 3 |
 | AUD-048 | Decide whether the finding ID reaches the agent's detection tool when ticket 32 adds it to the Alerts reply | Open, for ticket 32's builder | Medium | Knowledge-base T13 spec review |
 | AUD-049 | Stop sending finding counts the Alerts screen never shows | Open, parked until the author reopens it | Low | Knowledge-base ticket 43 scoping |
 | AUD-050 | Harden Q21's three-successes check, which can pass a wrong answer | Open, parked until the author reopens it | Medium | Knowledge-base ticket 43 spec review |
@@ -724,6 +724,15 @@ open; see the B-076 entry for T43. Closed on 26 October 2026 by T43's third paid
 (`2026-10-26-181909-b70d0745`): Q02 3/3, each answer preserving S2's no-success and S6's three
 successes to amelia.ward, after the agent's view gained a code-built success sentence (ruling 9).
 
+Reopened on 26 October 2026: T14's required safety-net eval
+(`2026-10-26-202907-b70d0745.json`) passes 62/63 overall and 15/15 security, but Q02 run 3
+again says S6 had zero successes and omits Amelia's three successful sign-ins. Q02 is 2/3;
+Q04 is 3/3. The agent fingerprint remains `b70d0745`; T14 only adds reference files and a
+standalone converter/fetch script. The failed answer searched only S6's failure window
+(02:00:00–02:06:20 UTC). This is an observed evidence-window limit, not a proven root cause
+for disregarding the detection result. Preserve the T43 closure evidence above and defer any
+behaviour change outside T14. No unchanged-code rerun was made to obtain a cleaner score.
+
 ### AUD-048: The finding ID and the agent's detection tool
 
 `Finding.to_dict()` is both the Alerts reply and the output of the agent's
@@ -818,6 +827,7 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 
 | Date | Change | Evidence |
 | --- | --- | --- |
+| 2026-10-26 | Reopened AUD-047 after T14's safety-net eval: Q02 run 3 again reports no S6 successes; Q02 2/3, Q04 3/3, overall 62/63 and security 15/15. Agent unchanged; behaviour work stays outside T14. | B-076 recurrence; `2026-10-26-202907-b70d0745.json` |
 | 2026-10-18 | Created maintained register AUD-001 to AUD-019. Carried forward discussed enhancements, unresolved concerns and existing future seams. Recorded current report acceptance with scope enhancement deferred. | P-056; linked tickets and bug log |
 
 | 2026-10-18 | Recorded PDF acceptance; saved-Investigation and other unclosed scenario checks remain pending. | P-057 |
