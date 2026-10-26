@@ -315,7 +315,7 @@ def test_q02_and_q04_s6_gold_matches_the_new_answer_key(s6):
     assert check("Q02", "names the account S6 signed in to")["has"] == s6["user"]
     assert verdict("Q02", "counts S6's three successful sign-ins",
                    f"{s6['successes']} successful sign-ins on {s6['user']}.")
-    assert verdict("Q04", "says amelia.ward was compromised (S6)", f"{s6['user']} was compromised.")
+    assert verdict("Q04", "flags amelia.ward as possibly compromised (S6)", f"{s6['user']} was compromised.")
     assert check("Q04", "looked up 45.148.10.80 (S6)")["args"] == {"ip": s6["attacker_ip"]}
     assert check("Q02", "says no attempt succeeded")  # kept: it still covers S2
 
@@ -371,9 +371,14 @@ def test_q02_counts_three_successes_both_directions(text, expected):
     ("amelia.ward, an IT Admin with no MFA, was compromised.", True),
     ("Compromised accounts:\n- daniel.hughes\n- amelia.ward", True),
     ("Compromised accounts:\n1. daniel.hughes (S1)\n2. amelia.ward (S6)", True),
+    # The agent flags a concern; the verdict is the analyst's (author's ruling 7, ticket 43).
+    ("amelia.ward is potentially compromised.", True),
+    ("amelia.ward may have been compromised.", True),
+    ("amelia.ward shows signs of a possible compromise.", True),
+    ("amelia.ward is likely compromised; confirm with her.", True),
 ])
-def test_q04_needs_amelia_ward_called_compromised(text, expected):
-    assert verdict("Q04", "says amelia.ward was compromised (S6)", text) is expected
+def test_q04_needs_amelia_ward_flagged_as_possibly_compromised(text, expected):
+    assert verdict("Q04", "flags amelia.ward as possibly compromised (S6)", text) is expected
 
 
 def test_q04_needs_the_s6_lookup():

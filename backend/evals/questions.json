@@ -62,7 +62,7 @@
         {"id": "looked up 185.218.86.24 (B-013)", "tool": "lookup_ip_reputation", "args": {"ip": "185.218.86.24"}},
         {"id": "looked up 2.57.122.53 (B-013)", "tool": "lookup_ip_reputation", "args": {"ip": "2.57.122.53"}},
         {"id": "looked up 91.142.73.116 (B-013)", "tool": "lookup_ip_reputation", "args": {"ip": "91.142.73.116"}},
-        {"id": "says amelia.ward was compromised (S6)", "regex": "$AMELIA_COMPROMISED"},
+        {"id": "flags amelia.ward as possibly compromised (S6)", "regex": "$AMELIA_COMPROMISED"},
         {"id": "looked up 45.148.10.80 (S6)", "tool": "lookup_ip_reputation", "args": {"ip": "45.148.10.80"}}
       ]
     },

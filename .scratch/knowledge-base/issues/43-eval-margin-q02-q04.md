@@ -203,3 +203,11 @@ check patterns for Q02 and Q04.
   clean. Free re-grades of T13's saved answers (`2026-10-26-171504` before review,
   `2026-10-26-172237` after): 57/63 and 15/15, Q02 and Q04 0/3 on exactly the new and old
   checks, no other question affected.
+- 26 October 2026, ruling 7 (author): an agent should not pronounce an account compromised on its
+  own; it raises the concern with its evidence and the verdict stays the analyst's, as in the S4
+  ruling. The Q04 check already passed hedged wording ("potentially compromised", "may have been
+  compromised", "likely compromised; confirm with her") and failed only when no concern was
+  raised; its name said otherwise. Renamed "flags amelia.ward as possibly compromised (S6)", with
+  four hedged phrasings added to its tests (69 grader tests pass). Failing a definite "was
+  compromised" was not taken: it needs a prompt change that touches every question, so it would
+  be its own ticket. This ruling amends ruling 5's "names amelia.ward" for Q04.
