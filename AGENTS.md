@@ -91,6 +91,8 @@ The bootcamp's weekly project briefs, from week 2 onward, are **inspiration, not
 - **What already works keeps working.** The backend tests, the frontend tests and the eval set are
   the safety net under every initiative: they must pass after every change, and a change to the
   agent's behaviour is accepted only on an eval run against the agreed thresholds.
+- **Core principles live in `PRINCIPLES.md`** at the repo root. Read it before designing or
+  changing agent behaviour, tools or eval checks. Principles change only by the author's ruling.
 
 ## Technical constraints
 
