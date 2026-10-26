@@ -343,3 +343,11 @@ Left open, registered: AUD-049 (counts the Alerts screen never shows), AUD-050 (
 pattern), AUD-051 (`RECOMMENDS` misses imperatives, B-077), AUD-052 (benign twin oliver.hayes now
 flagged until his clearing document exists). Prose-pattern grading is near its limit; the
 knowledge-base eval's planned judge and structured answers are the longer-term answer.
+
+The lesson became P-01 of `PRINCIPLES.md` (with P-02 and P-03), by the author's approval the same
+day.
+
+### Author acceptance
+
+26 October 2026: "T43 accepted". T43 remains resolved. AUD-046 and AUD-047 are closed;
+AUD-049 to AUD-052 keep their status, and acceptance does not claim those were fixed.

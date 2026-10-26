@@ -255,8 +255,9 @@ and is resolved (see Build tickets resolved). The frontier is again tickets 14 a
   states a successful sign-in in a code-built summary sentence; Q02 and Q04 gain S6 checks. Nine
   author rulings, three paid runs on three versions of the fix. Evidence: 514 backend and 149
   frontend tests, clean types, three two-axis reviews triaged; Port eval 62/63 and 15/15 with
-  Q02 3/3 and Q04 2/3, five spare runs. AUD-046 and AUD-047 closed pending acceptance; AUD-049
-  to AUD-052 registered. Awaiting the author's acceptance. All work committed locally.
+  Q02 3/3 and Q04 2/3, five spare runs. AUD-046 and AUD-047 closed; AUD-049 to AUD-052
+  registered. Its lesson became P-01 of `PRINCIPLES.md`. Author accepted T43 on 26 October
+  2026. All work committed locally.
 
 ## Not yet specified
 

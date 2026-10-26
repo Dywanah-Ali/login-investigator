@@ -72,8 +72,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-043 | Show the faithfulness judge's reason on the screen | Open, parked; trigger to reopen: a measured agreement between the judge and the author's labels | Low | Knowledge-base ticket 07, decision 8 |
 | AUD-044 | Sweep test databases left behind by a test run that was killed before its teardown | Open, parked; trigger to reopen: a leftover `li_test_` database is seen | Low | Knowledge-base ticket 09, spec review |
 | AUD-045 | Preserve the attack type in a narrow spraying investigation | Open, deferred outside T10 | High | B-073; T10 Port eval Q08 run 2 |
-| AUD-046 | Require reputation lookups in a broad compromise answer | Closed by knowledge-base T43, pending the author's acceptance of T43 | Medium | B-074; T11 Port eval Q04 run 3 |
-| AUD-047 | Preserve each spray source's success outcome and total in broad answers | Closed by knowledge-base T43, pending the author's acceptance of T43 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
+| AUD-046 | Require reputation lookups in a broad compromise answer | Closed: knowledge-base T43, author accepted 26 October 2026 | Medium | B-074; T11 Port eval Q04 run 3 |
+| AUD-047 | Preserve each spray source's success outcome and total in broad answers | Closed: knowledge-base T43, author accepted 26 October 2026 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
 | AUD-048 | Decide whether the finding ID reaches the agent's detection tool when ticket 32 adds it to the Alerts reply | Open, for ticket 32's builder | Medium | Knowledge-base T13 spec review |
 | AUD-049 | Stop sending finding counts the Alerts screen never shows | Open, parked until the author reopens it | Low | Knowledge-base ticket 43 scoping |
 | AUD-050 | Harden Q21's three-successes check, which can pass a wrong answer | Open, parked until the author reopens it | Medium | Knowledge-base ticket 43 spec review |
