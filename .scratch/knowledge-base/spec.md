@@ -519,8 +519,10 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 - **Seven typed tools in one tuple** (T05 d1): the Port's three unchanged except one added field
   (ticket 43: each finding in `find_suspicious_activity`'s output carries what its address did
-  in the tool call's window and drops the rule's own success and failure counts, for the agent
-  only; the core finding and the Alerts reply are unchanged), plus
+  in the tool call's window and drops the rule's own success and failure counts, and a
+  brute-force or spraying finding whose address signed in gets one code-built sentence on its
+  summary saying so, for the agent only; the core finding and the Alerts reply are unchanged),
+  plus
   `investigate_alert(finding_id)`, `lookup_account(account_id)`,
   `find_peers(account_id | device_id | network)` and
   `search_corpus(question, doc_type, technique_id)`. No router tool, no sub-agent. All hand-written,
@@ -875,3 +877,4 @@ them.
 | 2026-10-26 | Author's ruling at ticket 43: the frozen Port question file (T06 d8) changes in place for Q02 and Q04 only. Each gains checks for S6 (Q02: names `45.148.10.80` and amelia.ward, states three successes; Q04: names amelia.ward, looks up `45.148.10.80`); no check is removed. T04 d17's exception is read as covering expected facts, not only counts | S6 made Q02's "no attempt succeeded" half false and left Q04 blind to the one account the grown world compromises: in T13 no Q04 answer named amelia.ward, and the eval could not see it. Duplicate S6 questions would leave the stale check in place |
 | 2026-10-26 | Author's ruling at ticket 43, amending the row above for Q04: the check is "flags amelia.ward as possibly compromised (S6)". It passes hedged wording and fails an answer that never raises compromise about her | An agent raises a concern with its evidence; the verdict is the analyst's (as for S4). Merely naming her let T13 run 1 pass while listing her only as a new-country sign-in |
 | 2026-10-26 | Author's ruling 8 at ticket 43, amending ruling 4's row: the agent's view of each finding also drops the rule's own `success_count` and `failure_count` (`event_count` stays); the system prompt gains one line to flag an account a spraying or brute-force address signed in to as possibly compromised; Q02's account check must tie amelia.ward to a success | T43's eval (`2026-10-26-173622-f853f368`): with the true count beside the finding's `success_count: 0`, the model repeated the zero and twice wrote "all failures". Q02's account check passed on the list of targeted accounts |
+| 2026-10-26 | Author's ruling 9 at ticket 43: in the agent's view, a brute-force or spraying finding whose address signed in during the window gets one sentence on its summary, built in code from `address_activity`, naming the success count and accounts. `Finding.summary` and the Alerts reply stay unchanged. One paid run; if Q02 still misses 2/3, T43 closes with the Q04 fix and AUD-047 waits for phase 1's investigation tool | T43's second run (`2026-10-26-180147-6900ff93`): the code-enforced lookups worked at once, while prose instructions left Q02 at 0/3, once with a wrong count of 1. The model copies the summary sentence, so the true sentence is built in code |

@@ -18,7 +18,14 @@ from langchain.tools import tool
 
 from login_investigator.loader import TIMESTAMP_FORMAT, load_log, parse_window
 from login_investigator.reputation import SAVED_DIR, ReputationError, lookup
-from login_investigator.rules import RULE_GUIDE, Finding, detect_all, in_window
+from login_investigator.rules import (
+    BRUTE_FORCE,
+    PASSWORD_SPRAYING,
+    RULE_GUIDE,
+    Finding,
+    detect_all,
+    in_window,
+)
 from login_investigator.search import DEFAULT_SAMPLE_ROWS, address_activity
 from login_investigator.search import search_logins as search_core
 
@@ -124,6 +131,28 @@ def _given(value):
     return value
 
 
+def _agent_view(finding: Finding, log: pd.DataFrame, start, end) -> dict:
+    """What the agent sees of one finding; the Alerts reply is `to_dict()` alone (ticket 43).
+
+    The rule's own success and failure counts are left out, since the model repeated a spray's 0
+    successes over the address's real ones; `address_activity` is the agent's only outcome count.
+    The model copies the summary, so an attack finding whose address got in says so there, in a
+    sentence built here from `address_activity` (ruling 9).
+    """
+    activity = [address_activity(log, ip, start, end) for ip in finding.ips]
+    view = {key: value for key, value in finding.to_dict().items()
+            if key not in HIDDEN_FROM_AGENT}
+    got_in = [a for a in activity if a["successes"]]
+    if finding.rule in (BRUTE_FORCE, PASSWORD_SPRAYING) and got_in:
+        view["summary"] = view["summary"].rstrip(".") + "." + "".join(
+            f" {a['ip']} also signed in successfully {a['successes']} "
+            f"{'time' if a['successes'] == 1 else 'times'}, to "
+            f"{', '.join(a['signed_in_accounts'])}."
+            for a in got_in)
+    view["address_activity"] = activity
+    return view
+
+
 @tool
 def find_suspicious_activity(start: str | None = None, end: str | None = None) -> str:
     """Run the four detection rules and return the findings that overlap a time window.
@@ -134,8 +163,8 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
     there are many). A finding's event count covers only the rows its rule matched: a password
     spraying finding counts failures only. Each finding's "address_activity" says what each of
     its IPs did in the window: successes, failures and the accounts it signed in to. Read it to
-    tell whether an address got in. Start here for broad questions such as "anything
-    suspicious?".
+    tell whether an address got in; a brute force or spraying finding whose address got in also
+    says so in its summary. Start here for broad questions such as "anything suspicious?".
 
     Args:
         start: Start of the window, included. An explicit ISO 8601 UTC time such as
@@ -149,13 +178,7 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
         log = _log()
     except ValueError as error:
         return _error(str(error))
-    # For the agent only: the Alerts reply is `to_dict()` alone (ticket 43). The rule's own
-    # success and failure counts are left out, since the model repeated a spray's 0 successes
-    # over the address's real ones; `address_activity` is the agent's only outcome count.
-    shown = [{**{key: value for key, value in f.to_dict().items()
-                 if key not in HIDDEN_FROM_AGENT},
-              "address_activity": [address_activity(log, ip, start, end) for ip in f.ips]}
-             for f in findings]
+    shown = [_agent_view(f, log, start, end) for f in findings]
     return _ok(
         "detection rules",
         {

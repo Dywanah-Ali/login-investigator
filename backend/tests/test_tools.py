@@ -87,12 +87,34 @@ def test_each_finding_shows_what_its_address_did_overall(s, s6):
         "signed_in_accounts": []}]
 
 
+def test_an_attack_finding_whose_address_got_in_says_so_in_its_summary(s, s6):
+    # T43's second run: the model copies the summary, so the true sentence is built in code
+    # (ruling 9). Only the agent sees it; the core summary and the Alerts reply are unchanged.
+    findings = run(find_suspicious_activity)["data"]["findings"]
+    assert _finding(findings, "password_spraying", s6["attacker_ip"])["summary"].endswith(
+        f" {s6['attacker_ip']} also signed in successfully {s6['successes']} times, to "
+        f"{s6['user']}.")
+    assert "signed in successfully" not in _finding(
+        findings, "password_spraying", s["S2"]["attacker_ip"])["summary"]
+    last_night = run(find_suspicious_activity, **LAST_NIGHT)["data"]["findings"]
+    assert _finding(last_night, "brute_force", s["S1"]["attacker_ip"])["summary"].endswith(
+        f" {s['S1']['attacker_ip']} also signed in successfully 1 time, to "
+        f"{s['S1']['target_user']}.")
+
+
+def test_a_new_country_finding_keeps_its_summary(s6):
+    findings = run(find_suspicious_activity)["data"]["findings"]
+    assert "also signed in" not in _finding(findings, "new_country", s6["attacker_ip"])["summary"]
+
+
 def test_address_activity_stays_inside_the_window_asked_about(s6):
     window = {"start": s6["first_seen"], "end": s6["success_times"][0]}
     findings = run(find_suspicious_activity, **window)["data"]["findings"]
-    assert _finding(findings, "password_spraying", s6["attacker_ip"])["address_activity"] == [{
+    spray = _finding(findings, "password_spraying", s6["attacker_ip"])
+    assert spray["address_activity"] == [{
         "ip": s6["attacker_ip"], "successes": 0, "failures": s6["failures"],
         "signed_in_accounts": []}]
+    assert "signed in successfully" not in spray["summary"]
 
 
 def test_empty_strings_mean_no_filter():

@@ -1,7 +1,7 @@
 # 43: Restore the Port eval's margin: Q02 and Q04 in the grown world
 
 Type: grilling, then build
-Status: needs-info
+Status: ready-for-agent
 Blocked by: none
 Phase: 0
 
@@ -276,3 +276,18 @@ check patterns for Q02 and Q04.
     are real fails; the grader was checked against each answer.
   Logged as B-074 fixed and a B-076 recurrence. Status set to needs-info for the author's ruling
   on what comes next.
+- 26 October 2026, ruling 9 (author): one more attempt, then close. In the agent's view only, a
+  brute-force or spraying finding whose address signed in during the window gets one sentence
+  added to its summary, built in code from `address_activity`: that the address also signed in
+  successfully, how many times and to which accounts. The core `Finding.summary`, `to_dict()` and
+  the Alerts reply stay unchanged. One paid run follows. If Q02 still misses 2/3, the ticket
+  closes with the Q04 fix and the margin it gives, ruling 6's bar is amended for Q02 by that
+  closure, and AUD-047 stays open for phase 1's investigation tool. Closing now without the
+  attempt was not taken; neither was an open-ended series of attempts. Status back to
+  ready-for-agent.
+- 26 October 2026, ruling 9 build (Claude), test first: `_agent_view` in `tools.py` now builds
+  the agent's view of a finding in one place. A brute-force or spraying finding whose address got
+  in ends its summary with "<ip> also signed in successfully <n> time(s), to <accounts>." (S6: 3
+  times, to amelia.ward; S1 last night: 1 time, to daniel.hughes); S2, new-country findings and a
+  window before S6's first success keep the plain summary. The tool description says so in one
+  clause. Evidence: 512 backend and 149 frontend tests, pyright clean.
