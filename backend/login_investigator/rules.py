@@ -6,6 +6,8 @@ rule needs each user's history, so cutting the log first would make every user l
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass
 from datetime import timedelta
 
@@ -111,6 +113,23 @@ class Finding:
     # Index labels of every log row the finding covers, for matching against filters. Not part of
     # to_dict: the agent sees the counts and the evidence, not row numbers.
     row_ids: tuple = ()
+
+    @property
+    def finding_id(self) -> str:
+        """`F-<rule slug>-<hash8>`, made from what the finding is, never from where it sits in a
+        list, so the same log always gives the same IDs (T13). The hashed fields and their order
+        are fixed in ticket 13's Answer; the eval's answer key depends on them. Not in to_dict yet:
+        the Alerts reply gains it in ticket 32."""
+        defining = [
+            self.rule,
+            list(self.users),
+            list(self.ips),
+            self.first_seen.strftime(TIMESTAMP_FORMAT),
+            self.last_seen.strftime(TIMESTAMP_FORMAT),
+        ]
+        text = json.dumps(defining, ensure_ascii=False, separators=(",", ":"))
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        return f"F-{self.rule.replace('_', '-')}-{digest[:8]}"
 
     def to_dict(self) -> dict:
         """Plain data, ready for JSON (the agent tool) or a table (the Alerts screen)."""

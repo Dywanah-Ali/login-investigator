@@ -5,6 +5,10 @@ Expected values come from data/datasets/default/ground_truth.json. Threshold edg
 
 import ipaddress
 import json
+import os
+import subprocess
+import sys
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -21,6 +25,9 @@ from login_investigator.rules import (
     SUCCESS_AFTER_FAILURES,
     SUCCESS_AFTER_MIN_FAILURES,
 )
+
+
+BACKEND_DIR = Path(__file__).resolve().parents[1]
 
 
 def ts(text):
@@ -307,6 +314,55 @@ def test_findings_matching_the_filters(log, findings, s):
     assert by_country == []  # decoy users are all in the US, and none is flagged
     successes = rules.findings_matching(findings, filter_logins(log, outcome="success"))
     assert {f.rule for f in successes} == {SUCCESS_AFTER_FAILURES, NEW_COUNTRY}
+
+
+# --- Finding IDs are made from the finding's content, never from its position (T13) ---
+
+RULE_SLUGS = {
+    BRUTE_FORCE: "brute-force",
+    PASSWORD_SPRAYING: "password-spraying",
+    SUCCESS_AFTER_FAILURES: "success-after-failures",
+    NEW_COUNTRY: "new-country",
+}
+
+
+def test_every_finding_has_an_id_naming_its_rule(findings):
+    for f in findings:
+        prefix, hash8 = f.finding_id.rsplit("-", 1)
+        assert prefix == f"F-{RULE_SLUGS[f.rule]}"
+        assert len(hash8) == 8 and set(hash8) <= set("0123456789abcdef")
+
+
+def test_the_id_follows_the_recipe_fixed_in_ticket_13(make_log):
+    # The expected hash is SHA-256 of the recipe's text, computed outside Python with
+    # `printf '%s' '["brute_force",["u1"],["1.2.3.4"],"2026-10-01T00:00:00Z","2026-10-01T00:19:00Z"]'
+    # | shasum -a 256`. Changing the recipe changes every ID the answer key points at.
+    [f] = rules.brute_force(make_log([(i, "u1", "1.2.3.4", "failure") for i in range(20)]))
+    assert f.finding_id == "F-brute-force-abd70cbf"
+
+
+def test_ids_do_not_depend_on_the_order_of_the_rows(log, findings):
+    shuffled = rules.detect_all(log.sample(frac=1, random_state=7))
+    assert sorted(f.finding_id for f in shuffled) == sorted(f.finding_id for f in findings)
+
+
+def test_the_same_log_gives_the_same_ids_in_another_process(findings):
+    # Python salts its own string hashing per process; a different seed in each child proves the
+    # IDs do not lean on it.
+    script = ("from login_investigator.loader import load_log\n"
+              "from login_investigator.rules import detect_all\n"
+              "print('\\n'.join(f.finding_id for f in detect_all(load_log())))")
+    expected = [f.finding_id for f in findings]
+    for seed in ("1", "2"):
+        child = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True,
+                               cwd=BACKEND_DIR, env={**os.environ, "PYTHONHASHSEED": seed},
+                               check=True)
+        assert child.stdout.split() == expected
+
+
+def test_no_two_findings_on_the_default_dataset_share_an_id(findings):
+    ids = [f.finding_id for f in findings]
+    assert len(set(ids)) == len(ids) > 1
 
 
 def test_rule_guide_covers_every_rule_and_quotes_the_real_thresholds():
