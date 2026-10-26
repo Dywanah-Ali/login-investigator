@@ -403,6 +403,10 @@ def test_q02_ties_amelia_ward_to_the_successes(text, expected):
     ("amelia.ward, an IT Admin with no MFA, was compromised.", True),
     ("Compromised accounts:\n- daniel.hughes\n- amelia.ward", True),
     ("Compromised accounts:\n1. daniel.hughes (S1)\n2. amelia.ward (S6)", True),
+    # Q04 run 2, prompt version b70d0745 (T43 ruling 9): a right flag the first pattern missed.
+    ("   - Note: The account amelia.ward was successfully signed into after multiple failed "
+     "attempts, indicating a possible compromise.", True),
+    ("45.148.10.80 signed into amelia.ward three times.", True),
     # The agent flags a concern; the verdict is the analyst's (author's ruling 7, ticket 43).
     ("amelia.ward is potentially compromised.", True),
     ("amelia.ward may have been compromised.", True),

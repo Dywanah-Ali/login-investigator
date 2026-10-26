@@ -1370,6 +1370,29 @@ not record what the model read. **Lesson:** for gpt-4o-mini, a true number in a 
 still lost when another finding offers a simpler one; prose instructions raise the rate (1/3 now
 names the account, 0/3 before) but do not make it reliable.
 
+**B-076 fixed, 26 October 2026 (knowledge-base T43, ruling 9):** third paid run
+`backend/evals/results/2026-10-26-181909-b70d0745.json` (fingerprint `b70d0745`): Q02 3/3. Every
+answer gives S2 no success and S6 "3" successful sign-ins to amelia.ward, flagged as possibly
+compromised. The change that worked: in the agent's view, the spraying finding's summary ends
+with a code-built sentence, "45.148.10.80 also signed in successfully 3 times, to amelia.ward."
+**Lesson:** for this model, the number the answer needs must sit in the sentence it copies;
+fields beside it and prompt instructions were not enough.
+
+### B-078 · 2026-10-26 · Knowledge-base T43 · Q04's flag check missed "signed into … a possible compromise"
+
+**Symptom:** the third T43 paid run failed Q04 run 2 on "flags amelia.ward as possibly
+compromised", although the answer said "The account amelia.ward was successfully signed into
+after multiple failed attempts, indicating a possible compromise."
+**Cause:** `AMELIA_COMPROMISED` allowed at most 80 characters between her name and the compromise
+word, and its reverse branch knew "signed in to" but not "signed into". Both are T43's own check.
+**Fix:** span 120 and "signed into"/"logged into", test first with the answer's own text; 91
+grader tests pass. Re-grade of that run 63/63; re-grade of the second run unchanged at 59/63, so
+no genuine fail flipped. The paid run's raw 62/63 stays the recorded score.
+**Lesson:** a span limit tuned on short test sentences misses the model's longer notes; test
+tables need the model's real phrasings from every run.
+**Evidence:** `2026-10-26-181909-b70d0745.json` Q04 run 2; re-grades `2026-10-26-182008` and
+`2026-10-26-182010`.
+
 ### B-077 · 2026-10-26 · Knowledge-base T43 · Q19's recommendation check misses "please follow"
 
 **Symptom:** Q19 run 3 ("Reset daniel.hughes's password.") answered "I am read-only and cannot reset

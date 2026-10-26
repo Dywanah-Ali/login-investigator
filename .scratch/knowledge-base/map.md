@@ -195,10 +195,8 @@ line holds its edges. **The frontier is tickets 14 and 15**, which have no unres
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
-(Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling.
-All six rulings were made the same day and it is ready to build: the code hook adds the missing
-reputation lookups, the detection tool gives the agent each address's real outcomes, and Q02 and
-Q04 gain checks for S6 (spec decisions log, 26 October 2026).
+(Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
+and is resolved (see Build tickets resolved). The frontier is again tickets 14 and 15.
 
 ### Build tickets resolved
 
@@ -250,6 +248,15 @@ Q04 gain checks for S6 (spec decisions log, 26 October 2026).
   57/63 and 15/15 meets its gates with no spare run, as Q02 (B-076/AUD-047) and Q04
   (B-074/AUD-046) now fail all three runs on the unchanged agent. AUD-048 is new for ticket 32.
   Author accepted T13 on 26 October 2026. All work committed locally.
+
+- [43 Restore the Port eval's margin: Q02 and Q04](issues/43-eval-margin-q02-q04.md)
+  (26 October 2026): the detection hook adds missing reputation lookups in code; the agent's view
+  of a finding carries each address's real outcomes, drops the rule's own outcome counts, and
+  states a successful sign-in in a code-built summary sentence; Q02 and Q04 gain S6 checks. Nine
+  author rulings, three paid runs on three versions of the fix. Evidence: 514 backend and 149
+  frontend tests, clean types, three two-axis reviews triaged; Port eval 62/63 and 15/15 with
+  Q02 3/3 and Q04 2/3, five spare runs. AUD-046 and AUD-047 closed pending acceptance; AUD-049
+  to AUD-052 registered. Awaiting the author's acceptance. All work committed locally.
 
 ## Not yet specified
 

@@ -72,8 +72,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-043 | Show the faithfulness judge's reason on the screen | Open, parked; trigger to reopen: a measured agreement between the judge and the author's labels | Low | Knowledge-base ticket 07, decision 8 |
 | AUD-044 | Sweep test databases left behind by a test run that was killed before its teardown | Open, parked; trigger to reopen: a leftover `li_test_` database is seen | Low | Knowledge-base ticket 09, spec review |
 | AUD-045 | Preserve the attack type in a narrow spraying investigation | Open, deferred outside T10 | High | B-073; T10 Port eval Q08 run 2 |
-| AUD-046 | Require reputation lookups in a broad compromise answer | Open, deferred outside T11 | Medium | B-074; T11 Port eval Q04 run 3 |
-| AUD-047 | Preserve each spray source's success outcome and total in broad answers | Open, deferred outside T12 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
+| AUD-046 | Require reputation lookups in a broad compromise answer | Closed by knowledge-base T43, pending the author's acceptance of T43 | Medium | B-074; T11 Port eval Q04 run 3 |
+| AUD-047 | Preserve each spray source's success outcome and total in broad answers | Closed by knowledge-base T43, pending the author's acceptance of T43 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
 | AUD-048 | Decide whether the finding ID reaches the agent's detection tool when ticket 32 adds it to the Alerts reply | Open, for ticket 32's builder | Medium | Knowledge-base T13 spec review |
 | AUD-049 | Stop sending finding counts the Alerts screen never shows | Open, parked until the author reopens it | Low | Knowledge-base ticket 43 scoping |
 | AUD-050 | Harden Q21's three-successes check, which can pass a wrong answer | Open, parked until the author reopens it | Medium | Knowledge-base ticket 43 spec review |
@@ -699,7 +699,10 @@ runs with no agent change (2026-10-26-131223 artifact). Scoped on 26 October 202
 knowledge-base ticket 43: the code hook enforces searches but not lookups, and Q04's checks never
 ask about S6's compromise of amelia.ward, which no T13 run states. T43's eval
 (2026-10-26-173622-f853f368): all required lookups ran in every Q04 run, but flagging amelia.ward
-passed 1/3, so Q04 is 1/3 and AUD-046 stays open.
+passed 1/3, so Q04 is 1/3 and AUD-046 stays open. Closed on 26 October 2026 by T43's third paid
+run (`2026-10-26-181909-b70d0745`): lookups enforced in code ran in every Q04 run of all three T43
+runs, and Q04 passed 2/3 against its bar (3/3 after the B-078 grader fix), with the Port gates
+met at 62/63 and 15/15.
 
 ### AUD-047: Outcomes lost in a broad answer about two spray sources
 
@@ -717,7 +720,9 @@ knowledge-base ticket 43: the search returned S6's successes but the model kept 
 failure-only count, and Q02's no-success check is stale now that one spray succeeded. T43's eval
 (2026-10-26-173622-f853f368): Q02 still 0/3. With `address_activity` beside the finding's own
 `success_count: 0`, the model repeated the finding and twice wrote "all failures". AUD-047 stays
-open; see the B-076 entry for T43.
+open; see the B-076 entry for T43. Closed on 26 October 2026 by T43's third paid run
+(`2026-10-26-181909-b70d0745`): Q02 3/3, each answer preserving S2's no-success and S6's three
+successes to amelia.ward, after the agent's view gained a code-built success sentence (ruling 9).
 
 ### AUD-048: The finding ID and the agent's detection tool
 
@@ -904,3 +909,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-26 | Knowledge-base T11 resolved: organisation tables and two internal log columns, Port rows byte-identical in their old columns, tools and API unchanged. Port eval meets gates at 53/57 overall and 15/15 security. Recurrences of AUD-030 (Q07) and AUD-045 (Q08 runs 2 and 3); new AUD-046 (Q04 run 3 skipped reputation lookups). | T11 Answer; B-070/B-073/B-074; `2026-10-26-095844-7ff8e5ae.json` |
 | 2026-10-26 | T12 eval meets gates at 58/63 overall and 15/15 security; S6 questions 6/6. Recorded B-074/AUD-046 recurrence in all Q04 runs and new B-076/AUD-047 for broad spraying outcome/count omissions. Existing six frontend lint warnings persist as AUD-009. | T12; `2026-10-26-112540-7ff8e5ae.json` |
 | 2026-10-26 | T13 finding IDs in the core; agent, tools and API unchanged. Port eval meets gates at exactly 57/63 (90%) and 15/15 security. Recurrences of AUD-046 (Q04 0/3) and AUD-047 (Q02 now 0/3), noting the gate's zero margin. Added AUD-048 (finding ID and the detection tool, for ticket 32). | T13; `2026-10-26-131223-7ff8e5ae.json` |
+| 2026-10-26 | T43 restores the Port eval's margin: lookups enforced in the detection hook, the agent's view carries address outcomes with a code-built success sentence, Q02 and Q04 gain S6 checks. Three paid runs; the third meets gates at 62/63 and 15/15 with Q02 3/3 and Q04 2/3. AUD-046 and AUD-047 closed pending the author's acceptance; added AUD-049 to AUD-052; note on AUD-048. | T43; `2026-10-26-181909-b70d0745.json` |

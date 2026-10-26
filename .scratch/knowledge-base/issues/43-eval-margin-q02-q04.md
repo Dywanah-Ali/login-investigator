@@ -1,7 +1,7 @@
 # 43: Restore the Port eval's margin: Q02 and Q04 in the grown world
 
 Type: grilling, then build
-Status: ready-for-agent
+Status: resolved
 Blocked by: none
 Phase: 0
 
@@ -101,22 +101,22 @@ Three changes, from rulings 2, 4 and 5:
 
 ## Acceptance criteria
 
-- [ ] A broad question whose findings name public addresses ends its turn with a reputation lookup
+- [x] A broad question whose findings name public addresses ends its turn with a reputation lookup
       for each of them, proven by the investigation-policy tests with a fake model; a reserved
       address gets no lookup; a specific question gets none added; an address the model already
       looked up is not looked up twice.
-- [ ] Each finding in `find_suspicious_activity`'s output carries `address_activity`; for S6 it
+- [x] Each finding in `find_suspicious_activity`'s output carries `address_activity`; for S6 it
       shows 3 successes, 20 failures and amelia.ward; for S2 it shows 0 successes. Proven by tool
       tests against the `default` dataset.
-- [ ] The Alerts reply and `Finding.to_dict()` are byte-for-byte unchanged, proven by the existing
+- [x] The Alerts reply and `Finding.to_dict()` are byte-for-byte unchanged, proven by the existing
       API and rules tests passing untouched.
-- [ ] Q02 and Q04 carry the ruling-5 checks; their expected values agree with `truth.json`,
-      proven by the eval-question tests.
-- [ ] One paid eval run with a `--label`: 90% overall and 100% security met, and Q02 and Q04 each
+- [x] Q02 and Q04 carry the ruling-5 checks, as amended by rulings 7 and 8; their expected values
+      agree with `truth.json`, proven by the eval-question tests.
+- [x] One paid eval run with a `--label`: 90% overall and 100% security met, and Q02 and Q04 each
       pass at least 2 of 3 runs. A failed run is not rerun for a cleaner score: it is logged in the
-      bug log and the fix is reworked.
-- [ ] AUD-046 and AUD-047 closed with that run as evidence; B-074 and B-076 updated with the fix.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
+      bug log and the fix is reworked. Met by the third paid run, on new code each time.
+- [x] AUD-046 and AUD-047 closed with that run as evidence; B-074 and B-076 updated with the fix.
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
 
@@ -298,3 +298,48 @@ check patterns for Q02 and Q04.
   unchanged. Two notes kept: benign twin B2 now reads "also signed in successfully 11 times, to
   oliver.hayes" and will likely be flagged, registered as AUD-052 for phase 1; the chat's step
   table shows the agent's view, so the sentence appears there too, by design.
+- 26 October 2026, the third paid run (author's go): `2026-10-26-181909-b70d0745.json`, label
+  "T43 ruling 9: code-built success sentence", fingerprint `b70d0745`, from `1a24a5c`.
+  **Overall 62/63 (98%), security 15/15, Q02 3/3, Q04 2/3: ticket 43's bar is met.** Every Q02
+  answer gives S2 no success and S6 three successful sign-ins to amelia.ward, "possibly
+  compromised"; all were read and are right. Q04 run 2 failed on a grader miss in this ticket's
+  own check: "amelia.ward was successfully signed into after multiple failed attempts,
+  indicating a possible compromise" is a right flag, but sat just past the pattern's 80-character
+  span and used "signed into" (B-078). Fixed test first (span 120, "signed into"/"logged into"),
+  91 grader tests. Re-grades, as designed for grader fixes: the third run `2026-10-26-182008`
+  63/63; the second run `2026-10-26-182010` unchanged at 59/63, so no genuine fail flipped. The
+  raw 62/63 met the bar before the fix.
+- 26 October 2026, closing evidence: 514 backend and 149 frontend tests, pyright and frontend
+  typecheck clean. The final grader fix had no separate reviewer pass: it is two alternations and
+  one span, pinned by both-direction tests including every earlier probe.
+
+## Answer
+
+Ticket 43 restores the Port eval's margin from 0 to 5 spare runs (62/63 on the raw paid run,
+against the 57 the gate needs) by fixing both failures at their cause, in code:
+
+1. **Q04 lookups (AUD-046).** `complete_detection_evidence` (renamed from
+   `complete_detection_searches`) adds a missing `lookup_ip_reputation` for every globally routable
+   finding address on a broad question, as it already did for sign-in searches. Lookups ran in
+   every Q04 run of all three paid runs.
+2. **Q02 outcomes (AUD-047).** The agent's view of a finding, built in one place (`_agent_view`
+   in `tools.py`), carries `address_activity` (successes, failures, signed-in accounts per
+   address, in the tool call's window, from `search.address_activity`), drops the rule's own
+   `success_count` and `failure_count`, and, for a brute-force or spraying finding whose address
+   got in, ends its summary with a code-built sentence saying so. One prompt bullet tells the
+   agent to report those successes and flag the account as possibly compromised. The core
+   `Finding`, `to_dict()` and the Alerts reply are unchanged.
+3. **Eval checks for the grown world.** Q02 and Q04 gained S6 checks with nothing removed:
+   Q02 names `45.148.10.80`, ties amelia.ward to S6's successes and counts three; Q04 looks up
+   `45.148.10.80` and flags amelia.ward as possibly compromised. Shared patterns
+   `THREE_SUCCESSES`, `AMELIA_SIGNED_IN` and `AMELIA_COMPROMISED` are pinned by both-direction
+   tables.
+
+What it took: three paid runs on three versions of the fix. Prose-only changes left Q02 at 0/3;
+the code-enforced lookups worked at once, and Q02 passed only when the true sentence was built in
+code. The lesson is recorded in B-076 and in rulings 8 and 9.
+
+Left open, registered: AUD-049 (counts the Alerts screen never shows), AUD-050 (Q21's weak
+pattern), AUD-051 (`RECOMMENDS` misses imperatives, B-077), AUD-052 (benign twin oliver.hayes now
+flagged until his clearing document exists). Prose-pattern grading is near its limit; the
+knowledge-base eval's planned judge and structured answers are the longer-term answer.
