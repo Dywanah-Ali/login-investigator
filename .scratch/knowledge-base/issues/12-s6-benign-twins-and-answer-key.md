@@ -1,7 +1,7 @@
 # 12: S6, the three benign twins and the answer key
 
 Type: build
-Status: claimed
+Status: resolved
 Blocked by: 11
 Phase: 0
 
@@ -26,30 +26,30 @@ the knowledge base's answer key, `truth.json`, from the planted stories.
 
 ## Acceptance criteria
 
-- [ ] S6: a new attacker address with its own saved reputation file sprays many accounts, succeeds
+- [x] S6: a new attacker address with its own saved reputation file sprays many accounts, succeeds
       once on an IT Admins member, then signs in twice more from that address.
-- [ ] S3's and S6's targets are on the MFA exception list; their rows carry `mfa_result = none`.
-- [ ] B1: a Sales user signs in from Germany for three days, and a test proves the new-country rule
+- [x] S3's and S6's targets are on the MFA exception list; their rows carry `mfa_result = none`.
+- [x] B1: a Sales user signs in from Germany for three days, and a test proves the new-country rule
       fires.
-- [ ] B2: a user fails at least 20 times within an hour from their own laptop, then succeeds; a test
+- [x] B2: a user fails at least 20 times within an hour from their own laptop, then succeeds; a test
       proves brute force and success after failures fire.
-- [ ] B3: a user's rows switch `device_id` mid-week; a test proves no rule fires.
-- [ ] A test proves S6 and the twins fall on days that overlap none of S1 to S5.
-- [ ] `truth.json` holds S1 to S6; S6's blast radius (groups held, assets reached, users sharing its
+- [x] B3: a user's rows switch `device_id` mid-week; a test proves no rule fires.
+- [x] A test proves S6 and the twins fall on days that overlap none of S1 to S5.
+- [x] `truth.json` holds S1 to S6; S6's blast radius (groups held, assets reached, users sharing its
       device and its VPN address that week, expected citation document IDs); each twin with verdict
       `benign` and its clearing document ID; the MFA exception list; the four absent topics; group
       membership, S6's target, the leaver and the two never-mentioned users.
-- [ ] Gold radii and paths are written from the planted story, never computed afterwards. The
+- [x] Gold radii and paths are written from the planted story, never computed afterwards. The
       expected document IDs are planned IDs that the Codex brief (ticket 15) must use.
-- [ ] S4 stays an intentionally unresolved suspicious sign-in with `mfa_result = pass` and no
+- [x] S4 stays an intentionally unresolved suspicious sign-in with `mfa_result = pass` and no
       MFA exception. `truth.json` distinguishes known login facts from unknown authorisation,
       compromise, Olivia's physical location, who completed MFA and the access mechanism.
       No additional incident document or telemetry source is required. See the spec's S4 ruling.
-- [ ] The Port's ground-truth file is still written in its current shape.
-- [ ] The Port's eval passes. Where a whole-log count changes, the expected value is updated with its
+- [x] The Port's ground-truth file is still written in its current shape.
+- [x] The Port's eval passes. Where a whole-log count changes, the expected value is updated with its
       reason recorded. Port-level questions are added for S6 only.
-- [ ] An API test proves S6, B1 and B2 appear as alerts.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
+- [x] An API test proves S6, B1 and B2 appear as alerts.
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
 
@@ -122,3 +122,32 @@ Review totals: Standards 0 hard violations and 3 judgement calls, all fixed; Spe
 unchanged agent fingerprint `7ff8e5ae`: 58/63 overall (92%, gate 90%), security 15/15 (100%).
 Original 19 questions 52/57; Q20 and Q21 6/6. Five failures kept: Q02 runs 2 and 3 (B-076,
 AUD-047) and Q04 all runs (B-074 recurrence, AUD-046). No prompt or policy fix in this ticket.
+
+- Review follow-up: the Standards reviewer verified `git diff 0d98d2e..24654bc` and confirmed all three judgement calls resolved, with no regression found in that delta. Regeneration on the final generator produced no dataset diff. Frontend: 149/149 tests, typecheck clean, lint has the same six AUD-009 warnings. Backend full suite remains running; no closure is claimed yet.
+
+
+## Answer
+
+Resolved 26 October 2026 on the implementation, two-axis review, passing safety net and API eval.
+Author live review has not been claimed. Local commits: `0d98d2e` implementation and `24654bc`
+review fixes and evaluation evidence; closure evidence follows in its own commit. Nothing pushed.
+
+| Requirement | Evidence |
+| --- | --- |
+| S6 spray, privileged target, two later sign-ins, offline reputation | Generator tests and Q20/Q21 (6/6); saved AbuseIPDB response for `45.148.10.80` |
+| MFA exceptions and device consistency | Generator tests; `truth.json` lists Daniel and Amelia; original Port fields hash preserved |
+| Three benign twins and disjoint story days | Generator tests at `generate`/`write` through the real loader/rules; B1 and B2 alert, B3 does not |
+| VPN peers and planted answer key | 44 VPN rows, 11 users per address; declared grant/allocation paths and expected document IDs in `truth.json`; T19 retains independent radius recomputation |
+| S4 uncertainty | Knowledge-base key records five unknowns with MFA passed; no invented explanation or extra corpus record |
+| API alert visibility and unchanged contract | API tests; original seven fields only; ten expected findings, including S6, B1 and B2 |
+| Backend safety net | `uv run pytest -q`: 448 passed in 241.23 seconds |
+| Backend type checking | `uv run pyright`: 0 errors, 0 warnings |
+| Frontend safety net | Node 20.20.2; `npm --prefix frontend test -- --maxWorkers=1`: 149 passed; `npm --prefix frontend run typecheck`: clean |
+| Lint | `npm --prefix frontend run lint`: six unchanged warnings, AUD-009; no frontend edits |
+| Agent acceptance gate | API mode 58/63 overall and 15/15 security; original questions 52/57, new S6 questions 6/6; artifact linked above |
+| Review | Standards 0 hard violations, 3 judgement calls all fixed and verified by reviewer; Spec 0 findings |
+| Reproducibility and scope | Regeneration gives no dataset diff; original 19 questions and patterns unchanged; Port answer key changes only `row_count`; rules, tools, agent, frontend and API contract unchanged |
+
+Known gaps retained: B-076/AUD-047 and B-074/AUD-046 evaluation failures. The benign clearing
+documents are planned IDs; delivery and retrieval belong to later tickets. S4's unknown cause is
+intentional. The final full suite passed after the review fixes. Frontier moves to 13, 14 and 15.
