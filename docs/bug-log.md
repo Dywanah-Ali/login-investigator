@@ -1404,3 +1404,16 @@ negative; T43 changed no refusal behaviour.
 **Fix:** none in T43. The grader change is outside its scope; the failed run stays counted.
 **Lesson:** a refusal can recommend in the imperative; the pattern only knows advisory verbs.
 **Evidence:** `backend/evals/results/2026-10-26-173622-f853f368.json`, Q19 run 3.
+
+### B-079 · 2026-10-26 · Knowledge-base T14 · Corruption test assumed every STIX object had a name
+
+**Symptom:** the new missing-technique test raised `KeyError: 'name'` in its setup instead of
+exercising the converter's rejection of an incomplete source bundle.
+**Cause:** the test filtered the bundle using `object['name']`; STIX relationships do not have
+that field.
+**Fix:** use the optional name field when removing the selected technique. The test now reaches
+the converter and proves it rejects the source without changing existing files.
+**Lesson:** a STIX bundle contains multiple object types; technique fields are not universal.
+**Evidence:** `backend/tests/test_attack_corpus.py`, missing-source corruption case; initial
+run 3 passed/4 failed, corrected run 7 passed. The other failures were the intended red checks
+for source validation, implemented afterwards.

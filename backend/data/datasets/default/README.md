@@ -40,4 +40,28 @@ and grants remain structured organisation facts.
 The independent recomputation of S6's radius belongs to ticket 19. The `used address` row filter
 is fixed in ticket 18 and recorded beside the radius then. The planted VPN rows are all successful,
 so either all-sign-in or success-only construction agrees on their peers.
-Ticket 14 records the ATT&CK version when those pages are added.
+
+## ATT&CK reference corpus
+
+`corpus/attack/` holds thirteen Markdown pages from **Enterprise ATT&CK 20.0**:
+T1110 and its four sub-techniques, T1078 and T1078.002, T1621, T1021, and mitigations
+M1032, M1036, M1027 and M1018. MITRE's unchanged `LICENSE.txt` sits beside them.
+Descriptions, linked mitigation advice, procedure examples, detection strategies and their
+analytics come from the STIX 2.1 bundle. References retain the original citation names and URLs.
+Mitigation pages list links to the nine selected techniques; this is a scoped reference corpus,
+not the full ATT&CK catalogue.
+
+Source repository: <https://github.com/mitre-attack/attack-stix-data>.
+The script pins commit `20664a889568dce884a1dac0ec7b12ae3a199f51` (release `v20.0`)
+and checks SHA-256 hashes of both the bundle and licence before writing any pages.
+Regenerate from `backend/` with:
+
+```bash
+uv run python -m scripts.fetch_attack
+```
+
+The page header's `version` is the ATT&CK release, and `date` is the source object's modification
+date. `owner: mitre` and `department: external` identify external reference material rather than
+assigning it to a synthetic employee. `status: current` means active within the pinned release.
+Every page has a stable document ID such as `attack-t1110-003`. Mentions are left to ingestion.
+The fetch script alone needs internet access; the converter's tests use a saved sample.
