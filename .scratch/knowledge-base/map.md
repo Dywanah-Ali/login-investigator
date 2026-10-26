@@ -233,7 +233,7 @@ works at a time, so first by number wins.
   API eval 58/63 overall and 15/15 security, including 6/6 new S6 runs. B-076/AUD-047 records
   broad-spray outcome/count omissions; B-074/AUD-046 recurs on all three broad-compromise runs.
   Six existing frontend lint warnings remain. Benign clearing documents and graph recomputation
-  are later tickets. All work committed locally; author live review not claimed.
+  are later tickets. Author approved T12 on 26 October 2026. All work committed locally.
 
 ## Not yet specified
 

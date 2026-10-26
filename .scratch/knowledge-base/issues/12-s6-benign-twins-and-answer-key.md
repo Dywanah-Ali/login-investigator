@@ -129,8 +129,8 @@ AUD-047) and Q04 all runs (B-074 recurrence, AUD-046). No prompt or policy fix i
 ## Answer
 
 Resolved 26 October 2026 on the implementation, two-axis review, passing safety net and API eval.
-Author live review has not been claimed. Local commits: `0d98d2e` implementation and `24654bc`
-review fixes and evaluation evidence; closure evidence follows in its own commit. Nothing pushed.
+Author approved T12 on 26 October 2026: "T12 is approved". Local commits: `0d98d2e` implementation and `24654bc`
+review fixes and evaluation evidence; `bc24d4a` closure evidence. Nothing pushed.
 
 | Requirement | Evidence |
 | --- | --- |
@@ -151,3 +151,8 @@ review fixes and evaluation evidence; closure evidence follows in its own commit
 Known gaps retained: B-076/AUD-047 and B-074/AUD-046 evaluation failures. The benign clearing
 documents are planned IDs; delivery and retrieval belong to later tickets. S4's unknown cause is
 intentional. The final full suite passed after the review fixes. Frontier moves to 13, 14 and 15.
+
+### Author acceptance
+
+26 October 2026: "T12 is approved". T12 remains resolved. The recorded evaluation failures and
+existing lint warnings retain their status; approval does not claim those issues were fixed.
