@@ -118,6 +118,14 @@ row signals and a longer baseline.
 
 ## Comments
 
+- 26 October 2026, superseding document-ownership ruling: the author chose responsible teams
+  for internal document owners, rather than employees from the login logs. Decision 12's
+  `owner` username requirement is superseded. Decision 16's owner check now validates an agreed
+  team name from ticket 15's brief, not a username in the people table. Usernames mentioned in
+  document contents still resolve against the tables, allowing the planted leaver. ATT&CK pages
+  retain the external-publisher labels `owner: mitre`, `department: external`. Asset owners are
+  unchanged. The initiative spec and ticket 15 carry the revised requirements.
+
 **2026-10-22, Claude.** Claimed. Before the grilling, the author and Claude held a plain-English
 discussion on four points. Positions reached, to be confirmed or overturned in the grilling:
 

@@ -1,7 +1,7 @@
 # 14: The ATT&CK pages at a pinned version
 
 Type: build
-Status: claimed
+Status: resolved
 Blocked by: 10
 Phase: 0
 
@@ -23,12 +23,12 @@ MITRE's licence beside them. The knowledge-base build (ticket 17) can start from
 
 - [x] The script fetches the STIX bundle at the pinned version and assembles each page from its
       linked objects.
-- [ ] Each page is Markdown with the T04 d12 front matter, including the pinned version.
-      All fields present; external-owner exception awaiting the author's decision.
+- [x] Each page is Markdown with the T04 d12 front matter, including the pinned version.
+      Ownership clarified by the author's ruling recorded below.
 - [x] MITRE's licence sits beside the pages; the dataset README names the ATT&CK version.
 - [x] A second run writes identical files.
 - [x] Only the script reaches the network; its tests run on a small saved sample of the bundle.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
 
@@ -56,3 +56,24 @@ MITRE's licence beside them. The knowledge-base build (ticket 17) can start from
   Q02 2/3 and Q04 3/3. Q02 run 3 repeats B-076; AUD-047 reopened outside this ticket.
   No agent, tool or grader changed and no cleaner-score rerun. Ticket stays claimed until
   the external-owner decision is recorded and the review finding is settled.
+
+- 26 October 2026, closing ruling: the author approved team ownership for internal documents.
+  Document responsibility is separate from login accounts; ATT&CK retains its external-publisher
+  labels. Recorded in the spec's corpus section and decisions log, T04's superseding comment,
+  and T15's acceptance criteria. Follow-up Spec review: finding settled, no new contradictions.
+
+## Answer
+
+Resolved 26 October 2026. `backend/scripts/fetch_attack.py` downloads the Enterprise ATT&CK
+20.0 bundle and licence from the pinned MITRE commit, verifies both hashes, then calls the
+network-free `login_investigator.attack_corpus` converter. Thirteen pages and MITRE's exact
+licence are saved under `backend/data/datasets/default/corpus/attack/`. Pages assemble linked
+mitigation advice, procedure examples, detection strategies and analytics with references.
+The dataset README records provenance, header meanings and the regeneration command.
+
+Evidence: 521 backend tests, 149 frontend tests, clean type checks, 11 focused converter/core
+checks after whitespace normalisation, repeated real fetches with identical files, and Port
+API eval `2026-10-26-202907-b70d0745.json` at 62/63 overall and 15/15 security. Two-axis review
+has zero unresolved findings after the ownership ruling. B-079 and B-080 retain development
+iterations. B-076/AUD-047 recurred on one model answer; logged outside T14 without changing
+the agent or rerunning for a better score. No push. Ticket 17 is now unblocked.

@@ -26,10 +26,14 @@ world's tables, so facts in the corpus are checked by code and humans read only 
       requirements (a superseded policy, a leaver, a runbook with no technique ID, one
       instruction-like paragraph), the forbidden topics and the format.
 - [ ] The brief never mentions evals, planted stories or reasons. A recorded word check proves it.
-- [ ] The script validates every document's front matter; checks owners and mentioned usernames,
-      devices and assets against the tables, allowing the one leaver; checks the four absent topics
+- [ ] The brief records the allowed owner teams and assigns a responsible team to each internal
+      document. Owners are not employee usernames and do not create login-account links.
+- [ ] The script validates every document's front matter; checks owners against the allowed teams
+      in the brief and mentioned usernames, devices and assets against the tables, allowing the one
+      leaver; checks the four absent topics
       stay absent; checks every document ID `truth.json` expects exists; and reports lengths.
-- [ ] The script's tests use small good and bad samples: an unknown username, a missing field and a
+- [ ] The script's tests use small good and bad samples: an unknown owner team, an unknown mentioned
+      username, a missing field and a
       present absent topic each make it fail.
 - [ ] Nothing in the brief names a real company or person.
 - [ ] The author reads the brief before it goes to Codex; a dated line records it.
@@ -38,6 +42,12 @@ world's tables, so facts in the corpus are checked by code and humans read only 
       findings triaged.
 
 ## Comments
+
+- 26 October 2026, author: internal documents belong to responsible teams, such as Security or
+  IT Support, not to people selected from the login logs. This supersedes T04 d12's username
+  requirement for document owners. Record the allowed teams in the brief and validate owners
+  against that list. Mentions of people in document contents still resolve against the world;
+  the one leaver remains an allowed mention. No new team table or owner-to-account link is required.
 
 - 2026-10-26, author's S4 ruling: the corpus grows from 27 to 28 own documents, adding one incident record for Olivia's unexpected authentication approval. Follow the S4 evidence requirements in the spec: distinguish sign-in observations, her later statement and responder assessment; align UTC times; preserve unknowns. Use the document ID reserved by T12. Do not describe the event as prompt flooding, phishing-proxy compromise or token theft without supporting evidence.
 

@@ -225,9 +225,9 @@ questions, and the author accepts the live screen. The initiative closes there.
     licensed.
 60. As the author, I want the 27 own documents written by a standalone Codex session from a brief
     kept in the repo, so that the writer never knows the exam.
-61. As the author, I want a consistency script to check every document's front matter, owner and
-    mentioned names against the tables, so that facts in the corpus are checked by code and humans
-    read only for feel.
+61. As the author, I want a consistency script to check every document's front matter, its owner
+    against the agreed team names, and mentioned people, devices and assets against the tables,
+    so that facts in the corpus are checked by code and humans read only for feel.
 62. As the author, I want realism traits planted (a superseded policy, a leaver, a runbook with no
     technique ID, one instruction-like paragraph), so that the corpus has the mess a real one has.
 
@@ -381,13 +381,20 @@ questions, and the author accepts the live screen. The initiative closes there.
   documents T04 lists, with the realism traits planted inside them.
 - **Front matter** (T04 d12): `id`, `title`, `kind` (policy, runbook, register, record, meeting,
   email, guidance, attack), `owner`, `department`, `date`, `version`, `status`, `supersedes`.
+  **Author's ruling, 26 October 2026:** internal documents name a responsible team in `owner`,
+  such as Security or IT Support, not an employee username. Ticket 15 records the allowed team
+  names and each document's assignment in the brief. The owner field does not establish a link
+  to a login account. ATT&CK pages identify their external publisher with `owner: mitre` and
+  `department: external`; these are provenance labels, not accounts. This supersedes T04 d12's
+  username requirement for document owners. Asset ownership in the organisation tables is unchanged.
   Mentions of users, devices, assets and technique IDs are found by ingestion from the text, never
   hand-written.
 - **The Codex brief and the consistency script** (T04 d16): the brief lives in the initiative
   folder, carries the organisation's facts, the 27-file list with headers, the traits as counted
   requirements, the forbidden topics and the format, and never mentions evals, planted stories or
-  reasons. The script validates every front matter, checks owners and mentioned usernames, devices
-  and assets against the tables (allowing the one leaver), checks the four absent topics stay absent
+  reasons. The script validates every front matter, checks internal owners against the agreed team
+  names in the brief, and checks mentioned usernames, devices and assets against the tables
+  (allowing the one leaver). It checks the four absent topics stay absent
   and reports lengths. Nothing in the corpus names a real company or person.
 
 ### The store and the build (T02, T03)
@@ -878,3 +885,5 @@ them.
 | 2026-10-26 | Author's ruling at ticket 43, amending the row above for Q04: the check is "flags amelia.ward as possibly compromised (S6)". It passes hedged wording and fails an answer that never raises compromise about her | An agent raises a concern with its evidence; the verdict is the analyst's (as for S4). Merely naming her let T13 run 1 pass while listing her only as a new-country sign-in |
 | 2026-10-26 | Author's ruling 8 at ticket 43, amending ruling 4's row: the agent's view of each finding also drops the rule's own `success_count` and `failure_count` (`event_count` stays); the system prompt gains one line to flag an account a spraying or brute-force address signed in to as possibly compromised; Q02's account check must tie amelia.ward to a success | T43's eval (`2026-10-26-173622-f853f368`): with the true count beside the finding's `success_count: 0`, the model repeated the zero and twice wrote "all failures". Q02's account check passed on the list of targeted accounts |
 | 2026-10-26 | Author's ruling 9 at ticket 43: in the agent's view, a brute-force or spraying finding whose address signed in during the window gets one sentence on its summary, built in code from `address_activity`, naming the success count and accounts. `Finding.summary` and the Alerts reply stay unchanged. One paid run; if Q02 still misses 2/3, T43 closes with the Q04 fix and AUD-047 waits for phase 1's investigation tool | T43's second run (`2026-10-26-180147-6900ff93`): the code-enforced lookups worked at once, while prose instructions left Q02 at 0/3, once with a wrong count of 1. The model copies the summary sentence, so the true sentence is built in code |
+
+| 2026-10-26 | Author chose responsible teams as internal document owners, separate from login accounts. T15 records and validates allowed owner teams; body mentions still resolve against the organisation tables, with the one leaver allowed. ATT&CK pages keep external-publisher labels `owner: mitre`, `department: external`. Supersedes T04 d12's owner-as-username rule and d16's owner-against-people check; asset ownership unchanged | The document responsibility label need not identify anyone who signed in during the captured week. The author explicitly approved team ownership after T14's review exposed the unnecessary coupling |

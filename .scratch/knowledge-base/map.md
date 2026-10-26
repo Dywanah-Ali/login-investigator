@@ -191,12 +191,12 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is tickets 14 and 15**, which have no unresolved blockers; one session
+line holds its edges. **The frontier is tickets 15 and 17**, which have no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). The frontier is again tickets 14 and 15.
+and is resolved (see Build tickets resolved). T14 has since resolved; the frontier is 15 and 17.
 
 ### Build tickets resolved
 
@@ -259,7 +259,21 @@ and is resolved (see Build tickets resolved). The frontier is again tickets 14 a
   registered. Its lesson became P-01 of `PRINCIPLES.md`. Author accepted T43 on 26 October
   2026. All work committed locally.
 
+- [14 The ATT&CK pages at a pinned version](issues/14-attack-pages-pinned.md)
+  (26 October 2026): Enterprise ATT&CK 20.0 at an exact MITRE commit with bundle/licence hashes;
+  a network-free converter assembles thirteen pages from linked STIX objects, and a fetch
+  script writes them with MITRE's licence under `default/corpus/attack/`. Repeated fetches
+  agree byte for byte. Evidence: 521 backend and 149 frontend tests, clean types, two-axis
+  review settled, Port API eval 62/63 and 15/15. B-076/AUD-047 recurred outside T14.
+  Author's ownership ruling recorded: teams own internal documents, external pages identify
+  their publisher, and neither establishes a login-account link. All work committed locally.
+
 ## Not yet specified
+
+T14 resolved on 26 October 2026: the pinned ATT&CK reference corpus is delivered. During its
+review the author ruled that internal document owners are responsible teams, separate from
+login accounts. The spec and T15 now validate team ownership separately from people mentioned
+in document contents. External ATT&CK ownership identifies MITRE as publisher.
 
 - The Codex brief's wording and the consistency script's checks: written after the tables exist.
 - The tuning file's pairs and the calibrated refusal threshold itself; the judge model; the
