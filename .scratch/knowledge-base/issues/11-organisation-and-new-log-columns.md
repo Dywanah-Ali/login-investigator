@@ -129,3 +129,9 @@ Failed eval attempts kept and recorded: Q07 run 2 (B-070, AUD-030), Q08 runs 2 a
 AUD-045), Q04 run 3 skipping all reputation lookups (new B-074, AUD-046). The agent's inputs did
 not change, so none is attributed to this ticket. Commits `ce07dbb` (implementation) and `0beda3f`
 (review fixes); evidence in a follow-up local commit. Nothing pushed. The frontier is 12, 13 and 14.
+
+### 2026-10-26 — Author confirmation
+
+After the closure report, the author wrote "T11 is approved, mark it resolved". Author acceptance
+recorded as general approval of the closure evidence; no itemised checks were reported. Status
+remains resolved. Open for ticket 12: the author's ruling on S4's MFA `pass`.
