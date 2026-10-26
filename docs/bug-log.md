@@ -1259,3 +1259,29 @@ security.
 will preserve that question's scope when it chooses its own evidence.
 **Evidence:** `backend/evals/results/2026-10-25-221147-7ff8e5ae.json`, Q08 run 2, fingerprint
 `7ff8e5ae`, implementation commit `ab8583f`.
+
+**B-073 recurrence, 26 October 2026 (knowledge-base T11):** unchanged Port eval, fingerprint
+`7ff8e5ae`, Q08 runs 2 and 3 fail "does not count the brute-force IP as a sprayer"; run 1 passes.
+The agent's tools return the same seven Port fields as before T11 (`loader.RECORD_FIELDS`), so the
+model saw unchanged inputs. No fix in T11; AUD-045 remains open. Evidence:
+`backend/evals/results/2026-10-26-095844-7ff8e5ae.json`; the run meets the gates at 53/57 overall
+and 15/15 security.
+
+**B-070 recurrence, 26 October 2026 (knowledge-base T11):** same run, Q07 run 2 fails "does not
+miscount them as three"; runs 1 and 3 pass. No fix in T11; AUD-030 remains open.
+
+### B-074 · 2026-10-26 · Knowledge-base ticket 11 · "Was any account compromised" skipped every reputation lookup
+
+**Symptom:** the unchanged Port eval's Q04 run 3 ran the detection rules and searched each of the
+three attacker addresses, then answered without calling `lookup_ip_reputation` for any of them.
+All three "looked up" checks fail. Runs 1 and 2 pass. The answer also lists the four findings
+without stating plainly which accounts were compromised.
+**Cause:** not established. The model chose log searches over reputation lookups for a broad
+question. T11 did not change what the tools return: rows leave the core with the Port's seven
+fields only, and the model and prompt fingerprint is unchanged (`7ff8e5ae`). No earlier entry
+records this failure for Q04.
+**Fix:** none in T11. Keep the failed attempt counted. Registered as AUD-046.
+**Lesson:** a broad compromise question does not reliably pull in reputation evidence; the
+required-searches policy covers log searches, not lookups.
+**Evidence:** `backend/evals/results/2026-10-26-095844-7ff8e5ae.json`, Q04 run 3; review-fix commit
+`0beda3f`. The run meets the agreed gates at 53/57 overall and 15/15 security.

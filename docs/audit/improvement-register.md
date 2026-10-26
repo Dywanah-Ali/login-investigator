@@ -72,6 +72,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-043 | Show the faithfulness judge's reason on the screen | Open, parked; trigger to reopen: a measured agreement between the judge and the author's labels | Low | Knowledge-base ticket 07, decision 8 |
 | AUD-044 | Sweep test databases left behind by a test run that was killed before its teardown | Open, parked; trigger to reopen: a leftover `li_test_` database is seen | Low | Knowledge-base ticket 09, spec review |
 | AUD-045 | Preserve the attack type in a narrow spraying investigation | Open, deferred outside T10 | High | B-073; T10 Port eval Q08 run 2 |
+| AUD-046 | Require reputation lookups in a broad compromise answer | Open, deferred outside T11 | Medium | B-074; T11 Port eval Q04 run 3 |
 
 ### AUD-001: Rule filter
 
@@ -676,6 +677,17 @@ remains in place; no prompt or policy changed, and the dataset files moved byte-
 The model's own evidence choices can still broaden a narrow investigation. Deferred outside T10;
 registration does not approve implementation. Closure evidence: a separately agreed scope rule,
 its regression evidence and an unchanged Port eval meeting the agreed gates while checking Q08.
+Recurrence: the T11 eval failed Q08 runs 2 and 3 (B-073 recurrence note).
+
+### AUD-046: Broad compromise answer without reputation lookups
+
+The unchanged Port API eval for knowledge-base ticket 11 passed 53/57 overall and 15/15 security,
+but Q04 run 3 ("Was any account compromised this week?") ran the rules and searched the three
+attacker addresses without looking up any of their reputations. B-074 records it in
+`backend/evals/results/2026-10-26-095844-7ff8e5ae.json`. T11 left the tools' outputs unchanged. Deferred
+outside T11; registration does not approve implementation. Closure evidence: an agreed rule for
+when reputation lookups are required, its regression evidence and an unchanged Port eval meeting
+the agreed gates while checking Q04.
 
 ## Longer-term capabilities already named in the spec
 
@@ -810,3 +822,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-25 | Knowledge-base ticket 09 built (PostgreSQL with pgvector, the loud test fixture). Added AUD-044 (sweep of test databases left by a killed run, parked with a trigger), from the ticket's spec review. | Knowledge-base ticket 09 |
 | 2026-10-23 | Knowledge-base ticket 06 resolved after a discussion, research note 06 and a ten-question grilling: two hard retrieval checks per question (top 20 and the 5 the model received), exact-set graph gate, a mix weighted to say-no and mixed questions, a separate tuning file for the refusal threshold, citation resolution with gold IDs as the answer gate, the judge as a smoke alarm with three trials and stored verdicts, playbook and canary checks as 100% gates, one scorer with two exams kept separate, on-versus-off comparisons for the re-ranker and BM25, and Langfuse adopted as a mirror. AUD-036 decided. Added AUD-042 (injection-detector middleware, parked with a trigger). Frontier moves to ticket 07. | Knowledge-base ticket 06 Answer; research note 06; map |
 | 2026-10-26 | Knowledge-base T10 resolved: default dataset folder and unchanged Port exam verified. Recorded Explorer timeout recurrence and passing 149-test rerun (AUD-028), repeated count error (AUD-030), and narrow spraying-answer failure (new AUD-045). No agent changes; Port eval meets gates at 55/57 overall and 15/15 security. | T10 Answer; B-066/B-070/B-073; `2026-10-25-221147-7ff8e5ae.json` |
+| 2026-10-26 | Knowledge-base T11 resolved: organisation tables and two internal log columns, Port rows byte-identical in their old columns, tools and API unchanged. Port eval meets gates at 53/57 overall and 15/15 security. Recurrences of AUD-030 (Q07) and AUD-045 (Q08 runs 2 and 3); new AUD-046 (Q04 run 3 skipped reputation lookups). | T11 Answer; B-070/B-073/B-074; `2026-10-26-095844-7ff8e5ae.json` |

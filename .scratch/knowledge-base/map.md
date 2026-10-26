@@ -191,7 +191,7 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is tickets 11, 13 and 14**, which have no unresolved blockers; one session
+line holds its edges. **The frontier is tickets 12, 13 and 14**, which have no unresolved blockers; one session
 works at a time, so first by number wins.
 
 ### Build tickets resolved
@@ -211,6 +211,15 @@ works at a time, so first by number wins.
   149 frontend tests on the final rerun, clean typechecks, Standards and Spec review with no
   findings; unchanged Port eval 55/57 overall and 15/15 security meets its gates. Explorer timeouts
   and two inaccurate model answers remain recorded outside scope in B-066, B-070 and B-073.
+
+- [11 The organisation and the two new log columns](issues/11-organisation-and-new-log-columns.md)
+  (26 October 2026): eight organisation tables under `default/org/`, IDs made from content, drawn
+  from their own random stream; `device_id` and `mfa_result` stay inside the core, and the Port's
+  seven columns are byte-identical. Author's rulings on the way: an empty device ID for attackers and
+  personal phones (124 rows), VPN sign-ins moved to ticket 12, cross-cutting privileged groups.
+  Evidence: 438 backend and 149 frontend tests, clean types, two-axis review triaged; Port eval
+  53/57 and 15/15 meets its gates. Q04 run 3 skipping reputation lookups is new as B-074 (AUD-046).
+  S4's MFA `pass` is an open question on ticket 12.
 
 ## Not yet specified
 
