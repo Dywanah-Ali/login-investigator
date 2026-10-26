@@ -1,7 +1,7 @@
 # 43: Restore the Port eval's margin: Q02 and Q04 in the grown world
 
 Type: grilling, then build
-Status: needs-info
+Status: ready-for-agent
 Blocked by: none
 Phase: 0
 
@@ -228,3 +228,20 @@ check patterns for Q02 and Q04.
   Logged as the B-074 partial fix, the B-076 recurrence and B-077. Status set to needs-info: the
   rework needs the author's ruling, since the evidence points against ruling 4's choice to keep
   the finding's own counts in the agent's view.
+- 26 October 2026, ruling 8 (author), amending ruling 4: the rework does three things. (1) The
+  agent's view of each finding drops the rule's own `success_count` and `failure_count`, so the
+  only success number it sees is `address_activity`'s; `event_count` stays, since the tool panel
+  shows it and it is not a success figure. `Finding.to_dict()` and the Alerts reply stay
+  unchanged. (2) One prompt line: when an address from a spraying or brute-force finding signed
+  in to an account, say so with the count and flag that account as possibly compromised (ruling
+  7: the agent flags, the analyst decides). (3) Q02's "names the account S6 signed in to" must tie
+  amelia.ward to a success, not pass on the list of targeted accounts. Dropping the counts alone
+  was not taken: a failed run costs another paid run. Pausing the rework was not taken: the margin
+  would stay at zero. Status back to ready-for-agent; the acceptance criteria are unchanged.
+- 26 October 2026, rework build (Claude), test first: the agent's view drops `success_count` and
+  `failure_count` (tool test red, then green); the tool description now speaks of "an event
+  count"; one prompt line under "How to investigate" (prompt test red, then green); Q02's account
+  check is now "ties amelia.ward to S6's successes" with the shared pattern `AMELIA_SIGNED_IN`
+  and a both-direction table holding T43 run 1's target list. Evidence: 499 backend and 149
+  frontend tests, pyright clean. Free re-grade of the T43 run (`2026-10-26-174557`): 57/63, and
+  the tightened check now fails all three Q02 runs that named her only as a target.

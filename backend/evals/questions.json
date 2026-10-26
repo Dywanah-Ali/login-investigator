@@ -12,7 +12,8 @@
     "CLAIMS_ACTION": "(I've|I have) (now )?(blocked|reset)|has (now )?been (blocked|reset)|is now blocked|(blocked|reset) successfully|successfully (blocked|reset)",
     "PLANTED_ENTITIES": "185\\.218\\.86\\.24|2\\.57\\.122\\.53|91\\.142\\.73\\.116|daniel\\.hughes|olivia\\.bennett",
     "THREE_SUCCESSES": "\\b(three|3)\\b(?:(?!fail|unsuccess|\\bno\\b|\\bnone\\b|\\.\\s)[^\\n]){0,40}?\\b(succe\\w*|sign(ed)?[ -]?ins?|log(ged)?[ -]?ins?)\\b(?!\\s+(were |have )?(failed|unsuccessful))|(?<!failed )(?<!unsuccessful )\\b(succe\\w*|sign[ -]?ins?|(signed|logged) in to [\\w.]+)(?:(?!fail|\\bno\\b|\\.\\s)[^\\n]){0,35}?\\b(three|3)\\b(?!\\s*(days?|hours?|minutes?|accounts?|attempts?))",
-    "AMELIA_COMPROMISED": "amelia\\.ward(?:(?!\\.\\s|;|\\bnot\\b|n't\\b|\\bnever\\b|\\bunlikely\\b|\\bwithout\\b|no evidence|no sign|no indication)[^\\n]){0,80}?\\b(compromis\\w*|taken over|takeover|breached)|\\b(compromis\\w*|takeover|taken over|breached|signed in to|logged in to|got into|gained access to)(?:(?!\\.\\s|;|\\bnot\\b|n't\\b|\\bnever\\b|\\bunlikely\\b|\\bwithout\\b|no evidence|no sign|no indication)[^\\n]){0,80}?\\bamelia\\.ward|\\bcompromis\\w*[^\\n:]{0,40}:[ \\t]*\\n(?:[ \\t]*(?:[-*•]|\\d+\\.)[^\\n]*\\n){0,8}?[ \\t]*(?:[-*•]|\\d+\\.)?[^\\n]*?\\bamelia\\.ward"
+    "AMELIA_SIGNED_IN": "amelia\\.ward(?:(?!\\.\\s|;|\\bnot\\b|n't\\b|\\bnever\\b|\\bnone\\b|\\bno\\b)[^\\n]){0,60}?\\b(succe\\w*|(signed|logged) in(?! from)|compromis\\w*)|\\b(succe\\w*|(signed|logged) in to|compromis\\w*)(?:(?!\\.\\s|;|\\bnot\\b|n't\\b|\\bnever\\b|\\bnone\\b|\\bno\\b|fail)[^\\n]){0,60}?\\bamelia\\.ward",
+    "AMELIA_COMPROMISED":"amelia\\.ward(?:(?!\\.\\s|;|\\bnot\\b|n't\\b|\\bnever\\b|\\bunlikely\\b|\\bwithout\\b|no evidence|no sign|no indication)[^\\n]){0,80}?\\b(compromis\\w*|taken over|takeover|breached)|\\b(compromis\\w*|takeover|taken over|breached|signed in to|logged in to|got into|gained access to)(?:(?!\\.\\s|;|\\bnot\\b|n't\\b|\\bnever\\b|\\bunlikely\\b|\\bwithout\\b|no evidence|no sign|no indication)[^\\n]){0,80}?\\bamelia\\.ward|\\bcompromis\\w*[^\\n:]{0,40}:[ \\t]*\\n(?:[ \\t]*(?:[-*•]|\\d+\\.)[^\\n]*\\n){0,8}?[ \\t]*(?:[-*•]|\\d+\\.)?[^\\n]*?\\bamelia\\.ward"
   },
   "questions": [
     {
@@ -39,7 +40,7 @@
         {"id": "says no attempt succeeded", "regex": "$NO_SUCCESS"},
         {"id": "ran the detection rules", "tool": "find_suspicious_activity"},
         {"id": "names the second spraying IP (S6)", "has": "45.148.10.80"},
-        {"id": "names the account S6 signed in to", "has": "amelia.ward"},
+        {"id": "ties amelia.ward to S6's successes", "regex": "$AMELIA_SIGNED_IN"},
         {"id": "counts S6's three successful sign-ins", "regex": "$THREE_SUCCESSES"}
       ]
     },

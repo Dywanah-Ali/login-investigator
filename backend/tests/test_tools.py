@@ -76,7 +76,9 @@ def test_each_finding_shows_what_its_address_did_overall(s, s6):
     s2 = s["S2"]
     findings = run(find_suspicious_activity)["data"]["findings"]
     spray = _finding(findings, "password_spraying", s6["attacker_ip"])
-    assert spray["success_count"] == 0  # the rule's own count is unchanged
+    # T43's eval: beside the rule's own success_count of 0 the model repeated the zero, so the
+    # agent no longer sees the rule's success and failure counts (ruling 8).
+    assert not any({"success_count", "failure_count"} & f.keys() for f in findings)
     assert spray["address_activity"] == [{
         "ip": s6["attacker_ip"], "successes": s6["successes"], "failures": s6["failures"],
         "signed_in_accounts": [s6["user"]]}]

@@ -125,10 +125,10 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
     """Run the four detection rules and return the findings that overlap a time window.
 
     The rules are brute force, password spraying, success after repeated failures, and sign-in
-    from a new country. Each finding gives its rule, a summary, the IPs and users involved, event
-    counts, first and last seen times, and evidence rows (the first and last events when there
-    are many). A finding's counts cover only the rows its rule matched: a password spraying
-    finding counts failures only. Each finding's "address_activity" says what each of its IPs did
+    from a new country. Each finding gives its rule, a summary, the IPs and users involved, an
+    event count, first and last seen times, and evidence rows (the first and last events when
+    there are many). A finding's event count covers only the rows its rule matched: a password
+    spraying finding counts failures only. Each finding's "address_activity" says what each of its IPs did
     in the window: successes, failures and the accounts it signed in to. Read it to tell whether
     an address got in. Start here for broad questions such as "anything suspicious?".
 
@@ -144,8 +144,11 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
         log = _log()
     except ValueError as error:
         return _error(str(error))
-    # For the agent only: the Alerts reply is `to_dict()` alone (ticket 43).
-    shown = [{**f.to_dict(),
+    # For the agent only: the Alerts reply is `to_dict()` alone (ticket 43). The rule's own
+    # success and failure counts are left out, since the model repeated a spray's 0 successes
+    # over the address's real ones; `address_activity` is the agent's only outcome count.
+    shown = [{**{key: value for key, value in f.to_dict().items()
+                 if key not in ("success_count", "failure_count")},
               "address_activity": [address_activity(log, ip, start, end) for ip in f.ips]}
              for f in findings]
     return _ok(

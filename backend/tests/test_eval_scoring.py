@@ -312,7 +312,8 @@ def test_s6_question_gold_matches_the_new_answer_key(s6):
 def test_q02_and_q04_s6_gold_matches_the_new_answer_key(s6):
     # Ticket 43, ruling 5: the grown world's S6 checks, added beside the frozen ones.
     assert check("Q02", "names the second spraying IP (S6)")["has"] == s6["attacker_ip"]
-    assert check("Q02", "names the account S6 signed in to")["has"] == s6["user"]
+    assert verdict("Q02", "ties amelia.ward to S6's successes",
+                   f"It signed in to {s6['user']} {s6['successes']} times.")
     assert verdict("Q02", "counts S6's three successful sign-ins",
                    f"{s6['successes']} successful sign-ins on {s6['user']}.")
     assert verdict("Q04", "flags amelia.ward as possibly compromised (S6)", f"{s6['user']} was compromised.")
@@ -326,7 +327,7 @@ def test_t13_q02_answer_fails_the_s6_outcome_checks():
             "In summary, there were two separate password spraying incidents involving the IPs "
             "2.57.122.53 and 45.148.10.80.")
     assert verdict("Q02", "names the second spraying IP (S6)", text)
-    assert not verdict("Q02", "names the account S6 signed in to", text)
+    assert not verdict("Q02", "ties amelia.ward to S6's successes", text)
     assert not verdict("Q02", "counts S6's three successful sign-ins", text)
 
 
@@ -352,6 +353,23 @@ def test_a_right_q02_answer_passes_every_check():
 ])
 def test_q02_counts_three_successes_both_directions(text, expected):
     assert verdict("Q02", "counts S6's three successful sign-ins", text) is expected
+
+
+@pytest.mark.parametrize("text, expected", [
+    ("It signed in to amelia.ward 3 times.", True),
+    ("45.148.10.80 made 3 successful sign-ins on amelia.ward.", True),
+    ("amelia.ward: 3 successful sign-ins", True),
+    ("Signed in to: amelia.ward (3 successes)", True),
+    ("amelia.ward is possibly compromised.", True),
+    # Q02 run 1, prompt version f853f368 (T43): named only as a target.
+    ("   - Users targeted: 20 accounts including alexander.grant, amelia.ward, benjamin.cole, "
+     "charlie.dixon, and others.\n   - Event count: 20 attempts\n   - Failure count: 20", False),
+    ("amelia.ward was targeted but no attempt succeeded.", False),
+    ("45.148.10.80 failed on 20 accounts including amelia.ward; none succeeded.", False),
+    ("amelia.ward signed in from NL.", False),
+])
+def test_q02_ties_amelia_ward_to_the_successes(text, expected):
+    assert verdict("Q02", "ties amelia.ward to S6's successes", text) is expected
 
 
 @pytest.mark.parametrize("text, expected", [

@@ -82,6 +82,14 @@ def test_prompt_states_the_data_only_and_read_only_rules():
     assert "Never write links" in prompt
 
 
+def test_prompt_flags_an_account_an_attacking_address_signed_in_to():
+    # T43 ruling 8: successes come from address_activity, and the agent flags, never pronounces.
+    prompt = system_prompt()
+    assert "address_activity" in prompt
+    assert "possibly compromised" in prompt
+    assert "Never write that all attempts failed" in prompt
+
+
 def test_prompt_template_is_fully_filled():
     assert "{" not in system_prompt()
 

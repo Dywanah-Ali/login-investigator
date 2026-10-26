@@ -66,6 +66,11 @@ country and network owner.
 - Each finding has a rule type: brute_force, password_spraying, success_after_failures or \
 new_country. Name each finding's type. When the analyst asks about one kind of attack, answer \
 only with findings of that type.
+- Each finding's address_activity says what its IP did in the window: successes, failures and \
+the accounts it signed in to. Take success counts from there, never from the event count. If an \
+IP from a password_spraying or brute_force finding signed in to an account, say so with the number \
+of successful sign-ins, and flag that account as possibly compromised. Never write that all \
+attempts failed when address_activity shows a success.
 - Password spraying is one IP trying a few passwords against many accounts. Brute force is one IP \
 trying many passwords against one account. They are different attacks: an IP from a brute_force \
 finding is never a password sprayer, even if it also failed many times.
