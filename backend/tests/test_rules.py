@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import sys
+import textwrap
 from pathlib import Path
 
 import pandas as pd
@@ -349,9 +350,12 @@ def test_ids_do_not_depend_on_the_order_of_the_rows(log, findings):
 def test_the_same_log_gives_the_same_ids_in_another_process(findings):
     # Python salts its own string hashing per process; a different seed in each child proves the
     # IDs do not lean on it.
-    script = ("from login_investigator.loader import load_log\n"
-              "from login_investigator.rules import detect_all\n"
-              "print('\\n'.join(f.finding_id for f in detect_all(load_log())))")
+    script = textwrap.dedent("""
+        from login_investigator.loader import load_log
+        from login_investigator.rules import detect_all
+        for f in detect_all(load_log()):
+            print(f.finding_id)
+    """)
     expected = [f.finding_id for f in findings]
     for seed in ("1", "2"):
         child = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True,
@@ -362,7 +366,8 @@ def test_the_same_log_gives_the_same_ids_in_another_process(findings):
 
 def test_no_two_findings_on_the_default_dataset_share_an_id(findings):
     ids = [f.finding_id for f in findings]
-    assert len(set(ids)) == len(ids) > 1
+    assert len(ids) > 1  # more than one finding, so the check below compares something
+    assert len(set(ids)) == len(ids)
 
 
 def test_rule_guide_covers_every_rule_and_quotes_the_real_thresholds():

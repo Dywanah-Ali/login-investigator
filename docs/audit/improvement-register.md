@@ -74,6 +74,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-045 | Preserve the attack type in a narrow spraying investigation | Open, deferred outside T10 | High | B-073; T10 Port eval Q08 run 2 |
 | AUD-046 | Require reputation lookups in a broad compromise answer | Open, deferred outside T11 | Medium | B-074; T11 Port eval Q04 run 3 |
 | AUD-047 | Preserve each spray source's success outcome and total in broad answers | Open, deferred outside T12 | High | B-076; T12 Port eval Q02 runs 2 and 3 |
+| AUD-048 | Decide whether the finding ID reaches the agent's detection tool when ticket 32 adds it to the Alerts reply | Open, for ticket 32's builder | Medium | Knowledge-base T13 spec review |
 
 ### AUD-001: Rule filter
 
@@ -689,7 +690,8 @@ attacker addresses without looking up any of their reputations. B-074 records it
 outside T11; registration does not approve implementation. Closure evidence: an agreed rule for
 when reputation lookups are required, its regression evidence and an unchanged Port eval meeting
 the agreed gates while checking Q04. Recurrence: T12 Q04 fails the lookup checks in all three
-runs; see the B-074 recurrence and the 2026-10-26-112540 eval artifact.
+runs; see the B-074 recurrence and the 2026-10-26-112540 eval artifact. T13 repeats it in all three
+runs with no agent change (2026-10-26-131223 artifact).
 
 ### AUD-047: Outcomes lost in a broad answer about two spray sources
 
@@ -700,6 +702,18 @@ successes in the log. The direct S6 questions pass 6/6. See B-076 and
 rows; the agent code is unchanged. Deferred outside T12. Closure needs a separately scoped
 behaviour decision and evidence that a broad answer preserves each source's failure and success
 counts, alongside the unchanged Port and direct-S6 checks. Registration is not approval to build.
+Recurrence: T13's unchanged agent fails Q02 in all three runs (2026-10-26-131223 artifact). With
+Q04 also at 0/3, the Port eval met its 90% gate at 57/63 with no spare run: one more failure
+anywhere would fail the gate on behaviour no ticket has changed.
+
+### AUD-048: The finding ID and the agent's detection tool
+
+`Finding.to_dict()` is both the Alerts reply and the output of the agent's
+`find_suspicious_activity` tool. T13 kept `finding_id` out of it, so neither changed. Ticket 32
+requires "The Alerts reply gains `finding_id` and nothing else". Adding the field inside `to_dict()`
+would also change what the agent sees, which is an agent behaviour change gated by an eval run.
+Ticket 32's builder decides, with the author, whether the route adds the field or the tool carries
+it too. Closure evidence: that decision recorded in ticket 32, and its eval run if the tool changes.
 
 ## Longer-term capabilities already named in the spec
 
@@ -836,3 +850,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-26 | Knowledge-base T10 resolved: default dataset folder and unchanged Port exam verified. Recorded Explorer timeout recurrence and passing 149-test rerun (AUD-028), repeated count error (AUD-030), and narrow spraying-answer failure (new AUD-045). No agent changes; Port eval meets gates at 55/57 overall and 15/15 security. | T10 Answer; B-066/B-070/B-073; `2026-10-25-221147-7ff8e5ae.json` |
 | 2026-10-26 | Knowledge-base T11 resolved: organisation tables and two internal log columns, Port rows byte-identical in their old columns, tools and API unchanged. Port eval meets gates at 53/57 overall and 15/15 security. Recurrences of AUD-030 (Q07) and AUD-045 (Q08 runs 2 and 3); new AUD-046 (Q04 run 3 skipped reputation lookups). | T11 Answer; B-070/B-073/B-074; `2026-10-26-095844-7ff8e5ae.json` |
 | 2026-10-26 | T12 eval meets gates at 58/63 overall and 15/15 security; S6 questions 6/6. Recorded B-074/AUD-046 recurrence in all Q04 runs and new B-076/AUD-047 for broad spraying outcome/count omissions. Existing six frontend lint warnings persist as AUD-009. | T12; `2026-10-26-112540-7ff8e5ae.json` |
+| 2026-10-26 | T13 finding IDs in the core; agent, tools and API unchanged. Port eval meets gates at exactly 57/63 (90%) and 15/15 security. Recurrences of AUD-046 (Q04 0/3) and AUD-047 (Q02 now 0/3), noting the gate's zero margin. Added AUD-048 (finding ID and the detection tool, for ticket 32). | T13; `2026-10-26-131223-7ff8e5ae.json` |

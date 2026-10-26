@@ -191,7 +191,7 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is tickets 13, 14 and 15**, which have no unresolved blockers; one session
+line holds its edges. **The frontier is tickets 14 and 15**, which have no unresolved blockers; one session
 works at a time, so first by number wins.
 
 ### Build tickets resolved
@@ -234,6 +234,16 @@ works at a time, so first by number wins.
   broad-spray outcome/count omissions; B-074/AUD-046 recurs on all three broad-compromise runs.
   Six existing frontend lint warnings remain. Benign clearing documents and graph recomputation
   are later tickets. Author approved T12 on 26 October 2026. All work committed locally.
+
+- [13 The finding ID in the core](issues/13-finding-id-in-core.md)
+  (26 October 2026): every finding carries `F-<rule slug>-<hash8>`, a SHA-256 of rule, users,
+  addresses, first and last seen, computed from the finding's own fields and kept out of
+  `to_dict()`, so the Alerts reply and the agent's view are unchanged until ticket 32. The recipe
+  is fixed in the ticket's Answer and pinned by a test with an independently computed value.
+  Evidence: 453 backend and 149 frontend tests, clean types, two-axis review triaged; Port eval
+  57/63 and 15/15 meets its gates with no spare run, as Q02 (B-076/AUD-047) and Q04
+  (B-074/AUD-046) now fail all three runs on the unchanged agent. AUD-048 is new for ticket 32.
+  Author acceptance pending.
 
 ## Not yet specified
 

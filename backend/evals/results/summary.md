@@ -22,3 +22,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-25 22:08 | 7ff8e5ae | ab8583f | 19 x 3 | 96% | 100% | yes | api: T10 dataset folder relocation; unchanged Port exam |
 | 2026-10-26 09:56 | 7ff8e5ae | 0beda3f | 19 x 3 | 93% | 100% | yes | api: T11 organisation tables and two internal log columns; unchanged Port exam |
 | 2026-10-26 11:21 | 7ff8e5ae | 0d98d2e+changes | 21 x 3 | 92% | 100% | yes | api: kb-t12 |
+| 2026-10-26 13:08 | 7ff8e5ae | bb231dd+changes | 21 x 3 | 90% | 100% | yes | api:  |

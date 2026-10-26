@@ -1319,3 +1319,16 @@ fail in each run. The changed world includes the benign twins and S6; no agent o
 The answers also fail to identify S6's successful sign-ins in their broad summary, despite the
 correct direct Q21 answers. Cause not established; no fix in T12. AUD-046 remains open. Evidence:
 `backend/evals/results/2026-10-26-112540-7ff8e5ae.json`.
+
+**B-076 recurrence, 26 October 2026 (knowledge-base T13):** Q02 now fails all three runs, where
+T12 failed two. Each answer gives S6 as "20 failed attempts on 20 accounts" with a last-seen time
+of 02:20, the time of the third success, and never mentions the three successful sign-ins. None
+states that S2 had no success. Run 1 called the rules, both reputation lookups and both address
+searches, so the success rows were in front of the model. T13 changed no tool output, prompt or
+agent code (`Finding.to_dict` untouched; prompt fingerprint `7ff8e5ae` unchanged), so this is the
+same model behaviour sampled again. No fix in T13; AUD-047 remains open. Evidence:
+`backend/evals/results/2026-10-26-131223-7ff8e5ae.json`, Q02 runs 1 to 3.
+
+**B-074 recurrence, 26 October 2026 (knowledge-base T13):** Q04 again fails the three
+required-lookup checks in all three runs, as in T12. No agent change. AUD-046 remains open.
+Evidence: `backend/evals/results/2026-10-26-131223-7ff8e5ae.json`.

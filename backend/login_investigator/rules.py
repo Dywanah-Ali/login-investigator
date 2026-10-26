@@ -120,14 +120,14 @@ class Finding:
         list, so the same log always gives the same IDs (T13). The hashed fields and their order
         are fixed in ticket 13's Answer; the eval's answer key depends on them. Not in to_dict yet:
         the Alerts reply gains it in ticket 32."""
-        defining = [
+        defining_fields = [
             self.rule,
             list(self.users),
             list(self.ips),
             self.first_seen.strftime(TIMESTAMP_FORMAT),
             self.last_seen.strftime(TIMESTAMP_FORMAT),
         ]
-        text = json.dumps(defining, ensure_ascii=False, separators=(",", ":"))
+        text = json.dumps(defining_fields, ensure_ascii=False, separators=(",", ":"))
         digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
         return f"F-{self.rule.replace('_', '-')}-{digest[:8]}"
 
