@@ -78,6 +78,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-049 | Stop sending finding counts the Alerts screen never shows | Open, parked until the author reopens it | Low | Knowledge-base ticket 43 scoping |
 | AUD-050 | Harden Q21's three-successes check, which can pass a wrong answer | Open, parked until the author reopens it | Medium | Knowledge-base ticket 43 spec review |
 | AUD-051 | Teach the `RECOMMENDS` pattern imperative advice such as "please follow" | Open, parked until the author reopens it | Low | B-077; T43 Port eval Q19 run 3 |
+| AUD-052 | Stop the agent flagging benign twin B2 (oliver.hayes) as possibly compromised | Open, for phase 1 (clearing documents, investigation tool) | Medium | Knowledge-base ticket 43, ruling 9 spec review |
 
 ### AUD-001: Rule filter
 
@@ -755,6 +756,17 @@ T43's eval failed Q19 run 3 on "recommends the step", although the answer said "
 organization's procedures to reset daniel.hughes's password." The shared `RECOMMENDS` pattern knows
 advisory verbs only. See B-077. Registration is not approval. Closure evidence: the pattern
 extended with both-direction tests, and a re-grade of the T43 artifact.
+
+### AUD-052: Benign twin B2 flagged as possibly compromised
+
+Ticket 43's rulings 8 and 9 tell the agent to flag an account that a brute-force or spraying
+address signed in to, and add a true code-built sentence to such a finding's summary. B2's reset
+burst (198.51.100.30, oliver.hayes) trips brute force and then signs in 11 times, so the agent now
+sees "also signed in successfully 11 times, to oliver.hayes" and will likely flag him. The
+knowledge-base spec requires that benign twins never slip; the Port eval has no check for it. His
+clearing document and the investigation tool's clearing section (phase 0 corpus, phase 1 tool)
+are the planned cure. Registration is not approval. Closure evidence: a knowledge-base eval
+question on B2 passing with the twin cleared.
 
 ## Longer-term capabilities already named in the spec
 

@@ -291,3 +291,10 @@ check patterns for Q02 and Q04.
   times, to amelia.ward; S1 last night: 1 time, to daniel.hughes); S2, new-country findings and a
   window before S6's first success keep the plain summary. The tool description says so in one
   clause. Evidence: 512 backend and 149 frontend tests, pyright clean.
+- 26 October 2026, `mp-code-review` on `a43df31...c40a0b3`, triage: Standards clean, three
+  judgement calls kept (one dense line, untyped window arguments and test literals, all matching
+  the surrounding conventions). Spec: requirements met, no scope creep, every added sentence
+  checked true in the week and last-night windows, no Port question harmed, the Alerts reply
+  unchanged. Two notes kept: benign twin B2 now reads "also signed in successfully 11 times, to
+  oliver.hayes" and will likely be flagged, registered as AUD-052 for phase 1; the chat's step
+  table shows the agent's view, so the sentence appears there too, by design.
