@@ -28,7 +28,8 @@ _Avoid_: Incident, detection, event
 What one IP address of a **Finding** did in the window the agent asked about: its successful and
 failed sign-ins and the accounts it signed in to. A finding's own counts cover only the rows its
 rule matched, so a spraying finding never shows a success; address activity does (ticket 43). The
-agent sees it; the Alerts screen does not.
+agent sees it in place of the finding's own success and failure counts; the Alerts screen shows
+neither change.
 _Avoid_: Address summary, IP stats
 
 **Rule severity**:

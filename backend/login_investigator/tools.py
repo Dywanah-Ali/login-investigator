@@ -30,6 +30,10 @@ DATA_NOTE = (
 
 LOG_REFUSED = "The configured sign-in log failed validation, so it cannot be read."
 
+# A finding's own outcome counts cover only its rule's rows, so the agent sees address_activity
+# instead (ticket 43, ruling 8). The Alerts reply keeps them.
+HIDDEN_FROM_AGENT = ("success_count", "failure_count")
+
 
 class _LogUnavailable(ValueError):
     """The configured log failed validation. A ValueError, so each log tool's existing error
@@ -128,9 +132,10 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
     from a new country. Each finding gives its rule, a summary, the IPs and users involved, an
     event count, first and last seen times, and evidence rows (the first and last events when
     there are many). A finding's event count covers only the rows its rule matched: a password
-    spraying finding counts failures only. Each finding's "address_activity" says what each of its IPs did
-    in the window: successes, failures and the accounts it signed in to. Read it to tell whether
-    an address got in. Start here for broad questions such as "anything suspicious?".
+    spraying finding counts failures only. Each finding's "address_activity" says what each of
+    its IPs did in the window: successes, failures and the accounts it signed in to. Read it to
+    tell whether an address got in. Start here for broad questions such as "anything
+    suspicious?".
 
     Args:
         start: Start of the window, included. An explicit ISO 8601 UTC time such as
@@ -148,7 +153,7 @@ def find_suspicious_activity(start: str | None = None, end: str | None = None) -
     # success and failure counts are left out, since the model repeated a spray's 0 successes
     # over the address's real ones; `address_activity` is the agent's only outcome count.
     shown = [{**{key: value for key, value in f.to_dict().items()
-                 if key not in ("success_count", "failure_count")},
+                 if key not in HIDDEN_FROM_AGENT},
               "address_activity": [address_activity(log, ip, start, end) for ip in f.ips]}
              for f in findings]
     return _ok(

@@ -360,7 +360,21 @@ def test_q02_counts_three_successes_both_directions(text, expected):
     ("45.148.10.80 made 3 successful sign-ins on amelia.ward.", True),
     ("amelia.ward: 3 successful sign-ins", True),
     ("Signed in to: amelia.ward (3 successes)", True),
-    ("amelia.ward is possibly compromised.", True),
+    # Forms the model echoes from address_activity, from the rework's spec review.
+    ("   - Signed-in accounts: amelia.ward", True),
+    ("Signed in to:\n   - amelia.ward (3 times)", True),
+    ("3 successful sign-ins and 20 failures, on amelia.ward", True),
+    ("It got into amelia.ward.", True),
+    ("It accessed amelia.ward three times.", True),
+    ("amelia.ward signed in from 45.148.10.80 three times.", True),
+    ("45.148.10.80 (abuse score 100, not whitelisted) signed in to amelia.ward 3 times.", True),
+    # A compromise flag alone is Q04's check, not a success tied to her.
+    ("amelia.ward is possibly compromised.", False),
+    # Negations before her name, from the rework's spec review.
+    ("There were no successful sign-ins on any targeted account, including amelia.ward.", False),
+    ("No accounts were compromised, including amelia.ward.", False),
+    ("amelia.ward and others, with 0 successful sign-ins", False),
+    ("amelia.ward (success count: 0)", False),
     # Q02 run 1, prompt version f853f368 (T43): named only as a target.
     ("   - Users targeted: 20 accounts including alexander.grant, amelia.ward, benjamin.cole, "
      "charlie.dixon, and others.\n   - Event count: 20 attempts\n   - Failure count: 20", False),

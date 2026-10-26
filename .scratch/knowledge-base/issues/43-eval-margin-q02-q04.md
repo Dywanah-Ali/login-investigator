@@ -245,3 +245,23 @@ check patterns for Q02 and Q04.
   and a both-direction table holding T43 run 1's target list. Evidence: 499 backend and 149
   frontend tests, pyright clean. Free re-grade of the T43 run (`2026-10-26-174557`): 57/63, and
   the tightened check now fails all three Q02 runs that named her only as a target.
+- 26 October 2026, `mp-code-review` on `79efb01...39cf2a8`, triage:
+  - Spec, fixed: `AMELIA_SIGNED_IN` passed answers with a negation before her name ("no
+    successful sign-ins… including amelia.ward", "0 successful", "success count: 0") and failed
+    the model's list style ("Signed-in accounts: amelia.ward", a "Signed in to:" list, "got
+    into", "signed in from 45.148.10.80 three times"). It now guards the whole line against
+    negation and accepts those forms; it no longer passes on "compromised" alone, which is Q04's
+    check. Every probe is in the both-direction table (89 grader tests).
+  - Spec, kept, a risk for the paid run: S6's rule summary still reads "failed on 20 accounts in
+    20 attempts". It is true and comes from the core, which the Alerts screen shares; ruling 8 did
+    not ask to change it.
+  - Spec, kept: the prompt addition is one bullet of four sentences carrying ruling 8's intent.
+    Q04 will likely flag benign twin oliver.hayes too, which is expected until the clearing
+    documents exist.
+  - Standards, fixed: pattern-key whitespace, one docstring line over 100 characters, the glossary
+    entry, and a named `HIDDEN_FROM_AGENT` constant in `tools.py`.
+  - Standards, kept: the two Amelia patterns repeat a negation guard; JSON patterns cannot share
+    a fragment.
+  - Noticed, outside scope: three lines in `agent.py` over 100 characters predate this ticket.
+- 26 October 2026, evidence before the second paid run: 510 backend and 149 frontend tests,
+  pyright clean; free re-grade of the T43 run (`2026-10-26-175342`) 57/63 with the same failures.
