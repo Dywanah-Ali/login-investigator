@@ -89,3 +89,6 @@ world's tables, so facts in the corpus are checked by code and humans read only 
   evidence; resolved. Ticket 16 is next for the brief: the author runs a standalone Codex session
   with `codex-brief.md` as its only input, then `uv run python -m scripts.check_corpus` from
   `backend/` on the delivered folder.
+
+- 2026-10-27, author's ruling: the Port eval is skipped for T15, as no agent, tool, prompt or
+  data file it measures changed.
