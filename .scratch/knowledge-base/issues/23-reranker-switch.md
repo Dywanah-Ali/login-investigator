@@ -22,6 +22,9 @@ behaves as ticket 22 left it.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] Our own document compressor calls the rerank endpoint behind LangChain's compression-retriever
       seam and keeps the best 5 of 20.
 - [ ] One setting switches it on and off; `env.example` and the contract's configuration section

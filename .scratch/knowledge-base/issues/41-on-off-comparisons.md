@@ -25,6 +25,9 @@ wins if refusal stops working with it.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] BM25 exists as a switchable keyword leg; its build is recorded.
 - [ ] The re-ranker and BM25 each run on and off over the retrieval layer on the full question set.
 - [ ] Each result applies the T06 d9 rule and the refusal condition; ticket 39's off-threshold is

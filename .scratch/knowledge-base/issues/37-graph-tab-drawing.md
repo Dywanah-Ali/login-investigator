@@ -28,6 +28,9 @@ folded into one node with a count. The picture is read-only.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] Reopen turns gain `graph` where a graph tool ran, projected through ticket 27's resolver; the
       API contract is updated first.
 - [ ] The `fold:` naming and `members` are confirmed or changed, recorded under this ticket's Answer,

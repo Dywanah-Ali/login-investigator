@@ -25,6 +25,9 @@ the author.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] The judge model is chosen and recorded with its reason under this ticket's Answer.
 - [ ] The judge grades each claim pass or fail with fixed steps, reason before verdict, on text with
       markdown stripped.

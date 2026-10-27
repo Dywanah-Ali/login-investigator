@@ -35,6 +35,9 @@ and the own corpus flows in with no code change once ticket 16 delivers it.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] One build command loads the tables, chunks, vectors, keyword index and link table from the
       dataset folder into a fresh database through the build role.
 - [ ] Chunks are cut at Markdown headings, then by token size only inside an over-long section; no

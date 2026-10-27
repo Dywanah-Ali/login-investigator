@@ -22,6 +22,9 @@ and the author's labels come back only through an export script into a repo file
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] One callback handler is added in the agent-building function.
 - [ ] Off by default; one environment variable turns it on; the key is loaded only when on and never
       written to a result.

@@ -25,6 +25,9 @@ checks the first questions' gold IDs on every build.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] Search runs a vector leg and a keyword leg; filters apply inside both before their limits;
       vector search is exact with no approximate index.
 - [ ] Fusion is our own, k = 60, equal legs, 20 plus 20 candidates, 1-based ranks. Each candidate

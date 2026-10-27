@@ -22,6 +22,9 @@ edge the walk returned but the answer never cited says so, with its record ID.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] A click on an edge switches to the Evidence tab and lights its row and hop line.
 - [ ] A click on a node lights every evidence row that touches it.
 - [ ] An uncited edge shows "Walked, not cited in the answer" with its record ID.

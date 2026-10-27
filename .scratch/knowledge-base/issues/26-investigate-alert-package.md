@@ -25,6 +25,9 @@ progress per internal step, so the screen can later stack the steps while they r
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] `investigate_alert` finds the finding by its ID; an unknown ID returns plain content saying so.
 - [ ] The package has the five named sections, each with its own verdict and citations, computed and
       ordered in code. A targets section is filled for spray and brute force and empty otherwise.

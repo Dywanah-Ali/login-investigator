@@ -23,6 +23,9 @@ has nothing on a question.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] The tuning file holds 30 to 60 query and chunk pairs, each with `split: tune`, labelled by the
       author; a dated line records the labelling.
 - [ ] A test proves no tuning pair overlaps a test question.

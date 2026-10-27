@@ -23,6 +23,9 @@ line and gold IDs or an expected verdict.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] About 30 questions with the T06 d3 mix; the actual counts are recorded.
 - [ ] B3's question asks about the laptop change directly.
 - [ ] Every question carries a provenance line and gold IDs or an expected verdict; ticket 21's test

@@ -212,7 +212,9 @@ every later ticket; the standard models (Opus 5.5, Sol 6.1) take the rest.
 | Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40 | Standard build work on seams the strongest tickets set |
 | None | 42 | The author's ticket |
 
-The line advises; it is not a gate. The independence idea (eval questions in 21 and 40 written by
+The line advises; it is not a gate. Each of tickets 17 to 41 carries a first acceptance criterion:
+before any build work starts, the builder tells the author the ticket's `Model:` line, waits for the
+author to confirm the model is set, and records the model used in a dated comment. The independence idea (eval questions in 21 and 40 written by
 the other family from the retrieval builder) was proposed and is not ruled.
 
 ### Build tickets resolved

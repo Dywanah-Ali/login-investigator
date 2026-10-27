@@ -26,6 +26,9 @@ check, so screen and exam cannot disagree.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] Structured answer or parsed prose is decided; the decision and its reason are recorded under
       this ticket's Answer and in AUD-041.
 - [ ] Labels L, G and D are numbered per answer and resolved against the investigation's artifacts

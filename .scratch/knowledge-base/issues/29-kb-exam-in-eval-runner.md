@@ -27,6 +27,9 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] The knowledge-base file runs beside the Port file, with its own gates and summary lines.
 - [ ] Check kinds `retrieval`, `cites`, `verdict` and `playbook` are deterministic; `judge` is marked
       so rescoring skips it. The judge itself is ticket 30.

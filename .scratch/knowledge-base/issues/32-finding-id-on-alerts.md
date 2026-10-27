@@ -22,6 +22,9 @@ that alert.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] The Alerts reply gains `finding_id` and nothing else; the API contract is updated first.
 - [ ] Door 4 test: `finding_id` appears on every alert.
 - [ ] The Alerts table shows the finding ID as its first column, as plain text.

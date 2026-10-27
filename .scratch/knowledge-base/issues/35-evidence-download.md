@@ -21,6 +21,9 @@ to hand the case to a colleague. The file holds exactly what the panel shows and
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] The endpoint serves the file as an attachment; the API contract is updated first.
 - [ ] Door 4 test: the file's keys are exactly the contract's, and nothing from the prompt or the
       memory file appears in it.

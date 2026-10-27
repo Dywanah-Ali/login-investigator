@@ -19,6 +19,9 @@ in Gephi Lite to inspect the synthetic organisation by eye. There is no download
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] A script calls one core function that sets colour by node type and writes the whole graph, or
       one finding's neighbourhood by finding ID, as GEXF.
 - [ ] No API endpoint serves the file.

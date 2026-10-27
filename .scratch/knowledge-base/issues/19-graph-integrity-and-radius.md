@@ -31,6 +31,9 @@ it gives exactly the S6 radius written in `truth.json`.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] One function opens a dataset's knowledge base; the graph is built in NetworkX from the tables,
       with chunk nodes and `mentions` edges.
 - [ ] `used address` edges are drawn from the log. The row filter (for example, successful sign-ins

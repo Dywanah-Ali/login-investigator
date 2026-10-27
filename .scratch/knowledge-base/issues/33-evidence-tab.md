@@ -27,6 +27,9 @@ column folds under the chat.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] Reopen turns gain `evidence` and `unresolved`, projected through ticket 27's resolver; the API
       contract is updated first.
 - [ ] Door 4 test: the fields come from the saved artifact; a test proves they do not change when

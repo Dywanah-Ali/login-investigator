@@ -24,6 +24,9 @@ link opens the full list in the evidence panel.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] Reopen turns gain `radii` where the investigation tool ran, projected from the artifact; the
       API contract is updated first.
 - [ ] Where the verdict shown comes from is fixed under this ticket's Answer, following ticket 27's

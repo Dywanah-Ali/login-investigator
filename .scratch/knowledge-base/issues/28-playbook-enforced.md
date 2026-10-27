@@ -24,6 +24,9 @@ the step that could not run and why.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] The playbook is one list in the core, read by the policy hook, the report gate and the eval.
 - [ ] After a call to `investigate_alert`, the before-model hook adds any missing required step as a
       tool call. A narrow tool call does not trigger the full plan.

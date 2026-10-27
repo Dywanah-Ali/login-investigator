@@ -23,6 +23,9 @@ ticket 24: typed, read-only, fenced, short content for the model and a full arti
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] `find_peers` returns the users sharing a device or a network address that week, from the graph,
       paged with a `truncated` flag; the full list is in the artifact.
 - [ ] `search_corpus` takes typed options, builds the filter in code, and returns the verdict with up

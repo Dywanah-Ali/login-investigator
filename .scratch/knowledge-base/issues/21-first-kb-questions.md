@@ -24,6 +24,9 @@ any search runs, so the exam cannot be fitted to the results.
 
 ## Acceptance criteria
 
+- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+      asks the author to set that model. The build starts only after the author confirms, and a
+      dated line under Comments records the model used.
 - [ ] The question file sits beside the Port's file, which stays unchanged.
 - [ ] Six to ten questions, covering at least one document lookup, one graph lookup, one mixed
       question on S6, one absent topic (verdict `none`, no gold IDs) and one twin.
