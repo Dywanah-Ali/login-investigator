@@ -1,7 +1,7 @@
 # 15: The Codex brief and the consistency script
 
 Type: build
-Status: ready-for-agent
+Status: claimed
 Blocked by: 12
 Phase: 0
 

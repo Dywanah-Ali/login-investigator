@@ -1,0 +1,20 @@
+{
+  "stories": {
+    "S9": {
+      "expected_document_ids": ["pol-sample", "reg-sample"]
+    }
+  },
+  "twins": {
+    "B9": {
+      "clearing_document_id": "rec-sample"
+    }
+  },
+  "leaver": "finn.archer",
+  "never_mentioned_users": ["cara.voss"],
+  "absent_topics": [
+    {"kind": "incident_writeups", "description": "No incident write-ups"},
+    {"kind": "asset_governance", "asset_id": "asset-backup-server"},
+    {"kind": "policy", "topic": "data retention"},
+    {"kind": "users", "usernames": ["cara.voss"]}
+  ]
+}

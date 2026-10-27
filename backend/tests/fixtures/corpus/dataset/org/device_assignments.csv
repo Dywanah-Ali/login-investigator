@@ -1,0 +1,5 @@
+assignment_id,device_id,person_id
+asg-laptop-ann.lee,dev-laptop-ann.lee,user-ann.lee
+asg-laptop-bob.kerr,dev-laptop-bob.kerr,user-bob.kerr
+asg-laptop-cara.voss,dev-laptop-cara.voss,user-cara.voss
+asg-warehouse-terminal-bob.kerr,dev-warehouse-terminal,user-bob.kerr

@@ -1,0 +1,3 @@
+asset_id,name,sensitivity,owner_id
+asset-email,email,internal,user-ann.lee
+asset-backup-server,backup server,restricted,user-ann.lee
