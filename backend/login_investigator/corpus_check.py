@@ -20,7 +20,8 @@ ASSET_ID = re.compile(r"\basset-[a-z0-9]+(?:-[a-z0-9]+)*")
 ADDRESS = re.compile(r"(?<![\d.])\d{1,3}(?:\.\d{1,3}){3}(?![\d.]*\d)")
 ATTACK_ID = re.compile(r"\b(?:T\d{4}(?:\.\d{3})?|M\d{4})\b")
 OWN_KINDS = ("policy", "runbook", "register", "record", "meeting", "email", "guidance")
-INCIDENT_WRITEUP_TERMS =("incident report", "incident write-up", "post-incident", "post-mortem")
+STATUSES = ("current", "superseded")
+INCIDENT_WRITEUP_TERMS = ("incident report", "incident write-up", "post-incident", "post-mortem")
 
 
 @dataclass(frozen=True)
@@ -130,7 +131,6 @@ class World:
     device_ids: frozenset[str]
     device_names: frozenset[str]
     asset_ids: frozenset[str]
-    addresses: frozenset[str]
     display_names: dict[str, str]
     devices_by_user: dict[str, tuple[str, ...]]
     asset_names: dict[str, str]
@@ -153,7 +153,6 @@ class World:
             device_ids=frozenset(device_names),
             device_names=frozenset(device_names.values()),
             asset_ids=frozenset(row["asset_id"] for row in assets),
-            addresses=frozenset(row["address"] for row in read_table(dataset, "networks")),
             display_names={row["username"]: row["display_name"] for row in people},
             devices_by_user=devices_by_user,
             asset_names={row["asset_id"]: row["name"] for row in assets},
@@ -175,8 +174,8 @@ def mention_errors(body: str, world: World, leaver: str) -> list[str]:
                if device not in world.device_names | world.device_ids]
     errors += [f"mentions unknown asset {asset}" for asset in ASSET_ID.findall(body)
                if asset not in world.asset_ids]
-    errors += [f"mentions address {address}, which is not in the networks table"
-               for address in ADDRESS.findall(body) if address not in world.addresses]
+    errors += [f"contains IP address {address}, which the brief forbids"
+               for address in ADDRESS.findall(body)]
     errors += [f"mentions technique {identifier}, which is not in the ATT&CK corpus"
                for identifier in ATTACK_ID.findall(body)
                if identifier not in (*TECHNIQUES, *MITIGATIONS)]
@@ -186,9 +185,9 @@ def mention_errors(body: str, world: World, leaver: str) -> list[str]:
 def brief_errors(brief: Brief, world: World) -> list[str]:
     """The brief's plan must itself be valid before documents are compared with it."""
     errors: list[str] = []
-    planned = [document.id for document in brief.documents]
+    planned_ids = [document.id for document in brief.documents]
     errors += [f"brief: {identifier} is planned more than once"
-               for identifier in dict.fromkeys(planned) if planned.count(identifier) > 1]
+               for identifier in dict.fromkeys(planned_ids) if planned_ids.count(identifier) > 1]
     for document in brief.documents:
         name = document.id
         if document.kind not in OWN_KINDS:
@@ -200,9 +199,9 @@ def brief_errors(brief: Brief, world: World) -> list[str]:
                           "is not a department in the people table")
         if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", document.date):
             errors.append(f"brief: {name} date {document.date} is not YYYY-MM-DD")
-        if document.status not in ("current", "superseded"):
+        if document.status not in STATUSES:
             errors.append(f"brief: {name} status {document.status} is not current or superseded")
-        if document.supersedes is not None and document.supersedes not in planned:
+        if document.supersedes is not None and document.supersedes not in planned_ids:
             errors.append(f"brief: {name} supersedes {document.supersedes}, "
                           "which the brief does not plan")
     return errors
@@ -233,6 +232,23 @@ def contains_term(text: str, term: str) -> bool:
     return re.search(rf"(?<!\w){words}", text, flags=re.IGNORECASE) is not None
 
 
+def expected_document_ids(truth: object) -> set[str]:
+    """Every document ID the answer key points at, wherever it sits in the key."""
+    found: set[str] = set()
+    if isinstance(truth, dict):
+        for key, value in truth.items():
+            if key == "expected_document_ids":
+                found.update(value)
+            elif key == "clearing_document_id":
+                found.add(value)
+            else:
+                found |= expected_document_ids(value)
+    elif isinstance(truth, list):
+        for item in truth:
+            found |= expected_document_ids(item)
+    return found
+
+
 def check_corpus(dataset: Path, brief: Brief) -> CorpusReport:
     errors: list[str] = []
     lengths: list[DocumentLength] = []
@@ -243,6 +259,8 @@ def check_corpus(dataset: Path, brief: Brief) -> CorpusReport:
     errors.extend(f"brief: the answer key expects {identifier}, which the brief does not plan"
                   for identifier in sorted(expected_document_ids(truth)) if identifier not in plan)
     leaver = truth["leaver"]
+    # The leaver is in no table, so the written name comes from the username: Finn Archer.
+    leaver_terms = (leaver, " ".join(part.capitalize() for part in leaver.split(".")))
     leaver_documents: list[tuple[str, object]] = []
     unreadable: list[str] = []
     forbidden = tuple(dict.fromkeys((*absent_topic_terms(truth, world), *brief.forbidden_terms)))
@@ -259,26 +277,24 @@ def check_corpus(dataset: Path, brief: Brief) -> CorpusReport:
             continue
         errors.extend(f"{name}: front matter is missing {field}"
                       for field in FIELDS if field not in header)
-        errors.extend(f"{name}: front matter has unexpected field {field}"
-                      for field in header if field not in FIELDS)
-        errors.extend(f"{name}: front matter {field} must be quoted text"
-                      for field, value in header.items()
-                      if not isinstance(value, str) and not (field == "supersedes" and value is None))
         if "id" in header and header["id"] != name:
             errors.append(f"{name}: id is {header['id']}, which does not match its file name")
         if name not in plan:
             errors.append(f"{name}: not planned in the brief")
-        if header.get("owner") not in brief.teams:
-            errors.append(f"{name}: owner {header.get('owner')} is not an allowed team")
-        planned = plan.get(name)
-        if planned:
-            errors.extend(
-                f"{name}: {field} is {header[field]}, the brief plans {getattr(planned, field)}"
-                for field in FIELDS if field in header and header[field] != getattr(planned, field)
-                and not (field == "owner" and header[field] not in brief.teams)
-            )
+        planned_document = plan.get(name)
+        for field, value in header.items():
+            if field not in FIELDS:
+                errors.append(f"{name}: front matter has unexpected field {field}")
+            elif not isinstance(value, str) and not (field == "supersedes" and value is None):
+                errors.append(f"{name}: front matter {field} must be quoted text")
+            elif field == "owner" and value not in brief.teams:
+                errors.append(f"{name}: owner {value} is not an allowed team")
+            elif (planned_document and field != "id"
+                  and value != getattr(planned_document, field)):
+                errors.append(f"{name}: {field} is {value}, "
+                              f"the brief plans {getattr(planned_document, field)}")
         errors.extend(f"{name}: {error}" for error in mention_errors(body, world, leaver))
-        if re.search(rf"\b{re.escape(leaver)}\b", body):
+        if any(contains_term(body, term) for term in leaver_terms):
             leaver_documents.append((name, header.get("kind")))
         lengths.append(measure(name, str(header.get("kind")), body))
     delivered = {length.id for length in lengths} | set(unreadable)
@@ -288,20 +304,3 @@ def check_corpus(dataset: Path, brief: Brief) -> CorpusReport:
         found = ", ".join(name for name, _ in leaver_documents) or "none"
         errors.append(f"leaver {leaver} must appear in exactly one register, found in {found}")
     return CorpusReport(tuple(errors), tuple(lengths))
-
-
-def expected_document_ids(truth: object) -> set[str]:
-    """Every document ID the answer key points at, wherever it sits in the key."""
-    found: set[str] = set()
-    if isinstance(truth, dict):
-        for key, value in truth.items():
-            if key == "expected_document_ids":
-                found.update(value)
-            elif key == "clearing_document_id":
-                found.add(value)
-            else:
-                found |= expected_document_ids(value)
-    elif isinstance(truth, list):
-        for item in truth:
-            found |= expected_document_ids(item)
-    return found

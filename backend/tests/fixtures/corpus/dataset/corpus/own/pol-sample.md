@@ -18,5 +18,5 @@ Every account signs in with a password of at least fourteen characters.
 
 ## Scope
 
-The policy covers email and every laptop such as LT-ALEE. Office sign-ins come from
-203.0.113.10. Repeated failures are described in ATT&CK T1110.003, and M1032 helps.
+The policy covers email and every laptop such as LT-ALEE. Office sign-ins use version 2.0 of
+the sign-in page. Repeated failures are described in ATT&CK T1110.003, and M1032 helps.

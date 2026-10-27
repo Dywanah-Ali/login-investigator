@@ -106,7 +106,7 @@ def test_brief_that_omits_a_document_the_answer_key_expects_fails(tmp_path):
     ("LT-ZMARLOW", "mentions unknown device LT-ZMARLOW"),
     ("dev-laptop-zed.marlow", "mentions unknown device dev-laptop-zed.marlow"),
     ("asset-crm", "mentions unknown asset asset-crm"),
-    ("10.20.30.40", "mentions address 10.20.30.40, which is not in the networks table"),
+    ("10.20.30.40", "contains IP address 10.20.30.40, which the brief forbids"),
     ("T1566.001", "mentions technique T1566.001, which is not in the ATT&CK corpus"),
 ])
 def test_unknown_mention_fails(tmp_path, mention, error):
@@ -187,12 +187,12 @@ EXAM_WORDS = (
     "prompt", "prompts", "investigator", "agent", "agents", "model", "chunk", "chunks",
     "embedding", "graph", "blast radius", "S1", "S2", "S3", "S4", "S5", "S6", "B1", "B2", "B3",
 )
+REAL_NAMES = ("Microsoft", "Okta", "Google", "Cisco", "Duo", "Azure", "Amazon", "AWS", "Apple",
+              "Zoom", "Slack", "MITRE")
 
 
 def whole_word(text: str, word: str) -> bool:
     return re.search(rf"(?<!\w){re.escape(word)}(?!\w)", text, flags=re.IGNORECASE) is not None
-REAL_NAMES = ("Microsoft", "Okta", "Google", "Cisco", "Duo", "Azure", "Amazon", "AWS", "Apple",
-              "Zoom", "Slack", "MITRE")
 
 
 def test_real_brief_plans_the_27_documents_with_the_answer_keys_ids():
@@ -237,12 +237,48 @@ def test_real_brief_keeps_absent_topics_out_or_forbids_them():
     assert uncovered == []
 
 
-def test_leaver_outside_one_register_fails(tmp_path):
+@pytest.mark.parametrize("mention", ["Finn Archer (finn.archer)", "Finn Archer"])
+def test_leaver_outside_one_register_fails(tmp_path, mention):
     dataset = copy_of_sample(tmp_path)
-    edit(dataset, "rec-sample", "Bob Kerr received", "Finn Archer (finn.archer) received")
+    edit(dataset, "rec-sample", "Bob Kerr received", f"{mention} received")
 
     report = check_corpus(dataset, sample_brief())
 
     assert report.errors == (
         "leaver finn.archer must appear in exactly one register, found in rec-sample, reg-sample",
     )
+
+
+@pytest.mark.parametrize(("old", "new", "error"), [
+    ('version: "1.0"\n', 'version: "1.0"\nreviewer: "IT Support"\n',
+     "rec-sample: front matter has unexpected field reviewer"),
+    ('version: "1.0"', "version: 1.0", "rec-sample: front matter version must be quoted text"),
+    ('version: "1.0"', "version: one", "rec-sample: front matter value for version is not quoted text or null"),
+    ("---\nid:", "id:", "rec-sample: no front matter between '---' lines"),
+])
+def test_malformed_front_matter_fails(tmp_path, old, new, error):
+    dataset = copy_of_sample(tmp_path)
+    edit(dataset, "rec-sample", old, new)
+
+    report = check_corpus(dataset, sample_brief())
+
+    assert report.errors == (error,)
+
+
+def test_document_planned_twice_in_the_brief_fails():
+    text = (SAMPLE / "brief.md").read_text()
+    row = next(line for line in text.splitlines() if line.startswith("| `rec-sample`"))
+
+    report = check_corpus(SAMPLE / "dataset", read_brief(text.replace(row, f"{row}\n{row}")))
+
+    assert report.errors == ("brief: rec-sample is planned more than once",)
+
+
+def test_absent_topic_kind_without_a_check_stops_the_run(tmp_path):
+    dataset = copy_of_sample(tmp_path)
+    truth = json.loads((dataset / "truth.json").read_text())
+    truth["absent_topics"].append({"kind": "vendor"})
+    (dataset / "truth.json").write_text(json.dumps(truth))
+
+    with pytest.raises(ValueError, match="No check is defined for absent topic kind vendor"):
+        check_corpus(dataset, sample_brief())

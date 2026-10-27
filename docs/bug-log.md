@@ -1476,3 +1476,23 @@ The underlying context issue is deferred separately from B-081.
 **Lesson:** verify project and live conversation before trusting inherited multiplexer IDs.
 **Evidence:** `pane current` and `agent list` disagreed on the relevant pane; the explicitly
 selected Login Investigator pane contained the live diagnostic question and received the reply.
+
+### B-083 · 2026-10-27 · Knowledge-base T15 · The Codex brief contradicted the log and itself
+
+**Symptom:** the first draft of the brief told the writer that Oliver Hayes's failures ran from
+06:00 to 06:07 and locked his account after 10 failures, and that remote work used the VPN only.
+The log shows twenty `bad_password` failures from 06:00:00 to 06:09:30, no lockout, and many
+direct home sign-ins. After the first commit, the spec review found three more: the systems
+table's "Granted to IT Admins" for the VPN gateway and identity provider could be read as
+"only IT Admins use them"; the 29 September meeting called a review "done" that happens on
+30 September; and the new starter guide was dated before MFA and the current password policy.
+**Cause:** the brief's facts were checked against `truth.json` but not against the log and
+against the brief's own dates. A writer copies such statements into documents, where they
+would contradict the world the eval reads.
+**Fix:** timeline and lockout corrected before the commit; remote access narrowed to internal
+systems; "Granted to" explained as administrative access; the meeting now says the review is
+booked; the guide moved to 2026-06-15; one consistent ATT&CK rule.
+**Lesson:** every fact in a writer's brief is checked against the log and tables it describes,
+and every dated statement against the other dates in the brief, before review.
+**Evidence:** `logins.csv` rows for oliver.hayes on 2026-10-05; T15 review record
+`.scratch/knowledge-base/reviews/15-code-review-2026-10-27.md`.

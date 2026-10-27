@@ -110,6 +110,10 @@ Everyone belongs to All Staff. Three privileged groups sit on top of it:
 | ERP | confidential | Max Thornton | Finance Approvers |
 | HR system | restricted | Chloe Barker | HR Data Owners |
 
+For the identity provider, the VPN gateway and the domain controller, "Granted to" means
+administrative access. Every member of staff signs in through the identity provider, and any member
+of staff may connect through the VPN gateway.
+
 Name systems as written in this table. Do not name any other internal system.
 
 ### Devices
@@ -207,7 +211,7 @@ Use these header values exactly. `none` in the supersedes column means `null` in
 | `eml-helpdesk-self-service` | Self-Service Password Reset Is Coming | email | IT Support | IT | 2026-09-28 | 1.0 | current | none |
 | `eml-office-move` | UK Office Move to the Third Floor | email | Facilities | Operations | 2026-09-03 | 1.0 | current | none |
 | `eml-phishing-awareness` | How to Spot a Phishing Email | email | Security | IT | 2026-08-19 | 1.0 | current | none |
-| `gde-new-starter` | New Starter Guide | guidance | People | HR | 2026-01-12 | 3.1 | current | none |
+| `gde-new-starter` | New Starter Guide | guidance | People | HR | 2026-06-15 | 3.1 | current | none |
 | `gde-incident-communication` | Incident Communication Template | guidance | Security | IT | 2026-04-07 | 1.2 | current | none |
 
 ## What each document contains
@@ -333,7 +337,8 @@ and the shared device register being due for review.
 ### mtg-security-2026-09-29 (250 to 450 words)
 
 Restates in different words that two people still sign in without MFA under approved exceptions,
-naming them by first name and surname, and that the register review is done. Also the
+naming them by first name and surname, and that the quarterly review of the MFA exception register
+is booked for 2026-09-30. Also the
 self-service password reset launch date of 2026-10-19. No notable security events.
 
 ### mtg-change-board-2026-09-24 (300 to 500 words)
@@ -418,9 +423,10 @@ would need one, leave the topic out.
   happened, except the three recent records above.
 - Do not name any real company, product, vendor or person. Use generic names: the identity
   provider, the authenticator app, the VPN gateway.
-- The only outside references allowed are these ATT&CK IDs, and only where a document's
-  description allows them: T1110, T1110.001, T1110.002, T1110.003, T1110.004, T1078, T1078.002,
-  T1621, T1021, M1032, M1036, M1027, M1018.
+- The only outside references allowed are these ATT&CK IDs: T1110, T1110.001, T1110.002,
+  T1110.003, T1110.004, T1078, T1078.002, T1621, T1021, M1032, M1036, M1027, M1018. Use them in
+  policies, runbooks and the phishing email where they fit, never in
+  `run-password-spray-response`.
 - Do not write IP addresses, web addresses, links, images, file names or HTML.
 - Dates are written YYYY-MM-DD or in words. Times are written in UTC.
 

@@ -21,25 +21,41 @@ world's tables, so facts in the corpus are checked by code and humans read only 
 
 ## Acceptance criteria
 
-- [ ] The brief lives in the initiative folder and carries the organisation's facts, the 27-file list
+- [x] The brief lives in the initiative folder and carries the organisation's facts, the 27-file list
       with headers and planned document IDs from `truth.json`, the realism traits as counted
       requirements (a superseded policy, a leaver, a runbook with no technique ID, one
       instruction-like paragraph), the forbidden topics and the format.
-- [ ] The brief never mentions evals, planted stories or reasons. A recorded word check proves it.
-- [ ] The brief records the allowed owner teams and assigns a responsible team to each internal
+      Evidence: `codex-brief.md`; `test_real_brief_plans_the_27_documents_with_the_answer_keys_ids`.
+- [x] The brief never mentions evals, planted stories or reasons. A recorded word check proves it.
+      Evidence: `test_real_brief_never_names_the_exam_or_a_real_company` passes, 27 October 2026.
+      Its whole-word list is eval, evals, evaluation, test, tests, testing, exam, exams, planted,
+      story, stories, scenario, scenarios, twin, twins, benign, decoy, gold, answer key, ground
+      truth, truth.json, retrieval, RAG, canary, injection, prompt, prompts, investigator, agent,
+      agents, model, chunk, chunks, embedding, graph, blast radius, S1 to S6 and B1 to B3.
+- [x] The brief records the allowed owner teams and assigns a responsible team to each internal
       document. Owners are not employee usernames and do not create login-account links.
-- [ ] The script validates every document's front matter; checks owners against the allowed teams
+      Evidence: five teams under "Owner teams"; the real-brief test asserts the plan is valid and
+      that no team is a username.
+- [x] The script validates every document's front matter; checks owners against the allowed teams
       in the brief and mentioned usernames, devices and assets against the tables, allowing the one
       leaver; checks the four absent topics
       stay absent; checks every document ID `truth.json` expects exists; and reports lengths.
-- [ ] The script's tests use small good and bad samples: an unknown owner team, an unknown mentioned
+      Evidence: `login_investigator/corpus_check.py`, `scripts/check_corpus.py`. Assets are checked
+      as `asset-` IDs and through the absent-topic terms; prose names are a known limit (AUD-055).
+- [x] The script's tests use small good and bad samples: an unknown owner team, an unknown mentioned
       username, a missing field and a
       present absent topic each make it fail.
-- [ ] Nothing in the brief names a real company or person.
+      Evidence: `tests/test_corpus_check.py`, 34 tests, with samples under `tests/fixtures/corpus/`.
+- [x] Nothing in the brief names a real company or person.
+      Evidence: the company is unnamed with the reserved domain `corp.example`; the word-check test
+      also searches a list of common vendor names; the people are the dataset's synthetic staff.
 - [ ] The author reads the brief before it goes to Codex; a dated line records it.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
+      Evidence: 555 backend tests and 149 frontend tests pass; pyright and the frontend typecheck
+      are clean; review and triage in `reviews/15-code-review-2026-10-27.md`. The Port eval was
+      not run: no agent, tool, prompt or data file changed, so its fingerprint is unchanged.
 
 ## Comments
 
@@ -54,3 +70,16 @@ world's tables, so facts in the corpus are checked by code and humans read only 
 - 2026-10-26, superseding the S4 ruling above: the author deferred the expanded authentication-attack story as premature for this phase. Restore the 27-document plan; no additional S4 incident record or email, web or SIEM evidence is required. S4's authentication explanation is open again on T12.
 
 - 2026-10-26, final S4 ruling: the question is settled as intentional uncertainty, not a missing incident story. Keep the 27-document plan. Do not invent Olivia statements or S4-specific proof of authorisation, compromise or an authentication-attack mechanism. See the spec's S4 ruling.
+
+- 2026-10-27, Claude: claimed and built with `/implement`. The author agreed the three test seams
+  (a corpus folder through `check_corpus`, the real brief, the command). Choices made in the brief
+  for the author's read: five owner teams (Security, IT Support, IT Infrastructure, People,
+  Facilities); the leaver in the shared device register; the never-mentioned users and the backup
+  server left out of the brief entirely, so the writer cannot name them; the company left unnamed;
+  the instruction-like paragraph given word for word in the IT change board notes; no account
+  lockout rule, because the log shows none. The checker reads the document list and forbidden
+  terms from the brief itself, so a later brief with more documents needs no code change.
+  Implementation `7ba32ca`; review fixes and records in the following commit. Bug B-083 (brief
+  facts that contradicted the log and its own dates); register AUD-055 (what the checker cannot
+  see). Running against the real dataset now fails as expected: 27 documents not delivered and
+  the leaver found in none. Open: the author's read of the brief.
