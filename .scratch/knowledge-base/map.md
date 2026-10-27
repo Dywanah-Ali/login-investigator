@@ -191,12 +191,14 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is tickets 15 and 17**, which have no unresolved blockers; one session
+line holds its edges. **The frontier is tickets 16 and 17**, which have no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14 has since resolved; the frontier is 15 and 17.
+and is resolved (see Build tickets resolved). T14 and T15 have since resolved; the frontier is 16 and 17.
+Ticket 16 is the author's to run (the standalone Codex session); ticket 17 is the next build
+ticket for this workspace.
 
 ### Build tickets resolved
 
@@ -267,6 +269,16 @@ and is resolved (see Build tickets resolved). T14 has since resolved; the fronti
   review settled, Port API eval 62/63 and 15/15. B-076/AUD-047 recurred outside T14.
   Author's ownership ruling recorded: teams own internal documents, external pages identify
   their publisher, and neither establishes a login-account link. All work committed locally.
+
+- [15 The Codex brief and the consistency script](issues/15-codex-brief-and-consistency-script.md)
+  (27 October 2026): `codex-brief.md` plans the 27 own documents with five owner teams, the
+  company's facts, counted realism features and forbidden terms, and leaves the two
+  never-mentioned users and the backup server out entirely. The core checker reads its plan from
+  the brief and checks a delivered folder against it, the organisation tables and `truth.json`;
+  `scripts.check_corpus` prints lengths and fails on any error. Evidence: 34 checker tests, 555
+  backend and 149 frontend tests, clean types, two-axis review triaged; Port eval not run, as
+  nothing it measures changed. B-083 (brief facts against the log), AUD-055 (what the checker
+  cannot see). The author read the brief on 27 October 2026. All work committed locally.
 
 ## Not yet specified
 

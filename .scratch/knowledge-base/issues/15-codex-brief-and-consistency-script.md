@@ -1,7 +1,7 @@
 # 15: The Codex brief and the consistency script
 
 Type: build
-Status: claimed
+Status: resolved
 Blocked by: 12
 Phase: 0
 
@@ -49,7 +49,8 @@ world's tables, so facts in the corpus are checked by code and humans read only 
 - [x] Nothing in the brief names a real company or person.
       Evidence: the company is unnamed with the reserved domain `corp.example`; the word-check test
       also searches a list of common vendor names; the people are the dataset's synthetic staff.
-- [ ] The author reads the brief before it goes to Codex; a dated line records it.
+- [x] The author reads the brief before it goes to Codex; a dated line records it.
+      Evidence: 2026-10-27, the author read the brief and asked for no changes.
 - [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
@@ -83,3 +84,8 @@ world's tables, so facts in the corpus are checked by code and humans read only 
   facts that contradicted the log and its own dates); register AUD-055 (what the checker cannot
   see). Running against the real dataset now fails as expected: 27 documents not delivered and
   the leaver found in none. Open: the author's read of the brief.
+
+- 2026-10-27, Claude: the author read the brief and asked for no changes. Every criterion has
+  evidence; resolved. Ticket 16 is next for the brief: the author runs a standalone Codex session
+  with `codex-brief.md` as its only input, then `uv run python -m scripts.check_corpus` from
+  `backend/` on the delivered folder.
