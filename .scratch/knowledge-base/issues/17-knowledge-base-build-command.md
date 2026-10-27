@@ -28,6 +28,9 @@ and the own corpus flows in with no code change once ticket 16 delivers it.
   driver, one engine and pool shared with LangChain's `PGEngine`; tables defined in code; the
   read-only role as a second engine. Spec, "The store and the build".
 - User stories 63 to 65, 68.
+- [author's rulings at ticket 16, 27 October 2026] Spec, "Chunking rulings at T16": sizes for the
+  five unplanned own kinds, whole runbook steps, ATT&CK cleaning of chunk text, packed procedure
+  examples. Measurements in ticket 16's "Length comparison".
 
 ## Acceptance criteria
 
@@ -35,6 +38,15 @@ and the own corpus flows in with no code change once ticket 16 delivers it.
       dataset folder into a fresh database through the build role.
 - [ ] Chunks are cut at Markdown headings, then by token size only inside an over-long section; no
       overlap crosses a section; every chunk begins with its context header.
+- [ ] Email, guidance, meeting, record and register documents chunk at 350 tokens with 30 to 50
+      overlap, as policies do.
+- [ ] A test proves every numbered runbook step lands whole in one chunk, on the three runbooks
+      whose step sections exceed 350 tokens.
+- [ ] ATT&CK chunk text holds no `## References` content, no `(Citation: ...)` marker, no link
+      address and no `<code>` tag; link text stays. A test fails if any slips in. The files are
+      unchanged.
+- [ ] ATT&CK procedure examples are packed several to a chunk, up to 350 tokens, each example
+      whole, under the field group's context header; a test proves no example is split.
 - [ ] A test proves chunk IDs follow the agreed format and stay the same across rebuilds.
 - [ ] Chunks sit in LangChain's PostgreSQL store table with typed filter columns (document type,
       technique ID, incident ID, version, effective date) and a JSON column.

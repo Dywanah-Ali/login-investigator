@@ -436,6 +436,17 @@ questions, and the author accepts the live screen. The initiative closes there.
   overlap never crossing a section. Every chunk begins with a context header: document title,
   section path, and technique or incident ID. Sizes per kind (note 03, section 3.2) are confirmed
   against the real corpus in the corpus-delivery ticket.
+- **Chunking rulings at T16** (author, 27 October 2026, measured in T16's length comparison):
+  - Email, guidance, meeting, record and register documents take the policy row: 350 tokens,
+    overlap 30 to 50.
+  - Runbooks keep their row. A numbered step always lands whole in one chunk, proven by a test.
+  - ATT&CK pages: the `## References` section is not chunked; inline `(Citation: ...)` markers are
+    removed from chunk text; Markdown links keep their visible text and lose the address; the
+    stray `<code>` tags are removed. The files stay unchanged. A test fails if the converter's
+    format changes so that any of these slips back in.
+  - ATT&CK procedure examples are packed into chunks of up to 350 tokens, several per chunk, each
+    example whole, under the field group's context header (note 03's one chunk per field group),
+    instead of one chunk per example.
 - **Chunk storage** (T02 d7): in the table LangChain's PostgreSQL store creates, with typed filter
   columns (document type, technique ID, incident ID, version, effective date) and a JSON column for
   per-kind details. A field becomes a column only when filtering on it proves necessary (T03 d6).
@@ -885,5 +896,5 @@ them.
 | 2026-10-26 | Author's ruling at ticket 43, amending the row above for Q04: the check is "flags amelia.ward as possibly compromised (S6)". It passes hedged wording and fails an answer that never raises compromise about her | An agent raises a concern with its evidence; the verdict is the analyst's (as for S4). Merely naming her let T13 run 1 pass while listing her only as a new-country sign-in |
 | 2026-10-26 | Author's ruling 8 at ticket 43, amending ruling 4's row: the agent's view of each finding also drops the rule's own `success_count` and `failure_count` (`event_count` stays); the system prompt gains one line to flag an account a spraying or brute-force address signed in to as possibly compromised; Q02's account check must tie amelia.ward to a success | T43's eval (`2026-10-26-173622-f853f368`): with the true count beside the finding's `success_count: 0`, the model repeated the zero and twice wrote "all failures". Q02's account check passed on the list of targeted accounts |
 | 2026-10-26 | Author's ruling 9 at ticket 43: in the agent's view, a brute-force or spraying finding whose address signed in during the window gets one sentence on its summary, built in code from `address_activity`, naming the success count and accounts. `Finding.summary` and the Alerts reply stay unchanged. One paid run; if Q02 still misses 2/3, T43 closes with the Q04 fix and AUD-047 waits for phase 1's investigation tool | T43's second run (`2026-10-26-180147-6900ff93`): the code-enforced lookups worked at once, while prose instructions left Q02 at 0/3, once with a wrong count of 1. The model copies the summary sentence, so the true sentence is built in code |
-
 | 2026-10-26 | Author chose responsible teams as internal document owners, separate from login accounts. T15 records and validates allowed owner teams; body mentions still resolve against the organisation tables, with the one leaver allowed. ATT&CK pages keep external-publisher labels `owner: mitre`, `department: external`. Supersedes T04 d12's owner-as-username rule and d16's owner-against-people check; asset ownership unchanged | The document responsibility label need not identify anyone who signed in during the captured week. The author explicitly approved team ownership after T14's review exposed the unnecessary coupling |
+| 2026-10-27 | Author's rulings at ticket 16 on chunk sizes and ATT&CK cleaning (P1 to P4c): five unplanned own kinds take the policy row; runbook steps stay whole under a test; ATT&CK references, citation markers, link addresses and `<code>` tags stay out of chunk text with the files unchanged; procedure examples packed per field group. See "Chunking rulings at T16" | T16's token measurement: no own section outside runbooks exceeds 244 tokens; three runbook step sections exceed 350; ATT&CK reference lists reach 17,282 of T1078's 26,414 tokens; 185 one-sentence procedure examples would each become a chunk that can outrank the explanation. Search indexes what explains; what proves is kept in the files |

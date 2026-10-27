@@ -196,9 +196,8 @@ works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14 and T15 have since resolved; the frontier is 16 and 17.
-Ticket 16 is the author's to run (the standalone Codex session); ticket 17 is the next build
-ticket for this workspace.
+and is resolved (see Build tickets resolved). T14, T15 and T16 have since resolved; the frontier
+is ticket 17, the next build ticket for this workspace.
 
 ### Build tickets resolved
 
@@ -279,6 +278,15 @@ ticket for this workspace.
   backend and 149 frontend tests, clean types, two-axis review triaged; Port eval not run, as
   nothing it measures changed. B-083 (brief facts against the log), AUD-055 (what the checker
   cannot see). The author read the brief on 27 October 2026. All work committed locally.
+
+- [16 The own corpus delivered and checked](issues/16-own-corpus-delivered.md)
+  (27 October 2026): a standalone Codex wrote the 27 own documents from the brief alone; copied
+  byte-identically into `default/corpus/own/`; the checker passes with 0 errors; a scan finds no
+  real company or person and no invented name. Token measurement against note 03's sizes led to
+  six author rulings (P1 to P4c): unplanned kinds take the policy size, runbook steps stay whole,
+  ATT&CK references, citation markers and link addresses stay out of chunk text, procedure
+  examples are packed. Written to the spec and to ticket 17's criteria. AUD-055 closed; AUD-056
+  registered. The author approved the documents with no rewrites.
 
 ## Not yet specified
 
