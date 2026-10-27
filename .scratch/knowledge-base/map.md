@@ -191,13 +191,13 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is tickets 16 and 17**, which have no unresolved blockers; one session
+line holds its edges. **The frontier is tickets 18 and 19**, which have no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14, T15 and T16 have since resolved; the frontier
-is ticket 17, the next build ticket for this workspace.
+and is resolved (see Build tickets resolved). T14 to T17 have since resolved; the frontier
+is tickets 18 and 19. Ticket 18, the staleness guard, is next by number.
 
 ### Model per ticket (author's ruling, 27 October 2026)
 
@@ -305,6 +305,18 @@ the other family from the retrieval builder) was proposed and is not ruled.
   ATT&CK references, citation markers and link addresses stay out of chunk text, procedure
   examples are packed. Written to the spec and to ticket 17's criteria. AUD-055 closed; AUD-056
   registered. The author approved the documents with no rewrites.
+
+- [17 The knowledge-base build command](issues/17-knowledge-base-build-command.md)
+  (27 October 2026): one command builds a fresh PostgreSQL database from the dataset, with eight
+  organisation tables, contextual chunks in LangChain's store, embeddings, a GIN keyword index
+  and text-derived entity links. Core and store share one SQLAlchemy/psycopg pool; a separate
+  reader is denied writes. Atomic local publication preserves the last successful build on
+  failure. All T16 chunking rulings are covered. The first real build produced 320 chunks from
+  40 documents and 257 organisation links in 18.479 seconds for $0.00111362. Evidence: 571 backend
+  and 149 frontend tests, clean type checks, two-axis review findings fixed and confirmed, Port
+  API eval 63/63 and 15/15 security. Six existing lint warnings remain. B-084 to B-088 record
+  implementation/review iterations; AUD-057 records retained old build databases. The late model
+  confirmation is recorded as a process exception. Local commits only; no push.
 
 ## Not yet specified
 

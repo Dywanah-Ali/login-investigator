@@ -83,6 +83,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-054 | Herdr inherited pane context can identify another project | Open workflow concern, deferred; explicit pane targeting used | Medium | B-082; 26 October 2026 read-only diagnostics |
 | AUD-055 | Corpus checker cannot see invented names written in prose, or the no-technique-ID runbook trait | Closed: T16 scans for all three checks, then the author's approval of the 27 documents, 27 October 2026 | Low | Knowledge-base T15 spec review |
 | AUD-056 | Keep MITRE's ATT&CK source references as metadata for provenance | Open, future enhancement; not in phases 0 and 1 | Low | Knowledge-base T16 ruling P3 |
+| AUD-057 | Reclaim superseded successful knowledge-base build databases | Open, future maintenance enhancement | Low | Knowledge-base T17 build lifecycle |
 
 ### AUD-001: Rule filter
 
@@ -830,6 +831,17 @@ searched. Phases 0 and 1 do not need it: citations point to our own chunks, not 
 sources. Registration is not approval. Closure evidence: a ticket that adds the metadata, or the
 author's ruling that it is not wanted.
 
+### AUD-057: Superseded successful build databases
+
+T17 builds a new database and publishes its local pointer only after success. Failed builds are
+dropped. Previous successful databases are deliberately retained for inspection and reported by
+name, so a rebuild does not destroy a database a reader may still be using. Repeated explicit
+builds therefore accumulate databases until the author removes them. The command and README
+state this behaviour. A later maintenance command could reclaim only verified, superseded
+knowledge-base builds while protecting the active database and unrelated projects. Registration
+is not implementation approval. Closure evidence: an approved cleanup policy and tests protecting
+the active/unrelated databases, or the author's decision to keep manual maintenance.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -970,3 +982,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-26 | T43 restores the Port eval's margin: lookups enforced in the detection hook, the agent's view carries address outcomes with a code-built success sentence, Q02 and Q04 gain S6 checks. Three paid runs; the third meets gates at 62/63 and 15/15 with Q02 3/3 and Q04 2/3. AUD-046 and AUD-047 closed pending the author's acceptance; added AUD-049 to AUD-052; note on AUD-048. | T43; `2026-10-26-181909-b70d0745.json` |
 | 2026-10-27 | T15 brief and corpus consistency script built and reviewed. Added AUD-055: the checker's limits on invented prose names and the no-technique-ID trait, left to the author's T16 read. | T15; B-083; `reviews/15-code-review-2026-10-27.md` |
 | 2026-10-27 | T16 corpus copied in and checked; author ruled chunking proposals P1 to P4c. Added AUD-056: ATT&CK source references as provenance metadata, a future enhancement. Closed AUD-055 on the T16 scans and the author's approval of the documents. | T16 ticket; spec "Chunking rulings at T16" |
+| 2026-10-27 | T17 build command delivered: 40 documents, 320 chunks, 257 organisation mentions. B-084 to B-088 fixed with regression evidence; two-axis review cleared. Added AUD-057 for retained successful build databases. Final safety net: 571 backend, 149 frontend, clean types, Port API eval 63/63 overall and 15/15 security. Six existing lint warnings (AUD-009) remain; no parked behaviour concern reopened. | T17; `reviews/17-code-review-2026-10-27.md`; `2026-10-27-160038-b70d0745.json` |
