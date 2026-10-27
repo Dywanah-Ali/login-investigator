@@ -10,6 +10,17 @@ import tiktoken
 
 from login_investigator.corpus_check import split_front_matter
 
+@dataclass(frozen=True)
+class ChunkSettings:
+    encoding: str = "cl100k_base"
+    passage_tokens: int = 350
+    overlap_tokens: int = 40
+
+
+# Every setting that shapes a passage, read at call time by the chunker and by the staleness
+# guard's fingerprint (T18), so a change here makes the app refuse a database built under the old.
+SETTINGS = ChunkSettings()
+
 
 @dataclass(frozen=True)
 class Chunk:
@@ -24,7 +35,7 @@ def slug(value: str) -> str:
 
 def pack_whole(parts: Iterable[str], size: int) -> list[str]:
     """Keep steps intact even if a single step exceeds the target; never duplicate a step."""
-    encoding = tiktoken.get_encoding("cl100k_base")
+    encoding = tiktoken.get_encoding(SETTINGS.encoding)
     result: list[str] = []
     current = ""
     for part in parts:
@@ -92,15 +103,16 @@ def read_chunks(dataset: Path) -> list[Chunk]:
         for headings, content in sections(body):
             header = f"{fields['title']} | {' > '.join(headings)}"
             section_path = "/".join(slug(heading) for heading in headings)
+            size = SETTINGS.passage_tokens
             splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-                encoding_name="cl100k_base", chunk_size=350, chunk_overlap=40,
+                encoding_name=SETTINGS.encoding, chunk_size=size, chunk_overlap=SETTINGS.overlap_tokens,
             )
             if headings[-1:] == ["Procedure examples"] and fields["kind"] == "attack":
-                passages = pack_whole(re.split(r"(?=^### )", content, flags=re.MULTILINE), 350)
-                if any(len(tiktoken.get_encoding("cl100k_base").encode(p)) > 350 for p in passages):
-                    raise ValueError("ATT&CK procedure example exceeds 350 tokens; review the source")
+                passages = pack_whole(re.split(r"(?=^### )", content, flags=re.MULTILINE), size)
+                if any(len(tiktoken.get_encoding(SETTINGS.encoding).encode(p)) > size for p in passages):
+                    raise ValueError(f"ATT&CK procedure example exceeds {size} tokens; review the source")
             elif fields["kind"] == "runbook" and re.search(r"^\d+\. ", content, re.M):
-                passages = pack_whole(re.split(r"(?=^\d+\. )", content, flags=re.MULTILINE), 350)
+                passages = pack_whole(re.split(r"(?=^\d+\. )", content, flags=re.MULTILINE), size)
             else:
                 passages = splitter.split_text(content)
             for ordinal, passage in enumerate(passages, 1):

@@ -1557,3 +1557,32 @@ an independent expected-text cleaning example and an isolated near-match mention
 and the absence of unwanted matches with independent expected values.
 **Evidence:** `test_skipped_heading_levels_and_fenced_commands_keep_their_context` failed with
 the extra heading and wrong ancestry before the fix; review record under the T17 review folder.
+
+### B-089 · 2026-10-28 · Knowledge-base T18 · A leak test demanded suppression where nothing was chained
+
+**Symptom:** the first run of `test_a_stale_knowledge_base_stops_the_server_before_anything_starts`
+failed on `__suppress_context__` being false, although the guard's message was correct.
+**Cause:** the test, not the guard. The stale refusal is raised outside any error handler, so it
+has no earlier error to suppress and Python leaves the flag false. The test had copied the
+assertion that fits the database-error path, where an earlier error does exist.
+**Fix:** the stale test now asserts that no earlier error travels with the refusal (no cause, and
+no context unless suppressed). The cannot-be-checked test keeps the strict assertion, because there
+the database's own error, which names the database, really is present and must be suppressed.
+**Lesson:** a leak assertion must match how the error is raised. Assert the property that matters
+(nothing earlier is attached), not one mechanism that achieves it.
+**Evidence:** first run failed with `assert (None is None and False)`; both tests pass after the
+fix. A deliberate break of the stale comparison then failed both stale tests, door 2 and door 4.
+
+### B-090 · 2026-10-28 · Knowledge-base T18 · The live build predates the guard and stops the server
+
+**Symptom:** after T18, `uv run uvicorn api.app:create_app --factory` on this machine exits with
+code 3: "The knowledge base named by the last build cannot be checked."
+**Cause:** expected, not a defect. The live build `li_kb_0af9160cc4ed` was made by T17, before
+builds recorded a fingerprint. By decision 2, a build that cannot be checked stops the server.
+**Fix:** one rebuild with the build command, which writes the fingerprint record. Pending the
+author's go, because it makes paid embedding calls (T17's build cost $0.00111362). Done the same
+day on the author's go: `li_kb_f9d6bcf6f8c5`, $0.00111362, after which the real server started.
+**Lesson:** a new fail-closed guard turns every artefact made before it into a refusal. Plan the
+one-time rebuild as part of the change.
+**Evidence:** the real server's output saved during T18 shows the fixed text and exit code 3, with
+no database name, error chain or password; its only paths are Python's traceback frames.

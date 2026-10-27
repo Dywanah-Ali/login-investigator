@@ -83,7 +83,9 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-054 | Herdr inherited pane context can identify another project | Open workflow concern, deferred; explicit pane targeting used | Medium | B-082; 26 October 2026 read-only diagnostics |
 | AUD-055 | Corpus checker cannot see invented names written in prose, or the no-technique-ID runbook trait | Closed: T16 scans for all three checks, then the author's approval of the 27 documents, 27 October 2026 | Low | Knowledge-base T15 spec review |
 | AUD-056 | Keep MITRE's ATT&CK source references as metadata for provenance | Open, future enhancement; not in phases 0 and 1 | Low | Knowledge-base T16 ruling P3 |
-| AUD-057 | Reclaim superseded successful knowledge-base build databases | Open, future maintenance enhancement | Low | Knowledge-base T17 build lifecycle |
+| AUD-057 | Reclaim superseded successful knowledge-base build databases | Open, scheduled in knowledge-base T44 (phase 0 cleanup); ruling still needed | Low | Knowledge-base T17 build lifecycle |
+| AUD-058 | The staleness fingerprint covers chunking settings, not chunking code | Open, scheduled in knowledge-base T44 (phase 0 cleanup); ruling still needed | Medium | Knowledge-base T18 spec review |
+| AUD-059 | The build command reads `LI_DATASET_DIR` from `.env`; the app reads the environment only | Open: rule ruled 28 October 2026 (environment, then `.env`, then default); code alignment scheduled in knowledge-base T44 | Medium | Knowledge-base T18 standards and spec reviews |
 
 ### AUD-001: Rule filter
 
@@ -842,6 +844,34 @@ knowledge-base builds while protecting the active database and unrelated project
 is not implementation approval. Closure evidence: an approved cleanup policy and tests protecting
 the active/unrelated databases, or the author's decision to keep manual maintenance.
 
+### AUD-058: Chunking code outside the staleness fingerprint
+
+T18's fingerprint covers the dataset files, the embedding model, the vector length and the
+chunking settings (encoding, passage and overlap sizes), as the spec asks. It does not cover the
+chunking code itself: the heading, fence, step and ATT&CK cleaning rules in `chunking.py`, nor the
+mention rules in `mentions.py`. A change to those rules leaves an old database passing the guard,
+which sits uneasily with "the app never answers from a database built from an older world".
+Options: a hand-bumped recipe version in the fingerprint, or a hash of the two modules' source,
+which forces a rebuild on any edit (about 20 seconds and a tenth of a cent). Registration is not
+implementation approval. Closure evidence: the author's ruling, and a door 2 test if code joins
+the fingerprint.
+
+### AUD-059: Two readers of `LI_DATASET_DIR`
+
+The build command takes its default dataset folder from `.env` and the environment. The app's
+`Settings.from_env` reads the environment only. With `LI_DATASET_DIR` set only in `.env`, the build
+fingerprints one folder and the app checks another, so the guard refuses to start after every
+rebuild. The refusal is the safe direction, but the cause is confusing. The split predates T18;
+T18's fingerprint is what makes it matter. Options: the build reads the environment only, like
+the app, or both read `.env`. Registration is not implementation approval. Closure evidence: one
+reading rule for both, pinned by a test.
+
+**Author's ruling, 28 October 2026:** every `LI_` setting, in the app, the build command and the
+scripts, is read from the environment first, then `.env`, then the default (spec, API contract
+change 5). `env.example` already presents `LI_DATASET_DIR` as an app setting, which the app does
+not honour today; the alignment fixes that too. The code change waits for the phase 0 cleanup
+ticket.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -983,3 +1013,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-27 | T15 brief and corpus consistency script built and reviewed. Added AUD-055: the checker's limits on invented prose names and the no-technique-ID trait, left to the author's T16 read. | T15; B-083; `reviews/15-code-review-2026-10-27.md` |
 | 2026-10-27 | T16 corpus copied in and checked; author ruled chunking proposals P1 to P4c. Added AUD-056: ATT&CK source references as provenance metadata, a future enhancement. Closed AUD-055 on the T16 scans and the author's approval of the documents. | T16 ticket; spec "Chunking rulings at T16" |
 | 2026-10-27 | T17 build command delivered: 40 documents, 320 chunks, 257 organisation mentions. B-084 to B-088 fixed with regression evidence; two-axis review cleared. Added AUD-057 for retained successful build databases. Final safety net: 571 backend, 149 frontend, clean types, Port API eval 63/63 overall and 15/15 security. Six existing lint warnings (AUD-009) remain; no parked behaviour concern reopened. | T17; `reviews/17-code-review-2026-10-27.md`; `2026-10-27-160038-b70d0745.json` |
+| 2026-10-28 | After T18, the author ruled one reading rule for every `LI_` setting and opened T44, the phase 0 cleanup, blocked by 28 and blocking 29. AUD-057, AUD-058 and AUD-059 scheduled there; each still needs its own ruling inside T44. | Spec decisions log, 28 October 2026; `issues/44-phase0-cleanup.md` |
+| 2026-10-28 | T18 staleness guard built and reviewed. Added AUD-058 (chunking code outside the fingerprint) and AUD-059 (two readers of `LI_DATASET_DIR`), both unresolved review concerns. Final safety net: 585 backend, 149 frontend, clean types, Port API eval 63/63 overall and 15/15 security. Six existing lint warnings (AUD-009) remain; no parked behaviour concern reopened. | T18; B-089, B-090; `reviews/18-code-review-2026-10-28.md`; `2026-10-27-224010-b70d0745.json` |

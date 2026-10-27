@@ -34,3 +34,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-26 17:59 | 6900ff93 | cf9c8d9 | 21 x 3 | 94% | 100% | yes | api: T43 grader fix check: second run unchanged |
 | 2026-10-26 20:26 | b70d0745 | a393d7d+changes | 21 x 3 | 98% | 100% | yes | api: knowledge-base T14 pinned ATT&CK corpus safety net |
 | 2026-10-27 15:57 | b70d0745 | 93fbd02 | 21 x 3 | 100% | 100% | yes | api: T17-knowledge-base-build |
+| 2026-10-27 22:37 | b70d0745 | 64a8bcf+changes | 21 x 3 | 100% | 100% | yes | api: T18-staleness-guard |

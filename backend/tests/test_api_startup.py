@@ -5,14 +5,23 @@ The first test watches the core's seam functions, which tests elsewhere never do
 the requirement itself, and a reply cannot show it. The real functions still run; they are counted.
 """
 
+import asyncio
+import json
+import logging
+import shutil
 from collections import Counter
+from dataclasses import replace
 
 import pytest
 from fastapi.testclient import TestClient
 
 from api.app import create_app
 from api.settings import Settings
-from login_investigator import agent, generator, investigations, loader, rules
+from login_investigator import agent, generator, investigations, knowledge_base, loader, rules
+from login_investigator.knowledge_base import build_knowledge_base
+from login_investigator.knowledge_base.staleness import NOT_BUILT, STALE, UNCHECKABLE
+from login_investigator.postgres import ServerSettings, create_fresh_database, drop_database
+from tests.test_knowledge_base import DATASET, FakeEmbedder, publish, sample_dataset
 
 LOG_FAILED_VALIDATION = "The log failed validation. The server log lists the problems."
 
@@ -120,11 +129,90 @@ def test_the_settings_default_to_the_paths_in_the_contract():
     assert settings.dataset_dir.parts[-4:] == ("backend", "data", "datasets", "default")
     assert settings.memory_path.parts[-3:] == ("backend", "memory", "investigations.sqlite")
     assert settings.reputation_dir.parts[-3:] == ("backend", "data", "ip_reputation")
+    # The test run replaces the core's default (root conftest); the app reads whatever it is.
+    assert settings.knowledge_base_state == knowledge_base.STATE_FILE
+    assert not knowledge_base.STATE_FILE.exists()
 
 
 def test_the_settings_read_each_path_from_the_environment(tmp_path):
     settings = Settings.from_env({"LI_DATASET_DIR": str(tmp_path / "dataset"),
                                   "LI_MEMORY_PATH": str(tmp_path / "b.sqlite"),
-                                  "LI_REPUTATION_DIR": str(tmp_path / "c")})
+                                  "LI_REPUTATION_DIR": str(tmp_path / "c"),
+                                  "LI_KNOWLEDGE_BASE_STATE": str(tmp_path / "d.json")})
     assert settings == Settings(dataset_dir=tmp_path / "dataset", memory_path=tmp_path / "b.sqlite",
-                                reputation_dir=tmp_path / "c")
+                                reputation_dir=tmp_path / "c", knowledge_base_state=tmp_path / "d.json")
+
+
+# The staleness guard at startup (knowledge-base ticket 18). These tests build a small knowledge
+# base in real PostgreSQL with offline embeddings, exactly as door 2's tests do.
+
+@pytest.fixture
+def built(fresh_database, tmp_path):
+    """A dataset with the real log, built into its own database and published to a pointer file."""
+    dataset = sample_dataset(tmp_path / "dataset")
+    shutil.copy(DATASET / "logins.csv", dataset / "logins.csv")
+    database = create_fresh_database(replace(fresh_database, database="postgres"))
+    try:
+        asyncio.run(build_knowledge_base(dataset, database, FakeEmbedder()))
+        yield dataset, publish(tmp_path / "active.json", database)
+    finally:
+        drop_database(database)
+
+
+def startup_settings(dataset, state, memory_path):
+    return Settings.from_env({"LI_DATASET_DIR": str(dataset), "LI_MEMORY_PATH": str(memory_path),
+                              "LI_KNOWLEDGE_BASE_STATE": str(state)})
+
+
+def test_a_stale_knowledge_base_stops_the_server_before_anything_starts(built, memory_path, tmp_path):
+    dataset, state = built
+    (dataset / "org" / "people.csv").write_text("person_id\n", encoding="utf-8")
+    app = create_app(startup_settings(dataset, state, memory_path))
+    with pytest.raises(knowledge_base.KnowledgeBaseNotReady) as caught:
+        with TestClient(app):
+            raise AssertionError("The server started on a stale knowledge base")
+    message = str(caught.value)
+    assert message == STALE
+    assert "uv run python -m scripts.build_knowledge_base" in message
+    assert str(tmp_path) not in message
+    # No earlier error, which could carry a host or a path, travels with it.
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None or caught.value.__suppress_context__
+    # Nothing behind the guard ran: the memory file is opened only by the services.
+    assert not memory_path.exists()
+
+
+def test_a_build_that_cannot_be_checked_stops_the_server(fresh_database, memory_path, tmp_path):
+    state = publish(tmp_path / "active.json", replace(fresh_database, database="li_kb_000000000000"))
+    app = create_app(startup_settings(DATASET, state, memory_path))
+    with pytest.raises(knowledge_base.KnowledgeBaseNotReady) as caught:
+        with TestClient(app):
+            raise AssertionError("The server started on a knowledge base it could not check")
+    assert str(caught.value) == UNCHECKABLE
+    # This one is raised while handling the database's own error, which names the database.
+    assert caught.value.__cause__ is None and caught.value.__suppress_context__
+    assert not memory_path.exists()
+
+
+def test_a_matching_knowledge_base_starts_the_server_as_before(built, memory_path):
+    dataset, state = built
+    app = create_app(startup_settings(dataset, state, memory_path))
+    with TestClient(app) as client:
+        assert client.get("/api/dataset").status_code == 200
+        assert client.get("/api/overview").status_code == 200
+        assert app.state.knowledge_base == json.loads(state.read_text())["database"]
+    assert memory_path.is_file()
+
+
+def test_with_nothing_built_the_server_starts_and_says_so(monkeypatch, memory_path, tmp_path, caplog):
+    def must_not_read(*args, **kwargs):
+        raise AssertionError("No database settings are needed when nothing has been built")
+
+    monkeypatch.setattr(ServerSettings, "from_env", must_not_read)
+    settings = startup_settings(DATASET, tmp_path / "absent.json", memory_path)
+    app = create_app(settings)
+    with caplog.at_level(logging.WARNING, logger="api.app"):
+        with TestClient(app) as client:
+            assert client.get("/api/dataset").status_code == 200
+            assert app.state.knowledge_base is None
+    assert [record.getMessage() for record in caplog.records if record.name == "api.app"] == [NOT_BUILT]

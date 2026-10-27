@@ -15,7 +15,8 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 
-from login_investigator.generator import DATASET_DIR, REPO_ROOT
+from login_investigator import knowledge_base
+from login_investigator.generator import DATASET_DIR
 from login_investigator.knowledge_base import reader_settings, rebuild_knowledge_base
 from login_investigator.knowledge_base.embedding import embedding_service
 from login_investigator.knowledge_base.schema import EMBEDDING_MODEL, VECTOR_SIZE
@@ -46,7 +47,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset-dir", type=Path,
                         default=Path(values.get("LI_DATASET_DIR") or DATASET_DIR))
-    parser.add_argument("--state-file", type=Path, default=REPO_ROOT / ".knowledge-base.json")
+    # The same pointer the app's staleness guard reads. Like the app, it comes from the
+    # environment only, never .env, so the two agree on the pointer's location.
+    parser.add_argument("--state-file", type=Path, default=Path(
+        os.environ.get("LI_KNOWLEDGE_BASE_STATE", "").strip() or knowledge_base.STATE_FILE))
     parser.add_argument("--report", type=Path)
     parser.add_argument("--check-embedder", action="store_true")
     args = parser.parse_args(argv)

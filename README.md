@@ -86,7 +86,14 @@ elapsed time, row counts and keyword-parser evidence. Use `--report <file.json>`
 Only a successful build replaces the local, git-ignored `.knowledge-base.json` pointer. A failed
 new database is dropped. Earlier successful databases are retained for inspection, named in the
 report, and are not automatically deleted. A later explicit rebuild is needed after source files
-change. T18 adds the application's stale-database guard; the app does not consume this build yet.
+change.
+
+Each build records a fingerprint of the dataset folder's files and its build settings. When the
+app starts, it compares that fingerprint with the folder. If anything changed, or the build cannot
+be checked, the server refuses to start and names the command to run. With no build at all, the
+app starts without a knowledge base and says so in the server log. The app does not read the
+knowledge base for answers yet. `LI_KNOWLEDGE_BASE_STATE` moves the pointer file, for the app and
+the build command alike.
 
 The core uses one SQLAlchemy/psycopg engine shared with LangChain's chunk store. The separate
 reader can select records but cannot change them. Core tests use fake embeddings with real

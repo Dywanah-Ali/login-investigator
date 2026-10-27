@@ -20,14 +20,25 @@ from langchain_postgres import PGEngine, PGVectorStore
 from langchain_postgres.v2.engine import Column as PGColumn
 from langchain_postgres.v2.hybrid_search_config import HybridSearchConfig
 from sqlalchemy import URL, func, select, text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from login_investigator.corpus_check import read_table
-from login_investigator.postgres import ServerSettings, check_server, create_fresh_database, drop_database
-from . import schema
+from login_investigator.generator import REPO_ROOT
+from login_investigator.postgres import (
+    DatabaseUnavailable, ServerSettings, check_server, create_fresh_database, drop_database,
+)
+from . import chunking as chunking, schema as schema
 from .chunking import Chunk, read_chunks
 from .access import check_reader_role, grant_read_only, reader_settings as reader_settings
 from .mentions import find_mentions
+from .staleness import (
+    NOT_BUILT as NOT_BUILT, SERVER_DOWN, SETTINGS_INCOMPLETE, STALE, UNCHECKABLE,
+    KnowledgeBaseNotReady as KnowledgeBaseNotReady, source_fingerprint,
+)
+
+# Where the build command publishes its pointer and the app's startup reads it. Git-ignored.
+STATE_FILE = REPO_ROOT / ".knowledge-base.json"
 
 
 @dataclass(frozen=True)
@@ -74,6 +85,11 @@ class KnowledgeBase:
             rows = await connection.execute(select(schema.mentions).order_by(*schema.mentions.primary_key))
             return [dict(row) for row in rows.mappings()]
 
+    async def recorded_fingerprints(self) -> list[str]:
+        """The build writes exactly one. Any other count means the record cannot be trusted."""
+        async with self.engine.connect() as connection:
+            return list((await connection.scalars(select(schema.build_record.c.fingerprint))).all())
+
     async def describe(self, database: str) -> BuildReport:
         """Read build evidence from storage, including PostgreSQL's actual identifier parsing."""
         async with self.engine.connect() as connection:
@@ -113,6 +129,9 @@ async def build_knowledge_base(
 ) -> BuildReport:
     """Load an empty database supplied by the command or the real PostgreSQL test fixture."""
     started = time.monotonic()
+    # Taken before any file is read. A file edited mid-build then leaves a database whose record
+    # no longer matches the folder, so the guard refuses it: the safe direction.
+    fingerprint = source_fingerprint(dataset)
     chunks = read_chunks(dataset)
     engine = database_engine(database)
     pg = PGEngine.from_engine(engine)
@@ -151,6 +170,9 @@ async def build_knowledge_base(
             links = find_mentions(dataset, chunks)
             if links:
                 await connection.execute(schema.mentions.insert(), links)
+            # Written last, so only a database whose every step succeeded carries a record.
+            await connection.run_sync(lambda conn: schema.build_record.create(conn))
+            await connection.execute(schema.build_record.insert(), {"fingerprint": fingerprint})
         await grant_read_only(engine, database.database, reader_role)
         report = await KnowledgeBase(engine).describe(database.database)
         return replace(report, elapsed_seconds=round(time.monotonic() - started, 3))
@@ -164,8 +186,9 @@ async def rebuild_knowledge_base(
 ) -> BuildReport:
     """Publish a fresh successful build atomically. Retain the previous database for inspection.
 
-    The local state file contains no credentials. T18 adds its source fingerprint and startup guard.
-    A failed new build is dropped; the prior pointer and database remain usable.
+    The local state file contains no credentials. The fingerprint lives in the database itself,
+    where `check_knowledge_base` reads it. A failed new build is dropped; the prior pointer and
+    database remain usable.
     """
     previous = json.loads(state_file.read_text()) if state_file.exists() else {}
     if not isinstance(previous, dict) or (previous and not isinstance(previous.get("database"), str)):
@@ -189,3 +212,42 @@ async def rebuild_knowledge_base(
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)
+
+
+async def check_knowledge_base(
+    dataset: Path, state_file: Path, server: ServerSettings | None = None,
+) -> str | None:
+    """The staleness guard (T18), run at the app's startup as the read-only role.
+
+    Returns None when nothing has been built (decision 1): the app runs without a knowledge base.
+    Returns the database's name when its recorded fingerprint matches the folder. Anything else
+    raises `KnowledgeBaseNotReady` with fixed text (decision 2: a guard that cannot check refuses).
+    Causes are suppressed, because database errors can carry hosts, names and paths.
+    """
+    if not state_file.exists():
+        return None
+    try:
+        name = json.loads(state_file.read_text(encoding="utf-8"))["database"]
+        if not isinstance(name, str):
+            raise TypeError("database must be a name")
+    except (OSError, ValueError, KeyError, TypeError):
+        raise KnowledgeBaseNotReady(UNCHECKABLE) from None
+    try:
+        reader = reader_settings(replace(server or ServerSettings.from_env(), database=name))
+    except DatabaseUnavailable:
+        raise KnowledgeBaseNotReady(SETTINGS_INCOMPLETE) from None
+    try:
+        check_server(reader)
+    except DatabaseUnavailable:
+        raise KnowledgeBaseNotReady(SERVER_DOWN) from None
+    try:
+        expected = source_fingerprint(dataset)
+        async with open_knowledge_base(reader) as kb:
+            recorded = await kb.recorded_fingerprints()
+    except (OSError, SQLAlchemyError):
+        raise KnowledgeBaseNotReady(UNCHECKABLE) from None
+    if len(recorded) != 1:
+        raise KnowledgeBaseNotReady(UNCHECKABLE)
+    if recorded[0] != expected:
+        raise KnowledgeBaseNotReady(STALE)
+    return name

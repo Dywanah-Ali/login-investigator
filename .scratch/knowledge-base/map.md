@@ -191,13 +191,18 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is tickets 18 and 19**, which have no unresolved blockers; one session
+line holds its edges. **The frontier is ticket 19**, which has no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14 to T17 have since resolved; the frontier
-is tickets 18 and 19. Ticket 18, the staleness guard, is next by number.
+and is resolved (see Build tickets resolved). T14 to T18 have since resolved; the frontier
+is ticket 19, the graph, its integrity check and the radius. No ticket was blocked by 18.
+
+Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
+It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the new settings rule,
+the `env.example` line, and items found in T19 to T28). It is blocked by 28 and blocks the
+phase 0 gate, 29, so the debt is paid before the gate rather than at the initiative's end.
 
 ### Model per ticket (author's ruling, 27 October 2026)
 
@@ -209,7 +214,7 @@ every later ticket; the standard models (Opus 5.5, Sol 6.1) take the rest.
 |---|---|---|
 | Strongest | 17, 19, 22, 24, 26, 27, 28, 29 | Load-bearing seams: the build, the graph, fusion, the tool pattern and fence, the package, the resolver, the playbook hooks and the eval gate |
 | Strongest if budget allows | 30, 37, 41 | Judge design, the hardest frontend drawing, the BM25 leg and an honest on-versus-off call |
-| Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40 | Standard build work on seams the strongest tickets set |
+| Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40, 44 | Standard build work on seams the strongest tickets set |
 | None | 42 | The author's ticket |
 
 The line advises; it is not a gate. Each of tickets 17 to 41 carries a first acceptance criterion:
@@ -317,6 +322,17 @@ the other family from the retrieval builder) was proposed and is not ruled.
   API eval 63/63 and 15/15 security. Six existing lint warnings remain. B-084 to B-088 record
   implementation/review iterations; AUD-057 records retained old build databases. The late model
   confirmation is recorded as a process exception. Local commits only; no push.
+
+- [18 The staleness guard](issues/18-staleness-guard.md)
+  (28 October 2026): every build records a SHA-256 fingerprint of the dataset folder's files,
+  hidden entries skipped, with the embedding model, vector length and chunking settings. The app
+  checks it at startup as the read-only role. Five author rulings: nothing built starts the app
+  without a knowledge base and logs the build command; a build that cannot be checked stops the
+  server (fail closed); hidden entries skipped; `LI_KNOWLEDGE_BASE_STATE` joins the contract; the
+  "cannot be checked" text names the reader's login and the rebuild. The live build was rebuilt
+  on the author's go as `li_kb_f9d6bcf6f8c5` ($0.00111362). Evidence: 585 backend and 149
+  frontend tests, clean types, real-server refusal and start, two-axis review triaged, Port API
+  eval 63/63 and 15/15 security. B-089, B-090; AUD-058, AUD-059. Model: Claude Opus 5.5.
 
 ## Not yet specified
 

@@ -52,3 +52,6 @@ FILTER_COLUMNS = ["document_type", "technique_id", "incident_id", "version", "ef
 mentions = Table("chunk_mentions_entity", metadata,
     Column("chunk_id", Text, ForeignKey("chunks.chunk_id"), primary_key=True),
     Column("entity_type", Text, primary_key=True), Column("entity_id", Text, primary_key=True))
+
+# One row: the fingerprint of the world this database was built from (staleness guard, T18).
+build_record = Table("build_record", metadata, Column("fingerprint", Text, primary_key=True))

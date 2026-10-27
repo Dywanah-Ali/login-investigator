@@ -32,6 +32,8 @@ Configuration comes from environment variables, so the eval runner can isolate a
 | `LI_DATASET_DIR` | `backend/data/datasets/default` | The dataset folder; startup loads its `logins.csv` |
 | `LI_MEMORY_PATH` | `backend/memory/investigations.sqlite` | The `SqliteSaver` memory and the investigations table, one file |
 | `LI_REPUTATION_DIR` | `backend/data/ip_reputation` | Saved AbuseIPDB responses |
+| `LI_KNOWLEDGE_BASE_STATE` | `backend/.knowledge-base.json` | The build command's pointer to its last successful knowledge-base build, read by the staleness guard. The build command reads the same variable, from the environment only |
+| `LI_PG_*` | see `env.example` | PostgreSQL, read from `.env` or the environment, only when a build has been published |
 | `OPENROUTER_API_KEY` | none | The model. Missing: see "Agent unavailable" |
 | `ABUSEIPDB_API_KEY` | none | Live reputation lookups. Missing: the tool reports an error, as in v1 |
 | port | uvicorn's `--port` | The eval runner picks a free port |
@@ -40,6 +42,25 @@ Startup: load the log once, run the rules once on the whole log, open the memory
 agent once. These are the seams from v1 (`loader.load_log`, `rules.detect_all`,
 `investigations.open_memory`, `agent.make_model` and `agent.build_agent`), each called in exactly
 one place.
+
+Before any of that, the staleness guard runs (knowledge-base ticket 18,
+`knowledge_base.check_knowledge_base`). It never produces an error reply, because on failure no
+endpoint exists to answer:
+
+| State at startup | Result |
+|---|---|
+| No pointer file: nothing built | The server starts without a knowledge base. The server log carries `No knowledge base has been built, so the app runs without it. Build it from backend/ with: uv run python -m scripts.build_knowledge_base` |
+| The pointer's database records the fingerprint of the dataset folder and today's build settings | The server starts as before |
+| The recorded fingerprint differs | The server does not start: `The knowledge base was built from older files or settings. Rebuild it from backend/ with: uv run python -m scripts.build_knowledge_base` |
+| The pointer is unreadable, its database or fingerprint record is missing, or the reader's login is refused | The server does not start: `The knowledge base named by the last build cannot be checked. Check the reader's login in .env, or rebuild it from backend/ with: uv run python -m scripts.build_knowledge_base` |
+| PostgreSQL does not answer | The server does not start: `PostgreSQL is not answering, so the knowledge base cannot be checked. Start it with: brew services restart postgresql@18` |
+| The PostgreSQL settings are incomplete | The server does not start: `The knowledge base cannot be checked because the PostgreSQL settings in .env are incomplete. env.example lists them.` |
+
+Every text is fixed and carries no machine path, host, port, database name or file value. The
+only locations it names are the repo's own `backend/`, `.env` and `env.example`. The database's own
+error is suppressed, never chained. The fingerprint is SHA-256 over the embedding model, the vector
+length, the chunking settings and every file in the dataset folder by relative path and content,
+skipping hidden entries. The guard connects as the read-only role.
 
 ## Shared filter parameters
 
