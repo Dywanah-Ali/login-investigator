@@ -11,6 +11,7 @@ needs a key sets a fake one itself.
 import pytest
 
 from login_investigator import agent, reputation
+from login_investigator.knowledge_base import embedding
 
 # The database fixture's own tests run small pytest sessions inside a test (knowledge-base ticket 09).
 pytest_plugins = ["pytester"]
@@ -22,6 +23,7 @@ def pytest_configure(config):
     _guard.setattr(agent, "load_dotenv", lambda *args, **kwargs: False)
     _guard.delenv(agent.KEY_NAME, raising=False)
     _guard.delenv(reputation.KEY_NAME, raising=False)
+    _guard.setattr(embedding, "dotenv_values", lambda *args, **kwargs: {})
 
 
 def pytest_unconfigure(config):

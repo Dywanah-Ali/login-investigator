@@ -1,7 +1,7 @@
 # 17: The knowledge-base build command
 
 Type: build
-Status: ready-for-agent
+Status: claimed
 Blocked by: 09, 11, 14
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
@@ -70,3 +70,6 @@ and the own corpus flows in with no code change once ticket 16 delivers it.
       findings triaged.
 
 ## Comments
+
+- 2026-10-27: Codex claimed T17 at the author's request using implement and tdd. Tests use the already agreed door 2 (build/open/read the knowledge base), with a fake embedder and real PostgreSQL. Review baseline: `6be34cc8d1b4649eaba4d4d34a41537b6c8e3e90`. T18 owns fingerprint recording and the startup guard.
+- 2026-10-27: The author confirmed Astra is selected. Codex initially relied on the earlier ticket read and missed the subsequently added model-confirmation criterion; implementation paused when noticed and resumed after this explicit confirmation. The first four door-2 tests cover the build/read round trip, section limits, whole numbered steps, and ATT&CK cleaning/packing. The administrator created `li_reader` and saved its password in `.env`; no password was shared in chat.

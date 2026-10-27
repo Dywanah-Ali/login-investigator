@@ -13,6 +13,7 @@ without `.env` there is no key to leak, and these tests pass either way.
 """
 
 import os
+import asyncio
 
 import pytest
 from fastapi.testclient import TestClient
@@ -57,3 +58,23 @@ def test_reading_the_database_settings_leaves_the_password_out_of_the_environmen
     env_file.write_text(f"{postgres.PASSWORD_NAME}=from-the-file\n", encoding="utf-8")
     settings = postgres.ServerSettings.from_env(env_file=env_file)
     assert (postgres.PASSWORD_NAME in os.environ, "from-the-file" in repr(settings)) == (False, False)
+
+
+def test_embedding_factory_cannot_load_a_real_key_in_tests():
+    from login_investigator.knowledge_base.embedding import embedding_service
+
+    async def check():
+        with pytest.raises(ValueError, match="OPENROUTER_API_KEY"):
+            async with embedding_service():
+                pass
+
+    asyncio.run(check())
+
+
+def test_reader_settings_keep_password_out_of_environment_and_repr(tmp_path):
+    from login_investigator.knowledge_base import reader_settings
+    path = tmp_path / ".env"
+    path.write_text("LI_PG_READER_PASSWORD=reader-test-value\n")
+    database = postgres.ServerSettings("localhost", 5432, "li_admin", "builder-test-value")
+    settings = reader_settings(database, environ={}, env_file=path)
+    assert ("LI_PG_READER_PASSWORD" in os.environ, "reader-test-value" in repr(settings)) == (False, False)

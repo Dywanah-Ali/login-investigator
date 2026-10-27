@@ -42,6 +42,10 @@ cp env.example .env     # then put your keys into .env, which is git-ignored
 # It asks you to choose li_admin's password; put it in .env as LI_PG_PASSWORD.
 /usr/local/opt/postgresql@18/bin/psql -U postgres -d postgres -f setup/postgres-setup.sql
 
+# Once, as the same administrator: creates the separate read-only account.
+# Save its new password in .env as LI_PG_READER_PASSWORD.
+/usr/local/opt/postgresql@18/bin/psql -U postgres -d postgres -f setup/postgres-reader-setup.sql
+
 cd ../frontend
 npm ci                  # installs the exact versions in package-lock.json
 ```
@@ -64,6 +68,29 @@ it, `brew services restart postgresql@18`; it never skips. Every other test runs
 
 Files copied from v1 that the type checker flags are on a "not yet checked" list in
 `backend/pyproject.toml`. The list only shrinks: new files never go on it.
+
+## Build the knowledge base
+
+From `backend/`, after the PostgreSQL setup above:
+
+```bash
+uv run python -m scripts.build_knowledge_base
+```
+
+This explicitly rebuilds the organisation tables and searchable corpus in a new database. It
+uses `LI_DATASET_DIR`, or `data/datasets/default` when unset. The source files stay unchanged.
+Embeddings use OpenRouter and incur a small charge; the command reports provider usage and cost,
+elapsed time, row counts and keyword-parser evidence. Use `--report <file.json>` to save it.
+`--check-embedder` sends one short string without creating a database.
+
+Only a successful build replaces the local, git-ignored `.knowledge-base.json` pointer. A failed
+new database is dropped. Earlier successful databases are retained for inspection, named in the
+report, and are not automatically deleted. A later explicit rebuild is needed after source files
+change. T18 adds the application's stale-database guard; the app does not consume this build yet.
+
+The core uses one SQLAlchemy/psycopg engine shared with LangChain's chunk store. The separate
+reader can select records but cannot change them. Core tests use fake embeddings with real
+PostgreSQL and never call OpenRouter. PostgreSQL's reader account must exist for those tests.
 
 ## Evaluate the agent
 

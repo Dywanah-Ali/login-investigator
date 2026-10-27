@@ -1496,3 +1496,50 @@ booked; the guide moved to 2026-06-15; one consistent ATT&CK rule.
 and every dated statement against the other dates in the brief, before review.
 **Evidence:** `logins.csv` rows for oliver.hayes on 2026-10-05; T15 review record
 `.scratch/knowledge-base/reviews/15-code-review-2026-10-27.md`.
+
+### B-084 · 2026-10-27 · Knowledge-base T17 · Duplicate section IDs silently overwrite evidence
+
+**Symptom:** a corruption test gave one document two equally named sections. The first build
+implementation reported success but kept only the later passage at their shared chunk ID.
+**Cause:** the section-based ID recipe collided, and LangChain's insertion uses an upsert.
+**Fix:** validate uniqueness of every chunk ID before any database or embedding work. Fail with
+the colliding ID and require distinct source names. The original input is never rewritten.
+**Lesson:** stable IDs need collision detection at ingestion, especially when a storage library
+silently replaces existing rows.
+**Evidence:** door-2 test `test_duplicate_chunk_addresses_fail_instead_of_overwriting_evidence`
+first failed with DID NOT RAISE; retained as the regression test.
+
+### B-085 · 2026-10-27 · Knowledge-base T17 · Incomplete embedding results reach storage
+
+**Symptom:** a fake provider returning fewer vectors than passages caused a late foreign-key
+failure when mention links were inserted. Passages with no mentions could instead be silently
+omitted by the library's zip-based insertion.
+**Cause:** the first implementation trusted the embedder's response cardinality.
+**Fix:** validate the response before insertion: one vector per passage, the configured vector
+length, and finite values. A mismatched response fails explicitly and is never published.
+**Lesson:** validate external result sets before pairing them with source records.
+**Evidence:** `test_incomplete_embedding_response_fails_instead_of_dropping_passages`.
+
+### B-086 · 2026-10-27 · Knowledge-base T17 · New embedding factory bypassed the test key guard
+
+**Symptom:** the no-real-keys test could construct an embedding client from the local `.env`.
+The regression test made no request and printed no key.
+**Cause:** the existing guard patched the chat factory's `load_dotenv`, while the new factory uses
+`dotenv_values` to avoid putting credentials in the environment.
+**Fix:** extend the session-wide guard to the embedding factory's file reader. Tests may inject
+fake values; the default factory fails for a missing key in pytest. Reader password repr and
+environment protection are checked separately.
+**Lesson:** every credential-reading entry point must join the test guard.
+**Evidence:** `test_embedding_factory_cannot_load_a_real_key_in_tests` first failed with DID NOT
+RAISE and passes after the guard extension.
+
+### B-087 · 2026-10-27 · Knowledge-base T17 · Malformed local build state was checked too late
+
+**Symptom:** replacing the local state object with a JSON list still started an embedding call.
+Reading the prior database name only after publication could then fail after the pointer changed.
+**Cause:** syntactically valid JSON was assumed to have the expected object shape.
+**Fix:** validate the object and prior database name before creating a database or calling the
+embedder; prepare the return value before the atomic pointer replacement.
+**Lesson:** validate local control files before starting work, not only when consuming a field.
+**Evidence:** `test_invalid_publication_state_does_not_start_a_build` first reached the refusing
+fake embedder, then passed after validation moved ahead of the build.

@@ -1,0 +1,87 @@
+{
+  "chunks": 320,
+  "database": "li_kb_0af9160cc4ed",
+  "documents": 40,
+  "elapsed_seconds": 16.25,
+  "embedding_model": "openai/text-embedding-3-small",
+  "input_tokens": 55681,
+  "keyword_index": true,
+  "keyword_parser": {
+    "203.0.113.10": [
+      {
+        "alias": "version",
+        "lexemes": [
+          "203.0.113.10"
+        ],
+        "token": "203.0.113.10"
+      }
+    ],
+    "LT-DHUGHES": [
+      {
+        "alias": "asciihword",
+        "lexemes": [
+          "lt-dhugh"
+        ],
+        "token": "LT-DHUGHES"
+      },
+      {
+        "alias": "hword_asciipart",
+        "lexemes": [
+          "lt"
+        ],
+        "token": "LT"
+      },
+      {
+        "alias": "blank",
+        "lexemes": null,
+        "token": "-"
+      },
+      {
+        "alias": "hword_asciipart",
+        "lexemes": [
+          "dhugh"
+        ],
+        "token": "DHUGHES"
+      }
+    ],
+    "T1110.003": [
+      {
+        "alias": "file",
+        "lexemes": [
+          "t1110.003"
+        ],
+        "token": "T1110.003"
+      }
+    ],
+    "thomas.price@corp.example": [
+      {
+        "alias": "email",
+        "lexemes": [
+          "thomas.price@corp.example"
+        ],
+        "token": "thomas.price@corp.example"
+      }
+    ]
+  },
+  "mentions": 257,
+  "organisation_rows": {
+    "assets": 10,
+    "device_assignments": 57,
+    "devices": 53,
+    "grants": 10,
+    "groups": 4,
+    "memberships": 61,
+    "networks": 53,
+    "people": 50
+  },
+  "previous_database_retained": null,
+  "total_elapsed_seconds": 18.479,
+  "usage": {
+    "cost_usd": 0.00111362,
+    "requests": 5,
+    "tokens": 55681
+  },
+  "vector_dimensions": [
+    1536
+  ]
+}

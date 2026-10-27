@@ -95,10 +95,12 @@ def check_server(settings: ServerSettings) -> None:
         )
 
 
-def create_fresh_database(server: ServerSettings) -> ServerSettings:
+def create_fresh_database(server: ServerSettings, *, prefix: str = TEST_PREFIX) -> ServerSettings:
     """A new, uniquely named database copied from the template, so it has pgvector and nothing
     else. Returns the settings that connect to it. The caller drops it with `drop_database`."""
-    name = f"{TEST_PREFIX}_{uuid.uuid4().hex[:12]}"
+    if prefix not in (TEST_PREFIX, "li_kb"):
+        raise ValueError("Database prefix must be li_test or li_kb")
+    name = f"{prefix}_{uuid.uuid4().hex[:12]}"
     create = sql.SQL("CREATE DATABASE {} TEMPLATE {}").format(
         sql.Identifier(name), sql.Identifier(server.template)
     )

@@ -1,0 +1,11 @@
+{
+  "check": "passed",
+  "embedding_model": "openai/text-embedding-3-small",
+  "total_elapsed_seconds": 5.601,
+  "usage": {
+    "cost_usd": 1.4e-07,
+    "requests": 1,
+    "tokens": 7
+  },
+  "vector_dimensions": 1536
+}

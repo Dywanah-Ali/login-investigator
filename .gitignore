@@ -8,6 +8,9 @@ memory/
 *.sqlite3
 *.db
 
+# Local pointer to the most recent successful knowledge-base build. No credentials.
+.knowledge-base.json
+
 # Python and tooling
 .venv/
 __pycache__/
