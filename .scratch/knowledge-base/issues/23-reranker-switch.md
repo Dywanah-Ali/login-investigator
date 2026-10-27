@@ -4,6 +4,7 @@ Type: build
 Status: ready-for-agent
 Blocked by: 22
 Phase: 0
+Model: standard (Opus 5.5 or Sol 6.1)
 
 ## What to build
 

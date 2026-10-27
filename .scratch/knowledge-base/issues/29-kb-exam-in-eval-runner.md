@@ -4,6 +4,7 @@ Type: build
 Status: ready-for-agent
 Blocked by: 21, 28
 Phase: 0 (its gate)
+Model: strongest (Fable 5.1 or Astra)
 
 ## What to build
 

@@ -4,6 +4,7 @@ Type: task (human)
 Status: ready-for-human
 Blocked by: 09 to 41
 Phase: 1 (its gate)
+Model: none, the author runs it
 
 ## What to build
 

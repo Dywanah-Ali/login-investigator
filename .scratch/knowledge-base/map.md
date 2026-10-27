@@ -199,6 +199,22 @@ Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the P
 and is resolved (see Build tickets resolved). T14, T15 and T16 have since resolved; the frontier
 is ticket 17, the next build ticket for this workspace.
 
+### Model per ticket (author's ruling, 27 October 2026)
+
+Each build ticket from 17 to 42 carries a `Model:` line under its `Phase:` line. The strongest
+models (Fable 5.1 for Claude, Astra for Codex) take the tickets where one wrong choice spreads into
+every later ticket; the standard models (Opus 5.5, Sol 6.1) take the rest.
+
+| Model | Tickets | Reason |
+|---|---|---|
+| Strongest | 17, 19, 22, 24, 26, 27, 28, 29 | Load-bearing seams: the build, the graph, fusion, the tool pattern and fence, the package, the resolver, the playbook hooks and the eval gate |
+| Strongest if budget allows | 30, 37, 41 | Judge design, the hardest frontend drawing, the BM25 leg and an honest on-versus-off call |
+| Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40 | Standard build work on seams the strongest tickets set |
+| None | 42 | The author's ticket |
+
+The line advises; it is not a gate. The independence idea (eval questions in 21 and 40 written by
+the other family from the retrieval builder) was proposed and is not ruled.
+
 ### Build tickets resolved
 
 - [09 PostgreSQL with pgvector, and the loud test fixture](issues/09-postgres-pgvector-and-test-fixture.md)
