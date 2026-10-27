@@ -22,7 +22,9 @@ planned per document kind are confirmed against the real lengths.
 
 - [x] The author runs the Codex session with the brief as its only input; the date is recorded here.
       Evidence: 2026-10-27, a standalone Codex session in an empty folder outside the repo that
-      held only a byte-identical copy of `codex-brief.md`.
+      held only a byte-identical copy of `codex-brief.md`. That copy is filed unchanged as
+      `evidence/16-codex-writer-brief-2026-10-27.md` (SHA-256 `cfeb869f…b22a545`), identical to
+      `codex-brief.md` at commit `5161357`. The writer's folder was emptied on 2026-10-27.
 - [x] 27 documents sit in the own corpus folder.
       Evidence: 2026-10-27, copied to `backend/data/datasets/default/corpus/own/`; `diff -r` against
       the writer's folder reports no difference.
