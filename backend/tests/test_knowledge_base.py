@@ -208,6 +208,10 @@ Do not mistake thomas.pricey for thomas.price.
 ## Unlinked
 
 Keep records clear and accurate.
+
+## Near matches
+
+thomas.pricey uses LT-DHUGHES2.
 ''')
 
     async def check():
@@ -222,6 +226,7 @@ Keep records clear and accurate.
         assert devices == {"user-daniel.hughes", "dev-laptop-daniel.hughes",
                            "group-it-admins", "user-thomas.price"}
         assert not any("/unlinked/" in link["chunk_id"] for link in links)
+        assert not any("/near-matches/" in link["chunk_id"] for link in links)
         chunk = next(chunk for chunk in chunks if "/devices/" in chunk.id)
         assert chunk.metadata["technique_ids"] == ["T1110.003"]
 
@@ -344,3 +349,68 @@ def test_invalid_publication_state_does_not_start_a_build(
     with pytest.raises(ValueError, match="state file"):
         asyncio.run(rebuild_knowledge_base(dataset, fresh_database, MustNotEmbed(), state))
     assert state.read_text() == "[]"
+
+
+def test_attack_cleaning_preserves_the_independently_written_visible_text(
+    build_database: ServerSettings, tmp_path: Path,
+):
+    dataset = sample_dataset(tmp_path)
+    path = dataset / "corpus/own/sample.md"
+    prefix = path.read_text().split("## Scope", 1)[0].replace('kind: "policy"', 'kind: "attack"')
+    path.write_text(prefix + '''## Scope
+
+Use [visible policy](https://source.example/reference) and <code>token</code>. (Citation: Hidden Source)
+
+## References
+
+Only the source file should retain this reference.
+''')
+
+    async def check():
+        await build_knowledge_base(dataset, build_database, FakeEmbedder())
+        async with open_knowledge_base(build_database) as kb:
+            chunks = await kb.chunks()
+        assert [chunk.text for chunk in chunks] == [
+            "Access policy | Access policy > Scope\nUse visible policy and token."
+        ]
+
+    asyncio.run(check())
+
+
+def test_skipped_heading_levels_and_fenced_commands_keep_their_context(
+    build_database: ServerSettings, tmp_path: Path,
+):
+    dataset = sample_dataset(tmp_path)
+    path = dataset / "corpus/own/sample.md"
+    prefix = path.read_text().split("## Scope", 1)[0]
+    path.write_text(prefix + '''### First
+
+First sibling.
+
+### Second
+
+Check approval before running this command.
+
+```sh
+# This is a shell comment, not a heading
+printf 'read only'
+```
+
+Keep the warning with the command.
+''')
+
+    async def check():
+        await build_knowledge_base(dataset, build_database, FakeEmbedder())
+        async with open_knowledge_base(build_database) as kb:
+            chunks = await kb.chunks()
+        assert [chunk.id for chunk in chunks] == [
+            "sample@1.0#access-policy/first/1", "sample@1.0#access-policy/second/1",
+        ]
+        assert chunks[1].text == (
+            "Access policy | Access policy > Second\n"
+            "Check approval before running this command.\n\n"
+            "```sh\n# This is a shell comment, not a heading\nprintf 'read only'\n```\n\n"
+            "Keep the warning with the command."
+        )
+
+    asyncio.run(check())

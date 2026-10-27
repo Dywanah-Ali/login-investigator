@@ -1543,3 +1543,17 @@ embedder; prepare the return value before the atomic pointer replacement.
 **Lesson:** validate local control files before starting work, not only when consuming a field.
 **Evidence:** `test_invalid_publication_state_does_not_start_a_build` first reached the refusing
 fake embedder, then passed after validation moved ahead of the build.
+
+### B-088 · 2026-10-27 · Knowledge-base T17 · Markdown heading ancestry and fenced code
+
+**Symptom:** the spec review found that H1 followed by two H3 siblings incorrectly nested the
+second under the first. A shell comment beginning `#` inside a fenced block became a heading.
+**Cause:** ancestry was based on list position rather than actual heading depth, and fenced
+blocks were not tracked. The delivered corpus did not exercise these cases.
+**Fix:** track heading depths and backtick/tilde fences. A door-2 regression checks exact IDs,
+context headers and command text through the built database. The standards review also led to
+an independent expected-text cleaning example and an isolated near-match mention test.
+**Lesson:** preserve document structure before applying size limits; test both text preservation
+and the absence of unwanted matches with independent expected values.
+**Evidence:** `test_skipped_heading_levels_and_fenced_commands_keep_their_context` failed with
+the extra heading and wrong ancestry before the fix; review record under the T17 review folder.

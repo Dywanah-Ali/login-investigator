@@ -54,20 +54,33 @@ def clean_attack(body: str) -> str:
 
 def sections(body: str) -> Iterable[tuple[list[str], str]]:
     """Heading paths define sections, except examples which stay in their field group."""
-    headings: list[str] = []
+    headings: list[tuple[int, str]] = []
     lines: list[str] = []
+    fence: str | None = None
     for line in body.splitlines():
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if fence is not None:
+            lines.append(line)
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                fence = None
+            continue
+        if marker:
+            fence = marker[1]
+            lines.append(line)
+            continue
         match = re.match(r"^(#{1,6}) (.+)$", line)
-        in_examples = len(headings) >= 2 and headings[1] == "Procedure examples"
+        in_examples = (2, "Procedure examples") in headings
         if match and not (in_examples and len(match[1]) > 2):
             if "\n".join(lines).strip():
-                yield headings, "\n".join(lines).strip()
-            headings = headings[:len(match[1]) - 1] + [match[2]]
+                yield [title for _, title in headings], "\n".join(lines).strip()
+            level = len(match[1])
+            headings = [(depth, title) for depth, title in headings if depth < level]
+            headings.append((level, match[2]))
             lines = []
         else:
             lines.append(line)
     if "\n".join(lines).strip():
-        yield headings, "\n".join(lines).strip()
+        yield [title for _, title in headings], "\n".join(lines).strip()
 
 
 def read_chunks(dataset: Path) -> list[Chunk]:
