@@ -1,7 +1,7 @@
 # 16: The own corpus delivered and checked
 
 Type: task (human)
-Status: ready-for-human
+Status: claimed
 Blocked by: 15
 Phase: 0
 
@@ -20,7 +20,9 @@ planned per document kind are confirmed against the real lengths.
 
 ## Acceptance criteria
 
-- [ ] The author runs the Codex session with the brief as its only input; the date is recorded here.
+- [x] The author runs the Codex session with the brief as its only input; the date is recorded here.
+      Evidence: 2026-10-27, a standalone Codex session in an empty folder outside the repo that
+      held only a byte-identical copy of `codex-brief.md`.
 - [ ] 27 documents sit in the own corpus folder.
 - [ ] The consistency script passes on them; its report is saved with this ticket.
 - [ ] Nothing in the corpus names a real company or person.
@@ -35,3 +37,14 @@ planned per document kind are confirmed against the real lengths.
 - 2026-10-26, superseding the S4 ruling above: the author deferred the expanded authentication-attack story as premature for this phase. Restore the 27-document plan; no additional S4 incident record or email, web or SIEM evidence is required. S4's authentication explanation is open again on T12.
 
 - 2026-10-26, final S4 ruling: the question is settled as intentional uncertainty, not a missing incident story. Keep the 27-document plan. Do not invent Olivia statements or S4-specific proof of authorisation, compromise or an authentication-attack mechanism. See the spec's S4 ruling.
+
+- 2026-10-27, Claude: read-only spot check of the 27 delivered files, still outside the repo.
+  Names match the brief's list; owners are only the five teams; one superseded document
+  (`pol-password-2024`), replaced by `pol-password`; no technique ID in
+  `run-password-spray-response`; the leaver only in `reg-shared-devices`; the instruction-like
+  paragraph in `mtg-change-board-2026-09-24`; no hidden users, backup, retention or IP address
+  found; about 13,300 words, each document near its planned range. `rec-helpdesk-reset` matches
+  the log's timeline and `reg-mfa-exceptions` holds exactly the two exceptions. One feel note for
+  the author's read: the helpdesk ticket's phrase "within the recorded minute window" reads like
+  the brief, not an analyst. Not yet done: copying into `corpus/own/`, the checker run and report,
+  the author's read, the length comparison.
