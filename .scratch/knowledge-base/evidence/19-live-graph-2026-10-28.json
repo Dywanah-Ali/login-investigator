@@ -1,0 +1,19 @@
+{
+  "database": "li_kb_fe13d09e32f4",
+  "reader_graph_open": "passed",
+  "nodes": 490,
+  "edges": 583,
+  "groups": 2,
+  "assets": 7,
+  "device_peers": 0,
+  "address_context": [
+    {
+      "network_id": "net-uk-office",
+      "accounts": 43
+    },
+    {
+      "network_id": "net-vpn-4",
+      "accounts": 10
+    }
+  ]
+}

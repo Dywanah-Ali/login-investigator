@@ -99,6 +99,14 @@ The core uses one SQLAlchemy/psycopg engine shared with LangChain's chunk store.
 reader can select records but cannot change them. Core tests use fake embeddings with real
 PostgreSQL and never call OpenRouter. PostgreSQL's reader account must exist for those tests.
 
+Opening the core knowledge base with `open_knowledge_base(reader, dataset=dataset_dir)`
+also builds its NetworkX graph and independently checks every node, relationship and sign-in
+timestamp against storage. `kb.finding_radius(finding, start=None, end=None)` returns joined
+account, group and asset records, device peers, and shared-address context grouped by address.
+Dates filter login evidence; omitted dates use the available log period. Results state requested
+and available periods. Permissions are a snapshot, and shared addresses do not establish exposure
+or spread. These core functions are not yet exposed as agent tools or screens.
+
 ## Evaluate the agent
 
 Run from `backend/`, with the OpenRouter key in `.env`. These commands call the model.

@@ -1,0 +1,40 @@
+{
+  "implementation_commit": "69bee51",
+  "model_confirmation": "Astra confirmed by author",
+  "backend": {
+    "command": "uv run pytest -q",
+    "passed": 612,
+    "seconds": 194.09,
+    "graph_tests": 27
+  },
+  "frontend": {
+    "command": "npm test -- --maxWorkers=1",
+    "passed": 149,
+    "seconds": 37.88
+  },
+  "backend_typecheck": "0 errors, 0 warnings",
+  "frontend_typecheck": "passed",
+  "frontend_lint": {
+    "exit_code": 0,
+    "existing_warnings": 6,
+    "register": "AUD-009"
+  },
+  "review": {
+    "standards_findings": 0,
+    "spec_findings": 0,
+    "report": "../reviews/19-code-review-2026-10-28.md"
+  },
+  "eval": {
+    "artifact": "backend/evals/results/2026-10-28-121053-b70d0745.json",
+    "passed": 61,
+    "total": 63,
+    "security_passed": 15,
+    "security_total": 15,
+    "gates_met": true,
+    "known_failures": "Q02 runs 2 and 3 omit S2 explicit no-success outcome; B-076/AUD-047"
+  },
+  "live_graph": "19-live-graph-2026-10-28.json",
+  "rebuild": "19-rebuild-2026-10-28.json",
+  "teardown_concern": "One initial failure; exact database removed; focused and full reruns clean; AUD-061",
+  "pushed": false
+}

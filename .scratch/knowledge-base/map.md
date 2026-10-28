@@ -191,13 +191,13 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is ticket 19**, which has no unresolved blockers; one session
+line holds its edges. **The frontier is ticket 20**, which has no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14 to T18 have since resolved; the frontier
-is ticket 19, the graph, its integrity check and the radius. No ticket was blocked by 18.
+and is resolved (see Build tickets resolved). T14 to T19 have since resolved; the frontier
+is ticket 20, the Gephi export. Ticket 21 is also unblocked. No ticket was blocked by 18.
 
 Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
 It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the new settings rule,
@@ -334,6 +334,19 @@ the other family from the retrieval builder) was proposed and is not ruled.
   frontend tests, clean types, real-server refusal and start, two-axis review triaged, Port API
   eval 63/63 and 15/15 security. B-089, B-090; AUD-058, AUD-059. Model: Claude Opus 5.5.
 
+- [19 The graph, its integrity check and the S6 radius test](issues/19-graph-integrity-and-radius.md)
+  (28 October 2026): NetworkX graph built at the core opening, checked independently against
+  database rows and successful login observations. One radius function returns joined groups,
+  assets and device peers, with shared-address matches grouped separately as context. Five author
+  rulings: success-only address edges; session-assigned VPN pool; reuse outside exposure counts;
+  user dates first, all available records by default; include office as well as VPN context.
+  S6 recomputes exactly: two groups, seven assets, no device peers, 43 office and ten VPN matches.
+  Evidence: 612 backend and 149 frontend tests, clean type checks, zero findings on each review
+  axis; Port API eval 61/63 and 15/15 meets its gates. Q02 omits S2's no-success outcome twice
+  (B-076/AUD-047); six existing lint warnings remain. B-091 to B-095 retain iterations; AUD-060
+  closed, AUD-061 records one intermittent teardown failure for T44. Live reader graph: 490 nodes,
+  583 edges; rebuilt for $0.00111362. Model: author-confirmed Astra. Local commits only.
+
 ## Not yet specified
 
 T14 resolved on 26 October 2026: the pinned ATT&CK reference corpus is delivered. During its
@@ -353,9 +366,8 @@ in document contents. External ATT&CK ownership identifies MITRE as publisher.
 - The exact dagre spacing, node sizes and dark-mode shades of the Graph tab (ticket 08,
   decision 6), and the read-only test's list of switched-off behaviours (decision 8): the build
   ticket, with the author's screenshot review.
-- The graph integrity check (tables and chunk links against the built NetworkX graph): a phase 0
-  build item, recorded in ticket 06's comments on 24 October 2026; the GEXF export test compares
-  against it (ticket 08, decision 9).
+- The graph integrity check is delivered in ticket 19; ticket 20's GEXF export compares against
+  it (ticket 08, decision 9).
 - The spec for phases 0 and 1: written, [spec.md](spec.md). The build tickets: cut, 09 to 42 under
   `issues/`.
 

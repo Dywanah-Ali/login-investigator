@@ -1,7 +1,7 @@
 # 19: The graph, its integrity check and the S6 radius test
 
 Type: build
-Status: claimed
+Status: resolved
 Blocked by: 12, 17
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
@@ -81,33 +81,62 @@ answer key. All remain context outside exposure counts; accounts appearing in bo
 not be presented as distinct exposed people. This supersedes the earlier expectation of only
 ten address matches overall, while preserving those ten within the VPN group. Source: B-092.
 
+### 6. Implementation
+
+- NetworkX 3.6.1, pinned in the backend lockfile. No new server or database schema.
+- `open_knowledge_base(settings, dataset=...)` checks the stored fingerprint, builds the graph,
+  independently reconciles it, then yields it. Existing storage-only callers omit `dataset`.
+  Reader settings use the existing read-only database role and pool lifecycle.
+- Organisation and chunk IDs are graph IDs. Directed relationships are keyed by type, allowing
+  assigned-device and observed-device edges between the same nodes. Every successful sign-in
+  contributes timestamped `used_address` edges for known networks and `used_device` edges for
+  registered nonempty devices. Unknown successful accounts/devices fail loudly.
+- The integrity checker has its own database reads, relationship mappings and CSV reading.
+  It compares identities, all stored entity attributes, chunk text/metadata, typed edge sets,
+  per-edge timestamps and isolation. It never calls the builder to obtain expected values.
+- `kb.finding_radius(finding, start=None, end=None)` returns joined records through frozen
+  result dataclasses. Spray/brute-force radius subjects are accounts successfully accessed by
+  the finding's addresses in the chosen period; failed targets alone do not gain a radius.
+  Both ends of a shared-device/address relationship need successful observations in the period.
+  Registered device assignments and permissions remain snapshot facts.
+- Requested bounds follow the log tools. Effective coverage is their intersection with record
+  bounds; no overlap yields null effective bounds. The log's second-resolution last event is
+  included with an exclusive end one second later. Record bounds do not imply continuous logging.
+- S6's generator key now separates access paths from address-context paths, with 43 office and
+  ten VPN matches. The graph recomputes them from storage and log edges, never from the key.
+- The live build was rebuilt as `li_kb_fe13d09e32f4` for $0.00111362. Its reader opens 490 nodes
+  and 583 edges and returns S6's two groups, seven assets, zero device peers and both context
+  groups. Evidence: `evidence/19-rebuild-2026-10-28.json` and `19-live-graph-2026-10-28.json`.
+- Parallel Standards and Spec reviews found zero substantive findings on each axis. See
+  `reviews/19-code-review-2026-10-28.md`. Core implementation commit: `69bee51`.
+
 ## Acceptance criteria
 
-- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+- [x] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
-- [ ] One function opens a dataset's knowledge base; the graph is built in NetworkX from the tables,
+- [x] One function opens a dataset's knowledge base; the graph is built in NetworkX from the tables,
       with chunk nodes and `mentions` edges.
-- [ ] `used address` edges are drawn from the log. The row filter (for example, successful sign-ins
+- [x] `used address` edges are drawn from the log. The row filter (for example, successful sign-ins
       only) is fixed here and written beside the radius in `truth.json`.
-- [ ] The integrity check reads its sources with its own code and checks every row of the spec's
+- [x] The integrity check reads its sources with its own code and checks every row of the spec's
       table: node ID sets per type, the node attributes a walk reads, link edge sets by source,
       target and type, the `used address` set from the log with the same filter, chunk node IDs, and
       each chunk's `mentions` edges including an empty set. No person, group, asset or device is
       isolated.
-- [ ] Corruption tests: each check fails when its input is broken once; swapping two valid link
+- [x] Corruption tests: each check fails when its input is broken once; swapping two valid link
       endpoints without changing any count fails; changing an attribute a walk reads fails; a chunk
       naming no entity passes; an unused network address passes.
-- [ ] One core function computes a finding's radius, already joined: groups held, assets reached,
+- [x] One core function computes a finding's radius, already joined: groups held, assets reached,
       peers with optional dates for login-based relationships, per decision 4.
-- [ ] Address-reuse matches are explicitly labelled supporting context and excluded from any
+- [x] Address-reuse matches are explicitly labelled supporting context and excluded from any
       exposed-account count. The result and answer-key tests preserve S6's ten expected match
       identities under the agreed context meaning for the default full-log period.
-- [ ] Tests prove explicit dates filter login-based relationships, omitted dates use available
+- [x] Tests prove explicit dates filter login-based relationships, omitted dates use available
       records, boundary handling follows the log tools, and results state period and coverage.
-- [ ] A test recomputes S6's radius from the tables through that function and matches `truth.json`
+- [x] A test recomputes S6's radius from the tables through that function and matches `truth.json`
       exactly.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
 
@@ -132,3 +161,16 @@ ten address matches overall, while preserving those ten within the VPN group. So
 - 2026-10-26, consequence of the author's ruling at ticket 11: `device_id` is empty on attacker rows
   and on employee sign-ins from a phone. An empty value is not a device: it makes no device edge,
   and rows with an empty device are never peers of each other by device.
+
+- 2026-10-28, closure: implemented on author-confirmed Astra after `$implement T19`. All criteria
+  verified. Final backend suite: 612 passed in 194.09 s, including 27 graph tests. Frontend:
+  149 passed in 37.88 s; backend and frontend type checks clean. Frontend lint exits 0 with the
+  same six AUD-009 warnings. Port API eval: 61/63 overall, 15/15 security, gates met; Q02 runs
+  2 and 3 omit S2's explicit no-success outcome (B-076 / AUD-047), while reporting S6 correctly.
+  No behaviour change or rerun. Eval artifact: `backend/evals/results/2026-10-28-121053-b70d0745.json`.
+  Two independent review axes: zero findings each. B-091 to B-095 preserve discussion/test
+  iterations. The one failed teardown's test database was removed; focused rerun and full suite
+  had no teardown error. AUD-060 closed on the agreed meaning and verified implementation;
+  AUD-061 stays a candidate for T44. Live graph checked as the reader; rebuild cost $0.00111362.
+  All application changes are in local commit `69bee51`; closure evidence is committed locally
+  afterwards. Nothing pushed. Next frontier: ticket 20; ticket 21 is also unblocked.

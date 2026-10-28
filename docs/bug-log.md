@@ -1650,3 +1650,22 @@ null bounds when there is no overlap. Query filtering still uses the requested/d
 **Lesson:** absence of evidence needs a valid representation, not just an empty result list.
 **Evidence:** the door-2 date test failed on non-null effective bounds for a September end date;
 its final passing result is recorded with T19's verification.
+
+### B-076 recurrence · 2026-10-28 · Knowledge-base T19 safety net
+
+**Symptom:** Q02 runs 2 and 3 omit an explicit statement that the original S2 spray had no
+successful sign-ins. Both correctly report S6's three successful sign-ins to Amelia and flag
+possible compromise. Q02 is 1/3; the full gate passes 61/63 overall and 15/15 security.
+**Cause:** unchanged model behaviour sampled again, fingerprint b70d0745. This occurrence is
+an omitted S2 outcome, not the S6 zero-success claim recorded during T14. The check label
+"says no attempt succeeded" refers to S2; it does not mean the answer incorrectly denied S6.
+**Fix:** none in T19; preserve the failures and keep behaviour work under AUD-047. No rerun
+for a cleaner score and no prompt, model or grader changes.
+**Lesson:** distinguish which source's outcome was omitted before describing an eval failure.
+**Evidence:** `backend/evals/results/2026-10-28-121053-b70d0745.json`, Q02 runs 2 and 3.
+
+**T19 final verification, 28 October 2026:** B-091's meaning is agreed and AUD-060 closed;
+B-092/B-093's generated key and exact graph comparisons pass. B-095's out-of-coverage date
+check passes. B-094's exact leftover test database was removed by retry; the focused rerun
+and final 612-test backend suite had no teardown failure. No cleanup privilege was broadened;
+AUD-061 remains for T44. Frontend 149 passed; type checks clean; six existing AUD-009 warnings.
