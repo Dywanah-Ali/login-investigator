@@ -73,6 +73,9 @@ The bootcamp's weekly project briefs, from week 2 onward, are **inspiration, not
   Update existing entries as decisions change. Keep closed entries and their history. Registration
   is not implementation approval; the spec and tickets still control scope. Keep bug details and
   prompt history in their existing logs and link them from the register.
+- **Maintain the admin manual** in `docs/admin-manual.md` (author's ruling, 28 October 2026). When a
+  ticket adds or changes a task the author runs by hand (a script, a rebuild, a check), it adds or
+  updates that task's section in the manual's fixed shape, and tests the commands as written.
 - **Nothing is pushed to GitHub** until the author has reviewed it.
 - Only one session, Claude or Codex, edits this folder at a time, unless the author starts parallel
   sessions on separate tickets. Research subagents may run in parallel.
