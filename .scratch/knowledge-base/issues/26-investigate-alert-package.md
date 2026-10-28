@@ -29,6 +29,10 @@ progress per internal step, so the screen can later stack the steps while they r
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
 - [ ] `investigate_alert` finds the finding by its ID; an unknown ID returns plain content saying so.
+- [ ] Optional `start` and `end` reach T19's shared core for login-based relationships. Omitted
+      bounds use the available log period; content and artifact state period and coverage.
+      Tests cover explicit and omitted dates. Permissions remain a snapshot; VPN address-reuse
+      matches remain context outside exposed-account counts (author, 28 October 2026; T19 d3/d4).
 - [ ] The package has the five named sections, each with its own verdict and citations, computed and
       ordered in code. A targets section is filled for spray and brute force and empty otherwise.
 - [ ] The clearing and aggravating searches are built from the finding's record; a test proves the

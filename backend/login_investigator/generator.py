@@ -631,7 +631,13 @@ def generate(seed: int = SEED) -> World:
     paths = [[_person_id(target), group] for group in target_groups]
     paths += [[_person_id(target), group, asset] for asset, group in asset_groups]
     network = f"net-vpn-{target_vpn_index + 1}"
-    paths += [[_person_id(target), network, peer] for peer in sorted(network_peers)]
+    network_paths = [[_person_id(target), network, peer] for peer in sorted(network_peers)]
+    office_peers = sorted(_person_id(user) for user in UK_USERS if user != target)
+    address_context = [
+        {"network_id": "net-uk-office", "accounts": office_peers,
+         "paths": [[_person_id(target), "net-uk-office", peer] for peer in office_peers]},
+        {"network_id": network, "accounts": sorted(network_peers), "paths": sorted(network_paths)},
+    ]
     scenarios["S6"] = {
         "type": "password_spraying", "attacker_ip": S6_IP, "country": "NL", "user": target,
         "targets": targets, "failures": S6_ACCOUNTS, "successes": len(S6_SUCCESS_MINUTES),
@@ -642,14 +648,17 @@ def generate(seed: int = SEED) -> World:
                                   "run-compromised-account-response"],
         "blast_radius": {
             "groups": target_groups, "assets": sorted(a for a, _ in asset_groups),
-            "device_peers": [], "network_peers": sorted(network_peers),
+            "device_peers": [],
+            "address_reuse_context": {"by_address": address_context,
+                                      "meaning": "Address reuse is context, not evidence of exposure or spread."},
             "device_id": _laptop_id(target), "network_id": network,
             "network_address": VPN_POOL[target_vpn_index],
-            "paths": paths,
+            "paths": sorted(paths),
             "basis": "Planted memberships, grant plan and VPN hand-out order; "
                      "shared address is context, not proof of compromise. "
                      "The attacker device is unregistered and supplies no device peer edge.",
-            "used_address_filter": "To be fixed and verified by the graph-build ticket (T18).",
+            "used_address_filter": "Successful sign-ins only; addresses in the networks table. "
+                                   "Optional user dates; available log period when omitted (T19).",
         },
     }
     truth["twins"]["B1"].update({"country": "DE", "address": "203.0.113.70",

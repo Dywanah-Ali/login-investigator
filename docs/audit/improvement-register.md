@@ -87,6 +87,32 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-058 | The staleness fingerprint covers chunking settings, not chunking code | Open, scheduled in knowledge-base T44 (phase 0 cleanup); ruling still needed | Medium | Knowledge-base T18 spec review |
 | AUD-059 | The build command reads `LI_DATASET_DIR` from `.env`; the app reads the environment only | Open: rule ruled 28 October 2026 (environment, then `.env`, then default); code alignment scheduled in knowledge-base T44 | Medium | Knowledge-base T18 standards and spec reviews |
 
+| AUD-060 | VPN address meaning and address-reuse evidence limits | Decisions agreed in T19; implementation verification pending | Medium | B-091; T19 decisions 2 to 5 |
+| AUD-061 | Intermittent test-database teardown privilege failure | Open; candidate for T44 | Low | B-094 |
+
+### AUD-060: VPN address observation point is not explicit
+
+Open design concern, identified during T19 discussion on 28 October 2026; source B-091.
+The corpus describes session-assigned VPN pool addresses, while the log stores only `source_ip`
+and the generator does not declare the observation point. Public-exit semantics must not be
+assumed. Before T19's network relationship is implemented, obtain the author's ruling on the
+meaning and evidence limits. Any dataset or spec change requires author agreement. Closure:
+an agreed explicit meaning, with affected records and checks aligned if changes are approved.
+
+Author's ruling, 28 October 2026: follow the policy's session-assigned, reused-address meaning,
+not public exits. Recorded in the spec and T19 Answer decision 2. Still open for the consequence:
+whether and how the ten S6 address-reuse matches belong in the result, and the associated time
+window. No dataset changes or allocation telemetry approved by that first ruling.
+
+Subsequent author ruling, 28 October 2026: retain the ten address-reuse matches as labelled
+supporting context, outside any exposed-account count (T19 decision 3 and spec graph section).
+T19 must align the answer key and tests during implementation. Time-window decision and
+implementation evidence remain outstanding; entry stays open.
+
+Further author ruling, 28 October 2026: optional user dates take precedence, with the available
+log period as the default. T19 decision 4, the spec and T25/T26 now record the contract. The date
+decision is settled; implementation and verification remain outstanding.
+
 ### AUD-001: Rule filter
 
 The author wants to focus the Alerts table on a rule such as Brute force. Offer All rules and
@@ -1015,3 +1041,11 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-27 | T17 build command delivered: 40 documents, 320 chunks, 257 organisation mentions. B-084 to B-088 fixed with regression evidence; two-axis review cleared. Added AUD-057 for retained successful build databases. Final safety net: 571 backend, 149 frontend, clean types, Port API eval 63/63 overall and 15/15 security. Six existing lint warnings (AUD-009) remain; no parked behaviour concern reopened. | T17; `reviews/17-code-review-2026-10-27.md`; `2026-10-27-160038-b70d0745.json` |
 | 2026-10-28 | After T18, the author ruled one reading rule for every `LI_` setting and opened T44, the phase 0 cleanup, blocked by 28 and blocking 29. AUD-057, AUD-058 and AUD-059 scheduled there; each still needs its own ruling inside T44. | Spec decisions log, 28 October 2026; `issues/44-phase0-cleanup.md` |
 | 2026-10-28 | T18 staleness guard built and reviewed. Added AUD-058 (chunking code outside the fingerprint) and AUD-059 (two readers of `LI_DATASET_DIR`), both unresolved review concerns. Final safety net: 585 backend, 149 frontend, clean types, Port API eval 63/63 overall and 15/15 security. Six existing lint warnings (AUD-009) remain; no parked behaviour concern reopened. | T18; B-089, B-090; `reviews/18-code-review-2026-10-28.md`; `2026-10-27-224010-b70d0745.json` |
+
+### AUD-061: Intermittent test database teardown privilege failure
+
+Open, scheduled for consideration in T44. Source: B-094, T19 corruption-test run on 28 October
+2026. Existing `drop_database` uses FORCE, but li_admin cannot terminate all backend roles.
+One fixture teardown failed after passing assertions. Do not broaden database privileges
+without a ruling. Closure: diagnose the connection safely and approve a cleanup policy, or
+record an explicit deferral; keep the original failure evidence.

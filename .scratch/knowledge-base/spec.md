@@ -483,6 +483,27 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 ### The graph (T02, T06, T08)
 
+- **VPN address meaning (author, 28 October 2026):** the synthetic VPN pool represents
+  session-assigned addresses reused over time, following the remote-access policy. It is not a
+  public-exit pool. Matching an address across different sessions establishes reuse only, not
+  shared-device use, simultaneous connectivity, exposure or spread. The author's subsequent
+  ruling retains S6's ten address-reuse matches as clearly labelled supporting context, outside
+  any exposed-account count. This distinction applies to core results, answer-key tests and
+  later agent/screen presentation, and qualifies earlier references to network peers within
+  the blast radius or peer counts. T19 aligns the answer key during implementation, preserving
+  match identities for the default period. No new telemetry is approved.
+- **Address grouping (author, 28 October 2026):** include all matching organisation addresses,
+  grouped by address. S6's default-period context contains the UK office's 43 other accounts
+  and the VPN address's ten other accounts, with the original VPN identities retained. Both
+  are supporting context outside exposure counts; overlapping groups are not additive people.
+- **Relationship dates (author, 28 October 2026):** optional user-supplied start and end times
+  filter login-based graph relationships; omitted bounds use the available log period. Follow
+  the existing log tools' UTC convention (start included, end excluded). Results state the
+  requested/effective period and available coverage; they must not imply complete coverage
+  outside the available records. Organisation permissions remain a snapshot, not historical
+  permissions. This supersedes fixed "that week" wording for these relationships. S6's ten
+  address-reuse matches are expected for the default period; narrower requests may return fewer.
+
 - **Walked in NetworkX** (T02 d2), built in memory from the tables when the knowledge base opens, with
   named traversal functions in the core. Chunks are nodes too, joined to entities by `mentions` edges
   (T02 d7).
@@ -541,8 +562,8 @@ questions, and the author accepts the live screen. The initiative closes there.
   brute-force or spraying finding whose address signed in gets one code-built sentence on its
   summary saying so, for the agent only; the core finding and the Alerts reply are unchanged),
   plus
-  `investigate_alert(finding_id)`, `lookup_account(account_id)`,
-  `find_peers(account_id | device_id | network)` and
+  `investigate_alert(finding_id, start?, end?)`, `lookup_account(account_id)`,
+  `find_peers(account_id | device_id | network, start?, end?)` and
   `search_corpus(question, doc_type, technique_id)`. No router tool, no sub-agent. All hand-written,
   parameterised, read-only. The model and agent are still created in exactly one function each.
 - **The investigation package** (T05 d2, d3): `investigate_alert` bundles playbook steps 2 to 6 into
@@ -904,3 +925,7 @@ them.
 | 2026-10-27 | Author's rulings at ticket 16 on chunk sizes and ATT&CK cleaning (P1 to P4c): five unplanned own kinds take the policy row; runbook steps stay whole under a test; ATT&CK references, citation markers, link addresses and `<code>` tags stay out of chunk text with the files unchanged; procedure examples packed per field group. See "Chunking rulings at T16" | T16's token measurement: no own section outside runbooks exceeds 244 tokens; three runbook step sections exceed 350; ATT&CK reference lists reach 17,282 of T1078's 26,414 tokens; 185 one-sentence procedure examples would each become a chunk that can outrank the explanation. Search indexes what explains; what proves is kept in the files |
 | 2026-10-28 | Author's rulings at ticket 18 on the staleness guard: with no build published, the server starts without a knowledge base and logs fixed text naming the build command; a build that cannot be checked (PostgreSQL down, database, fingerprint or reader login missing) stops the server; the fingerprint skips hidden entries; `LI_KNOWLEDGE_BASE_STATE` names the pointer file for app and build; the "cannot be checked" text names both the reader's login and the rebuild. See T18's Answer, decisions 1 to 5 | Absence gives no answers, so it cannot mislead, and today's tests stay free of PostgreSQL; a guard that cannot check must not let things through; hidden entries are tooling state, found in `default/` during T18; tests and eval servers must never meet the real build; PostgreSQL gives no error code that separates a refused login from a missing database |
 | 2026-10-28 | Author's ruling after T18 (AUD-059): every `LI_` setting is read from the environment first, then `.env`, then the default, in the app, the build command and the scripts. Supersedes T18 decision 4's "environment only" for `LI_KNOWLEDGE_BASE_STATE`. Existing settings are aligned by the phase 0 cleanup ticket; new settings follow the rule from T19 on | Three reading habits existed (PostgreSQL settings, the build's dataset folder, the app's paths), and T18's fingerprint turned the dataset-folder split into a refusal to start. The PostgreSQL settings already follow this rule; the author changes settings in `.env`; the environment winning keeps tests and eval runs isolated. The rule is fixed before more settings arrive (re-ranker switch in T23), so the cleanup does not undo later work |
+| 2026-10-28 | Author agreed the VPN pool represents session-assigned addresses reused over time, following the existing remote-access policy; public-exit interpretation rejected. T19 reviews the value and wording of the ten S6 matches before choosing a time window | Address reuse alone establishes neither shared-device use nor exposure or spread. No removal of matches, dataset change or additional telemetry approved; see T19 Answer decision 2 and AUD-060 |
+| 2026-10-28 | Author agreed to retain S6 VPN address-reuse matches as clearly labelled supporting context outside exposed-account counts. T19 aligns results, answer key and tests; later agent/screen presentation keeps the distinction | Ten later sign-ins from different recorded laptops establish address reuse, not exposure or spread. Match identities stay; time window remains undecided. Qualifies earlier network-peer blast-radius wording; see T19 decision 3 |
+| 2026-10-28 | Author approved optional start/end dates for find_peers and investigate_alert, passed to the shared graph calculation. User dates take precedence; omitted bounds use available log records. Results state period and coverage; permissions remain a snapshot | Reuses existing log-tool date conventions and supports user-directed investigations instead of a fixed week. Supersedes earlier fixed-week wording for login-based relationships; S6 default-period expectations retained. See T19 decision 4 and T25/T26 criteria |
+| 2026-10-28 | Author chose all shared organisation addresses grouped by address, retaining S6's ten VPN matches and adding 43 office matches to context and the answer key | The independent graph walk exposed that the old key omitted ordinary office sharing. Neither group establishes exposure or spread, and overlapping groups are not additive people. T19 decision 5; B-092 |

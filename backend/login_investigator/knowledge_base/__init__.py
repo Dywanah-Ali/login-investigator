@@ -14,6 +14,8 @@ import time
 from dataclasses import dataclass, replace
 
 import tiktoken
+import networkx as nx
+import pandas as pd
 
 from langchain_core.embeddings import Embeddings
 from langchain_postgres import PGEngine, PGVectorStore
@@ -25,6 +27,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from login_investigator.corpus_check import read_table
 from login_investigator.generator import REPO_ROOT
+from login_investigator.rules import Finding
 from login_investigator.postgres import (
     DatabaseUnavailable, ServerSettings, check_server, create_fresh_database, drop_database,
 )
@@ -32,6 +35,9 @@ from . import chunking as chunking, schema as schema
 from .chunking import Chunk, read_chunks
 from .access import check_reader_role, grant_read_only, reader_settings as reader_settings
 from .mentions import find_mentions
+from .graph import build_graph
+from .integrity import GraphIntegrityError as GraphIntegrityError, check_graph_integrity
+from .radius import FindingRadius, finding_radius
 from .staleness import (
     NOT_BUILT as NOT_BUILT, SERVER_DOWN, SETTINGS_INCOMPLETE, STALE, UNCHECKABLE,
     KnowledgeBaseNotReady as KnowledgeBaseNotReady, source_fingerprint,
@@ -66,6 +72,25 @@ def database_engine(settings: ServerSettings) -> AsyncEngine:
 class KnowledgeBase:
     def __init__(self, engine: AsyncEngine):
         self.engine = engine
+        self._graph: nx.MultiDiGraph | None = None
+        self._dataset: Path | None = None
+        self._log: pd.DataFrame | None = None
+
+    @property
+    def graph(self) -> nx.MultiDiGraph:
+        if self._graph is None:
+            raise ValueError("Open the knowledge base with its dataset to use the graph")
+        return self._graph
+
+    async def check_graph_integrity(self, graph: nx.MultiDiGraph | None = None) -> None:
+        if self._dataset is None:
+            raise ValueError("Open the knowledge base with its dataset to check the graph")
+        await check_graph_integrity(self.engine, self._dataset, self.graph if graph is None else graph)
+
+    def finding_radius(self, finding: Finding, start: str | None = None, end: str | None = None) -> FindingRadius:
+        if self._log is None:
+            raise ValueError("Open the knowledge base with its dataset to compute a radius")
+        return finding_radius(self.graph, self._log, finding, start, end)
 
     async def organisation_records(self, name: str) -> list[dict[str, object]]:
         table = schema.ORG_TABLES[name]
@@ -115,10 +140,23 @@ class KnowledgeBase:
 
 
 @asynccontextmanager
-async def open_knowledge_base(settings: ServerSettings) -> AsyncIterator[KnowledgeBase]:
+async def open_knowledge_base(
+    settings: ServerSettings, *, dataset: Path | None = None,
+) -> AsyncIterator[KnowledgeBase]:
     engine = database_engine(settings)
     try:
-        yield KnowledgeBase(engine)
+        kb = KnowledgeBase(engine)
+        if dataset is not None:
+            fingerprints = await kb.recorded_fingerprints()
+            if len(fingerprints) != 1:
+                raise KnowledgeBaseNotReady(UNCHECKABLE)
+            if fingerprints[0] != source_fingerprint(dataset):
+                raise KnowledgeBaseNotReady(STALE)
+            kb._dataset = dataset
+            kb._graph, kb._log = await build_graph(engine, dataset)
+            await kb.check_graph_integrity()
+            nx.freeze(kb.graph)
+        yield kb
     finally:
         await engine.dispose()
 

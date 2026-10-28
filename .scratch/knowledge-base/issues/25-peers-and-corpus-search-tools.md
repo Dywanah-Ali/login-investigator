@@ -26,8 +26,12 @@ ticket 24: typed, read-only, fenced, short content for the model and a full arti
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
-- [ ] `find_peers` returns the users sharing a device or a network address that week, from the graph,
+- [ ] `find_peers` returns the users sharing a device or a network address, from the graph,
       paged with a `truncated` flag; the full list is in the artifact.
+- [ ] Optional `start` and `end` filter login-based relationships through T19's shared core.
+      Omitted bounds use the available log period; results state period and coverage. Tests
+      cover explicit and omitted dates. Organisation permissions remain a snapshot. VPN
+      address-reuse matches are labelled context, outside exposed-account counts (T19 d3/d4).
 - [ ] `search_corpus` takes typed options, builds the filter in code, and returns the verdict with up
       to five chunks; the artifact records every score.
 - [ ] Both are in the one tool tuple and their results are fenced.

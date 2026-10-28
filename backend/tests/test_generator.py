@@ -427,8 +427,10 @@ def test_vpn_pool_is_shared_and_answer_key_is_written_without_hiding_s4_unknowns
     assert radius["groups"] == ["group-all-staff", "group-it-admins"]
     assert len(radius["assets"]) == 7
     assert radius["device_peers"] == []
-    assert len(radius["network_peers"]) == 10
-    assert "user-amelia.ward" not in radius["network_peers"]
+    office, vpn = radius["address_reuse_context"]["by_address"]
+    assert office["network_id"] == "net-uk-office" and len(office["accounts"]) == 43
+    assert vpn["network_id"] == "net-vpn-4" and len(vpn["accounts"]) == 10
+    assert "user-amelia.ward" not in vpn["accounts"]
     assert radius["paths"]
     assert len(truth["absent_topics"]) == 4
     assert len(truth["never_mentioned_users"]) == 2

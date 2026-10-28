@@ -1573,6 +1573,19 @@ the database's own error, which names the database, really is present and must b
 **Evidence:** first run failed with `assert (None is None and False)`; both tests pass after the
 fix. A deliberate break of the stale comparison then failed both stale tests, door 2 and door 4.
 
+### B-091 · 2026-10-28 · T19 discussion · VPN address meaning lacks an explicit observation point
+
+**Symptom:** T19 discussion treated the synthetic VPN pool as public exit addresses, while the
+remote-access policy describes addresses assigned to sessions and reused over time. The graph's
+shared-address evidence can therefore be interpreted more strongly than the data supports.
+**Cause:** the generator writes `VPN_POOL` values into the single `source_ip` field without an
+explicit observation point, original client address, or VPN allocation interval. Pool values are
+synthetic documentation addresses, not evidence that they represent public exits.
+**Fix:** pending the author's ruling. Corrected the chat explanation; no dataset or spec changed.
+**Lesson:** define what an address field observes before assigning security meaning to a match.
+**Evidence:** `generator.py` VPN row generation; `org/networks.csv`; `pol-remote-access.md`,
+Addresses and attribution. Tracked as AUD-060.
+
 ### B-090 · 2026-10-28 · Knowledge-base T18 · The live build predates the guard and stops the server
 
 **Symptom:** after T18, `uv run uvicorn api.app:create_app --factory` on this machine exits with
@@ -1586,3 +1599,54 @@ day on the author's go: `li_kb_f9d6bcf6f8c5`, $0.00111362, after which the real 
 one-time rebuild as part of the change.
 **Evidence:** the real server's output saved during T18 shows the fixed text and exit code 3, with
 no database name, error chain or password; its only paths are Python's traceback frames.
+
+### B-092 · 2026-10-28 · Knowledge-base T19 · S6 answer key omitted office-address context
+
+**Symptom:** the first independent radius test returned 43 distinct address peers instead of the
+key's ten VPN peers. The office and VPN groups overlap.
+**Cause:** T12 planted expected network paths only from the VPN allocation plan, although the
+spec's graph includes every registered address and Amelia also uses the UK office address.
+**Fix:** author approved all matches grouped by address. The generator and answer key now keep
+43 office matches and the original ten VPN matches separately as supporting context, outside
+exposure counts. Door 2 compares every group's exact identities and paths.
+**Lesson:** a hand-planted answer key must include ordinary background relationships, not only
+new story rows. An independent graph calculation can expose omissions in the key itself.
+**Evidence:** first radius test failed with 43 actual accounts versus ten expected; T19 decision 5
+records the author's explicit ruling. Final verification belongs to T19's closure record.
+
+### B-093 · 2026-10-28 · Knowledge-base T19 · Answer-key byte order and coverage test corrections
+
+**Symptom:** the generator reproducibility test rejected the edited truth file; the date test
+incorrectly expected the last log row on 7 October rather than 8 October at 08:59:48 UTC.
+**Cause:** the first key edit preserved a different JSON field order from the generator. The
+coverage test assumed calendar dates instead of reading the existing capture boundary.
+**Fix:** regenerate truth.json from the generator; use the actual independent capture endpoint
+in the coverage assertion. Pandas timestamp type ambiguities also needed explicit type casts.
+**Lesson:** generated evidence must be written by its source; an expected date needs evidence.
+**Evidence:** focused generator and graph runs exposed both assertions before closure.
+
+### B-094 · 2026-10-28 · Knowledge-base T19 · Test database teardown permission failure
+
+**Symptom:** 23 graph assertions passed, but one fixture teardown failed when dropping its
+fresh test database with FORCE. PostgreSQL reported insufficient permission to terminate a
+process. The other databases in that run were cleaned up.
+**Cause:** the existing cleanup role cannot terminate every possible backend role. Which
+connection triggered this occurrence was not captured; no cause beyond that is established.
+**Fix:** no fixture or database privileges changed in T19. Retry cleanup of the exact database
+created by this run, then rerun focused tests. Follow-up tracked as AUD-061 for T44.
+**Lesson:** distinguish an assertion failure from cleanup failure, and retain enough safe
+connection metadata to diagnose intermittent teardown problems.
+**Evidence:** test_integrity_rejects_corruption[asset_id] teardown, first corruption run:
+23 passed, 1 error; InsufficientPrivilege, permission denied to terminate process.
+
+### B-095 · 2026-10-28 · Knowledge-base T19 · Empty requested period reported inverted bounds
+
+**Symptom:** an end-only request before the first login returned an effective start after its
+end. No peers were returned, but the coverage metadata was misleading.
+**Cause:** omitted bounds defaulted to log bounds without intersecting the requested interval
+with the available records for reporting.
+**Fix:** preserve the requested bounds, report the intersection as the effective period, or
+null bounds when there is no overlap. Query filtering still uses the requested/default bounds.
+**Lesson:** absence of evidence needs a valid representation, not just an empty result list.
+**Evidence:** the door-2 date test failed on non-null effective bounds for a September end date;
+its final passing result is recorded with T19's verification.

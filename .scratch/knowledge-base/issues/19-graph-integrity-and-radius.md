@@ -1,7 +1,7 @@
 # 19: The graph, its integrity check and the S6 radius test
 
 Type: build
-Status: ready-for-agent
+Status: claimed
 Blocked by: 12, 17
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
@@ -29,6 +29,58 @@ it gives exactly the S6 radius written in `truth.json`.
   door 2, instead of at the generator's door.
 - User stories 57, 69. Spec door 2.
 
+## Answer
+
+### 1. Successful sign-ins establish `used address` edges (author, 28 October 2026)
+
+Only successful sign-ins create an account-to-address edge, still limited to addresses in the
+networks table. The edge means the account successfully authenticated from that address; it does
+not establish that the legitimate owner signed in, that accounts shared a device, or that an
+attack spread. Failed attempts remain in the login records for investigation, but their targeted
+usernames do not create these graph edges. The author chose this meaning to avoid adding noisy
+target relationships to the network-use graph. During implementation, record the same filter
+beside the radius in `truth.json` and apply it independently in the integrity check.
+
+### 2. VPN pool addresses are session-assigned and reused (author, 28 October 2026)
+
+Follow the existing remote-access policy: the synthetic VPN pool represents addresses assigned
+to VPN sessions and later reused, not public VPN exit addresses. An account matching another
+account's pool address at a different time establishes address reuse only, not shared-device
+use, simultaneous connectivity, exposure or spread. The author agreed to review the value and
+wording of S6's ten network matches before choosing a time window. Removing those matches,
+changing the answer key, adding allocation telemetry and choosing a time window are not yet
+approved. No dataset or application changes made by this ruling.
+
+### 3. Address reuse is context, not exposure (author, 28 October 2026)
+
+Retain S6's ten VPN address-reuse matches as clearly labelled supporting context, outside any
+exposed-account count. Neither the graph result nor its later agent/screen presentation may
+describe these matches alone as exposed accounts or attack spread. This settles the presentation
+question left open in decision 2. During T19 implementation, align the answer-key structure and
+tests with this distinction while preserving the expected match identities. The time window
+remains undecided; no additional telemetry is approved.
+
+### 4. User-selected dates, available log period by default (author, 28 October 2026)
+
+The graph's login-based relationship calculations accept optional start and end times. Explicit
+user dates take precedence; omitted bounds use the available log period. Results state the
+requested/effective period and available coverage, so missing records are not presented as a
+complete investigation. Follow the existing log tools' UTC convention: start included, end
+excluded. The planned `find_peers` and `investigate_alert` tools pass these dates to the shared
+core calculation (T25 and T26). Dates filter login evidence; organisation permissions remain a
+snapshot, not historical permissions. This supersedes the undecided window in decisions 2 and 3
+and the ticket's earlier fixed "that week" wording. S6's ten reuse matches remain expected for
+the default full-log period; explicit narrower periods may return fewer or none.
+
+### 5. Include all shared addresses, grouped by address (author, 28 October 2026)
+
+The first independent S6 radius test exposed an omission in the planted answer key: Amelia also
+shares the UK office address with 43 other accounts. The author chose to include both office and
+VPN matches, grouped by address. Preserve the ten VPN matches and add the office matches in the
+answer key. All remain context outside exposure counts; accounts appearing in both groups must
+not be presented as distinct exposed people. This supersedes the earlier expectation of only
+ten address matches overall, while preserving those ten within the VPN group. Source: B-092.
+
 ## Acceptance criteria
 
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
@@ -47,7 +99,12 @@ it gives exactly the S6 radius written in `truth.json`.
       endpoints without changing any count fails; changing an attribute a walk reads fails; a chunk
       naming no entity passes; an unused network address passes.
 - [ ] One core function computes a finding's radius, already joined: groups held, assets reached,
-      peers by device and by network address that week.
+      peers with optional dates for login-based relationships, per decision 4.
+- [ ] Address-reuse matches are explicitly labelled supporting context and excluded from any
+      exposed-account count. The result and answer-key tests preserve S6's ten expected match
+      identities under the agreed context meaning for the default full-log period.
+- [ ] Tests prove explicit dates filter login-based relationships, omitted dates use available
+      records, boundary handling follows the log tools, and results state period and coverage.
 - [ ] A test recomputes S6's radius from the tables through that function and matches `truth.json`
       exactly.
 - [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
@@ -55,6 +112,22 @@ it gives exactly the S6 radius written in `truth.json`.
       findings triaged.
 
 ## Comments
+
+- 2026-10-28: author accepted the rules and invoked `$implement T19`. Codex implements on
+  confirmed Astra. Tests use the already agreed door 2 seam: opening the knowledge base,
+  independently checking integrity, and computing a finding's radius. Base: `4210144` on main;
+  existing uncommitted changes are this session's approved T19 planning and audit records.
+
+- 2026-10-28, dataset inspection during relationship discussion: the remote-access policy describes
+  session-assigned, reused VPN pool addresses, not explicitly public exits. The generator places
+  them in `source_ip` without a separate original-client address or allocation interval. B-091 /
+  AUD-060 records the unresolved observation point. No change to these semantics is approved.
+  The proposed seven-day window ending at the finding is also not agreed: S6 starts at 02:00 on
+  7 October, while the planted VPN peer rows start at 11:00 that day. Check the full finding times
+  and answer-key scope before proposing a final window.
+
+- 2026-10-28: the author confirmed Codex is on Astra after the ticket's strongest-model requirement
+  was presented. Relationship design is being discussed; implementation has not started.
 
 - 2026-10-26, consequence of the author's ruling at ticket 11: `device_id` is empty on attacker rows
   and on employee sign-ins from a phone. An empty value is not a device: it makes no device edge,

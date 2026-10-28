@@ -28,6 +28,10 @@ built. Opening the ticket schedules the items; it does not approve a design for 
 
 ## Acceptance criteria
 
+Additional candidate from T19: AUD-061 / B-094, intermittent test-database teardown failure when
+the role cannot terminate a connection. Diagnose before choosing a cleanup policy; no privilege
+expansion is approved. Keep this separate from production build-database retention (item 4).
+
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
