@@ -59,8 +59,9 @@ class _Dataset:
 _loaded: _Dataset | None = None
 
 
-def use_dataset(frame: pd.DataFrame | None, findings: Iterable[Finding],
-                reputation_dir: Path) -> None:
+def use_dataset(
+    frame: pd.DataFrame | None, findings: Iterable[Finding], reputation_dir: Path
+) -> None:
     """Make the tools read this log, these findings and this folder of saved reputations, so they
     read exactly what the caller's other readers read. Replaces any earlier hand-over.
 
@@ -68,7 +69,9 @@ def use_dataset(frame: pd.DataFrame | None, findings: Iterable[Finding],
     LOG_REFUSED and never fall back to the default log; the reputation tool keeps working.
     """
     global _loaded
-    _loaded = _Dataset(frame=frame, findings=tuple(findings), reputation_dir=reputation_dir)
+    _loaded = _Dataset(
+        frame=frame, findings=tuple(findings), reputation_dir=reputation_dir
+    )
 
 
 def forget_dataset() -> None:
@@ -140,15 +143,23 @@ def _agent_view(finding: Finding, log: pd.DataFrame, start, end) -> dict:
     sentence built here from `address_activity` (ruling 9).
     """
     activity = [address_activity(log, ip, start, end) for ip in finding.ips]
-    view = {key: value for key, value in finding.to_dict().items()
-            if key not in HIDDEN_FROM_AGENT}
+    view = {
+        key: value
+        for key, value in finding.to_dict().items()
+        if key not in HIDDEN_FROM_AGENT
+    }
     got_in = [a for a in activity if a["successes"]]
     if finding.rule in (BRUTE_FORCE, PASSWORD_SPRAYING) and got_in:
-        view["summary"] = view["summary"].rstrip(".") + "." + "".join(
-            f" {a['ip']} also signed in successfully {a['successes']} "
-            f"{'time' if a['successes'] == 1 else 'times'}, to "
-            f"{', '.join(a['signed_in_accounts'])}."
-            for a in got_in)
+        view["summary"] = (
+            view["summary"].rstrip(".")
+            + "."
+            + "".join(
+                f" {a['ip']} also signed in successfully {a['successes']} "
+                f"{'time' if a['successes'] == 1 else 'times'}, to "
+                f"{', '.join(a['signed_in_accounts'])}."
+                for a in got_in
+            )
+        )
     view["address_activity"] = activity
     return view
 

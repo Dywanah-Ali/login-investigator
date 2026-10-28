@@ -82,7 +82,7 @@ Four candidate building blocks were checked. Two matter.
 | **LadybugDB** is the active MIT-licensed community fork. PyPI package `ladybug`, 0.21.2 released 1 October 2026 with releases roughly weekly, wheels for CPython 3.12 on macOS 15+ ARM64. | [P] PyPI; project docs installation page |
 | LadybugDB ships a **full-text index using Okapi BM25** (`K`, `B`, `conjunctive`, `TOP` parameters) and a **disk-based HNSW vector index**, both on node-table properties, both queried from Cypher, with traversal from a vector hit in the same query. Extensions are loaded with `INSTALL`/`LOAD`. | [P] docs, FTS and vector extension pages |
 | Two packages exist: `ladybug` (the maintained line) and `real_ladybug` from a `ladybug-classic` historical repo. Easy to confuse. | [P] GitHub README of ladybug-classic |
-| NetworkX: in-memory graph library, BSD-3-Clause, no persistence of its own, serialises to JSON. | [V] research pass; not opened |
+| NetworkX: in-memory graph library, BSD-3-Clause, no persistence of its own, serialises to JSON. | [V] original research pass; licence separately verified [P] for 3.6.1 on 28 October 2026 (see follow-up below) |
 | SQLite tables with recursive CTEs, or `simple-graph` (MIT). | [V] research pass |
 
 **Corpus store with hybrid retrieval.**
@@ -215,7 +215,7 @@ out by familiarity; this table records the evidence.
 | Dgraph | Property graph, DQL and GraphQL | Apache-2.0 | A server with its own query language; nothing the embedded shape lacks | [V] |
 | JanusGraph | Property graph, Gremlin | Apache-2.0 | Needs a separate storage backend (Cassandra, HBase or BerkeleyDB) and a JVM | [V] |
 | Oxigraph | RDF triples, SPARQL; embeddable through `pyoxigraph` | MIT or Apache-2.0 | A different data model (RDF) from the property graph the course and research note 01 assume; no vector index | [P] GitHub README |
-| NetworkX | In-memory property graph, Python API | BSD-3-Clause | **Kept, recommended for phases 0 and 1** | [V] |
+| NetworkX | In-memory property graph, Python API | BSD-3-Clause | **Kept, recommended for phases 0 and 1** | [V] original research; licence verified [P] for 3.6.1 on 28 October 2026 |
 | SQLite tables | Relational, recursive SQL | Public domain | Workable; superseded by shape D if the author wants SQL | [V] |
 
 ### 3.8 The author's machine (checked 20 October 2026)
@@ -359,7 +359,15 @@ Why this composition and not another:
 - Hosted free-tier figures (Qdrant, Pinecone, Weaviate) come from the research pass and
   aggregators quoting vendor pricing pages. Nothing in the recommendation depends on them, since
   shape C fails on offline alone.
-- NetworkX's licence and `simple-graph` were not opened; both are well known and low risk.
+- At the original research pass, NetworkX's licence and `simple-graph` were not opened.
+  **NetworkX licence gap closed, 28 October 2026:** Codex opened the
+  [official 3.6.1 licence](https://raw.githubusercontent.com/networkx/networkx/networkx-3.6.1/LICENSE.txt)
+  and checked it against the installed package's licence and metadata. BSD-3-Clause permits
+  use, modification and redistribution, including commercially, subject to retaining the
+  copyright notice, conditions and disclaimer on redistribution and not using contributor
+  names for endorsement without permission. No licence blocker found for the project's use.
+  [T19 Comments](../issues/19-graph-integrity-and-radius.md#comments) records the follow-up
+  evidence. This does not verify `simple-graph`; its original evidence limitation remains.
 - Whether LadybugDB's `INSTALL FTS` / `INSTALL VECTOR` needs network access at first use was not
   checked. It matters only if the author chooses the LadybugDB alternative.
 - `GraphCypherQAChain`'s dangerous-requests flag was reported by the research pass and matches the

@@ -174,3 +174,13 @@ ten address matches overall, while preserving those ten within the VPN group. So
   AUD-061 stays a candidate for T44. Live graph checked as the reader; rebuild cost $0.00111362.
   All application changes are in local commit `69bee51`; closure evidence is committed locally
   afterwards. Nothing pushed. Next frontier: ticket 20; ticket 21 is also unblocked.
+
+- 2026-10-28, Codex, follow-up licence check requested by the author: NetworkX 3.6.1;
+  [official version-tagged licence](https://raw.githubusercontent.com/networkx/networkx/networkx-3.6.1/LICENSE.txt),
+  opened through the web tool and checked against the installed distribution's
+  `licenses/LICENSE.txt` and `METADATA` (`License-Expression: BSD-3-Clause`). Confirmed
+  permission to use, modify and redistribute, including commercially. Redistribution must
+  retain the copyright notice, conditions and disclaimer; developer/contributor names cannot
+  be used for endorsement without permission. This verifies the previously unverified licence
+  now, not a lookup claimed for the original build. It is not a dependency-wide licence or
+  vulnerability audit.
