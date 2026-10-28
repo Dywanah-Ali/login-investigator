@@ -483,6 +483,18 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 ### The graph (T02, T06, T08)
 
+- **App lifecycle (author, 28 October 2026, after T19):** when a knowledge-base build exists,
+  prepare the in-memory graph once per backend process during startup, after the freshness
+  check and before accepting questions. Build it through the core opening and run the integrity
+  check before making it available. Agent tools reuse that checked instance across questions
+  and investigations; neither the first graph question nor subsequent questions rebuild it.
+  The app owns the knowledge-base context and closes its engine/pool on shutdown; individual
+  database connections are borrowed only for queries, not held for a conversation. Each backend
+  worker owns its own instance. A rebuilt dataset is adopted on a controlled restart, with
+  freshness and integrity checked again; automatic hot replacement is not introduced. Keep
+  T18's no-build behaviour: the app can start without graph capabilities. Integration belongs
+  to T24, including measured startup preparation time and lifecycle tests. T19's core is unchanged.
+
 - **VPN address meaning (author, 28 October 2026):** the synthetic VPN pool represents
   session-assigned addresses reused over time, following the remote-access policy. It is not a
   public-exit pool. Matching an address across different sessions establishes reuse only, not
@@ -929,3 +941,4 @@ them.
 | 2026-10-28 | Author agreed to retain S6 VPN address-reuse matches as clearly labelled supporting context outside exposed-account counts. T19 aligns results, answer key and tests; later agent/screen presentation keeps the distinction | Ten later sign-ins from different recorded laptops establish address reuse, not exposure or spread. Match identities stay; time window remains undecided. Qualifies earlier network-peer blast-radius wording; see T19 decision 3 |
 | 2026-10-28 | Author approved optional start/end dates for find_peers and investigate_alert, passed to the shared graph calculation. User dates take precedence; omitted bounds use available log records. Results state period and coverage; permissions remain a snapshot | Reuses existing log-tool date conventions and supports user-directed investigations instead of a fixed week. Supersedes earlier fixed-week wording for login-based relationships; S6 default-period expectations retained. See T19 decision 4 and T25/T26 criteria |
 | 2026-10-28 | Author chose all shared organisation addresses grouped by address, retaining S6's ten VPN matches and adding 43 office matches to context and the answer key | The independent graph walk exposed that the old key omitted ordinary office sharing. Neither group establishes exposure or spread, and overlapping groups are not additive people. T19 decision 5; B-092 |
+| 2026-10-28 | Author approved preparing and integrity-checking the graph once per backend process at startup, then reusing it across agent questions. T24 owns lifecycle integration, cleanup, tests and startup timing; a rebuilt dataset is adopted on restart | Avoids first-question preparation delay while preserving verification before use. Existing no-build behaviour remains; no automatic hot replacement or per-conversation database connection. T19 core unchanged |

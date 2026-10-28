@@ -31,6 +31,14 @@ round trip.
       dated line under Comments records the model used.
 - [ ] `lookup_account(account_id)` sits in the one tool tuple and connects through the read-only
       role.
+- [ ] When a build exists, app startup opens the core knowledge base and builds/checks its graph
+      once per backend process before requests are accepted. The first and subsequent tool calls,
+      across investigations, reuse that instance. Door-4 lifecycle tests prove this and prove
+      integrity failure prevents startup; retain the existing no-build startup behaviour.
+- [ ] Shutdown closes the knowledge-base context and engine/pool, including startup-failure
+      cleanup. Connections are borrowed for database queries, never held per conversation.
+      Record measured graph preparation time. A rebuilt dataset is adopted on restart and
+      checked again; no file watcher or automatic hot replacement.
 - [ ] It returns short labelled content for the model and a full artifact; a test proves the artifact
       never reaches the model.
 - [ ] One wrap-tool-call middleware fences every tool result, the Port's three included, labelled
@@ -44,3 +52,8 @@ round trip.
       findings triaged.
 
 ## Comments
+
+- 2026-10-28, author ruling after the T19 walkthrough: prepare and integrity-check the graph at
+  backend startup, then reuse it. The author raised first-question latency from lazy loading.
+  This ticket owns app/agent integration; T19 remains closed and its core opening is reused.
+  Lifecycle tests extend this ticket's coverage to the already agreed door 4 as well as door 3.

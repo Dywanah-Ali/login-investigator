@@ -204,6 +204,11 @@ It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the ne
 the `env.example` line, and items found in T19 to T28). It is blocked by 28 and blocks the
 phase 0 gate, 29, so the debt is paid before the gate rather than at the initiative's end.
 
+After the T19 walkthrough, the author agreed that T24 prepares and checks the graph once per
+backend process at startup and tools reuse it across questions. A rebuilt dataset is loaded
+on restart. This is recorded in the spec's graph lifecycle rule and T24's acceptance criteria;
+T19's implementation and the frontier remain unchanged.
+
 ### Model per ticket (author's ruling, 27 October 2026)
 
 Each build ticket from 17 to 42 carries a `Model:` line under its `Phase:` line. The strongest
