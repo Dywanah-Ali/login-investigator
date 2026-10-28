@@ -1,6 +1,8 @@
 """Independent reconciliation: never use the graph builder to derive expected records."""
 
 import csv
+from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
 
 import networkx as nx
@@ -14,7 +16,15 @@ class GraphIntegrityError(ValueError):
     """The in-memory map cannot be trusted to represent its sources."""
 
 
-async def check_graph_integrity(engine: AsyncEngine, dataset: Path, graph: nx.MultiDiGraph) -> None:
+@dataclass(frozen=True)
+class GraphCounts:
+    """What the sources say the graph holds, per node type and per relationship."""
+    nodes: dict[str, int]
+    edges: dict[str, int]
+
+
+async def check_graph_integrity(engine: AsyncEngine, dataset: Path, graph: nx.MultiDiGraph) -> GraphCounts:
+    node_counts: dict[str, int] = {}
     expected_nodes: set[str] = set()
     expected_edges: set[tuple[str, str, str]] = set()
     people: dict[str, str] = {}
@@ -34,6 +44,7 @@ async def check_graph_integrity(engine: AsyncEngine, dataset: Path, graph: nx.Mu
             if ids != actual:
                 raise GraphIntegrityError(f"{kind} node identities differ from storage")
             expected_nodes.update(ids)
+            node_counts[kind] = len(ids)
             for row in records:
                 if any(graph.nodes[row[id_column]].get(key) != value for key, value in row.items()):
                     raise GraphIntegrityError(f"{kind} attributes differ from storage")
@@ -56,6 +67,7 @@ async def check_graph_integrity(engine: AsyncEngine, dataset: Path, graph: nx.Mu
         if chunk_ids != {node for node, data in graph.nodes(data=True) if data.get("entity_type") == "chunk"}:
             raise GraphIntegrityError("chunk node identities differ from storage")
         expected_nodes.update(chunk_ids)
+        node_counts["chunk"] = len(chunk_ids)
         for row in chunk_rows:
             data = graph.nodes[row["chunk_id"]]
             if data.get("content") != row["content"] or data.get("metadata") != row["langchain_metadata"]:
@@ -96,3 +108,4 @@ async def check_graph_integrity(engine: AsyncEngine, dataset: Path, graph: nx.Mu
     for node, data in graph.nodes(data=True):
         if data["entity_type"] in {"person", "group", "asset", "device"} and graph.degree(node) == 0:
             raise GraphIntegrityError("isolated organisation node")
+    return GraphCounts(node_counts, dict(Counter(key for _, _, key in expected_edges)))

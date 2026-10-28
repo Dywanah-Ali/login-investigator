@@ -27,7 +27,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from login_investigator.corpus_check import read_table
 from login_investigator.generator import REPO_ROOT
-from login_investigator.rules import Finding
+from login_investigator.rules import Finding, detect_all
 from login_investigator.postgres import (
     DatabaseUnavailable, ServerSettings, check_server, create_fresh_database, drop_database,
 )
@@ -36,7 +36,8 @@ from .chunking import Chunk, read_chunks
 from .access import check_reader_role, grant_read_only, reader_settings as reader_settings
 from .mentions import find_mentions
 from .graph import build_graph
-from .integrity import GraphIntegrityError as GraphIntegrityError, check_graph_integrity
+from .gexf import ExportRefused as ExportRefused, finding_neighbourhood, write_gexf
+from .integrity import GraphCounts, GraphIntegrityError as GraphIntegrityError, check_graph_integrity
 from .radius import FindingRadius, finding_radius
 from .staleness import (
     NOT_BUILT as NOT_BUILT, SERVER_DOWN, SETTINGS_INCOMPLETE, STALE, UNCHECKABLE,
@@ -82,15 +83,31 @@ class KnowledgeBase:
             raise ValueError("Open the knowledge base with its dataset to use the graph")
         return self._graph
 
-    async def check_graph_integrity(self, graph: nx.MultiDiGraph | None = None) -> None:
+    async def check_graph_integrity(self, graph: nx.MultiDiGraph | None = None) -> GraphCounts:
         if self._dataset is None:
             raise ValueError("Open the knowledge base with its dataset to check the graph")
-        await check_graph_integrity(self.engine, self._dataset, self.graph if graph is None else graph)
+        return await check_graph_integrity(self.engine, self._dataset, self.graph if graph is None else graph)
 
     def finding_radius(self, finding: Finding, start: str | None = None, end: str | None = None) -> FindingRadius:
         if self._log is None:
             raise ValueError("Open the knowledge base with its dataset to compute a radius")
         return finding_radius(self.graph, self._log, finding, start, end)
+
+    def export_gexf(self, path: Path, finding_id: str | None = None) -> None:
+        """Write the checked graph, or one finding's neighbourhood, as GEXF for Gephi Lite."""
+        if self._log is None or self._dataset is None:
+            raise ValueError("Open the knowledge base with its dataset to export the graph")
+        # A new file in the dataset folder changes its fingerprint, so the guard would refuse it.
+        if path.resolve().is_relative_to(self._dataset.resolve()):
+            raise ExportRefused("Write the export outside the dataset folder; a file there "
+                                "makes the knowledge base stale")
+        graph = self.graph
+        if finding_id is not None:
+            finding = next((f for f in detect_all(self._log) if f.finding_id == finding_id), None)
+            if finding is None:
+                raise ExportRefused("No finding has this ID in the dataset's log")
+            graph = finding_neighbourhood(graph, self.finding_radius(finding))
+        write_gexf(graph, path)
 
     async def organisation_records(self, name: str) -> list[dict[str, object]]:
         table = schema.ORG_TABLES[name]

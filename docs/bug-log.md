@@ -1669,3 +1669,38 @@ B-092/B-093's generated key and exact graph comparisons pass. B-095's out-of-cov
 check passes. B-094's exact leftover test database was removed by retry; the focused rerun
 and final 612-test backend suite had no teardown failure. No cleanup privilege was broadened;
 AUD-061 remains for T44. Frontend 149 passed; type checks clean; six existing AUD-009 warnings.
+
+### B-096 · 2026-10-28 · Knowledge-base T20 · An export inside the dataset folder made the build stale
+
+**Symptom:** the export script's test wrote its first file, then the second run refused with the
+staleness text ("built from older files or settings") instead of the unknown-finding text.
+**Cause:** the test's dataset folder was its temporary folder, so the GEXF file and its folder
+landed inside the dataset. The staleness guard fingerprints every non-hidden file there, so the
+new file changed the fingerprint. An author writing the export into
+`backend/data/datasets/default/` would make the next app startup refuse in the same way.
+**Fix:** the core export refuses an output path inside the opened dataset folder with
+`ExportRefused`, before any file is written; the test's dataset moved to its own subfolder and
+asserts the refusal leaves no file and a later export still succeeds.
+**Lesson:** any tool that writes files must know which folders are fingerprinted inputs. Writing
+next to the data is a write into the data.
+**Evidence:** first run of `tests/test_graph_export.py`, 8 passed and 1 failed on the stale
+text; rerun 9 passed.
+
+### B-097 · 2026-10-28 · Knowledge-base T20 · Gephi Lite showed every node grey
+
+**Symptom:** the author opened the S6 neighbourhood file in Gephi Lite. Every node was grey,
+although the file carried a `viz:color` per node type.
+**Cause:** NetworkX 3.6.1 writes GEXF 1.2 colours with an alpha value (`a="1.0"`) in every case,
+and Gephi Lite ignores any `viz:color` that carries one. This is Gephi Lite's open issue #307,
+which names NetworkX's `write_gexf` output. Gephi desktop reads the same file correctly. The
+tests passed because NetworkX's own reader accepts the alpha; they proved the file, not the
+viewer.
+**Fix:** reproduced first: a copy of the file with the alpha removed showed the colours in the
+author's Gephi Lite. `write_gexf` in `knowledge_base/gexf.py` now runs NetworkX's own three
+writer steps and removes the alpha between them. The whole-graph test asserts every colour
+element has exactly `r`, `g` and `b`. The regenerated S6 file is byte-identical to the copy the
+author tested.
+**Lesson:** a round trip through the library that wrote a file proves the file, not that the
+target viewer reads it. When a viewer is the requirement, its look is the evidence.
+**Evidence:** red run (alpha present) then 10 passed in `tests/test_graph_export.py`; the
+author's Gephi Lite look before and after the alpha was removed, 28 October 2026.

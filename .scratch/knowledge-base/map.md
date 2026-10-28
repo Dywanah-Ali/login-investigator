@@ -191,13 +191,14 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is ticket 20**, which has no unresolved blockers; one session
+line holds its edges. **The frontier is ticket 21**, which has no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14 to T19 have since resolved; the frontier
-is ticket 20, the Gephi export. Ticket 21 is also unblocked. No ticket was blocked by 18.
+and is resolved (see Build tickets resolved). T14 to T20 have since resolved; the frontier
+is ticket 21, the first knowledge-base questions. Ticket 24 is also unblocked. No ticket was
+blocked by 18 or 20.
 
 Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
 It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the new settings rule,
@@ -351,6 +352,20 @@ the other family from the retrieval builder) was proposed and is not ruled.
   (B-076/AUD-047); six existing lint warnings remain. B-091 to B-095 retain iterations; AUD-060
   closed, AUD-061 records one intermittent teardown failure for T44. Live reader graph: 490 nodes,
   583 edges; rebuilt for $0.00111362. Model: author-confirmed Astra. Local commits only.
+
+- [20 The Gephi export](issues/20-gephi-export.md)
+  (28 October 2026): `KnowledgeBase.export_gexf` writes the checked graph, or one finding's
+  radius walk by finding ID, as GEXF coloured by node type; `scripts/export_graph.py` calls it as
+  the read-only role after the staleness check; no endpoint. The integrity check now returns its
+  source-derived counts, and the read-back test compares against them. Author's rulings: the
+  five builder's choices accepted (neighbourhood as the radius walk, organisation nodes only;
+  refusals for no account reached, reserved names and an output inside the dataset folder);
+  the busy whole-graph file stays complete and chunks are hidden with Gephi Lite's filter.
+  B-096 (an export in the dataset folder makes the build stale) and B-097 (Gephi Lite ignores
+  colours with an alpha, issue #307; reproduced and fixed). Live: 490 nodes, 583 edges; S6
+  neighbourhood 55 and 64. Evidence: 622 backend and 149 frontend tests, clean types, two-axis
+  review triaged, the author's Gephi Lite look. Port eval not run: no agent change. Model:
+  Claude Opus 5.5.
 
 ## Not yet specified
 
