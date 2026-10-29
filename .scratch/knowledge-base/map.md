@@ -209,6 +209,12 @@ the planned reranker first; revisit the evidence gap there. The experiments rema
 not approved additions to T23. See its Comments for the saved evidence. No build started by
 this deferral.
 
+Ticket 45 was opened on 29 October 2026 by the author's ruling, after T23: the parked
+retrieval-design work becomes its own decision ticket (research, then grilling, strongest
+model), covering compound questions on both the chat path and the package path, and what
+K04's gate measures. It blocks T26 and AUD-062's closure; T24 and T25 proceed meanwhile.
+See [ticket 45](issues/45-compound-question-retrieval-design.md).
+
 Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
 It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the new settings rule,
 the `env.example` line, and items found in T19 to T28). It is blocked by 28 and blocks the
@@ -227,7 +233,7 @@ every later ticket; the standard models (Opus 5.5, Sol 6.1) take the rest.
 
 | Model | Tickets | Reason |
 |---|---|---|
-| Strongest | 17, 19, 22, 24, 26, 27, 28, 29 | Load-bearing seams: the build, the graph, fusion, the tool pattern and fence, the package, the resolver, the playbook hooks and the eval gate |
+| Strongest | 17, 19, 22, 24, 26, 27, 28, 29, 45 | Load-bearing seams: the build, the graph, fusion, the tool pattern and fence, the package, the resolver, the playbook hooks, the eval gate, and compound-question retrieval (45, added 29 October 2026) |
 | Strongest if budget allows | 30, 37, 41 | Judge design, the hardest frontend drawing, the BM25 leg and an honest on-versus-off call |
 | Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40, 44 | Standard build work on seams the strongest tickets set |
 | None | 42 | The author's ticket |
@@ -410,8 +416,8 @@ the other family from the retrieval builder) was proposed and is not ruled.
   B-101 (test guard missed the new key reader) fixed; AUD-063 and AUD-064 registered. Evidence:
   backend 666 passed with two B-094 teardown errors in an unchanged test; Pyright clean;
   frontend 149; two-axis review triaged. Model: author-confirmed Claude Opus 5.5. The parked
-  retrieval-design work (T22 follow-ups) is now due for the author's review, as the T23 deferral
-  set out.
+  retrieval-design work (T22 follow-ups) moved to its own decision ticket, 45, by the author's
+  ruling.
 
 ## Not yet specified
 

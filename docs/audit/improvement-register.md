@@ -994,6 +994,11 @@ with the re-ranker on, K04's runbook moves from fused rank 9 to re-ranker rank 1
 The MFA register is still outside the fused 20, so it is never scored. As recorded above,
 re-ranking cannot recover a missing candidate. The gap and the original gold are unchanged.
 
+Author's ruling, 29 October 2026: the parked design work moves to its own decision ticket,
+[45](../../.scratch/knowledge-base/issues/45-compound-question-retrieval-design.md), which blocks
+T26. It covers the chat path, where the model writes the search from any analyst question, and
+the package path, where code builds searches from the finding. This entry stays open.
+
 ### AUD-063: One reader for the OpenRouter key and usage, one test guard for `.env`
 
 Open, candidate for T44. Source: T23's standards review and B-101. The embedding factory and the
