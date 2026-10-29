@@ -1,11 +1,12 @@
 """Hybrid corpus retrieval. Ranks order evidence; they do not establish relevance."""
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 import math
 from typing import Any, Literal
 
+from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_postgres import PGEngine, PGVectorStore
 from langchain_postgres.v2.hybrid_search_config import HybridSearchConfig
@@ -14,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from . import schema
 from .chunking import Chunk
+from .reranking import Reranker
 
 LIMIT = 20
 RRF_K = 60
@@ -40,6 +42,7 @@ class Candidate:
     cosine_distance: float | None
     keyword_score: float | None
     fused_score: float
+    rerank_score: float | None = None
 
 
 @dataclass(frozen=True)
@@ -52,33 +55,52 @@ class SearchResult:
 
 @dataclass(frozen=True)
 class VerdictPolicy:
-    """No live cutoff until T39. Explicit cutoffs allow the switch to be tested offline."""
+    """No live cutoff until T39. Explicit cutoffs allow the switch to be tested offline.
+
+    Each score source has its own threshold: a cosine cutoff never judges re-ranked chunks.
+    """
     min_similarity: float | None = None
+    min_relevance: float | None = None
     none_enabled: bool = False
 
     def __post_init__(self) -> None:
-        if self.none_enabled and self.min_similarity is None:
+        if self.none_enabled and self.min_similarity is None and self.min_relevance is None:
             raise ValueError("The none rule requires a calibrated threshold")
         if self.min_similarity is not None and (
             not math.isfinite(self.min_similarity) or not -1 <= self.min_similarity <= 1
         ):
             raise ValueError("Cosine similarity threshold must be finite and between -1 and 1")
+        if self.min_relevance is not None and (
+            not math.isfinite(self.min_relevance) or not 0 <= self.min_relevance <= 1
+        ):
+            raise ValueError("Re-ranker relevance threshold must be finite and between 0 and 1")
 
-    def evaluate(self, chunks: list[Candidate]) -> tuple[Literal["none", "weak", "found"], str]:
-        if self.min_similarity is None:
+    def evaluate(self, chunks: list[Candidate], reranked: bool) -> tuple[Literal["none", "weak", "found"], str]:
+        # Author's T23 ruling: zero passages is a counted fact and needs no threshold.
+        if not chunks:
+            return "none", "empty_result"
+        threshold = self.min_relevance if reranked else self.min_similarity
+        if threshold is None:
             return "weak", "not_calibrated"
-        supported = sum(c.cosine_distance is not None and 1 - c.cosine_distance >= self.min_similarity
-                        for c in chunks)
+        supported = sum(score is not None and score >= threshold
+                        for score in (_score(c, reranked) for c in chunks))
         if supported == 0 and self.none_enabled:
-            return "none", "below_threshold" if chunks else "empty_result"
+            return "none", "below_threshold"
         if supported >= 2:
             return "found", "multiple_chunks_above_threshold"
         return "weak", "single_chunk_above_threshold" if supported else "none_rule_disabled"
 
 
+def _score(candidate: Candidate, reranked: bool) -> float | None:
+    if reranked:
+        return candidate.rerank_score
+    return None if candidate.cosine_distance is None else 1 - candidate.cosine_distance
+
+
 async def search_corpus(engine: AsyncEngine, embedder: Embeddings, query: str,
                         filters: SearchFilters | None = None,
-                        verdict_policy: VerdictPolicy | None = None) -> SearchResult:
+                        verdict_policy: VerdictPolicy | None = None,
+                        reranker: Reranker | None = None) -> SearchResult:
     if not query.strip():
         raise ValueError("A corpus search needs a non-empty question")
     candidates: list[Candidate] = []
@@ -115,5 +137,9 @@ async def search_corpus(engine: AsyncEngine, embedder: Embeddings, query: str,
     await store.asimilarity_search(query, k=LIMIT, hybrid_search_config=hybrid,
                                   filter=filters.as_store_filter() if filters else None)
     chunks = candidates[:LIMIT]
-    verdict, reason = (verdict_policy or VerdictPolicy()).evaluate(chunks)
+    if reranker is not None:
+        ranking = await reranker.arank([Document(c.chunk.text, id=c.chunk.id) for c in chunks], query)
+        candidates[:LIMIT] = [replace(c, rerank_score=s) for c, s in zip(chunks, ranking.scores)]
+        chunks = [candidates[index] for index in ranking.kept]
+    verdict, reason = (verdict_policy or VerdictPolicy()).evaluate(chunks, reranked=reranker is not None)
     return SearchResult(chunks, candidates, verdict, reason)

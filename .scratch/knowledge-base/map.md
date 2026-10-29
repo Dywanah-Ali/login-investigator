@@ -198,7 +198,7 @@ Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the P
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
 and is resolved (see Build tickets resolved). T14 to T22 have since resolved; the frontier
 is ticket 23, the re-ranker behind its switch. Ticket 24 is also unblocked. No ticket was
-blocked by 18 or 20.
+blocked by 18 or 20. T23 resolved on 29 October 2026; **the frontier is ticket 24**.
 
 T22's live retrieval baseline has a recorded K04 candidate gap (B-098/AUD-062). Re-ranking
 cannot recover a passage outside both candidate lists; review this before closing the later
@@ -398,6 +398,20 @@ the other family from the retrieval builder) was proposed and is not ruled.
   Two-axis review: three findings fixed and independently confirmed. Admin commands tested.
   B-100 records review fixes. Port eval not run: no agent change. Model: author-confirmed Astra.
   Local commits only; T23 has not started.
+
+- [23 The re-ranker behind its switch](issues/23-reranker-switch.md)
+  (29 October 2026): `cohere/rerank-v3.5` through OpenRouter behind `LI_RERANKER`, default on.
+  It scores the fused 20 in one request, records every score and keeps the best 5; its score
+  drives the verdict, still `weak` / `not_calibrated` until T39. Author's ruling: zero passages
+  give `none` / `empty_result`, on or off. The re-ranker is a LangChain `BaseDocumentCompressor`
+  without the legacy wrapper; a failed call stops with fixed text. The gate still reads the fused
+  20: two live runs equal T22 (five of eight), and the re-ranker kept every found required
+  passage at ranks 1 to 3, K04's runbook at 1. The MFA register gap (AUD-062) is unchanged.
+  B-101 (test guard missed the new key reader) fixed; AUD-063 and AUD-064 registered. Evidence:
+  backend 666 passed with two B-094 teardown errors in an unchanged test; Pyright clean;
+  frontend 149; two-axis review triaged. Model: author-confirmed Claude Opus 5.5. The parked
+  retrieval-design work (T22 follow-ups) is now due for the author's review, as the T23 deferral
+  set out.
 
 ## Not yet specified
 

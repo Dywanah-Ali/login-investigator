@@ -19,7 +19,7 @@ from pathlib import Path
 import pytest
 
 from login_investigator import agent, knowledge_base, reputation
-from login_investigator.knowledge_base import embedding
+from login_investigator.knowledge_base import embedding, reranking
 
 # The database fixture's own tests run small pytest sessions inside a test (knowledge-base ticket 09).
 pytest_plugins = ["pytester"]
@@ -34,6 +34,9 @@ def pytest_configure(config):
     _guard.delenv(reputation.KEY_NAME, raising=False)
     _guard.setattr(embedding, "dotenv_values", lambda *args, **kwargs: {})
     _folders.append(Path(tempfile.mkdtemp(prefix="li-no-knowledge-base-")))
+    # The re-ranker's default `.env` is a file that does not exist (B-101); its own tests pass
+    # their files explicitly.
+    _guard.setattr(reranking, "ENV_PATH", _folders[-1] / "no.env")
     no_build = _folders[-1] / "none.json"
     _guard.setattr(knowledge_base, "STATE_FILE", no_build)
     _guard.setenv("LI_KNOWLEDGE_BASE_STATE", str(no_build))

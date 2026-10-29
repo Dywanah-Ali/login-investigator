@@ -1781,3 +1781,20 @@ version/dirty evidence. Unexpected provider/database error text remains hidden.
 messages should survive the command boundary.
 **Evidence:** standards review, plus the real-database stale-build regression failed with the
 generic message before the fix. Verification recorded in the T22 review note.
+
+### B-101 · 2026-10-29 · Knowledge-base T23 · The new re-ranker factory could read the real key in tests
+
+**Symptom:** a new no-real-keys test, `reranker_service` switched on with no key in its environment,
+failed: the factory found an OpenRouter key and opened its client. The key was never printed, sent
+or stored, and no call was made; the factory was minutes old and not yet committed.
+**Cause:** the test run's guard (`backend/conftest.py`, ticket 24) blanks `.env` reading per module.
+It covered `embedding.dotenv_values` only, so a new module reading `.env` through its own import
+reached the real file. The default `.env` path was also bound as a default argument, out of a
+guard's reach.
+**Fix:** `reranking` reads its default `.env` path at call time, and the guard points
+`reranking.ENV_PATH` at a file that does not exist. The re-ranker's own tests pass their `.env`
+files explicitly. The no-real-keys test now covers the re-ranker factory.
+**Lesson:** a per-module key guard silently misses the next module. Every new reader of `.env`
+gets a no-real-keys test in the same change; the test caught this one before commit.
+**Evidence:** `tests/test_no_real_keys.py::test_reranker_factory_cannot_load_a_real_key_in_tests`
+failed before the fix and passed after, with `tests/test_reranking.py` (18 passed together).

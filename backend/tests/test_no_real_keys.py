@@ -71,6 +71,17 @@ def test_embedding_factory_cannot_load_a_real_key_in_tests():
     asyncio.run(check())
 
 
+def test_reranker_factory_cannot_load_a_real_key_in_tests():
+    from login_investigator.knowledge_base.reranking import reranker_service
+
+    async def check():
+        with pytest.raises(ValueError, match="OPENROUTER_API_KEY"):
+            async with reranker_service({"LI_RERANKER": "on"}):
+                pass
+
+    asyncio.run(check())
+
+
 def test_reader_settings_keep_password_out_of_environment_and_repr(tmp_path):
     from login_investigator.knowledge_base import reader_settings
     path = tmp_path / ".env"

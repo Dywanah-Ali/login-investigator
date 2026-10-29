@@ -89,6 +89,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-060 | VPN address meaning and address-reuse evidence limits | Closed: T19 decisions and verified grouped context, 28 October 2026 | Medium | B-091; T19 decisions 2 to 5 |
 | AUD-061 | Intermittent test-database teardown privilege failure | Open; candidate for T44 | Low | B-094 |
 | AUD-062 | Recover all required evidence for a compound retrieval question | Open; K04 candidate-coverage gap, for review before the knowledge-base retrieval gate closes | High | B-098; T22 first live run |
+| AUD-063 | One reader for the OpenRouter key and usage, one test guard for `.env` | Open; candidate for T44 | Medium | B-101; T23 standards review |
+| AUD-064 | What the re-ranker's assessment still needs: a kept-5 check and calibration evidence | Open; for T39 and T41 | Medium | T23 spec review; T23 first live run |
 
 ### AUD-001: Rule filter
 
@@ -918,6 +920,14 @@ One fixture teardown failed after passing assertions. Do not broaden database pr
 without a ruling. Closure: diagnose the connection safely and approve a cleanup policy, or
 record an explicit deferral; keep the original failure evidence.
 
+Recurrence, T23, 29 October 2026: the first full backend run was clean (665 passed). After the
+review fixes, the second full run had 666 passed and two teardown errors, both in the unchanged
+`test_integrity_rejects_corruption` (`asset_id`, `mention`). Rerunning that test alone gave 20
+passed and one teardown error on a third parameter (`swap`). Same message: permission denied to
+terminate process. One focused run also hit it in `test_corpus_search.py`, passing alone. It
+is now frequent in the corruption tests. Each occurrence may leave a test database behind; none
+was cleaned, because cleanup needs the database password from `.env`. The fixture is unchanged.
+
 T22 recurrence on 29 October 2026: 21 focused assertions passed, one database teardown failed
 with the same InsufficientPrivilege. Recorded under B-094; no privilege or fixture change.
 The final full run also passed all 646 assertions but exited 1 on one teardown of an unchanged
@@ -969,6 +979,37 @@ Author's deferral, 29 October 2026: park further custom retrieval-design work at
 the planned reranker before resuming decomposition, evidence-checklist, selection or recovery
 experiments. T23's Comments carry the reminder and evidence links; its implementation scope
 is unchanged. AUD-062 remains open, and no candidate-gap fix or original-gold waiver is implied.
+
+T23 first live run, 29 October 2026 (`backend/evals/results/2026-10-29-150414-681065-retrieval-0331ac624577.json`):
+with the re-ranker on, K04's runbook moves from fused rank 9 to re-ranker rank 1 and is kept.
+The MFA register is still outside the fused 20, so it is never scored. As recorded above,
+re-ranking cannot recover a missing candidate. The gap and the original gold are unchanged.
+
+### AUD-063: One reader for the OpenRouter key and usage, one test guard for `.env`
+
+Open, candidate for T44. Source: T23's standards review and B-101. The embedding factory and the
+re-ranker factory each read `OPENROUTER_API_KEY` from the environment and `.env`, each count
+usage from OpenRouter's reply, and the test run's guard in `backend/conftest.py` covers each
+module by its own line. B-101 showed the cost: the new module was not covered until a test
+caught it. `EmbeddingUsage.record_response` also converts provider usage fields with `int()` and
+`float()` unguarded, so a malformed usage field would fail a build with provider text; T23 fixed
+this for the re-ranker only. A shared reader for OpenRouter settings and usage, and one guard
+point, would close the class of bug. Registration is not approval; T44 decides.
+
+### AUD-064: What the re-ranker's assessment still needs
+
+Open, for T39 and T41. Source: T23's spec review and first live run. Two inputs are missing
+before the re-ranker can be judged:
+
+1. **A kept-5 check.** T23 keeps the retrieval gate on the fused 20, which the re-ranker cannot
+   change. T06 d9 judges a switch on decision 1's second check, the chunks the model receives.
+   With the re-ranker on, that is the kept 5. T41's on-versus-off comparison needs that check
+   in the retrieval layer; T23 records the kept 5 in every artifact, so saved runs can be
+   rescored once it exists.
+2. **Calibration evidence.** In the first live run, K06, an absent topic, has a top re-ranker
+   score of 0.646, above K04's real top score of 0.516. K05's top score is 0.106. One run on
+   eight questions proves nothing, but it warns that a single relevance threshold may not refuse
+   every absent topic. T39 calibrates on its tuning file under T06 d4; no threshold is set here.
 
 ## Longer-term capabilities already named in the spec
 
@@ -1114,3 +1155,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-28 | After T18, the author ruled one reading rule for every `LI_` setting and opened T44, the phase 0 cleanup, blocked by 28 and blocking 29. AUD-057, AUD-058 and AUD-059 scheduled there; each still needs its own ruling inside T44. | Spec decisions log, 28 October 2026; `issues/44-phase0-cleanup.md` |
 | 2026-10-28 | T18 staleness guard built and reviewed. Added AUD-058 (chunking code outside the fingerprint) and AUD-059 (two readers of `LI_DATASET_DIR`), both unresolved review concerns. Final safety net: 585 backend, 149 frontend, clean types, Port API eval 63/63 overall and 15/15 security. Six existing lint warnings (AUD-009) remain; no parked behaviour concern reopened. | T18; B-089, B-090; `reviews/18-code-review-2026-10-28.md`; `2026-10-27-224010-b70d0745.json` |
 | 2026-10-28 | T19 graph and exact S6 radius verified: 612 backend, 149 frontend, clean types, zero findings per review axis, Port API eval 61/63 and 15/15. AUD-060 closed; AUD-061 registered for T44. AUD-047 recurrence is S2 outcome omission, not an S6 zero-success claim. | T19; B-076 and B-091 to B-095; 19 review and evidence |
+| 2026-10-29 | T23 re-ranker behind its switch. Added AUD-063 (one OpenRouter reader and one `.env` test guard) and AUD-064 (kept-5 check and calibration evidence for T39 and T41). AUD-062 note: the re-ranker keeps K04's runbook at rank 1; the MFA register is still absent. | T23; B-101; `reviews/23-code-review-2026-10-29.md`; `2026-10-29-150414-681065-retrieval-0331ac624577.json` |

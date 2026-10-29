@@ -51,9 +51,13 @@ PLANTED = _planted_sentences()
 
 
 def score_retrieval(question: dict, artifact: dict) -> dict:
-    """T22's direct layer: every gold chunk in the fused 20, independently of answer quality."""
+    """T22's direct layer: every gold chunk in the fused 20, independently of answer quality.
+
+    Candidates are saved in fused order. With the re-ranker on, `chunks` holds only the five kept,
+    so the fused 20 are read from the candidates (identical to `chunks` in T22's artifacts).
+    """
     search = artifact.get("search") or {}
-    ids = [candidate["chunk"]["id"] for candidate in search.get("chunks", [])[:20]]
+    ids = [candidate["chunk"]["id"] for candidate in search.get("candidates", [])[:20]]
     gold = question["gold"]
     checks = []
     first_gold = next((rank for rank, chunk_id in enumerate(ids, 1) if chunk_id in gold["chunks"]), None)

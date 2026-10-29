@@ -7,20 +7,22 @@ import sys
 from pathlib import Path
 import pytest
 
-from login_investigator.knowledge_base import build_knowledge_base, open_knowledge_base, reader_settings
+from login_investigator.knowledge_base import Reranker, build_knowledge_base, open_knowledge_base, reader_settings
 from login_investigator.postgres import ServerSettings
 from test_knowledge_base import DATASET, FakeEmbedder, build_database  # noqa: F401
 
 
-def test_retrieval_requires_every_gold_chunk_in_the_shortlist_not_just_the_union():
+def test_retrieval_requires_every_gold_chunk_in_the_fused_twenty_not_just_the_union():
     question = {"gold": {"chunks": ["a", "b"], "records": [], "paths": []}}
-    artifact = {"search": {"chunks": [{"chunk": {"id": "x"}}, {"chunk": {"id": "a"}}],
-                           "candidates": [{"chunk": {"id": "b"}}]}, "walk": None}
+    # Candidates arrive in fused order; the re-ranker's kept chunks do not change the gate.
+    fused = ["x", "a"] + [f"filler-{n}" for n in range(18)] + ["b"]
+    artifact = {"search": {"chunks": [{"chunk": {"id": "b"}}],
+                           "candidates": [{"chunk": {"id": i}} for i in fused]}, "walk": None}
     result = scoring.score_retrieval(question, artifact)
     assert result["first_gold_rank"] == 2
     assert result["passed"] is False
     assert result["checks"][0]["missing"] == ["b"]
-    artifact["search"]["chunks"].append({"chunk": {"id": "b"}})
+    artifact["search"]["candidates"].insert(5, {"chunk": {"id": "b"}})
     assert scoring.score_retrieval(question, artifact)["passed"] is True
 
 
@@ -62,6 +64,45 @@ def test_direct_runner_walks_the_world_without_using_gold_to_choose_records(buil
         assert first["passed"] is False
         assert all(c["passed"] for c in second["checks"] if c["id"].startswith("graph"))
         assert len(second["artifact"]["search"]["chunks"]) == 20
+
+    asyncio.run(check())
+
+
+class LengthReranker(Reranker):
+    async def ascore(self, query: str, texts: list[str]) -> list[float]:
+        return [len(content) % 1000 / 1000 for content in texts]
+
+
+def test_runner_records_reranker_scores_and_kept_chunks_and_grades_the_fused_twenty(
+    build_database: ServerSettings,
+):
+    from evals.retrieval import evaluate_retrieval
+
+    questions = json.loads((Path(__file__).parents[1] / "evals/knowledge_base_questions.json").read_text())["questions"]
+    questions = [q for q in questions if q["id"] == "K04"]
+
+    async def check():
+        await build_knowledge_base(DATASET, build_database, FakeEmbedder())
+        async with open_knowledge_base(reader_settings(build_database), dataset=DATASET,
+                                       embedder=FakeEmbedder()) as kb:
+            [off] = (await evaluate_retrieval(kb, questions))["records"]
+        async with open_knowledge_base(reader_settings(build_database), dataset=DATASET,
+                                       embedder=FakeEmbedder(), reranker=LengthReranker()) as kb:
+            [on] = (await evaluate_retrieval(kb, questions))["records"]
+        search = on["artifact"]["search"]
+        assert len(search["chunks"]) == 5
+        assert all(c["rerank_score"] is not None for c in search["chunks"])
+        assert all(c["rerank_score"] is not None for c in search["candidates"][:20])
+        assert off["artifact"]["search"]["chunks"][0]["rerank_score"] is None
+        # The retrieval gate reads the fused 20 either way; the re-ranker is judged at T41.
+        assert on["checks"] == off["checks"]
+        assert on["first_gold_rank"] == off["first_gold_rank"]
+        kept = {c["chunk"]["id"] for c in search["chunks"]}
+        rank, dropped = next((rank, c["chunk"]["id"]) for rank, c in enumerate(search["candidates"][:20], 1)
+                             if c["chunk"]["id"] not in kept)
+        graded = scoring.score_retrieval({"gold": {"chunks": [dropped], "records": [], "paths": []}},
+                                         on["artifact"])
+        assert (graded["passed"], graded["first_gold_rank"]) == (True, rank)
 
     asyncio.run(check())
 

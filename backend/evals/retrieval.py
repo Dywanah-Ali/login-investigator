@@ -15,6 +15,7 @@ from login_investigator import knowledge_base
 from login_investigator.generator import DATASET_DIR
 from login_investigator.knowledge_base import KnowledgeBase, check_knowledge_base, open_knowledge_base, reader_settings
 from login_investigator.knowledge_base.embedding import embedding_service
+from login_investigator.knowledge_base.reranking import reranker_service
 from login_investigator.knowledge_base.retrieval import LIMIT, RRF_K, VerdictPolicy
 from login_investigator.knowledge_base.schema import EMBEDDING_MODEL
 from login_investigator.knowledge_base.staleness import NOT_BUILT, source_fingerprint
@@ -81,15 +82,18 @@ async def run_retrieval(only: list[str] | None = None) -> tuple[dict, str]:
     if name is None:
         raise ValueError(NOT_BUILT)
     reader = reader_settings(replace(ServerSettings.from_env(), database=name))
-    async with embedding_service() as (embedder, usage):
-        async with open_knowledge_base(reader, dataset=dataset, embedder=embedder) as kb:
+    async with embedding_service() as (embedder, usage), reranker_service() as (reranker, rerank_usage):
+        async with open_knowledge_base(reader, dataset=dataset, embedder=embedder, reranker=reranker) as kb:
             report = await evaluate_retrieval(kb, questions)
     report["embedding_usage"] = asdict(usage)
+    report["rerank_usage"] = asdict(rerank_usage)
     policy = VerdictPolicy()
     report["configuration"] = {"embedding_model": EMBEDDING_MODEL, "rrf_k": RRF_K,
                                "dense_limit": LIMIT, "keyword_limit": LIMIT, "fused_limit": LIMIT,
                                "none_enabled": policy.none_enabled, "min_similarity": policy.min_similarity,
-                               "reranker": False,
+                               "min_relevance": policy.min_relevance, "reranker": reranker is not None,
+                               "reranker_model": reranker.model if reranker else None,
+                               "reranker_keep": reranker.top_n if reranker else None,
                                "source_fingerprint": source_fingerprint(dataset)}
     files = [QUESTIONS, REQUESTS, Path(__file__), Path(__file__).with_name("scoring.py"),
              Path(__file__).with_name("run.py")]

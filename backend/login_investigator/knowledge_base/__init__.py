@@ -39,6 +39,7 @@ from .graph import build_graph
 from .gexf import ExportRefused as ExportRefused, finding_neighbourhood, write_gexf
 from .integrity import GraphCounts, GraphIntegrityError as GraphIntegrityError, check_graph_integrity
 from .radius import FindingRadius, GraphWalk, account_groups, finding_radius, radius_walk
+from .reranking import Reranker as Reranker, RerankerUnavailable as RerankerUnavailable
 from .retrieval import SearchFilters as SearchFilters, SearchResult, VerdictPolicy as VerdictPolicy, search_corpus
 from .staleness import (
     NOT_BUILT as NOT_BUILT, SERVER_DOWN, SETTINGS_INCOMPLETE, STALE, UNCHECKABLE,
@@ -72,9 +73,11 @@ def database_engine(settings: ServerSettings) -> AsyncEngine:
 
 
 class KnowledgeBase:
-    def __init__(self, engine: AsyncEngine, embedder: Embeddings | None = None):
+    def __init__(self, engine: AsyncEngine, embedder: Embeddings | None = None,
+                 reranker: Reranker | None = None):
         self.engine = engine
         self._embedder = embedder
+        self._reranker = reranker
         self._graph: nx.MultiDiGraph | None = None
         self._dataset: Path | None = None
         self._log: pd.DataFrame | None = None
@@ -83,7 +86,7 @@ class KnowledgeBase:
                             verdict_policy: VerdictPolicy | None = None) -> SearchResult:
         if self._embedder is None:
             raise ValueError("Open the knowledge base with an embedder to search the corpus")
-        return await search_corpus(self.engine, self._embedder, query, filters, verdict_policy)
+        return await search_corpus(self.engine, self._embedder, query, filters, verdict_policy, self._reranker)
 
     @property
     def graph(self) -> nx.MultiDiGraph:
@@ -178,10 +181,12 @@ class KnowledgeBase:
 @asynccontextmanager
 async def open_knowledge_base(
     settings: ServerSettings, *, dataset: Path | None = None, embedder: Embeddings | None = None,
+    reranker: Reranker | None = None,
 ) -> AsyncIterator[KnowledgeBase]:
+    """With no re-ranker, search behaves as ticket 22 left it: the fused 20 are the result."""
     engine = database_engine(settings)
     try:
-        kb = KnowledgeBase(engine, embedder)
+        kb = KnowledgeBase(engine, embedder, reranker)
         if dataset is not None:
             fingerprints = await kb.recorded_fingerprints()
             if len(fingerprints) != 1:

@@ -318,18 +318,18 @@ def main() -> None:
         if options.mode != "direct":
             parser.error("--layer retrieval calls the core directly; --mode api is for the answer layer")
         from evals.retrieval import run_retrieval
-        from login_investigator.knowledge_base import KnowledgeBaseNotReady
+        from login_investigator.knowledge_base import KnowledgeBaseNotReady, RerankerUnavailable
         from login_investigator.postgres import DatabaseUnavailable
         started = datetime.now(timezone.utc)
         try:
             report, version = asyncio.run(run_retrieval(options.only))
-        except (ValueError, KnowledgeBaseNotReady, DatabaseUnavailable) as error:
+        except (ValueError, KnowledgeBaseNotReady, DatabaseUnavailable, RerankerUnavailable) as error:
             parser.error(str(error))
         except Exception as error:
             # Provider/database exceptions may carry connection details. Preserve the failure
             # without printing their raw text or request data.
-            parser.exit(2, f"Retrieval failed ({type(error).__name__}). Check the knowledge-base "
-                        "and embedding-service setup; no result was saved.\n")
+            parser.exit(2, f"Retrieval failed ({type(error).__name__}). Check the knowledge-base, "
+                        "embedding-service and re-ranker setup; no result was saved.\n")
         save(report["records"], started, version, git_commit(),
              len(report["records"]), 1, options.label, mode="retrieval",
              details={key: value for key, value in report.items() if key != "records"})

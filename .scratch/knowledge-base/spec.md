@@ -480,6 +480,8 @@ questions, and the author accepts the live screen. The initiative closes there.
   "The eval" guards this.
   Author's T22 ruling (29 October 2026): before calibration, return `weak` with an explicit
   `not_calibrated` reason and keep the `none` rule disabled. Do not invent a relevance threshold.
+  Author's T23 ruling (29 October 2026): a search that returns zero passages gives `none` with
+  reason `empty_result`, with the re-ranker on or off. It is a counted fact and needs no threshold.
 - **Pinned versions** (T02, T03 conditions): `langchain-postgres` 0.0.19, `langchain-text-splitters`
   and `tiktoken` pinned exactly; one OpenRouter key for chat, embeddings and re-ranking.
 
@@ -946,3 +948,4 @@ them.
 | 2026-10-28 | Author approved preparing and integrity-checking the graph once per backend process at startup, then reusing it across agent questions. T24 owns lifecycle integration, cleanup, tests and startup timing; a rebuilt dataset is adopted on restart | Avoids first-question preparation delay while preserving verification before use. Existing no-build behaviour remains; no automatic hot replacement or per-conversation database connection. T19 core unchanged |
 | 2026-10-29 | Author's rulings at T21: a twin question states its expected outcome as `conclusion: "benign"`, beside `type`, `gold`, `split` and the provenance line; `verdict` stays the search tool's `none`, `weak` or `found`. K04, the first S6 mixed question, carries two of S6's three expected documents; the next-steps runbook waits for a phase 1 question that asks what to do next | The search tool's verdict is computed in code and the twin's conclusion is the investigator's judgement, so one name for both would blur the two layers. The answer gate demands every gold ID be cited, so gold beyond what a question asks would grade the agent on evidence it was not asked for |
 | 2026-10-29 | Author's T22 ruling: until calibration, corpus search returns `weak` with `not_calibrated`, keeping the `none` rule disabled | The first retrieval implementation must not invent a relevance threshold or imply measured confidence. Scores remain available for T39 calibration |
+| 2026-10-29 | Author's T23 ruling, qualifying the T22 row: a search that returns zero passages gives `none` with reason `empty_result`, with the re-ranker on or off. Any non-empty result stays `weak` / `not_calibrated` until T39; the threshold-based `none` rule stays disabled | Zero passages is a counted fact, not a relevance judgement, so it needs no threshold. Only a filter can empty a result, since exact vector search always returns candidates; K05 and K06 are unaffected |

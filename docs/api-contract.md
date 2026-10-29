@@ -34,6 +34,7 @@ Configuration comes from environment variables, so the eval runner can isolate a
 | `LI_REPUTATION_DIR` | `backend/data/ip_reputation` | Saved AbuseIPDB responses |
 | `LI_KNOWLEDGE_BASE_STATE` | `backend/.knowledge-base.json` | The build command's pointer to its last successful knowledge-base build, read by the staleness guard. The build command reads the same variable, from the environment only |
 | `LI_PG_*` | see `env.example` | PostgreSQL, read from `.env` or the environment, only when a build has been published |
+| `LI_RERANKER` | `on` | The re-ranker switch for corpus search (knowledge-base T23): `on` or `off`, read from the environment, then `.env`, then the default. On, Cohere's re-ranker through OpenRouter keeps the best 5 of the 20 fused passages and its score drives the verdict; off, search returns the fused 20. Any other value refuses with fixed text naming the setting |
 | `OPENROUTER_API_KEY` | none | The model. Missing: see "Agent unavailable" |
 | `ABUSEIPDB_API_KEY` | none | Live reputation lookups. Missing: the tool reports an error, as in v1 |
 | port | uvicorn's `--port` | The eval runner picks a free port |
