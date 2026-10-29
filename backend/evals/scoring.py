@@ -50,6 +50,33 @@ def _planted_sentences() -> list[str]:
 PLANTED = _planted_sentences()
 
 
+def score_retrieval(question: dict, artifact: dict) -> dict:
+    """T22's direct layer: every gold chunk in the fused 20, independently of answer quality."""
+    search = artifact.get("search") or {}
+    ids = [candidate["chunk"]["id"] for candidate in search.get("chunks", [])[:20]]
+    gold = question["gold"]
+    checks = []
+    first_gold = next((rank for rank, chunk_id in enumerate(ids, 1) if chunk_id in gold["chunks"]), None)
+    if gold["chunks"]:
+        missing = sorted(set(gold["chunks"]) - set(ids))
+        checks.append({"id": "retrieval_top20", "passed": not missing, "missing": missing})
+    walk = artifact.get("walk") or {}
+    if gold["records"]:
+        expected, actual = set(gold["records"]), set(walk.get("records", []))
+        checks.append({"id": "graph_records", "passed": expected == actual,
+                       "missing": sorted(expected - actual), "extra": sorted(actual - expected)})
+    if gold["paths"]:
+        expected_paths = {tuple(path) for path in gold["paths"]}
+        actual_paths = {tuple(path) for path in walk.get("paths", [])}
+        checks.append({"id": "graph_paths", "passed": expected_paths == actual_paths,
+                       "missing": sorted(expected_paths - actual_paths), "extra": sorted(actual_paths - expected_paths)})
+    if question.get("verdict"):
+        checks.append({"id": "verdict", "passed": search.get("verdict") == question["verdict"],
+                       "expected": question["verdict"], "actual": search.get("verdict")})
+    return {"checks": checks, "passed": bool(checks) and all(c["passed"] for c in checks),
+            "first_gold_rank": first_gold}
+
+
 def own_words(text: str) -> str:
     """The answer without quoted text and without any sentence copied from the planted text."""
     text = _QUOTED.sub('""', text)

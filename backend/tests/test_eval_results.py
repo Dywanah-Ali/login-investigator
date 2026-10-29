@@ -34,6 +34,9 @@ def test_saved_results_label_the_mode_and_redact_keys(tmp_path, monkeypatch, cap
     (["--mode", "api", "--jobs", "-1"], "must be a positive integer"),
     (["--mode", "api", "--only", "Q99"], "Unknown question ids: Q99"),
     (["--mode", "api", "--only"], "--only needs at least one question id"),
+    (["--layer", "retrieval", "--only", "K99"], "Unknown question ids: K99"),
+    (["--layer", "retrieval", "--only"], "--only needs at least one question id"),
+    (["--layer", "retrieval", "--mode", "api"], "calls the core directly"),
 ])
 def test_cli_refuses_invalid_runs_before_loading_model(arguments, message, monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", ["evals.run", *arguments])

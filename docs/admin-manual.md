@@ -11,6 +11,7 @@ command to run it in the session.
 ## Contents
 
 1. [Export the knowledge graph and open it in Gephi Lite](#1-export-the-knowledge-graph-and-open-it-in-gephi-lite)
+2. [Check retrieval without the agent](#2-check-retrieval-without-the-agent)
 
 ---
 
@@ -116,3 +117,60 @@ because database errors can carry hosts and credentials. Ask Claude or Codex to 
 
 **Colours all grey?** The file was written before the B-097 fix (28 October 2026): Gephi Lite
 ignores colours that carry a transparency value. Export it again.
+
+## 2. Check retrieval without the agent
+
+Added by knowledge-base ticket 22.
+
+### What it is for
+
+Check whether corpus search finds every required passage in its top 20 and whether graph walks
+return exactly the expected records and paths. This uses T21's eight questions. It does not ask
+the agent to write an answer or judge the benign twins. Run it after each knowledge-base build.
+
+### Before you start
+
+PostgreSQL must be running, the published knowledge base must match the dataset, and the reader
+password and `OPENROUTER_API_KEY` must be set in `backend/.env`. The command uses real query
+embeddings and therefore makes a small paid request per text question. It does not rebuild the
+database or embed the documents again.
+
+### Run it
+
+From the repository root:
+
+```sh
+uv run --directory backend python -m evals.run --layer retrieval
+```
+
+To check selected questions, add `--only K01 K04`. The retrieval layer runs once per question;
+the answer layer's `--runs` and `--jobs` options do not change that. It calls the core directly,
+so `--mode api` does not apply.
+
+### Open or check the result
+
+The command prints a result for each question and the saved JSON path under
+`backend/evals/results/`. The JSON records all candidate ranks and scores, the fused top 20,
+graph paths, the integrity check, embedding usage and configuration fingerprint.
+`backend/evals/results/retrieval-summary.md` keeps its history separate from the Port exam.
+
+Every applicable check must pass for a question. A required passage outside the top 20 fails.
+An extra or missing graph record or path fails. A first-gold rank of 1 means the first result
+was one of the required passages; all other required passages must still appear.
+
+To rescore a saved file without any paid call, replace `RESULT_FILE.json` with its filename:
+
+```sh
+uv run --directory backend python -m evals.run --rescore evals/results/RESULT_FILE.json
+```
+
+### When it refuses
+
+The existing staleness guard explains a missing, stale or unreachable knowledge base. Follow its
+setup or rebuild instruction. Unknown question IDs fail before connecting to the model service.
+An integrity failure stops retrieval before any query is embedded.
+
+Exit code 1 means the run completed and at least one evidence check failed. Read the saved checks.
+Until T39 calibrates relevance, the search verdict is `weak` with `not_calibrated`, so the two
+absent-topic questions expecting `none` are recorded as misses. This is the agreed interim
+behaviour, not a reason to change their answer key. T23 adds the separate re-ranking stage.

@@ -1,7 +1,7 @@
 # 22: Hybrid search and the retrieval layer alone
 
 Type: build
-Status: ready-for-agent
+Status: claimed
 Blocked by: 19, 21
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
@@ -47,3 +47,36 @@ checks the first questions' gold IDs on every build.
       findings triaged.
 
 ## Comments
+
+2026-10-29 — Codex: author confirmed Astra before build work. Implementing with TDD at the
+spec's agreed doors 2 (knowledge-base core) and 6 (retrieval runner). Local commit only.
+
+2026-10-29 — Author: until calibration, return `weak` with an explicit `not_calibrated`
+reason; keep the `none` rule disabled. No invented relevance threshold.
+
+2026-10-29 — Codex: langchain-postgres 0.0.19; Context Hub search had no matching package guide.
+Official [PGVectorStore how-to](https://github.com/langchain-ai/langchain-postgres/blob/main/examples/pg_vectorstore_how_to.ipynb)
+read through GitHub API: per-query hybrid configuration, custom fusion callback, candidate limits,
+typed-column filters. The migrated API-reference page lacks this detail. Installed 0.0.19 source
+separately checked: filters precede both limits, cosine distance and ts_rank_cd reach the callback,
+and query/config mutation requires a fresh config each time. Existing embedding factory reused.
+
+2026-10-29 — Codex: first live retrieval run saved as
+`backend/evals/results/2026-10-29-102711-909238-retrieval-0180733adbd4.json`.
+K01/K02/K03/K07/K08 pass; K04 misses the MFA exception register (exact dense diagnostic rank
+115, keyword leg empty; B-098/AUD-062); K05/K06 return the agreed uncalibrated `weak` (B-099,
+T39). Both graph gates pass. No question, gold or corpus edits. Seven query embeddings:
+138 tokens, $0.00000276; separate K04 diagnostic: 36 tokens, $0.00000072.
+
+2026-10-29 — Codex: builder choices within scope: original question text feeds both search
+legs; graph execution inputs live separately in `evals/retrieval_requests.json`; all candidates
+and the final top 20 are saved. The existing runner gains `--layer retrieval`, shared saving
+and offline rescoring; its summary is separate and has no borrowed pass-rate target. Core
+verdict policy accepts an explicit cosine-similarity threshold for offline switch tests only;
+no live threshold is supplied. Two supported chunks produce `found`, one produces `weak`,
+and zero produces `none` only with its calibrated rule explicitly enabled, following T03's
+staged design. T23 will supply re-ranker scores; T39 owns real calibration.
+
+2026-10-29 — Codex: focused checks: 21 passed with one B-094/AUD-061 teardown recurrence.
+Retried cleanup of the exact leftover database successfully; no privilege change. Typecheck
+clean. Full safety net and two-axis review pending before closure.

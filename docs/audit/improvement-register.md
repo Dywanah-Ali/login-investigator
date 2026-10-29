@@ -88,6 +88,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-059 | The build command reads `LI_DATASET_DIR` from `.env`; the app reads the environment only | Open: rule ruled 28 October 2026 (environment, then `.env`, then default); code alignment scheduled in knowledge-base T44 | Medium | Knowledge-base T18 standards and spec reviews |
 | AUD-060 | VPN address meaning and address-reuse evidence limits | Closed: T19 decisions and verified grouped context, 28 October 2026 | Medium | B-091; T19 decisions 2 to 5 |
 | AUD-061 | Intermittent test-database teardown privilege failure | Open; candidate for T44 | Low | B-094 |
+| AUD-062 | Recover all required evidence for a compound retrieval question | Open; K04 candidate-coverage gap, for review before the knowledge-base retrieval gate closes | High | B-098; T22 first live run |
 
 ### AUD-001: Rule filter
 
@@ -916,6 +917,21 @@ Open, scheduled for consideration in T44. Source: B-094, T19 corruption-test run
 One fixture teardown failed after passing assertions. Do not broaden database privileges
 without a ruling. Closure: diagnose the connection safely and approve a cleanup policy, or
 record an explicit deferral; keep the original failure evidence.
+
+T22 recurrence on 29 October 2026: 21 focused assertions passed, one database teardown failed
+with the same InsufficientPrivilege. Recorded under B-094; no privilege or fixture change.
+
+### AUD-062: Compound retrieval question loses the MFA exception register
+
+T22's first live run misses one of K04's two required passages. The runbook ranks 9; the MFA
+exception register ranks 115 in an exact dense diagnostic. The keyword leg yields no candidates
+because the full question's terms are combined with AND. Its graph records and paths pass.
+See B-098 and the saved per-question evidence. T22's acceptance permits a logged miss; this
+does not waive the initiative's retrieval gate. No tuning or query-rewriting strategy is
+approved by registering this concern. Review the candidate-generation approach before closing
+that gate, preserving the existing questions and gold. Closure requires both K04 gold passages
+in the fused top 20 and regression evidence on the other questions. T23 re-ranking alone cannot
+restore missing candidates.
 
 ## Longer-term capabilities already named in the spec
 

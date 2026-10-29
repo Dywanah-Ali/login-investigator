@@ -1,0 +1,7 @@
+{
+  "note": "Execution inputs for the direct retrieval layer. Authored from question text and finding identity before the first live search. No expected records or passages belong here. Text searches use each question's original turns without rewriting or filters. This file does not change T21's questions or gold.",
+  "walks": {
+    "K03": {"kind": "account_groups", "username": "hannah.porter"},
+    "K04": {"kind": "finding_radius", "finding_id": "F-password-spraying-d06a7545"}
+  }
+}

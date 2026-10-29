@@ -57,6 +57,28 @@ class FindingRadius:
     permissions_basis: str = "organisation snapshot; historical permissions unknown"
 
 
+@dataclass(frozen=True)
+class GraphWalk:
+    records: list[str]
+    paths: list[list[str]]
+
+
+def account_groups(graph: nx.MultiDiGraph, username: str) -> GraphWalk:
+    people = [node for node, data in graph.nodes(data=True)
+              if data["entity_type"] == "person" and data["username"].lower() == username.lower()]
+    if len(people) != 1:
+        raise ValueError("Account is absent from the organisation")
+    person = people[0]
+    groups = _targets(graph, person, "member_of")
+    return GraphWalk(groups, [[person, group] for group in groups])
+
+
+def radius_walk(radius: FindingRadius) -> GraphWalk:
+    paths = {tuple(path) for account in radius.accounts
+             for path in [*account.access_paths, *account.device_paths]}
+    return GraphWalk(sorted({path[-1] for path in paths}), [list(path) for path in sorted(paths)])
+
+
 def _iso(moment: pd.Timestamp) -> str:
     return moment.isoformat().replace("+00:00", "Z")
 

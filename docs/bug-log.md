@@ -1639,6 +1639,11 @@ connection metadata to diagnose intermittent teardown problems.
 **Evidence:** test_integrity_rejects_corruption[asset_id] teardown, first corruption run:
 23 passed, 1 error; InsufficientPrivilege, permission denied to terminate process.
 
+**T22 recurrence, 29 October 2026:** the focused search/runner/results run reports 21 passed,
+1 teardown error after `test_search_combines_ranks_and_keeps_raw_scores`. The same
+InsufficientPrivilege occurs while dropping `li_test_e58b4bd62629`. No assertion failed and no
+permissions were broadened. Retry cleanup of this exact test database, then verify the suite.
+
 ### B-095 · 2026-10-28 · Knowledge-base T19 · Empty requested period reported inverted bounds
 
 **Symptom:** an end-only request before the first login returned an effective start after its
@@ -1704,3 +1709,33 @@ author tested.
 target viewer reads it. When a viewer is the requirement, its look is the evidence.
 **Evidence:** red run (alpha present) then 10 passed in `tests/test_graph_export.py`; the
 author's Gephi Lite look before and after the alpha was removed, 28 October 2026.
+
+### B-098 · 2026-10-29 · Knowledge-base T22 · K04 misses the MFA exception passage
+
+**Symptom:** the first real retrieval run passes K01, K02, K03, K07 and K08. K04 finds the
+password-spray runbook at rank 9 and passes both graph checks, but misses
+`reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1` from the fused top 20.
+**Cause:** a separate exact dense search across all 320 chunks puts the missing passage at rank
+115 (cosine distance 0.5381994832). The full compound question's `plainto_tsquery` joins its
+terms with AND, including `45.148.10.80`, `amelia.ward`, spray, reach and MFA. No passage matches
+every term, so the keyword leg supplies zero candidates. Fusion therefore cannot recover the
+missing register. The same passage is found by K02, so it exists and is searchable.
+**Fix:** unresolved retrieval-quality gap, registered as AUD-062. T22 explicitly permits logging
+a first-run miss with its cause. No gold, question, corpus, limit or query was changed to make
+the exam pass. A later re-ranker alone cannot recover a passage outside both candidate lists.
+**Lesson:** a compound investigation question may require more than a single whole-question
+search. Measure candidate coverage before re-ranking or answer generation.
+**Evidence:** `backend/evals/results/2026-10-29-102711-909238-retrieval-0180733adbd4.json`;
+read-only diagnostic: runbook rank 9, distance 0.3857340674; register rank 115; 36 embedding
+tokens, $0.00000072. Diagnostic used the same question and the same store, with k=320 only to
+locate the miss; production limits remain 20 plus 20.
+
+### B-099 · 2026-10-29 · Knowledge-base T22 · Absent-topic verdicts remain uncalibrated
+
+**Symptom:** K05 and K06 expect `none` but return `weak` with `not_calibrated`.
+**Cause:** the agreed T22 interim policy leaves the `none` rule disabled until T39 calibration.
+**Fix:** intentionally deferred to T39. Both misses remain visible in the saved result and the
+command's nonzero exit status. This is not evidence that the absent topics exist in the corpus.
+**Lesson:** an unfinished refusal mechanism must not make absent-topic questions silently pass.
+**Evidence:** the same first live retrieval result as B-098; author confirmed the interim policy
+on 29 October 2026. Seven query embeddings cost $0.00000276 for the complete run.

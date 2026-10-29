@@ -38,7 +38,8 @@ from .mentions import find_mentions
 from .graph import build_graph
 from .gexf import ExportRefused as ExportRefused, finding_neighbourhood, write_gexf
 from .integrity import GraphCounts, GraphIntegrityError as GraphIntegrityError, check_graph_integrity
-from .radius import FindingRadius, finding_radius
+from .radius import FindingRadius, GraphWalk, account_groups, finding_radius, radius_walk
+from .retrieval import SearchFilters as SearchFilters, SearchResult, VerdictPolicy as VerdictPolicy, search_corpus
 from .staleness import (
     NOT_BUILT as NOT_BUILT, SERVER_DOWN, SETTINGS_INCOMPLETE, STALE, UNCHECKABLE,
     KnowledgeBaseNotReady as KnowledgeBaseNotReady, source_fingerprint,
@@ -71,11 +72,18 @@ def database_engine(settings: ServerSettings) -> AsyncEngine:
 
 
 class KnowledgeBase:
-    def __init__(self, engine: AsyncEngine):
+    def __init__(self, engine: AsyncEngine, embedder: Embeddings | None = None):
         self.engine = engine
+        self._embedder = embedder
         self._graph: nx.MultiDiGraph | None = None
         self._dataset: Path | None = None
         self._log: pd.DataFrame | None = None
+
+    async def search_corpus(self, query: str, *, filters: SearchFilters | None = None,
+                            verdict_policy: VerdictPolicy | None = None) -> SearchResult:
+        if self._embedder is None:
+            raise ValueError("Open the knowledge base with an embedder to search the corpus")
+        return await search_corpus(self.engine, self._embedder, query, filters, verdict_policy)
 
     @property
     def graph(self) -> nx.MultiDiGraph:
@@ -92,6 +100,17 @@ class KnowledgeBase:
         if self._log is None:
             raise ValueError("Open the knowledge base with its dataset to compute a radius")
         return finding_radius(self.graph, self._log, finding, start, end)
+
+    def account_groups(self, username: str) -> GraphWalk:
+        return account_groups(self.graph, username)
+
+    def finding_walk(self, finding_id: str) -> GraphWalk:
+        if self._log is None:
+            raise ValueError("Open the knowledge base with its dataset to walk a finding")
+        finding = next((f for f in detect_all(self._log) if f.finding_id == finding_id), None)
+        if finding is None:
+            raise ValueError("No finding has this ID in the dataset's log")
+        return radius_walk(self.finding_radius(finding))
 
     def export_gexf(self, path: Path, finding_id: str | None = None) -> None:
         """Write the checked graph, or one finding's neighbourhood, as GEXF for Gephi Lite."""
@@ -158,11 +177,11 @@ class KnowledgeBase:
 
 @asynccontextmanager
 async def open_knowledge_base(
-    settings: ServerSettings, *, dataset: Path | None = None,
+    settings: ServerSettings, *, dataset: Path | None = None, embedder: Embeddings | None = None,
 ) -> AsyncIterator[KnowledgeBase]:
     engine = database_engine(settings)
     try:
-        kb = KnowledgeBase(engine)
+        kb = KnowledgeBase(engine, embedder)
         if dataset is not None:
             fingerprints = await kb.recorded_fingerprints()
             if len(fingerprints) != 1:

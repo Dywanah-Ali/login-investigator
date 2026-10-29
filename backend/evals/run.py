@@ -18,6 +18,7 @@ without asking the model: for a fix to the grader, never to the agent.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import ast
 import hashlib
 import json
@@ -33,7 +34,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from evals import api_runner
-from evals.scoring import Answer, load_questions, score
+from evals.scoring import Answer, load_questions, score, score_retrieval
 from login_investigator import agent as investigator
 from login_investigator import investigations, reputation
 from login_investigator.generator import REPO_ROOT
@@ -164,7 +165,7 @@ def failures(records: list[dict]) -> list[str]:
 
 
 def save(records: list[dict], started: datetime, version: str, commit: str, questions: int,
-         runs: int, label: str, mode: str = "direct") -> None:
+         runs: int, label: str, mode: str = "direct", details: dict | None = None) -> None:
     """Write the result file and its line in summary.md, then print the summary."""
     # A provider error may contain request details. Strip loaded key values before writing or
     # printing any evidence. Neither the environment nor HTTP headers belong in a result file.
@@ -180,17 +181,37 @@ def save(records: list[dict], started: datetime, version: str, commit: str, ques
         "started_at": started.isoformat(timespec="seconds"),
         "prompt_version": version,
         "commit": commit,
-        "model": investigator.MODEL,
+        "model": None if mode == "retrieval" else investigator.MODEL,
         "mode": mode,
         "runs_per_question": runs,
         "label": label,
-        "targets": {"overall": TARGET_OVERALL, "security": TARGET_SECURITY},
+        "targets": ({"every_applicable_check": True} if mode == "retrieval" else
+                    {"overall": TARGET_OVERALL, "security": TARGET_SECURITY}),
         "summary": summary,
         "records": records,
     }
+    if details is not None:
+        result["details"] = details
     RESULTS.mkdir(exist_ok=True)
-    name = f"{datetime.now(timezone.utc):%Y-%m-%d-%H%M%S}-{version}"  # one file per run, always
+    name = f"{datetime.now(timezone.utc):%Y-%m-%d-%H%M%S-%f}-{version}"  # never overwrite a rapid rescore
     (RESULTS / f"{name}.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
+    if mode == "retrieval":
+        summary_file = RESULTS / "retrieval-summary.md"
+        if not summary_file.exists():
+            summary_file.write_text(
+                "# Retrieval results\n\nEvery applicable check must pass per question. "
+                "Kept separate from the Port exam.\n\n"
+                "| Started (UTC) | Version | Commit | Passed | Note |\n| --- | --- | --- | --- | --- |\n")
+        with summary_file.open("a") as handle:
+            handle.write(f"| {started:%Y-%m-%d %H:%M} | {version} | {commit} | "
+                         f"{summary['passed']}/{summary['runs']} | {label} |\n")
+        for record in records:
+            mark = "pass" if record["passed"] else "FAIL"
+            print(f"{record['question']}: {mark}; first gold rank: {record.get('first_gold_rank')}")
+        for line in failures(records):
+            print("  " + line)
+        print(f"Saved {RESULTS / name}.json")
+        return
     met = (summary["overall"] >= TARGET_OVERALL and
            (summary["security"] is None or summary["security"] >= TARGET_SECURITY))
     security = "n/a" if summary["security"] is None else format(summary["security"], ".0%")
@@ -239,6 +260,14 @@ def _saved_report(record: dict) -> dict | None:
 def rescore(path: Path, label: str) -> None:
     """Score the answers in a saved result again with the current checks. No model call."""
     old = json.loads(path.read_text())
+    if old.get("mode") == "retrieval":
+        from evals.retrieval import QUESTIONS
+        questions = {q["id"]: q for q in json.loads(QUESTIONS.read_text())["questions"]}
+        records = [{**record, **score_retrieval(questions[record["question"]], record["artifact"])}
+                   for record in old["records"]]
+        save(records, datetime.fromisoformat(old["started_at"]), old["prompt_version"], old["commit"],
+             len(records), 1, label or f"rescore of {path.name}", mode="retrieval", details=old.get("details"))
+        return
     questions = {q["id"]: q for q in load_questions()}
     records = []
     for record in old["records"]:
@@ -272,6 +301,8 @@ def main() -> None:
 
     parser.add_argument("--mode", choices=("direct", "api"), default="direct",
                         help="direct for iteration; api for the Port acceptance gate")
+    parser.add_argument("--layer", choices=("answer", "retrieval"), default="answer",
+                        help="retrieval calls corpus search and graph walks directly once per question")
     parser.add_argument("--runs", type=positive, default=3, help="runs per question (default 3)")
     parser.add_argument("--only", nargs="*", help="question ids to run, such as Q07 Q16")
     parser.add_argument("--jobs", type=positive, default=3, help="runs at the same time (default 3)")
@@ -281,6 +312,24 @@ def main() -> None:
     if options.rescore:
         rescore(options.rescore, options.label)
         return
+
+    if options.layer == "retrieval":
+        if options.mode != "direct":
+            parser.error("--layer retrieval calls the core directly; --mode api is for the answer layer")
+        from evals.retrieval import run_retrieval
+        try:
+            report, version = asyncio.run(run_retrieval(options.only))
+        except ValueError as error:
+            parser.error(str(error))
+        except Exception as error:
+            # Provider/database exceptions may carry connection details. Preserve the failure
+            # without printing their raw text or request data.
+            parser.exit(2, f"Retrieval failed ({type(error).__name__}). Check the knowledge-base "
+                        "and embedding-service setup; no result was saved.\n")
+        save(report["records"], datetime.now(timezone.utc), version, git_commit(),
+             len(report["records"]), 1, options.label, mode="retrieval",
+             details={key: value for key, value in report.items() if key != "records"})
+        raise SystemExit(0 if all(record["passed"] for record in report["records"]) else 1)
 
     questions = load_questions()
     if options.only is not None:
