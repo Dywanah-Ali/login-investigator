@@ -3,6 +3,7 @@
 from evals import scoring
 import asyncio
 import json
+import sys
 from pathlib import Path
 import pytest
 
@@ -106,3 +107,25 @@ def test_saved_retrieval_results_use_per_question_gates_and_rescore_offline(tmp_
     rescored = json.loads(newest.read_text())
     assert rescored["records"][0]["passed"] is False
     assert rescored["records"][0]["checks"][0]["actual"] == "weak"
+
+
+def test_retrieval_command_preserves_the_safe_staleness_instruction(
+    build_database: ServerSettings, tmp_path: Path, monkeypatch, capsys,
+):
+    from evals import run
+    from test_knowledge_base import sample_dataset
+    from login_investigator.knowledge_base.staleness import STALE
+
+    dataset = sample_dataset(tmp_path / "dataset")
+    asyncio.run(build_knowledge_base(dataset, build_database, FakeEmbedder()))
+    state = tmp_path / "active.json"
+    state.write_text(json.dumps({"database": build_database.database}))
+    path = dataset / "corpus/own/sample.md"
+    path.write_text(path.read_text() + "\nA new policy statement.\n")
+    monkeypatch.setenv("LI_DATASET_DIR", str(dataset))
+    monkeypatch.setenv("LI_KNOWLEDGE_BASE_STATE", str(state))
+    monkeypatch.setattr(sys, "argv", ["evals.run", "--layer", "retrieval"])
+    with pytest.raises(SystemExit) as caught:
+        run.main()
+    assert caught.value.code == 2
+    assert STALE in capsys.readouterr().err

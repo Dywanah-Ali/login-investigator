@@ -1644,6 +1644,14 @@ connection metadata to diagnose intermittent teardown problems.
 InsufficientPrivilege occurs while dropping `li_test_e58b4bd62629`. No assertion failed and no
 permissions were broadened. Retry cleanup of this exact test database, then verify the suite.
 
+**T22 full safety-net recurrence:** 646 tests passed in 559.22 seconds, with one teardown error
+in the unchanged `test_successful_observations_make_peers_but_failures_and_empty_devices_do_not`.
+The exact leftover database was `li_test_7115528f2122`; the same InsufficientPrivilege was
+reported. Cleanup and a focused rerun are recorded with the final T22 evidence. This is a
+cleanup error, not an assertion failure, and the full command exited 1.
+Exact cleanup succeeded. The affected graph test reran with 1 passed in 2.16 seconds, exit 0,
+including teardown. The fixture concern remains open for T44.
+
 ### B-095 · 2026-10-28 · Knowledge-base T19 · Empty requested period reported inverted bounds
 
 **Symptom:** an end-only request before the first login returned an effective start after its
@@ -1739,3 +1747,18 @@ command's nonzero exit status. This is not evidence that the absent topics exist
 **Lesson:** an unfinished refusal mechanism must not make absent-topic questions silently pass.
 **Evidence:** the same first live retrieval result as B-098; author confirmed the interim policy
 on 29 October 2026. Seven query embeddings cost $0.00000276 for the complete run.
+
+### B-100 · 2026-10-29 · Knowledge-base T22 · Retrieval command hides safe setup guidance
+
+**Symptom:** a stale build produced only `Retrieval failed (KnowledgeBaseNotReady)`, losing
+the guard's rebuild command promised by the admin manual.
+**Cause:** the generic exception handler caught the guard's RuntimeError subclass. Review also
+found duplicated configuration literals that could drift from search, and the retrieval wrapper
+recorded completion time as start time; its source paths were absent from the dirty marker.
+**Fix:** preserve known safe setup/staleness messages, derive recorded settings from the search
+constants and policy, capture start time before retrieval, and include retrieval sources in
+version/dirty evidence. Unexpected provider/database error text remains hidden.
+**Lesson:** saved evidence must describe the executed configuration, and safe actionable error
+messages should survive the command boundary.
+**Evidence:** standards review, plus the real-database stale-build regression failed with the
+generic message before the fix. Verification recorded in the T22 review note.

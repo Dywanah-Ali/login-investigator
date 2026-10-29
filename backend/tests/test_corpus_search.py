@@ -89,16 +89,21 @@ def test_filters_narrow_both_legs_before_their_limits(build_database: ServerSett
 
     async def check():
         embedder = RankedEmbedder()
-        dataset = search_dataset(tmp_path, 45)
+        dataset = search_dataset(tmp_path, 46)
         # This one passage loses to 25 nearer vectors and many keyword matches unless filtering
         # takes place before each leg's limit. An exact version restricts both legs to it.
-        path = dataset / "corpus/own/doc-44.md"
+        for number in range(25, 45):
+            path = dataset / f"corpus/own/doc-{number:02}.md"
+            path.write_text(path.read_text().replace("zebra approval", "zebra zebra zebra approval"))
+        path = dataset / "corpus/own/doc-45.md"
         path.write_text(path.read_text().replace('version: "1.0"', 'version: "2.0"'))
         await build_knowledge_base(dataset, build_database, embedder)
         async with open_knowledge_base(reader_settings(build_database), embedder=embedder) as kb:
+            unfiltered = await kb.search_corpus("zebra")
+            assert not any(c.chunk.id == "doc-45@2.0#document-45/1" for c in unfiltered.candidates)
             result = await kb.search_corpus("zebra", filters=SearchFilters(document_type="policy", version="2.0"))
         assert len(result.chunks) == 1
-        assert result.chunks[0].chunk.id == "doc-44@2.0#document-44/1"
+        assert result.chunks[0].chunk.id == "doc-45@2.0#document-45/1"
         assert result.chunks[0].dense_rank == result.chunks[0].keyword_rank == 1
 
     asyncio.run(check())

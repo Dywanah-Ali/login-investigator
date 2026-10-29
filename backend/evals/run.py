@@ -67,6 +67,7 @@ def git_commit() -> str:
         return subprocess.run(["git", *args], capture_output=True, text=True).stdout.strip()
     dirty = git("status", "--porcelain", "--", "login_investigator", "api", "evals/run.py",
                 "evals/api_runner.py", "evals/scoring.py", "evals/questions.json",
+                "evals/retrieval.py", "evals/retrieval_requests.json", "evals/knowledge_base_questions.json",
                 "data/datasets/default", "pyproject.toml", "uv.lock")
     return git("rev-parse", "--short", "HEAD") + ("+changes" if dirty else "")
 
@@ -317,16 +318,19 @@ def main() -> None:
         if options.mode != "direct":
             parser.error("--layer retrieval calls the core directly; --mode api is for the answer layer")
         from evals.retrieval import run_retrieval
+        from login_investigator.knowledge_base import KnowledgeBaseNotReady
+        from login_investigator.postgres import DatabaseUnavailable
+        started = datetime.now(timezone.utc)
         try:
             report, version = asyncio.run(run_retrieval(options.only))
-        except ValueError as error:
+        except (ValueError, KnowledgeBaseNotReady, DatabaseUnavailable) as error:
             parser.error(str(error))
         except Exception as error:
             # Provider/database exceptions may carry connection details. Preserve the failure
             # without printing their raw text or request data.
             parser.exit(2, f"Retrieval failed ({type(error).__name__}). Check the knowledge-base "
                         "and embedding-service setup; no result was saved.\n")
-        save(report["records"], datetime.now(timezone.utc), version, git_commit(),
+        save(report["records"], started, version, git_commit(),
              len(report["records"]), 1, options.label, mode="retrieval",
              details={key: value for key, value in report.items() if key != "records"})
         raise SystemExit(0 if all(record["passed"] for record in report["records"]) else 1)

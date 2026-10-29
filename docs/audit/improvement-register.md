@@ -920,6 +920,8 @@ record an explicit deferral; keep the original failure evidence.
 
 T22 recurrence on 29 October 2026: 21 focused assertions passed, one database teardown failed
 with the same InsufficientPrivilege. Recorded under B-094; no privilege or fixture change.
+The final full run also passed all 646 assertions but exited 1 on one teardown of an unchanged
+graph test. Exact cleanup and focused rerun evidence are in T22. The fixture issue remains open.
 
 ### AUD-062: Compound retrieval question loses the MFA exception register
 

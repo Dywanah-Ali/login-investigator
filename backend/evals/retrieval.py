@@ -15,6 +15,7 @@ from login_investigator import knowledge_base
 from login_investigator.generator import DATASET_DIR
 from login_investigator.knowledge_base import KnowledgeBase, check_knowledge_base, open_knowledge_base, reader_settings
 from login_investigator.knowledge_base.embedding import embedding_service
+from login_investigator.knowledge_base.retrieval import LIMIT, RRF_K, VerdictPolicy
 from login_investigator.knowledge_base.schema import EMBEDDING_MODEL
 from login_investigator.knowledge_base.staleness import NOT_BUILT, source_fingerprint
 from login_investigator.postgres import ENV_PATH, ServerSettings
@@ -84,11 +85,14 @@ async def run_retrieval(only: list[str] | None = None) -> tuple[dict, str]:
         async with open_knowledge_base(reader, dataset=dataset, embedder=embedder) as kb:
             report = await evaluate_retrieval(kb, questions)
     report["embedding_usage"] = asdict(usage)
-    report["configuration"] = {"embedding_model": EMBEDDING_MODEL, "rrf_k": 60,
-                               "dense_limit": 20, "keyword_limit": 20, "fused_limit": 20,
-                               "none_enabled": False, "reranker": False,
+    policy = VerdictPolicy()
+    report["configuration"] = {"embedding_model": EMBEDDING_MODEL, "rrf_k": RRF_K,
+                               "dense_limit": LIMIT, "keyword_limit": LIMIT, "fused_limit": LIMIT,
+                               "none_enabled": policy.none_enabled, "min_similarity": policy.min_similarity,
+                               "reranker": False,
                                "source_fingerprint": source_fingerprint(dataset)}
-    files = [QUESTIONS, REQUESTS, Path(__file__), Path(__file__).with_name("scoring.py")]
+    files = [QUESTIONS, REQUESTS, Path(__file__), Path(__file__).with_name("scoring.py"),
+             Path(__file__).with_name("run.py")]
     files += sorted(Path(knowledge_base.__file__).parent.glob("*.py"))
     digest = hashlib.sha256(json.dumps(report["configuration"], sort_keys=True).encode())
     for path in files:

@@ -191,14 +191,18 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is ticket 22**, which has no unresolved blockers; one session
+line holds its edges. **The frontier is ticket 23**, which has no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14 to T21 have since resolved; the frontier
-is ticket 22, hybrid search and the retrieval layer alone. Ticket 24 is also unblocked. No ticket was
+and is resolved (see Build tickets resolved). T14 to T22 have since resolved; the frontier
+is ticket 23, the re-ranker behind its switch. Ticket 24 is also unblocked. No ticket was
 blocked by 18 or 20.
+
+T22's live retrieval baseline has a recorded K04 candidate gap (B-098/AUD-062). Re-ranking
+cannot recover a passage outside both candidate lists; review this before closing the later
+retrieval gate. T22 permits logging first-run misses, so its completion does not waive that gate.
 
 Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
 It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the new settings rule,
@@ -376,6 +380,19 @@ the other family from the retrieval builder) was proposed and is not ruled.
   K04 keeps two of S6's three documents; twins state `conclusion: "benign"`, apart from the search
   tool's `verdict`. Evidence: 629 backend and 149 frontend tests, clean types, two-axis review
   triaged. Port eval not run: no agent change. Model: Claude Opus 5.5.
+
+- [22 Hybrid search and the retrieval layer alone](issues/22-hybrid-search-and-retrieval-layer.md)
+  (29 October 2026): exact vector and PostgreSQL keyword search, typed filters before both
+  20-result limits, own score-preserving RRF, direct graph checks and the existing runner's
+  `--layer retrieval` path with offline rescoring and separate saved evidence. Author ruled
+  `weak`/`not_calibrated` until calibration, with `none` disabled. Three live runs agree: five
+  questions pass; K04 misses the MFA register (dense rank 115, keyword empty); K05/K06 await
+  T39 calibration. B-098/AUD-062 and B-099 retain the gaps; original questions and gold unchanged.
+  Evidence: 646 backend assertions pass with one known B-094 teardown error; exact cleanup and
+  affected-test rerun clean. Frontend 149 pass, both typechecks clean, six existing lint warnings.
+  Two-axis review: three findings fixed and independently confirmed. Admin commands tested.
+  B-100 records review fixes. Port eval not run: no agent change. Model: author-confirmed Astra.
+  Local commits only; T23 has not started.
 
 ## Not yet specified
 
