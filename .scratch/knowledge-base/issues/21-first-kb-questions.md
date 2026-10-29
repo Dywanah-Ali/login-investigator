@@ -24,20 +24,50 @@ any search runs, so the exam cannot be fitted to the results.
 
 ## Acceptance criteria
 
-- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+- [x] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
-- [ ] The question file sits beside the Port's file, which stays unchanged.
-- [ ] Six to ten questions, covering at least one document lookup, one graph lookup, one mixed
+- [x] The question file sits beside the Port's file, which stays unchanged.
+- [x] Six to ten questions, covering at least one document lookup, one graph lookup, one mixed
       question on S6, one absent topic (verdict `none`, no gold IDs) and one twin.
-- [ ] Every question carries `type`, `split`, a provenance line, and gold IDs or an expected verdict.
-- [ ] A test proves every gold chunk ID exists in a fresh build, every gold record ID exists in the
+- [x] Every question carries `type`, `split`, a provenance line, and gold IDs or an expected verdict.
+- [x] A test proves every gold chunk ID exists in a fresh build, every gold record ID exists in the
       world's files, and every question has gold IDs or a verdict.
-- [ ] The file is committed before ticket 22's first search run; the commit order is the evidence.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
+- [x] The file is committed before ticket 22's first search run; the commit order is the evidence.
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
       under the type checker, and the two-axis code review (`mp-code-review`) has run with its
       findings triaged.
 
 ## Comments
 
 - 2026-10-26, author's S4 ruling: S4 is intentionally unresolved. When evaluating it, accept that the unusual successful Russian-source sign-in warrants investigation, while authorisation, compromise, Olivia's physical location, who completed MFA and the attack mechanism remain unknown. Do not demand confirmed compromise or a named MFA attack; do not treat this evidence limit as a fifth absent topic or a new retrieval verdict. See the spec and T12.
+- 2026-10-29, Claude: stated the `Model:` line (standard: Opus 5.5 or Sol 6.1); the author
+  confirmed the model is set. Built with Claude Opus 5.5.
+- 2026-10-29, Claude: documentation lookup not needed. The work codes against no third-party
+  library: the test uses the standard library and the project's own build and chunker.
+- 2026-10-29, Claude: build complete; the author's two rulings below are pending.
+  - **Shape.** `backend/evals/knowledge_base_questions.json` holds eight questions, K01 to K08, all
+    `split: test`: two document lookups (K01 current password length, where the superseded 2024
+    policy says 8; K02 the MFA exception register), one graph lookup (K03 hannah.porter's groups),
+    one mixed question on S6 (K04 reach plus why MFA did not stop it), two absent topics (K05 data
+    retention, K06 incident write-ups) and two twins (K07 B1 travel, K08 B3 laptop swap, asked
+    directly). `gold` always has `chunks`, `records` and `paths`, empty where unused. The Port's
+    `questions.json` is unchanged.
+  - **Test.** `backend/tests/test_eval_knowledge_base_questions.py`, 7 tests at door 6: fields and
+    something to check; the kinds the ticket names; absent topics carry `none` and no gold; every
+    gold record and path step is a first-column ID of an `org/*.csv` table; K04 equals
+    `truth.json` S6's radius and paths; each twin's gold chunks come from its clearing document;
+    every gold chunk ID exists in a fresh PostgreSQL build of `default` with the fake embedder.
+    Each gold chunk's text was also read from the chunker: each holds the evidence its question
+    needs (K04's runbook chunk ends at step 4, "Check MFA for each success").
+  - **Evidence.** New file 7 passed; full backend suite 629 passed (622 before, plus 7); pyright
+    0 errors; frontend 149 passed; two-axis review triaged in
+    [the review](../reviews/21-code-review-2026-10-29.md). Port eval not run: no agent, tool or
+    prompt change.
+  - **For the author to rule.**
+    1. *K04 carries two of S6's three expected documents.* `run-compromised-account-response` is
+       left out because the question asks about reach and MFA, not next steps, and the answer gate
+       demands every gold ID be cited. The alternative adds it as a third gold chunk.
+    2. *Field names beyond T06 d3.* `conclusion: "benign"` on twins keeps the investigator's
+       conclusion apart from the search tool's `verdict` (`none`, `weak`, `found`); `turns` and the
+       top-level `note` copy the Port file's shape.

@@ -1,0 +1,107 @@
+{
+  "note": "The knowledge base's eval set (ticket 21; spec, The eval). Kept apart from the frozen Port file, questions.json, and never blended with it. Written before any search ran, so the gold cannot be fitted to results. Gold comes from the dataset folder backend/data/datasets/default: chunk IDs from the corpus as a fresh build names them, record IDs from org/*.csv, S6's radius and paths from truth.json. The gold items choose the checks (review ruling 2): chunks get the two retrieval checks, records and paths the graph gate. 'verdict' is the search tool's expected verdict (none, weak, found); 'conclusion' is the investigator's expected conclusion for a benign twin. tests/test_eval_knowledge_base_questions.py checks every gold ID exists.",
+  "questions": [
+    {
+      "id": "K01", "type": "document_lookup", "split": "test",
+      "provenance": "corpus/own/pol-password.md v3.0, section 'Choosing a password' (14 characters). The superseded pol-password-2024 says 8, so the current version must win.",
+      "turns": ["What is the minimum password length under our current password policy?"],
+      "gold": {
+        "chunks": ["pol-password@3.0#password-policy/choosing-a-password/1"],
+        "records": [],
+        "paths": []
+      }
+    },
+    {
+      "id": "K02", "type": "document_lookup", "split": "test",
+      "provenance": "corpus/own/reg-mfa-exceptions.md v1.6, section 'Active exceptions'; truth.json mfa_exceptions (daniel.hughes, amelia.ward), approver thomas.price.",
+      "turns": ["Which accounts are allowed to sign in without MFA, and who approved those exceptions?"],
+      "gold": {
+        "chunks": ["reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1"],
+        "records": [],
+        "paths": []
+      }
+    },
+    {
+      "id": "K03", "type": "graph_lookup", "split": "test",
+      "provenance": "org/memberships.csv rows mem-all-staff-hannah.porter and mem-finance-approvers-hannah.porter. hannah.porter is in no planted story; she appears only in S6's address-reuse context, which is context, not evidence. A clean control.",
+      "turns": ["Which groups is hannah.porter a member of?"],
+      "gold": {
+        "chunks": [],
+        "records": ["group-all-staff", "group-finance-approvers"],
+        "paths": [
+          ["user-hannah.porter", "group-all-staff"],
+          ["user-hannah.porter", "group-finance-approvers"]
+        ]
+      }
+    },
+    {
+      "id": "K04", "type": "mixed", "split": "test",
+      "provenance": "truth.json S6: the spray from 45.148.10.80 succeeds three times on amelia.ward with mfa_result none. Records and paths are S6.blast_radius groups, assets and paths (device_peers empty). Chunks: reg-mfa-exceptions 'Active exceptions' (why no MFA challenge) and run-password-spray-response step 4 'Check MFA for each success'.",
+      "turns": ["The password spray from 45.148.10.80 succeeded on amelia.ward. What can that account reach, and why did MFA not stop those sign-ins?"],
+      "gold": {
+        "chunks": [
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1"
+        ],
+        "records": [
+          "group-all-staff",
+          "group-it-admins",
+          "asset-backup-server",
+          "asset-domain-controller",
+          "asset-email",
+          "asset-file-share",
+          "asset-identity-provider",
+          "asset-intranet",
+          "asset-vpn-gateway"
+        ],
+        "paths": [
+          ["user-amelia.ward", "group-all-staff"],
+          ["user-amelia.ward", "group-all-staff", "asset-email"],
+          ["user-amelia.ward", "group-all-staff", "asset-file-share"],
+          ["user-amelia.ward", "group-all-staff", "asset-intranet"],
+          ["user-amelia.ward", "group-it-admins"],
+          ["user-amelia.ward", "group-it-admins", "asset-backup-server"],
+          ["user-amelia.ward", "group-it-admins", "asset-domain-controller"],
+          ["user-amelia.ward", "group-it-admins", "asset-identity-provider"],
+          ["user-amelia.ward", "group-it-admins", "asset-vpn-gateway"]
+        ]
+      }
+    },
+    {
+      "id": "K05", "type": "absent_topic", "split": "test",
+      "provenance": "truth.json absent_topics: kind policy, topic 'data retention'. No document in either corpus folder covers it.",
+      "turns": ["What does our data retention policy say about how long sign-in records are kept?"],
+      "gold": {"chunks": [], "records": [], "paths": []},
+      "verdict": "none"
+    },
+    {
+      "id": "K06", "type": "absent_topic", "split": "test",
+      "provenance": "truth.json absent_topics: kind incident_writeups, 'No incident write-ups in phases 0 and 1'.",
+      "turns": ["Show me the write-up from the last password spraying incident we handled."],
+      "gold": {"chunks": [], "records": [], "paths": []},
+      "verdict": "none"
+    },
+    {
+      "id": "K07", "type": "twin", "split": "test",
+      "provenance": "truth.json twins.B1: maya.patel signs in from Germany (203.0.113.70) on 2026-10-02 to 2026-10-04; cleared by rec-approved-travel, section 'Approval and acknowledgement' (Security's note that these sign-ins are expected).",
+      "turns": ["maya.patel signed in from Germany between 2 and 4 October. Is that a threat?"],
+      "gold": {
+        "chunks": ["rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1"],
+        "records": [],
+        "paths": []
+      },
+      "conclusion": "benign"
+    },
+    {
+      "id": "K08", "type": "twin", "split": "test",
+      "provenance": "truth.json twins.B3: james.carter moves from dev-laptop-james.carter to dev-laptop-replacement-james.carter at 2026-10-04T12:00:00Z. No rule reads device_id, so it is asked directly (spec ruling); cleared by rec-laptop-handover, section 'Handover details'.",
+      "turns": ["james.carter's sign-ins switched to a different laptop on 4 October. Should we be worried?"],
+      "gold": {
+        "chunks": ["rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1"],
+        "records": [],
+        "paths": []
+      },
+      "conclusion": "benign"
+    }
+  ]
+}
