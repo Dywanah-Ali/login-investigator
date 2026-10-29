@@ -1,7 +1,7 @@
 # 21: The first knowledge-base questions
 
 Type: build
-Status: ready-for-agent
+Status: resolved
 Blocked by: 16, 17, 19
 Phase: 0
 Model: standard (Opus 5.5 or Sol 6.1)
@@ -71,3 +71,9 @@ any search runs, so the exam cannot be fitted to the results.
     2. *Field names beyond T06 d3.* `conclusion: "benign"` on twins keeps the investigator's
        conclusion apart from the search tool's `verdict` (`none`, `weak`, `found`); `turns` and the
        top-level `note` copy the Port file's shape.
+- 2026-10-29, Claude: the author ruled both points and the ticket is resolved. Questions committed
+  in `aa07926`, before any search run; T22 has not started.
+  1. K04 keeps two gold documents. The next-steps runbook (`run-compromised-account-response`)
+     belongs to a phase 1 question that asks what to do next.
+  2. `conclusion: "benign"` is accepted for twins, apart from the search tool's `verdict`. Recorded
+     in the spec's decisions log.

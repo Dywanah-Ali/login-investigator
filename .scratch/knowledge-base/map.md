@@ -191,13 +191,13 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is ticket 21**, which has no unresolved blockers; one session
+line holds its edges. **The frontier is ticket 22**, which has no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
-and is resolved (see Build tickets resolved). T14 to T20 have since resolved; the frontier
-is ticket 21, the first knowledge-base questions. Ticket 24 is also unblocked. No ticket was
+and is resolved (see Build tickets resolved). T14 to T21 have since resolved; the frontier
+is ticket 22, hybrid search and the retrieval layer alone. Ticket 24 is also unblocked. No ticket was
 blocked by 18 or 20.
 
 Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
@@ -366,6 +366,16 @@ the other family from the retrieval builder) was proposed and is not ruled.
   neighbourhood 55 and 64. Evidence: 622 backend and 149 frontend tests, clean types, two-axis
   review triaged, the author's Gephi Lite look. Port eval not run: no agent change. Model:
   Claude Opus 5.5.
+
+- [21 The first knowledge-base questions](issues/21-first-kb-questions.md)
+  (29 October 2026): `evals/knowledge_base_questions.json` beside the frozen Port file holds eight
+  questions, K01 to K08: two document lookups, one graph lookup, one mixed question on S6, two
+  absent topics with verdict `none` and two twins (B1, and B3 asked directly). A door 6 test proves
+  every gold chunk exists in a fresh build, every gold record in the organisation tables, and K04
+  equals S6's planted radius. Committed in `aa07926` before any search run. Author's rulings:
+  K04 keeps two of S6's three documents; twins state `conclusion: "benign"`, apart from the search
+  tool's `verdict`. Evidence: 629 backend and 149 frontend tests, clean types, two-axis review
+  triaged. Port eval not run: no agent change. Model: Claude Opus 5.5.
 
 ## Not yet specified
 
