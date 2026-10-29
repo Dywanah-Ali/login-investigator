@@ -854,6 +854,12 @@ knowledge-base builds while protecting the active database and unrelated project
 is not implementation approval. Closure evidence: an approved cleanup policy and tests protecting
 the active/unrelated databases, or the author's decision to keep manual maintenance.
 
+Manual cleanup, 29 October 2026: the author dropped `li_kb_f9d6bcf6f8c5` (T18's build) by hand
+in pgAdmin. Kept: `li_kb_fe13d09e32f4`, the active build named by `backend/.knowledge-base.json`,
+and `li_kb_0af9160cc4ed`, T17's first build, by the author's choice. Saved evidence that names
+the dropped build keeps its recorded values. This is one manual clean, not a policy; the entry
+stays open.
+
 ### AUD-058: Chunking code outside the staleness fingerprint
 
 T18's fingerprint covers the dataset files, the embedding model, the vector length and the
@@ -927,6 +933,9 @@ passed and one teardown error on a third parameter (`swap`). Same message: permi
 terminate process. One focused run also hit it in `test_corpus_search.py`, passing alone. It
 is now frequent in the corruption tests. Each occurrence may leave a test database behind; none
 was cleaned, because cleanup needs the database password from `.env`. The fixture is unchanged.
+Later the same day the author dropped the four leftover test databases by hand in pgAdmin
+(`li_test_5b3c17d13b5f`, `li_test_292de847fa91`, `li_test_79349fb3823f`, `li_test_fc59a8fdc8e0`),
+matching the four teardown errors of this session. New leftovers will appear until T44 rules.
 
 T22 recurrence on 29 October 2026: 21 focused assertions passed, one database teardown failed
 with the same InsufficientPrivilege. Recorded under B-094; no privilege or fixture change.
