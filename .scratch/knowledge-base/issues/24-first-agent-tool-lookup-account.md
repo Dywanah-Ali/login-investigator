@@ -108,6 +108,24 @@ round trip.
 
 ## Answer
 
+Follow-up, 30 October 2026: the author tested account lookup in the GUI and liked the result.
+Requested two-space JSON indentation in both Found and the raw-JSON view. This is a display-only
+formatting change to the saved briefing; model input, artifacts and original saved messages stay
+unchanged. Existing saved investigations receive the formatting when reopened. B-106 records
+the compact display that prompted the request.
+
+Second GUI ruling, 30 October 2026: the author accepted indented JSON behind the raw switch,
+but found JSON under Found visually inappropriate. Approved a plain summary there: Owner,
+Department, then Groups with standard/privileged access labels. This supersedes only the Found
+format from the first iteration. Saved messages, artifacts and model input remain unchanged.
+
+Polish verification, 30 October: full backend safety-net run passed 677 tests (415.65 seconds,
+exit 0; no teardown errors this run), frontend 150 passed. After the second Found-format ruling,
+the affected tool-view/API tests passed again (13), and live reads verified the plain summary
+plus indented raw JSON on two existing saved lookups. Pyright clean. Both independent reviewers
+rechecked the final formatter with zero findings. No agent eval rerun: model inputs, tool output
+and prompts are unchanged. The backend was restarted so the approved display is available live.
+
 `lookup_account(account_id)` is the first knowledge-base tool in the central tuple, bound at
 agent construction to the checked core instance. It accepts a username or stable person ID,
 returns copied owner/department/group evidence and membership paths, and never writes the graph.

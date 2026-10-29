@@ -37,7 +37,23 @@ class ToolView:
 def describe(name: str, args: dict, result: str) -> ToolView:
     if name == "lookup_account":
         # T24's short labelled briefing only. Full saved evidence belongs to the later panel.
-        return ToolView("Account context", str(args.get("account_id", "")), result, None, result)
+        _, separator, payload = result.partition("\n")
+        try:
+            data = json.loads(payload) if separator else None
+        except ValueError:
+            data = None
+        if not isinstance(data, dict):
+            return ToolView("Account context", str(args.get("account_id", "")), result, None, result)
+        lines = [f"Owner: {data.get('owner', 'Unknown')}",
+                 f"Department: {data.get('department', 'Unknown')}", "", "Groups:"]
+        for group in data.get("groups", []):
+            access = {"baseline": "standard access", "privileged": "privileged access"}.get(
+                group.get("kind"), "access type not specified")
+            lines.append(f"• {group.get('name', 'Unknown')}: {access}")
+        if not data.get("groups"):
+            lines.append("No group memberships recorded.")
+        return ToolView("Account context", str(args.get("account_id", "")),
+                        "\n".join(lines), None, json.dumps(data, indent=2))
     try:
         parsed = json.loads(result)
         raw = json.dumps(parsed, indent=1)

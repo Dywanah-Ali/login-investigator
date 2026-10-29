@@ -1851,3 +1851,21 @@ whether the broader contextual attribution is sufficient remains a review decisi
 structure; do not widen the grader merely to obtain a passing run.
 **Evidence:** `2026-10-29-204751-654728-fa8f3e8f.json`, Q04 run 1. Overall 62/63 and security
 15/15 meet the agreed gates. Related earlier limitation: B-078.
+
+### B-106 · 2026-10-30 · T24 GUI review · Account JSON displayed as one compact line
+
+**Symptom:** the author saw compact JSON under Found and requested readable indentation there
+and in Show raw JSON.
+**Cause:** T24's labelled briefing bypassed the existing generic JSON pretty-printer.
+**First iteration:** the account display adapter separates the label from its JSON, indents the JSON by two
+spaces, retains the label under Found and supplies JSON alone to the raw view. Plain-text
+unavailable/not-found results remain readable. Existing saved briefings are formatted on read.
+**Author review:** indented raw JSON accepted; JSON under Found rejected as visually awkward.
+**Final fix:** Found becomes a plain Owner/Department/Groups summary with readable access labels.
+The raw switch retains two-space JSON indentation. No stored messages or model input change.
+**Lesson:** a labelled tool briefing needs its JSON portion formatted separately for display.
+**Evidence:** existing tool-view/API tests and a live reopened investigation check, recorded in
+the T24 follow-up. No model prompt or stored evidence change.
+Final evidence: 677 backend tests passed with no cleanup error in this run; 150 frontend tests
+passed; final affected-tool/API rerun 13 passed; two existing saved lookup displays verified
+through the live API; both review axes cleared. The original UI iteration remains recorded above.
