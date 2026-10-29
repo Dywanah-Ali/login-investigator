@@ -1,0 +1,2372 @@
+{
+  "source_sha256": "e4b70e749d37b41da620c8345bd1d49beeb48f9b23e6da2944ad6a502b5cab98",
+  "manifest_sha256": "12256ea70d0332bbd4a0dd29218c9a01d3f88fff1663e1da523ac6ec73fac614",
+  "script_sha256": "cdc1914593fa2a8d335e1d7cf13c646d4b918a90dbd40f2d5cb62f6edb8c7438",
+  "scope": "Post-result development replay, no new evidence or held-out claim. Fair route allocation is not semantic sufficiency. Five-passages stress is not T23 reranking.",
+  "method": "Unchanged initial query lists. Focused needs in manifest order, then broad. One new candidate per route per round. All route orders also reported without choosing a winner.",
+  "cases": [
+    {
+      "id": "K01",
+      "ledger": [
+        {
+          "route": "password",
+          "query": "What is the current minimum password length?",
+          "candidates": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/2",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/2"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1"
+          ],
+          "not_selected20": [
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/2"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "What is the minimum password length under our current password policy?",
+          "candidates": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "pol-password@3.0#password-policy/responsibilities/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "pol-password-2024@2.0#password-policy/purpose-and-application/1",
+            "pol-password-2024@2.0#password-policy/safe-handling-and-support/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "pol-password@3.0#password-policy/responsibilities/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "pol-password-2024@2.0#password-policy/purpose-and-application/1",
+            "pol-password-2024@2.0#password-policy/safe-handling-and-support/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1"
+          ],
+          "not_selected20": []
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "pol-password@3.0#password-policy/choosing-a-password/1": 2
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "pol-password-2024@2.0#password-policy/password-composition/1",
+          "pol-password@3.0#password-policy/choosing-a-password/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+          "pol-password@3.0#password-policy/purpose/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+          "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+          "attack-m1027@20.0#m1027-password-policies/description/1",
+          "pol-password@3.0#password-policy/responsibilities/1",
+          "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+          "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+          "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+          "pol-password-2024@2.0#password-policy/purpose-and-application/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+          "pol-password-2024@2.0#password-policy/safe-handling-and-support/1"
+        ],
+        "ranks": {
+          "pol-password@3.0#password-policy/choosing-a-password/1": 2
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "pol-password-2024@2.0#password-policy/password-composition/1",
+          "pol-password@3.0#password-policy/choosing-a-password/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+          "pol-password@3.0#password-policy/purpose/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1"
+        ],
+        "ranks": {
+          "pol-password@3.0#password-policy/choosing-a-password/1": 2
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "pol-password@3.0#password-policy/choosing-a-password/1": 2
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "pol-password@3.0#password-policy/choosing-a-password/1": 2
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "K02",
+      "ledger": [
+        {
+          "route": "mfa",
+          "query": "Which accounts have approved MFA exceptions and who approved them?",
+          "candidates": [
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/2",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "gde-new-starter@3.1#new-starter-guide/set-up-mfa/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/2"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/2",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "gde-new-starter@3.1#new-starter-guide/set-up-mfa/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/2"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "Which accounts are allowed to sign in without MFA, and who approved those exceptions?",
+          "candidates": [
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 2
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+          "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+          "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+          "run-compromised-account-response@1.3#compromised-account-response/response-steps/2",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+          "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/1",
+          "gde-new-starter@3.1#new-starter-guide/set-up-mfa/1",
+          "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/2",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1"
+        ],
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 3
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1"
+        ],
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 3
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 3
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 2
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "K04",
+      "ledger": [
+        {
+          "route": "mfa",
+          "query": "Why did amelia.ward's successful sign-ins not require MFA?",
+          "candidates": [
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-brute-force/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1"
+          ],
+          "not_selected20": [
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/2",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-brute-force/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/description/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/1"
+          ]
+        },
+        {
+          "route": "procedure",
+          "query": "How should we investigate MFA when a password spray succeeds?",
+          "candidates": [
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "The password spray from 45.148.10.80 succeeded on amelia.ward. What can that account reach, and why did MFA not stop those sign-ins?",
+          "candidates": [
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+            "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": null,
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1": 3
+        },
+        "all_required": false
+      },
+      "fair20": {
+        "ids": [
+          "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+          "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+          "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1"
+        ],
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 19,
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1": 2
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+          "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2"
+        ],
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": null,
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1": 2
+        },
+        "all_required": false
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 19,
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1": 2
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 19,
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1": 3
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 20,
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1": 1
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": null,
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1": 1
+          },
+          "all_required": false
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 20,
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1": 3
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": null,
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1": 2
+          },
+          "all_required": false
+        }
+      ]
+    },
+    {
+      "id": "K05",
+      "ledger": [
+        {
+          "route": "retention",
+          "query": "How long must company sign-in logs be retained?",
+          "candidates": [
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/2",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/2",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1036-account-use-policies/2",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "pol-password-2024@2.0#password-policy/failed-sign-ins/1",
+            "attack-m1036@20.0#m1036-account-use-policies/description/2",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1036-account-use-policies/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1036-account-use-policies/2",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "pol-access-control@2.1#access-control-policy/joiners/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/purpose/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1036-account-use-policies/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/3",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/3"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/2",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/2",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1036-account-use-policies/2",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "pol-password-2024@2.0#password-policy/failed-sign-ins/1",
+            "attack-m1036@20.0#m1036-account-use-policies/description/2",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1036-account-use-policies/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1036-account-use-policies/2",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "pol-access-control@2.1#access-control-policy/joiners/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1036-account-use-policies/2",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1"
+          ],
+          "not_selected20": [
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/purpose/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/3",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/3"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "What does our data retention policy say about how long sign-in records are kept?",
+          "candidates": [
+            "attack-m1036@20.0#m1036-account-use-policies/description/2",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/2",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1036-account-use-policies/2",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/2",
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1036-account-use-policies/2",
+            "pol-password-2024@2.0#password-policy/failed-sign-ins/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1036-account-use-policies/2",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1036-account-use-policies/2",
+            "attack-m1036@20.0#m1036-account-use-policies/description/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/password-reset-workload/1",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password-2024@2.0#password-policy/safe-handling-and-support/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/3",
+            "gde-new-starter@3.1#new-starter-guide/first-sign-in-and-password/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "pol-access-control@2.1#access-control-policy/joiners/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "attack-m1036@20.0#m1036-account-use-policies/description/2",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/2",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1036-account-use-policies/2",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/2",
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1036-account-use-policies/2",
+            "pol-password-2024@2.0#password-policy/failed-sign-ins/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1036-account-use-policies/2",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1036-account-use-policies/2",
+            "attack-m1036@20.0#m1036-account-use-policies/description/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/password-reset-workload/1",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password-2024@2.0#password-policy/safe-handling-and-support/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "pol-access-control@2.1#access-control-policy/joiners/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/3",
+            "gde-new-starter@3.1#new-starter-guide/first-sign-in-and-password/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {},
+        "all_required": null
+      },
+      "fair20": {
+        "ids": [
+          "pol-access-control@2.1#access-control-policy/leavers/1",
+          "attack-m1036@20.0#m1036-account-use-policies/description/2",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/2",
+          "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+          "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/2",
+          "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1036-account-use-policies/2",
+          "pol-password-2024@2.0#password-policy/password-composition/1",
+          "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1036-account-use-policies/2",
+          "pol-password-2024@2.0#password-policy/failed-sign-ins/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1036-account-use-policies/2",
+          "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+          "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1036-account-use-policies/2",
+          "run-compromised-account-response@1.3#compromised-account-response/response-steps/1",
+          "attack-m1036@20.0#m1036-account-use-policies/description/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+          "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+          "pol-password@3.0#password-policy/purpose/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/password-reset-workload/1",
+          "pol-access-control@2.1#access-control-policy/joiners/1",
+          "pol-password-2024@2.0#password-policy/safe-handling-and-support/1"
+        ],
+        "ranks": {},
+        "all_required": null
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "pol-access-control@2.1#access-control-policy/leavers/1",
+          "attack-m1036@20.0#m1036-account-use-policies/description/2",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1036-account-use-policies/2",
+          "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+          "attack-t1110@20.0#t1110-brute-force/mitigations/m1036-account-use-policies/2"
+        ],
+        "ranks": {},
+        "all_required": null
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {},
+          "all_required": null
+        },
+        {
+          "ranks": {},
+          "all_required": null
+        }
+      ]
+    },
+    {
+      "id": "K06",
+      "ledger": [
+        {
+          "route": "incident",
+          "query": "What did our last password spraying incident write-up record?",
+          "candidates": [
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/2",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1267-analytic-1267/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1036-account-use-policies/3"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/2",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1267-analytic-1267/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1036-account-use-policies/3"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "Show me the write-up from the last password spraying incident we handled.",
+          "candidates": [
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/2",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+            "run-password-spray-response@1.1#password-spray-response/completion-checks/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/2",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+            "run-password-spray-response@1.1#password-spray-response/response-steps/2",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+            "run-password-spray-response@1.1#password-spray-response/completion-checks/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/2",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1"
+          ],
+          "not_selected20": []
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {},
+        "all_required": null
+      },
+      "fair20": {
+        "ids": [
+          "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+          "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+          "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+          "run-password-spray-response@1.1#password-spray-response/response-steps/2",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+          "run-password-spray-response@1.1#password-spray-response/completion-checks/1",
+          "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/2",
+          "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1"
+        ],
+        "ranks": {},
+        "all_required": null
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+          "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1"
+        ],
+        "ranks": {},
+        "all_required": null
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {},
+          "all_required": null
+        },
+        {
+          "ranks": {},
+          "all_required": null
+        }
+      ]
+    },
+    {
+      "id": "K07",
+      "ledger": [
+        {
+          "route": "travel",
+          "query": "Is there an approved travel notice for maya.patel in Germany on 2 to 4 October 2026?",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/actions/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/meeting-details/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/other-business-and-actions/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/meeting-details/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-details/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/actions/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1"
+          ],
+          "not_selected20": [
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/meeting-details/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/other-business-and-actions/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/meeting-details/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-details/1"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "maya.patel signed in from Germany between 2 and 4 October. Is that a threat?",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/phishing-awareness/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "attack-t1021@20.0#t1021-remote-services/detection/det0269-behavioral-detection-strategy-for-remote-service-logins-and-post-access-activity/an0751-analytic-0751/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1526-analytic-1526/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1279-analytic-1279/1",
+            "attack-t1021@20.0#t1021-remote-services/detection/det0269-behavioral-detection-strategy-for-remote-service-logins-and-post-access-activity/an0752-analytic-0752/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/procedure-examples/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/detection/det0160-detection-strategy-for-multi-factor-authentication-request-generation-t1621/an0449-analytic-0449/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/phishing-awareness/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "attack-t1021@20.0#t1021-remote-services/detection/det0269-behavioral-detection-strategy-for-remote-service-logins-and-post-access-activity/an0751-analytic-0751/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1526-analytic-1526/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1"
+          ],
+          "not_selected20": [
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1279-analytic-1279/1",
+            "attack-t1021@20.0#t1021-remote-services/detection/det0269-behavioral-detection-strategy-for-remote-service-logins-and-post-access-activity/an0752-analytic-0752/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/procedure-examples/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/detection/det0160-detection-strategy-for-multi-factor-authentication-request-generation-t1621/an0449-analytic-0449/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+          "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+          "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/phishing-awareness/1",
+          "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+          "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+          "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+          "attack-t1021@20.0#t1021-remote-services/detection/det0269-behavioral-detection-strategy-for-remote-service-logins-and-post-access-activity/an0751-analytic-0751/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/actions/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1526-analytic-1526/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+          "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+          "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "K08",
+      "ledger": [
+        {
+          "route": "device",
+          "query": "What explains james.carter's laptop change on 4 October 2026?",
+          "candidates": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/replacement-steps/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "gde-new-starter@3.1#new-starter-guide/collecting-your-laptop/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/meeting-details/1",
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "pol-acceptable-use@4.2#acceptable-use-policy/looking-after-equipment/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/completion-responsibilities/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/replacement-steps/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1"
+          ],
+          "not_selected20": [
+            "gde-new-starter@3.1#new-starter-guide/collecting-your-laptop/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/meeting-details/1",
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "pol-acceptable-use@4.2#acceptable-use-policy/looking-after-equipment/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/completion-responsibilities/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "james.carter's sign-ins switched to a different laptop on 4 October. Should we be worried?",
+          "candidates": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1267-analytic-1267/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1",
+            "pol-acceptable-use@4.2#acceptable-use-policy/accounts-and-shared-machines/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1264-analytic-1264/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/2",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "pol-password@3.0#password-policy/changes-after-suspected-exposure/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/phishing-awareness/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1267-analytic-1267/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1"
+          ],
+          "not_selected20": [
+            "pol-acceptable-use@4.2#acceptable-use-policy/accounts-and-shared-machines/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1264-analytic-1264/1",
+            "run-compromised-account-response@1.3#compromised-account-response/response-steps/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "pol-password@3.0#password-policy/changes-after-suspected-exposure/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/phishing-awareness/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 3
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/replacement-steps/1",
+          "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+          "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+          "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+          "run-compromised-account-response@1.3#compromised-account-response/response-steps/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+          "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1267-analytic-1267/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1"
+        ],
+        "ranks": {
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 1
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1"
+        ],
+        "ranks": {
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 1
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 1
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 2
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "N01",
+      "ledger": [
+        {
+          "route": "travel",
+          "query": "What explains maya.patel signing in from Germany on 3 October 2026?",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/purpose/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1526-analytic-1526/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/purpose/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1"
+          ],
+          "not_selected20": [
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1526-analytic-1526/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1"
+          ]
+        },
+        {
+          "route": "reset",
+          "query": "What explains oliver.hayes failing to sign in repeatedly before succeeding on 5 October 2026?",
+          "candidates": [
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1279-analytic-1279/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1522-analytic-1522/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1523-analytic-1523/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1275-analytic-1275/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "pol-password-2024@2.0#password-policy/failed-sign-ins/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1276-analytic-1276/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1278-analytic-1278/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1264-analytic-1264/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1279-analytic-1279/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1522-analytic-1522/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1523-analytic-1523/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1275-analytic-1275/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "pol-password-2024@2.0#password-policy/failed-sign-ins/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1276-analytic-1276/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1278-analytic-1278/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1264-analytic-1264/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "Two alerts need context: maya.patel signed in from Germany on 3 October 2026, and oliver.hayes had repeated failures followed by a success on 5 October 2026. What records help explain each?",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1279-analytic-1279/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1275-analytic-1275/1",
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1276-analytic-1276/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1278-analytic-1278/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1523-analytic-1523/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1279-analytic-1279/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1275-analytic-1275/1",
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1523-analytic-1523/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-002@20.0#t1110-002-password-cracking/detection/det0105-post-credential-dump-password-cracking-detection-via-suspicious-file-access-and-hash-analysis-tools/an0295-analytic-0295/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1276-analytic-1276/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1278-analytic-1278/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 8,
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 1
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1279-analytic-1279/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+          "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1",
+          "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1275-analytic-1275/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1522-analytic-1522/1",
+          "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+          "run-new-country-sign-in@1.0#new-country-sign-in-triage/purpose/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1523-analytic-1523/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3,
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 2
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3,
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 2
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3,
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 2
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 2,
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 3
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 3,
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 1
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 5,
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 1
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 4,
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 3
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 4,
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1": 2
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "N02",
+      "ledger": [
+        {
+          "route": "device",
+          "query": "Was james.carter given a replacement laptop on 4 October 2026?",
+          "candidates": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/replacement-steps/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+            "gde-new-starter@3.1#new-starter-guide/collecting-your-laptop/1",
+            "pol-acceptable-use@4.2#acceptable-use-policy/looking-after-equipment/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/replacement-steps/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+            "gde-new-starter@3.1#new-starter-guide/collecting-your-laptop/1",
+            "pol-acceptable-use@4.2#acceptable-use-policy/looking-after-equipment/1"
+          ],
+          "not_selected20": [
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "pol-access-control@2.1#access-control-policy/leavers/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/resolution-and-closure/1"
+          ]
+        },
+        {
+          "route": "password",
+          "query": "What is the current password policy minimum length?",
+          "candidates": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "pol-password@3.0#password-policy/responsibilities/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/2"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "pol-password@3.0#password-policy/responsibilities/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/2"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "james.carter changed laptops on 4 October 2026. Was there a documented handover, and what minimum password length does the current policy require?",
+          "candidates": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+            "pol-password-2024@2.0#password-policy/safe-handling-and-support/1",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/one-password-for-one-use/1",
+            "attack-t1021@20.0#t1021-remote-services/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1027-password-policies/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "pol-acceptable-use@4.2#acceptable-use-policy/looking-after-equipment/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+            "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+            "pol-password-2024@2.0#password-policy/safe-handling-and-support/1",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-acceptable-use@4.2#acceptable-use-policy/looking-after-equipment/1"
+          ],
+          "not_selected20": [
+            "pol-password@3.0#password-policy/one-password-for-one-use/1",
+            "attack-t1021@20.0#t1021-remote-services/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1027-password-policies/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 2,
+          "pol-password@3.0#password-policy/choosing-a-password/1": 17
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+          "pol-password-2024@2.0#password-policy/password-composition/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+          "pol-password@3.0#password-policy/choosing-a-password/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/shared-machines-and-completion/1",
+          "pol-password@3.0#password-policy/purpose/1",
+          "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/replacement-steps/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/purpose-and-preparation/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+          "run-device-onboarding@2.0#device-onboarding-and-replacement/issue-steps/1",
+          "gde-new-starter@3.1#new-starter-guide/collecting-your-laptop/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+          "pol-password-2024@2.0#password-policy/safe-handling-and-support/1",
+          "pol-acceptable-use@4.2#acceptable-use-policy/looking-after-equipment/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1"
+        ],
+        "ranks": {
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 4,
+          "pol-password@3.0#password-policy/choosing-a-password/1": 5
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+          "pol-password-2024@2.0#password-policy/password-composition/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+          "pol-password@3.0#password-policy/choosing-a-password/1"
+        ],
+        "ranks": {
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 4,
+          "pol-password@3.0#password-policy/choosing-a-password/1": 5
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 4,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 5
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 4,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 6
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 5,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 4
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 3,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 4
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 2,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 6
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 3,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 5
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "N03",
+      "ledger": [
+        {
+          "route": "travel",
+          "query": "What explains maya.patel signing in from Germany on 3 October 2026?",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/purpose/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1526-analytic-1526/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1"
+          ],
+          "not_selected20": [
+            "attack-t1078@20.0#t1078-valid-accounts/detection/det0560-detection-of-valid-account-abuse-across-platforms/an1546-analytic-1546/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/purpose/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1521-analytic-1521/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1526-analytic-1526/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1266-analytic-1266/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/ticket-details/1"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "Check the records explaining maya.patel signing in from Germany on 3 October 2026 and james.carter switching laptops on 4 October 2026.",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1"
+          ],
+          "not_selected20": [
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "reg-shared-devices@1.3#shared-device-register/review-arrangements/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 2,
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 14
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/signatures/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/recipient-and-reason/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+          "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/meeting-room-pc-and-the-office-move/1",
+          "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/uk-office-network-moves/1",
+          "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 2,
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 10
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/checks-and-acknowledgement/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 2,
+          "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": null
+        },
+        "all_required": false
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 2,
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 10
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 1,
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1": 11
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "N04",
+      "ledger": [
+        {
+          "route": "mfa",
+          "query": "Does hannah.porter have an approved MFA exception?",
+          "candidates": [
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/procedure-examples/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/detection/det0160-detection-strategy-for-multi-factor-authentication-request-generation-t1621/an0453-analytic-0453/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1"
+          ],
+          "not_selected20": [
+            "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/procedure-examples/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/detection/det0160-detection-strategy-for-multi-factor-authentication-request-generation-t1621/an0453-analytic-0453/1",
+            "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1"
+          ]
+        },
+        {
+          "route": "password",
+          "query": "What is the current password policy minimum length?",
+          "candidates": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "pol-password@3.0#password-policy/responsibilities/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/2"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "pol-password@3.0#password-policy/purpose/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "pol-password@3.0#password-policy/responsibilities/1"
+          ],
+          "not_selected20": [
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1027-password-policies/1",
+            "pol-password-2024@2.0#password-policy/scheduled-changes/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1027-password-policies/1",
+            "attack-t1110@20.0#t1110-brute-force/mitigations/m1027-password-policies/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-valid-accounts/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1021-remote-services/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/2"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "Who approved hannah.porter's MFA exemption, and what is the current minimum password length?",
+          "candidates": [
+            "pol-password@3.0#password-policy/responsibilities/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "pol-password@3.0#password-policy/responsibilities/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+            "pol-password-2024@2.0#password-policy/password-composition/1",
+            "pol-password@3.0#password-policy/choosing-a-password/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+            "attack-m1027@20.0#m1027-password-policies/description/1"
+          ],
+          "not_selected20": [
+            "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1078-002-domain-accounts/1",
+            "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+            "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 6,
+          "pol-password@3.0#password-policy/choosing-a-password/1": 2
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+          "pol-password-2024@2.0#password-policy/password-composition/1",
+          "pol-password@3.0#password-policy/responsibilities/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "pol-password@3.0#password-policy/choosing-a-password/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-004-credential-stuffing/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+          "pol-password@3.0#password-policy/purpose/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-002-password-cracking/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-brute-force/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-001-password-guessing/1",
+          "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1027-password-policies/1",
+          "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+          "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1",
+          "attack-m1027@20.0#m1027-password-policies/description/1"
+        ],
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 4,
+          "pol-password@3.0#password-policy/choosing-a-password/1": 5
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+          "pol-password-2024@2.0#password-policy/password-composition/1",
+          "pol-password@3.0#password-policy/responsibilities/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "pol-password@3.0#password-policy/choosing-a-password/1"
+        ],
+        "ranks": {
+          "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 4,
+          "pol-password@3.0#password-policy/choosing-a-password/1": 5
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 4,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 5
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 4,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 6
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 5,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 4
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 6,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 4
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 5,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 6
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 6,
+            "pol-password@3.0#password-policy/choosing-a-password/1": 5
+          },
+          "all_required": true
+        }
+      ]
+    },
+    {
+      "id": "N05",
+      "ledger": [
+        {
+          "route": "travel",
+          "query": "What dates are covered by maya.patel's Germany travel approval?",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/actions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/meeting-details/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/other-business-and-actions/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/recording-an-expected-journey/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/meeting-details/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/actions/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/meeting-details/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/recording-an-expected-journey/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1"
+          ],
+          "not_selected20": [
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/other-business-and-actions/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/meeting-details/1"
+          ]
+        },
+        {
+          "route": "broad_discovery",
+          "query": "Does maya.patel's Germany travel approval cover a sign-in on 3 May 2026?",
+          "candidates": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/recording-an-expected-journey/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1"
+          ],
+          "assessment": "unreviewed",
+          "supporting_passages": [],
+          "selected20": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+            "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+            "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+            "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+            "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+            "run-new-country-sign-in@1.0#new-country-sign-in-triage/recording-an-expected-journey/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+            "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+            "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1"
+          ],
+          "not_selected20": [
+            "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+            "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/self-service-password-reset/1",
+            "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1"
+          ]
+        }
+      ],
+      "previous_rrf20": {
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 1
+        },
+        "all_required": true
+      },
+      "fair20": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "run-new-country-sign-in@1.0#new-country-sign-in-triage/triage-steps/1",
+          "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/actions-and-close/1",
+          "pol-remote-access@1.4#remote-access-and-vpn-policy/working-abroad/1",
+          "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/administrative-note/1",
+          "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/vpn-gateway-software-update/1",
+          "run-new-country-sign-in@1.0#new-country-sign-in-triage/recording-an-expected-journey/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/longer-helpdesk-hours/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/shared-device-register/1",
+          "mtg-security-2026-09-22@1.0#weekly-security-meeting-22-september-2026/actions/1",
+          "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/meeting-details/1",
+          "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 1
+        },
+        "all_required": true
+      },
+      "fair5_stress_only": {
+        "ids": [
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/instructions-to-the-traveller/1",
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/travel-details/1",
+          "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "mtg-security-2026-09-08@1.0#weekly-security-meeting-8-september-2026/travel-notices-and-actions/1"
+        ],
+        "ranks": {
+          "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 1
+        },
+        "all_required": true
+      },
+      "order_sensitivity20": [
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 1
+          },
+          "all_required": true
+        },
+        {
+          "ranks": {
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1": 1
+          },
+          "all_required": true
+        }
+      ]
+    }
+  ]
+}

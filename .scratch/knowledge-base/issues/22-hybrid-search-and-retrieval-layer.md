@@ -129,3 +129,66 @@ evidence. A saved result can be rescored offline. The original questions and gol
 These are retrieval checks, not agent answers or benign/threat judgements. T22 permits logged
 misses; it does not waive the later initiative gate. B-098/AUD-062 tracks K04's candidate gap;
 B-099 tracks the intended uncalibrated refusals until T39. A re-ranker alone cannot fix K04.
+
+### Follow-up exploration: focused queries (29 October 2026)
+
+Author requested exploration of query decomposition after the T22 walkthrough. Four
+human-written queries were fixed before running the unchanged search with the same dataset,
+20+20 limits, fusion and no filters. No application policy, question or gold was edited.
+
+| Query | MFA register rank in top 20 | Spray runbook rank in top 20 |
+|---|---|---|
+| Original K04 | Absent | 9 |
+| Why did amelia.ward's successful sign-ins not require MFA? | 7 | Absent |
+| Does amelia.ward have an approved MFA exception? | 2 | Absent |
+| How should we investigate MFA when a password spray succeeds? | Absent | 1 |
+
+Evidence: [probe script](../research/22-query-decomposition-probe.py) and
+[saved results](../research/22-query-decomposition-probe.json). Four query embeddings,
+75 tokens, $0.00000150. The neutral query avoids explicitly suggesting the known exception.
+This establishes recoverability with focused queries, not general automatic decomposition
+quality. Combining two top-20 lists is not the existing single fused-top-20 gate; no merged
+budget or policy was tested. Original K04 remains a miss and AUD-062 stays open.
+
+Relevant existing scope: T26 builds clearing/aggravating searches from finding records in
+code, not from chat text. Any production approach must fit that agreed boundary or be proposed
+as a spec change. No new design ruling was made in this experiment.
+
+Author-requested Perplexity research, 29 October 2026:
+[decomposition, coverage and bounded recovery](../research/22-investigation-retrieval-recovery.md).
+Primary sources support evaluating focused searches and limited recovery. The note separates
+known unanswered needs from needs omitted by the planner, proposes testing an independent
+broad route, and preserves T26's finding-derived query boundary. These are proposals for
+review, not an adopted policy or evidence that K04 now passes. AUD-062 remains open.
+
+### Follow-up experiment: fixed final budget (29 October 2026)
+
+Author approved the proposed small experiment with “ok lets go”. See
+[protocol and results](../research/22-retrieval-experiment-results.md) for twelve predeclared
+cases, frozen queries, raw candidates and human recovery decisions. This is isolated research,
+not a T22 implementation change or replacement eval. Only project wrappers and the Python
+standard library were used; no new third-party API behavior was introduced.
+
+Across ten positive-evidence cases, whole questions cover 8/10, focused queries 9/10 and focused
+plus broad 9/10, with different misses. Two absent-topic cases remain unresolved. Equal-weight
+cross-query fusion preserves K04's register at rank 16 with focused queries, but the broad
+route pushes it to 25 before the final twenty-passage cap. One prewritten human-triggered retry
+recovers it at rank 4, retaining the runbook at 3. The broad route rescues the deliberately
+omitted device need in N03. This records both benefit and regression; automatic planning and
+coverage detection remain untested. No queries, gold or merger were tuned after results.
+
+Verification: preflight IDs/fusion checks, two successful live commands, independent offline
+recomputation of all lists/scores/budgets and frozen input hashes. Actual cost: 29 embeddings,
+513 tokens, $0.00001026. No application, corpus, original eval or model setting changed. Original
+K04 remains failed; AUD-062 stays open. The agent-model comparison is separate and remains
+pending; T24/T26 are needed for an end-to-end knowledge-base tool comparison.
+
+29 October 2026 — author prioritized evidence-need tracking and preservation before model
+comparison. [Proposed checklist design and offline replay](../research/22-evidence-checklist-design.md)
+separate retrieved candidates, reviewed support and selected evidence. Fair turns among the
+unchanged saved query lists retain K04's register at rank 19 and runbook at 2 without a new
+search, but fail for two of six route orders and lose the register under a five-passage stress
+cap. No reranker or automatic support reviewer was tested. This does not select a production
+allocation rule. The proposal is to repair selection from retained evidence before retrying
+retrieval, with explicit support review and gaps. Application/spec changes remain unapproved;
+AUD-062 is open. Standard-library-only replay; no provider calls or added cost.

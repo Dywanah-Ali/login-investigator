@@ -204,6 +204,11 @@ T22's live retrieval baseline has a recorded K04 candidate gap (B-098/AUD-062). 
 cannot recover a passage outside both candidate lists; review this before closing the later
 retrieval gate. T22 permits logging first-run misses, so its completion does not waive that gate.
 
+Author, 29 October 2026: park the ensuing custom retrieval-design experiments at T23. Assess
+the planned reranker first; revisit the evidence gap there. The experiments remain research,
+not approved additions to T23. See its Comments for the saved evidence. No build started by
+this deferral.
+
 Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
 It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the new settings rule,
 the `env.example` line, and items found in T19 to T28). It is blocked by 28 and blocks the

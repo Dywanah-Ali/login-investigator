@@ -1,0 +1,311 @@
+{
+  "version": 1,
+  "purpose": "Predeclared exploratory comparison, not a replacement eval or automatic query planner.",
+  "final_limit": 20,
+  "merge": "Equal-weight reciprocal rank fusion of each route top20; k=60; ties by chunk ID; identical query strings count once.",
+  "recovery": "Human-reviewed missing need; at most one prewritten alternative query per case, added to focused+broad. No runtime coverage checker or automatic refusal.",
+  "cases": [
+    {
+      "id": "K01",
+      "category": "existing_control",
+      "question": "What is the minimum password length under our current password policy?",
+      "needs": [
+        {
+          "id": "password",
+          "label": "Current password creation length requirement",
+          "query": "What is the current minimum password length?",
+          "recovery_query": "Current password policy choosing a password minimum characters",
+          "gold": [
+            "pol-password@3.0#password-policy/choosing-a-password/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "password"
+      ],
+      "note": "Document retrieval only. Graph correctness and generated answers are not tested. Original gold unchanged."
+    },
+    {
+      "id": "K02",
+      "category": "existing_control",
+      "question": "Which accounts are allowed to sign in without MFA, and who approved those exceptions?",
+      "needs": [
+        {
+          "id": "mfa",
+          "label": "Named accounts with approval to sign in without MFA",
+          "query": "Which accounts have approved MFA exceptions and who approved them?",
+          "recovery_query": "MFA exception approval register named accounts",
+          "gold": [
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "mfa"
+      ],
+      "note": "Document retrieval only. Graph correctness and generated answers are not tested. Original gold unchanged."
+    },
+    {
+      "id": "K04",
+      "category": "existing_diagnostic",
+      "question": "The password spray from 45.148.10.80 succeeded on amelia.ward. What can that account reach, and why did MFA not stop those sign-ins?",
+      "needs": [
+        {
+          "id": "mfa",
+          "label": "MFA context for the named account",
+          "query": "Why did amelia.ward's successful sign-ins not require MFA?",
+          "recovery_query": "amelia.ward MFA requirements and approved exceptions",
+          "gold": [
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1"
+          ],
+          "answer_available": true
+        },
+        {
+          "id": "procedure",
+          "label": "Procedure for checking MFA after a successful spray",
+          "query": "How should we investigate MFA when a password spray succeeds?",
+          "recovery_query": "Password spray response successful attempts MFA checks",
+          "gold": [
+            "run-password-spray-response@1.1#password-spray-response/response-steps/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "mfa",
+        "procedure"
+      ],
+      "note": "Document retrieval only. Graph correctness and generated answers are not tested. Original gold unchanged."
+    },
+    {
+      "id": "K05",
+      "category": "existing_control",
+      "question": "What does our data retention policy say about how long sign-in records are kept?",
+      "needs": [
+        {
+          "id": "retention",
+          "label": "Company sign-in retention requirement",
+          "query": "How long must company sign-in logs be retained?",
+          "recovery_query": "Sign-in record retention duration policy",
+          "gold": [],
+          "answer_available": false
+        }
+      ],
+      "focused_need_ids": [
+        "retention"
+      ],
+      "note": "Document retrieval only. Graph correctness and generated answers are not tested. Original gold unchanged."
+    },
+    {
+      "id": "K06",
+      "category": "existing_control",
+      "question": "Show me the write-up from the last password spraying incident we handled.",
+      "needs": [
+        {
+          "id": "incident",
+          "label": "Actual previous internal incident write-up",
+          "query": "What did our last password spraying incident write-up record?",
+          "recovery_query": "Previous internal password spraying incident report",
+          "gold": [],
+          "answer_available": false
+        }
+      ],
+      "focused_need_ids": [
+        "incident"
+      ],
+      "note": "Document retrieval only. Graph correctness and generated answers are not tested. Original gold unchanged."
+    },
+    {
+      "id": "K07",
+      "category": "existing_control",
+      "question": "maya.patel signed in from Germany between 2 and 4 October. Is that a threat?",
+      "needs": [
+        {
+          "id": "travel",
+          "label": "Travel approval covering person, country and dates",
+          "query": "Is there an approved travel notice for maya.patel in Germany on 2 to 4 October 2026?",
+          "recovery_query": "Maya Patel Germany travel approval October 2026",
+          "gold": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "travel"
+      ],
+      "note": "Document retrieval only. Graph correctness and generated answers are not tested. Original gold unchanged."
+    },
+    {
+      "id": "K08",
+      "category": "existing_control",
+      "question": "james.carter's sign-ins switched to a different laptop on 4 October. Should we be worried?",
+      "needs": [
+        {
+          "id": "device",
+          "label": "Device handover explaining the change",
+          "query": "What explains james.carter's laptop change on 4 October 2026?",
+          "recovery_query": "James Carter replacement laptop handover October 2026",
+          "gold": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "device"
+      ],
+      "note": "Document retrieval only. Graph correctness and generated answers are not tested. Original gold unchanged."
+    },
+    {
+      "id": "N01",
+      "category": "new_compound",
+      "question": "Two alerts need context: maya.patel signed in from Germany on 3 October 2026, and oliver.hayes had repeated failures followed by a success on 5 October 2026. What records help explain each?",
+      "needs": [
+        {
+          "id": "travel",
+          "label": "Approved travel covering Maya on 3 October",
+          "query": "What explains maya.patel signing in from Germany on 3 October 2026?",
+          "recovery_query": "Maya Patel approved Germany travel October 2026",
+          "gold": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1"
+          ],
+          "answer_available": true
+        },
+        {
+          "id": "reset",
+          "label": "Helpdesk timeline explaining Oliver failures then success",
+          "query": "What explains oliver.hayes failing to sign in repeatedly before succeeding on 5 October 2026?",
+          "recovery_query": "Oliver Hayes password reset helpdesk timeline October 2026",
+          "gold": [
+            "rec-helpdesk-reset@1.0#helpdesk-ticket-sd-48213-password-reset/timeline/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "travel",
+        "reset"
+      ],
+      "note": "Fresh combination, but corpus and component evidence are known. Not an independent held-out dataset."
+    },
+    {
+      "id": "N02",
+      "category": "new_compound",
+      "question": "james.carter changed laptops on 4 October 2026. Was there a documented handover, and what minimum password length does the current policy require?",
+      "needs": [
+        {
+          "id": "device",
+          "label": "Documented device handover",
+          "query": "Was james.carter given a replacement laptop on 4 October 2026?",
+          "recovery_query": "James Carter laptop handover details",
+          "gold": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1"
+          ],
+          "answer_available": true
+        },
+        {
+          "id": "password",
+          "label": "Current minimum password length",
+          "query": "What is the current password policy minimum length?",
+          "recovery_query": "Password policy current version choosing a password characters",
+          "gold": [
+            "pol-password@3.0#password-policy/choosing-a-password/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "device",
+        "password"
+      ],
+      "note": "Fresh combination of known evidence; current policy must beat superseded policy."
+    },
+    {
+      "id": "N03",
+      "category": "deliberately_omitted_need",
+      "question": "Check the records explaining maya.patel signing in from Germany on 3 October 2026 and james.carter switching laptops on 4 October 2026.",
+      "needs": [
+        {
+          "id": "travel",
+          "label": "Travel context for Maya",
+          "query": "What explains maya.patel signing in from Germany on 3 October 2026?",
+          "recovery_query": "Maya Patel approved Germany travel October 2026",
+          "gold": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1"
+          ],
+          "answer_available": true
+        },
+        {
+          "id": "device",
+          "label": "Device context for James",
+          "query": "What explains james.carter's laptop change on 4 October 2026?",
+          "recovery_query": "James Carter laptop handover details",
+          "gold": [
+            "rec-laptop-handover@1.0#laptop-handover-record-james-carter/handover-details/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "travel"
+      ],
+      "note": "Intentionally omit the device need from focused searches. Gold still requires both needs. Tests whether the original question route rescues this omission."
+    },
+    {
+      "id": "N04",
+      "category": "false_premise",
+      "question": "Who approved hannah.porter's MFA exemption, and what is the current minimum password length?",
+      "needs": [
+        {
+          "id": "mfa",
+          "label": "Check whether the alleged named exception actually exists",
+          "query": "Does hannah.porter have an approved MFA exception?",
+          "recovery_query": "MFA exception register complete active accounts",
+          "gold": [
+            "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1"
+          ],
+          "answer_available": true
+        },
+        {
+          "id": "password",
+          "label": "Current minimum password length",
+          "query": "What is the current password policy minimum length?",
+          "recovery_query": "Password policy current version choosing a password characters",
+          "gold": [
+            "pol-password@3.0#password-policy/choosing-a-password/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "mfa",
+        "password"
+      ],
+      "note": "The complete active register lists only Daniel and Amelia. Gold is evidence to challenge the premise, not evidence of a Hannah exemption. No generated-answer safety claim."
+    },
+    {
+      "id": "N05",
+      "category": "wrong_period",
+      "question": "Does maya.patel's Germany travel approval cover a sign-in on 3 May 2026?",
+      "needs": [
+        {
+          "id": "travel",
+          "label": "Check dates and reject extension of October approval to May",
+          "query": "What dates are covered by maya.patel's Germany travel approval?",
+          "recovery_query": "Maya Patel Germany travel approval dates",
+          "gold": [
+            "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1"
+          ],
+          "answer_available": true
+        }
+      ],
+      "focused_need_ids": [
+        "travel"
+      ],
+      "note": "The notice covers 2\u20134 October, not May. Finding it is evidence to reject applicability, not a clearance for May. No historical absence claim."
+    }
+  ]
+}

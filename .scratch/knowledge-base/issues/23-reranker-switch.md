@@ -38,3 +38,13 @@ behaves as ticket 22 left it.
       findings triaged.
 
 ## Comments
+
+- 2026-10-29 — Author: park the T22 retrieval-design discussion here. Pause further custom
+  decomposition, selection, evidence-checklist and recovery experiments. Build and assess the
+  already-planned reranker first, then revisit the recorded gaps without assuming those
+  experimental additions are needed or approved. This is a follow-up reminder, not an expansion
+  of T23's implementation scope or authorization to start it now.
+  Evidence: [retrieval experiment](../research/22-retrieval-experiment-results.md) and
+  [selection replay/design proposal](../research/22-evidence-checklist-design.md).
+  B-098/AUD-062 remains open: reranking cannot recover K04's MFA passage when it is absent from
+  the candidate list. Preserve that failure and the original gold when evaluating T23.

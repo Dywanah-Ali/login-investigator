@@ -935,6 +935,41 @@ that gate, preserving the existing questions and gold. Closure requires both K04
 in the fused top 20 and regression evidence on the other questions. T23 re-ranking alone cannot
 restore missing candidates.
 
+Follow-up diagnostic, 29 October 2026: an MFA-focused neutral query retrieves the register at
+rank 7, an explicit exception query at rank 2, and a procedure-focused query retrieves the
+runbook at rank 1. See T22's follow-up and its saved probe. Human-written queries after inspecting
+the failure establish recoverability, not automatic decomposition or merged-budget performance.
+The original K04 gate remains failed; no policy change or closure is claimed. T26 already
+requires investigation searches constructed from finding records in code.
+
+Research follow-up, 29 October 2026: the author requested Perplexity research into decomposition
+and fallback. See [the primary-source research note](../../.scratch/knowledge-base/research/22-investigation-retrieval-recovery.md)
+for bounded recovery, omitted-needs risks, an independent broad-route experiment and fixed-budget
+evaluation proposals. No retrieval policy or spec change is approved by this research. The
+original K04 gate and this entry remain open.
+
+Fixed-budget experiment, 29 October 2026: [saved protocol and results](../../.scratch/knowledge-base/research/22-retrieval-experiment-results.md).
+Focused searches retain both K04 passages within twenty, but adding a broad route with equal
+cross-query RRF drops the MFA register to rank 25. One prewritten, human-triggered retry restores
+it at rank 4. The broad route also rescues a deliberately omitted need in another case. This
+exposes an additional selection risk: merging can lose evidence already retrieved. Future
+design should test preserving evidence across needs; no allocation policy is approved. The
+human-selected recovery is not an automatic coverage check. Two absent topics remain unresolved,
+and the original K04 closure gate is unchanged. B-098 retains this diagnostic iteration.
+
+Evidence-preservation follow-up, 29 October 2026: the author prioritized this before model
+comparison. [Design and offline replay](../../.scratch/knowledge-base/research/22-evidence-checklist-design.md)
+distinguish candidate retrieval, semantic support review and final selection. Fair route turns
+recover K04 from saved candidates without another query, but two of six route orders fail and
+a five-passage stress cap loses the MFA passage. This is not a T23 reranker test. Equal allocation
+is not adopted; need-aware support preservation and selection repair require further design.
+No application/spec changes or closure. The actual support reviewer remains undecided.
+
+Author's deferral, 29 October 2026: park further custom retrieval-design work at T23. Evaluate
+the planned reranker before resuming decomposition, evidence-checklist, selection or recovery
+experiments. T23's Comments carry the reminder and evidence links; its implementation scope
+is unchanged. AUD-062 remains open, and no candidate-gap fix or original-gold waiver is implied.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and

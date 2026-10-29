@@ -1,0 +1,788 @@
+{
+  "started_at": "2026-10-29T10:57:20.646473+00:00",
+  "purpose": "Human-written query diagnostic on an already-inspected failure; not a held-out evaluation or an automatic decomposition policy.",
+  "source_fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa",
+  "gold": [
+    "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+    "run-password-spray-response@1.1#password-spray-response/response-steps/1"
+  ],
+  "runs": [
+    {
+      "label": "original",
+      "query": "The password spray from 45.148.10.80 succeeded on amelia.ward. What can that account reach, and why did MFA not stop those sign-ins?",
+      "gold_ranks": {
+        "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": null,
+        "run-password-spray-response@1.1#password-spray-response/response-steps/1": 9
+      },
+      "keyword_candidates": 0,
+      "candidates": [
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+          "dense_rank": 1,
+          "keyword_rank": null,
+          "cosine_distance": 0.3426003517215802,
+          "keyword_score": null,
+          "fused_score": 0.01639344262295082
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+          "dense_rank": 2,
+          "keyword_rank": null,
+          "cosine_distance": 0.37270479694920366,
+          "keyword_score": null,
+          "fused_score": 0.016129032258064516
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+          "dense_rank": 3,
+          "keyword_rank": null,
+          "cosine_distance": 0.37469970143562603,
+          "keyword_score": null,
+          "fused_score": 0.015873015873015872
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+          "dense_rank": 4,
+          "keyword_rank": null,
+          "cosine_distance": 0.3787374598495733,
+          "keyword_score": null,
+          "fused_score": 0.015625
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+          "dense_rank": 5,
+          "keyword_rank": null,
+          "cosine_distance": 0.37927885807108797,
+          "keyword_score": null,
+          "fused_score": 0.015384615384615385
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+          "dense_rank": 6,
+          "keyword_rank": null,
+          "cosine_distance": 0.3800265719250481,
+          "keyword_score": null,
+          "fused_score": 0.015151515151515152
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+          "dense_rank": 7,
+          "keyword_rank": null,
+          "cosine_distance": 0.38255396156288524,
+          "keyword_score": null,
+          "fused_score": 0.014925373134328358
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+          "dense_rank": 8,
+          "keyword_rank": null,
+          "cosine_distance": 0.38344819962193133,
+          "keyword_score": null,
+          "fused_score": 0.014705882352941176
+        },
+        {
+          "id": "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+          "dense_rank": 9,
+          "keyword_rank": null,
+          "cosine_distance": 0.385734067354635,
+          "keyword_score": null,
+          "fused_score": 0.014492753623188406
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+          "dense_rank": 10,
+          "keyword_rank": null,
+          "cosine_distance": 0.38853351864924257,
+          "keyword_score": null,
+          "fused_score": 0.014285714285714285
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+          "dense_rank": 11,
+          "keyword_rank": null,
+          "cosine_distance": 0.3893645179062829,
+          "keyword_score": null,
+          "fused_score": 0.014084507042253521
+        },
+        {
+          "id": "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+          "dense_rank": 12,
+          "keyword_rank": null,
+          "cosine_distance": 0.40035366116297555,
+          "keyword_score": null,
+          "fused_score": 0.013888888888888888
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+          "dense_rank": 13,
+          "keyword_rank": null,
+          "cosine_distance": 0.4008764561285326,
+          "keyword_score": null,
+          "fused_score": 0.0136986301369863
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 14,
+          "keyword_rank": null,
+          "cosine_distance": 0.4020126055563572,
+          "keyword_score": null,
+          "fused_score": 0.013513513513513514
+        },
+        {
+          "id": "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1110-003-password-spraying/1",
+          "dense_rank": 15,
+          "keyword_rank": null,
+          "cosine_distance": 0.43360803737357123,
+          "keyword_score": null,
+          "fused_score": 0.013333333333333334
+        },
+        {
+          "id": "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+          "dense_rank": 16,
+          "keyword_rank": null,
+          "cosine_distance": 0.43498413361427446,
+          "keyword_score": null,
+          "fused_score": 0.013157894736842105
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+          "dense_rank": 17,
+          "keyword_rank": null,
+          "cosine_distance": 0.43859184669122153,
+          "keyword_score": null,
+          "fused_score": 0.012987012987012988
+        },
+        {
+          "id": "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+          "dense_rank": 18,
+          "keyword_rank": null,
+          "cosine_distance": 0.4421275719299691,
+          "keyword_score": null,
+          "fused_score": 0.01282051282051282
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+          "dense_rank": 19,
+          "keyword_rank": null,
+          "cosine_distance": 0.44259224806030273,
+          "keyword_score": null,
+          "fused_score": 0.012658227848101266
+        },
+        {
+          "id": "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1",
+          "dense_rank": 20,
+          "keyword_rank": null,
+          "cosine_distance": 0.4530482302361978,
+          "keyword_score": null,
+          "fused_score": 0.0125
+        }
+      ],
+      "top20": [
+        "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+        "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+        "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1340-analytic-1340/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+        "attack-m1036@20.0#m1036-account-use-policies/techniques-mitigated/t1110-003-password-spraying/1",
+        "attack-t1110-001@20.0#t1110-001-password-guessing/detection/det0551-password-guessing-via-multi-source-authentication-failure-correlation/an1524-analytic-1524/1",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+        "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+        "attack-t1110-004@20.0#t1110-004-credential-stuffing/detection/det0460-credential-stuffing-detection-via-reused-breached-credentials-across-services/an1263-analytic-1263/1"
+      ]
+    },
+    {
+      "label": "focused_neutral",
+      "query": "Why did amelia.ward's successful sign-ins not require MFA?",
+      "gold_ranks": {
+        "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 7,
+        "run-password-spray-response@1.1#password-spray-response/response-steps/1": null
+      },
+      "keyword_candidates": 0,
+      "candidates": [
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+          "dense_rank": 1,
+          "keyword_rank": null,
+          "cosine_distance": 0.465831969249781,
+          "keyword_score": null,
+          "fused_score": 0.01639344262295082
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+          "dense_rank": 2,
+          "keyword_rank": null,
+          "cosine_distance": 0.4770606181865019,
+          "keyword_score": null,
+          "fused_score": 0.016129032258064516
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+          "dense_rank": 3,
+          "keyword_rank": null,
+          "cosine_distance": 0.4783595533338687,
+          "keyword_score": null,
+          "fused_score": 0.015873015873015872
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+          "dense_rank": 4,
+          "keyword_rank": null,
+          "cosine_distance": 0.47995640900710734,
+          "keyword_score": null,
+          "fused_score": 0.015625
+        },
+        {
+          "id": "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+          "dense_rank": 5,
+          "keyword_rank": null,
+          "cosine_distance": 0.4801019764303599,
+          "keyword_score": null,
+          "fused_score": 0.015384615384615385
+        },
+        {
+          "id": "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 6,
+          "keyword_rank": null,
+          "cosine_distance": 0.48281970721305234,
+          "keyword_score": null,
+          "fused_score": 0.015151515151515152
+        },
+        {
+          "id": "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "dense_rank": 7,
+          "keyword_rank": null,
+          "cosine_distance": 0.48493694758221495,
+          "keyword_score": null,
+          "fused_score": 0.014925373134328358
+        },
+        {
+          "id": "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+          "dense_rank": 8,
+          "keyword_rank": null,
+          "cosine_distance": 0.486242698960239,
+          "keyword_score": null,
+          "fused_score": 0.014705882352941176
+        },
+        {
+          "id": "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 9,
+          "keyword_rank": null,
+          "cosine_distance": 0.4872811052489273,
+          "keyword_score": null,
+          "fused_score": 0.014492753623188406
+        },
+        {
+          "id": "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 10,
+          "keyword_rank": null,
+          "cosine_distance": 0.48737738772418826,
+          "keyword_score": null,
+          "fused_score": 0.014285714285714285
+        },
+        {
+          "id": "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+          "dense_rank": 11,
+          "keyword_rank": null,
+          "cosine_distance": 0.4874887095545397,
+          "keyword_score": null,
+          "fused_score": 0.014084507042253521
+        },
+        {
+          "id": "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 12,
+          "keyword_rank": null,
+          "cosine_distance": 0.4919740015605103,
+          "keyword_score": null,
+          "fused_score": 0.013888888888888888
+        },
+        {
+          "id": "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1032-multi-factor-authentication/1",
+          "dense_rank": 13,
+          "keyword_rank": null,
+          "cosine_distance": 0.49320155517447695,
+          "keyword_score": null,
+          "fused_score": 0.0136986301369863
+        },
+        {
+          "id": "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 14,
+          "keyword_rank": null,
+          "cosine_distance": 0.4940708070054739,
+          "keyword_score": null,
+          "fused_score": 0.013513513513513514
+        },
+        {
+          "id": "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/1",
+          "dense_rank": 15,
+          "keyword_rank": null,
+          "cosine_distance": 0.4949374872909039,
+          "keyword_score": null,
+          "fused_score": 0.013333333333333334
+        },
+        {
+          "id": "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/1",
+          "dense_rank": 16,
+          "keyword_rank": null,
+          "cosine_distance": 0.4951679048449028,
+          "keyword_score": null,
+          "fused_score": 0.013157894736842105
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-brute-force/1",
+          "dense_rank": 17,
+          "keyword_rank": null,
+          "cosine_distance": 0.4955760289900484,
+          "keyword_score": null,
+          "fused_score": 0.012987012987012988
+        },
+        {
+          "id": "attack-t1110@20.0#t1110-brute-force/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 18,
+          "keyword_rank": null,
+          "cosine_distance": 0.5002019603866904,
+          "keyword_score": null,
+          "fused_score": 0.01282051282051282
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/description/2",
+          "dense_rank": 19,
+          "keyword_rank": null,
+          "cosine_distance": 0.5026292189183953,
+          "keyword_score": null,
+          "fused_score": 0.012658227848101266
+        },
+        {
+          "id": "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/1",
+          "dense_rank": 20,
+          "keyword_rank": null,
+          "cosine_distance": 0.5041926553418856,
+          "keyword_score": null,
+          "fused_score": 0.0125
+        }
+      ],
+      "top20": [
+        "attack-m1032@20.0#m1032-multi-factor-authentication/description/1",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1621-multi-factor-authentication-request-generation/1",
+        "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+        "attack-t1078@20.0#t1078-valid-accounts/mitigations/m1032-multi-factor-authentication/2",
+        "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+        "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+        "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+        "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/2",
+        "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+        "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+        "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/mitigations/m1032-multi-factor-authentication/1",
+        "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+        "attack-t1078-002@20.0#t1078-002-domain-accounts/mitigations/m1032-multi-factor-authentication/1",
+        "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/1",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-brute-force/1",
+        "attack-t1110@20.0#t1110-brute-force/mitigations/m1032-multi-factor-authentication/2",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/description/2",
+        "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/1"
+      ]
+    },
+    {
+      "label": "focused_exception",
+      "query": "Does amelia.ward have an approved MFA exception?",
+      "gold_ranks": {
+        "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": 2,
+        "run-password-spray-response@1.1#password-spray-response/response-steps/1": null
+      },
+      "keyword_candidates": 3,
+      "candidates": [
+        {
+          "id": "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+          "dense_rank": 1,
+          "keyword_rank": 2,
+          "cosine_distance": 0.4808730293943785,
+          "keyword_score": 0.0027777778,
+          "fused_score": 0.03252247488101534
+        },
+        {
+          "id": "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+          "dense_rank": 2,
+          "keyword_rank": 3,
+          "cosine_distance": 0.48720067775100895,
+          "keyword_score": 0.0014925373,
+          "fused_score": 0.03200204813108039
+        },
+        {
+          "id": "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+          "dense_rank": 6,
+          "keyword_rank": 1,
+          "cosine_distance": 0.5681018538594972,
+          "keyword_score": 0.005737516,
+          "fused_score": 0.031544957774465976
+        },
+        {
+          "id": "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+          "dense_rank": 3,
+          "keyword_rank": null,
+          "cosine_distance": 0.50180126013146,
+          "keyword_score": null,
+          "fused_score": 0.015873015873015872
+        },
+        {
+          "id": "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+          "dense_rank": 4,
+          "keyword_rank": null,
+          "cosine_distance": 0.5260911330476074,
+          "keyword_score": null,
+          "fused_score": 0.015625
+        },
+        {
+          "id": "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+          "dense_rank": 5,
+          "keyword_rank": null,
+          "cosine_distance": 0.5536950474021582,
+          "keyword_score": null,
+          "fused_score": 0.015384615384615385
+        },
+        {
+          "id": "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+          "dense_rank": 7,
+          "keyword_rank": null,
+          "cosine_distance": 0.6165166440973,
+          "keyword_score": null,
+          "fused_score": 0.014925373134328358
+        },
+        {
+          "id": "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+          "dense_rank": 8,
+          "keyword_rank": null,
+          "cosine_distance": 0.6330105595324238,
+          "keyword_score": null,
+          "fused_score": 0.014705882352941176
+        },
+        {
+          "id": "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+          "dense_rank": 9,
+          "keyword_rank": null,
+          "cosine_distance": 0.6446936085119814,
+          "keyword_score": null,
+          "fused_score": 0.014492753623188406
+        },
+        {
+          "id": "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1",
+          "dense_rank": 10,
+          "keyword_rank": null,
+          "cosine_distance": 0.649310376586073,
+          "keyword_score": null,
+          "fused_score": 0.014285714285714285
+        },
+        {
+          "id": "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1",
+          "dense_rank": 11,
+          "keyword_rank": null,
+          "cosine_distance": 0.672154454760945,
+          "keyword_score": null,
+          "fused_score": 0.014084507042253521
+        },
+        {
+          "id": "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+          "dense_rank": 12,
+          "keyword_rank": null,
+          "cosine_distance": 0.6728754410553668,
+          "keyword_score": null,
+          "fused_score": 0.013888888888888888
+        },
+        {
+          "id": "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+          "dense_rank": 13,
+          "keyword_rank": null,
+          "cosine_distance": 0.6841235706246757,
+          "keyword_score": null,
+          "fused_score": 0.0136986301369863
+        },
+        {
+          "id": "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+          "dense_rank": 14,
+          "keyword_rank": null,
+          "cosine_distance": 0.6865056380469954,
+          "keyword_score": null,
+          "fused_score": 0.013513513513513514
+        },
+        {
+          "id": "pol-access-control@2.1#access-control-policy/baseline-and-privileged-access/1",
+          "dense_rank": 15,
+          "keyword_rank": null,
+          "cosine_distance": 0.6994921536354075,
+          "keyword_score": null,
+          "fused_score": 0.013333333333333334
+        },
+        {
+          "id": "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/procedure-examples/1",
+          "dense_rank": 16,
+          "keyword_rank": null,
+          "cosine_distance": 0.702176151790228,
+          "keyword_score": null,
+          "fused_score": 0.013157894736842105
+        },
+        {
+          "id": "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 17,
+          "keyword_rank": null,
+          "cosine_distance": 0.7028641482511762,
+          "keyword_score": null,
+          "fused_score": 0.012987012987012988
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+          "dense_rank": 18,
+          "keyword_rank": null,
+          "cosine_distance": 0.7052926060669429,
+          "keyword_score": null,
+          "fused_score": 0.01282051282051282
+        },
+        {
+          "id": "pol-access-control@2.1#access-control-policy/quarterly-review-and-exceptions/1",
+          "dense_rank": 19,
+          "keyword_rank": null,
+          "cosine_distance": 0.7096078458129843,
+          "keyword_score": null,
+          "fused_score": 0.012658227848101266
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1",
+          "dense_rank": 20,
+          "keyword_rank": null,
+          "cosine_distance": 0.71224017177262,
+          "keyword_score": null,
+          "fused_score": 0.0125
+        }
+      ],
+      "top20": [
+        "mtg-security-2026-09-15@1.0#weekly-security-meeting-15-september-2026/mfa-exceptions/1",
+        "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1",
+        "mtg-security-2026-09-29@1.0#weekly-security-meeting-29-september-2026/exception-review-tomorrow/1",
+        "reg-mfa-exceptions@1.6#mfa-exception-register/quarterly-review-note/1",
+        "pol-mfa@1.0#multi-factor-authentication-policy/exceptions/1",
+        "reg-mfa-exceptions@1.6#mfa-exception-register/use-of-the-register/1",
+        "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/help-with-enrolment/1",
+        "pol-mfa@1.0#multi-factor-authentication-policy/ownership-and-checks/1",
+        "pol-mfa@1.0#multi-factor-authentication-policy/everyday-use/1",
+        "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/message/1",
+        "eml-mfa-rollout@1.0#mfa-becomes-mandatory-on-2-march/please-set-up-your-authenticator-app/1",
+        "pol-mfa@1.0#multi-factor-authentication-policy/requirement-and-effective-date/1",
+        "rec-approved-travel@1.0#travel-notice-maya-patel-germany/approval-and-acknowledgement/1",
+        "mtg-change-board-2026-09-24@1.0#it-change-board-24-september-2026/identity-provider-signing-certificate/1",
+        "pol-access-control@2.1#access-control-policy/baseline-and-privileged-access/1",
+        "attack-t1621@20.0#t1621-multi-factor-authentication-request-generation/procedure-examples/1",
+        "attack-t1110-004@20.0#t1110-004-credential-stuffing/mitigations/m1032-multi-factor-authentication/2",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-002-domain-accounts/1",
+        "pol-access-control@2.1#access-control-policy/quarterly-review-and-exceptions/1",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1078-valid-accounts/1"
+      ]
+    },
+    {
+      "label": "focused_procedure",
+      "query": "How should we investigate MFA when a password spray succeeds?",
+      "gold_ranks": {
+        "reg-mfa-exceptions@1.6#mfa-exception-register/active-exceptions/1": null,
+        "run-password-spray-response@1.1#password-spray-response/response-steps/1": 1
+      },
+      "keyword_candidates": 0,
+      "candidates": [
+        {
+          "id": "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+          "dense_rank": 1,
+          "keyword_rank": null,
+          "cosine_distance": 0.29867232465709614,
+          "keyword_score": null,
+          "fused_score": 0.01639344262295082
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 2,
+          "keyword_rank": null,
+          "cosine_distance": 0.30009874738769726,
+          "keyword_score": null,
+          "fused_score": 0.016129032258064516
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+          "dense_rank": 3,
+          "keyword_rank": null,
+          "cosine_distance": 0.3480452948792181,
+          "keyword_score": null,
+          "fused_score": 0.015873015873015872
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+          "dense_rank": 4,
+          "keyword_rank": null,
+          "cosine_distance": 0.3557430671235873,
+          "keyword_score": null,
+          "fused_score": 0.015625
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+          "dense_rank": 5,
+          "keyword_rank": null,
+          "cosine_distance": 0.35932562813803126,
+          "keyword_score": null,
+          "fused_score": 0.015384615384615385
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+          "dense_rank": 6,
+          "keyword_rank": null,
+          "cosine_distance": 0.3617451786021767,
+          "keyword_score": null,
+          "fused_score": 0.015151515151515152
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+          "dense_rank": 7,
+          "keyword_rank": null,
+          "cosine_distance": 0.36379690769936557,
+          "keyword_score": null,
+          "fused_score": 0.014925373134328358
+        },
+        {
+          "id": "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+          "dense_rank": 8,
+          "keyword_rank": null,
+          "cosine_distance": 0.36984423218089935,
+          "keyword_score": null,
+          "fused_score": 0.014705882352941176
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+          "dense_rank": 9,
+          "keyword_rank": null,
+          "cosine_distance": 0.37052674499674465,
+          "keyword_score": null,
+          "fused_score": 0.014492753623188406
+        },
+        {
+          "id": "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+          "dense_rank": 10,
+          "keyword_rank": null,
+          "cosine_distance": 0.37097979845898443,
+          "keyword_score": null,
+          "fused_score": 0.014285714285714285
+        },
+        {
+          "id": "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 11,
+          "keyword_rank": null,
+          "cosine_distance": 0.37108758180840484,
+          "keyword_score": null,
+          "fused_score": 0.014084507042253521
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+          "dense_rank": 12,
+          "keyword_rank": null,
+          "cosine_distance": 0.37168314183104156,
+          "keyword_score": null,
+          "fused_score": 0.013888888888888888
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+          "dense_rank": 13,
+          "keyword_rank": null,
+          "cosine_distance": 0.37255870463630636,
+          "keyword_score": null,
+          "fused_score": 0.0136986301369863
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+          "dense_rank": 14,
+          "keyword_rank": null,
+          "cosine_distance": 0.37308358358396954,
+          "keyword_score": null,
+          "fused_score": 0.013513513513513514
+        },
+        {
+          "id": "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+          "dense_rank": 15,
+          "keyword_rank": null,
+          "cosine_distance": 0.3732649004230736,
+          "keyword_score": null,
+          "fused_score": 0.013333333333333334
+        },
+        {
+          "id": "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+          "dense_rank": 16,
+          "keyword_rank": null,
+          "cosine_distance": 0.37482762881515896,
+          "keyword_score": null,
+          "fused_score": 0.013157894736842105
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+          "dense_rank": 17,
+          "keyword_rank": null,
+          "cosine_distance": 0.3761706971878441,
+          "keyword_score": null,
+          "fused_score": 0.012987012987012988
+        },
+        {
+          "id": "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+          "dense_rank": 18,
+          "keyword_rank": null,
+          "cosine_distance": 0.3774055336480029,
+          "keyword_score": null,
+          "fused_score": 0.01282051282051282
+        },
+        {
+          "id": "run-password-spray-response@1.1#password-spray-response/response-steps/2",
+          "dense_rank": 19,
+          "keyword_rank": null,
+          "cosine_distance": 0.3815691439735779,
+          "keyword_score": null,
+          "fused_score": 0.012658227848101266
+        },
+        {
+          "id": "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2",
+          "dense_rank": 20,
+          "keyword_rank": null,
+          "cosine_distance": 0.38988567237566174,
+          "keyword_score": null,
+          "fused_score": 0.0125
+        }
+      ],
+      "top20": [
+        "run-password-spray-response@1.1#password-spray-response/response-steps/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/2",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1336-analytic-1336/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1337-analytic-1337/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/2",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1338-analytic-1338/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/procedure-examples/1",
+        "run-password-spray-response@1.1#password-spray-response/when-to-use-this-procedure/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1343-analytic-1343/1",
+        "attack-m1032@20.0#m1032-multi-factor-authentication/techniques-mitigated/t1110-003-password-spraying/1",
+        "attack-t1110-002@20.0#t1110-002-password-cracking/mitigations/m1032-multi-factor-authentication/2",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1342-analytic-1342/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/mitigations/m1032-multi-factor-authentication/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1341-analytic-1341/1",
+        "attack-t1110@20.0#t1110-brute-force/detection/det0463-brute-force-authentication-failures-with-multi-platform-log-correlation/an1277-analytic-1277/1",
+        "attack-m1027@20.0#m1027-password-policies/techniques-mitigated/t1110-003-password-spraying/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/description/1",
+        "attack-t1110-003@20.0#t1110-003-password-spraying/detection/det0487-distributed-password-spraying-via-authentication-failures-across-multiple-accounts/an1339-analytic-1339/1",
+        "run-password-spray-response@1.1#password-spray-response/response-steps/2",
+        "attack-t1110-001@20.0#t1110-001-password-guessing/mitigations/m1032-multi-factor-authentication/2"
+      ]
+    }
+  ],
+  "embedding_usage": {
+    "requests": 4,
+    "tokens": 75,
+    "cost_usd": 1.5e-06
+  }
+}

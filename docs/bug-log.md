@@ -1738,6 +1738,25 @@ read-only diagnostic: runbook rank 9, distance 0.3857340674; register rank 115; 
 tokens, $0.00000072. Diagnostic used the same question and the same store, with k=320 only to
 locate the miss; production limits remain 20 plus 20.
 
+**Diagnostic iteration, 29 October 2026:** the isolated
+[fixed-budget experiment](../.scratch/knowledge-base/research/22-retrieval-experiment-results.md)
+recovers both gold passages with focused queries (register rank 16, runbook 4). Adding the
+original broad query through equal-weight cross-query RRF pushes the register to rank 25 and
+out of the final twenty. Repeated spray passages gain contributions from multiple routes;
+the register initially has only one route. This is an experimental merge regression, not a
+new application policy. One prewritten human-triggered retry restores register rank 4 and
+runbook rank 3. No automatic missing-evidence detector was tested. The original bug stays
+unfixed; the additional lesson is to measure coverage after merging as well as candidate
+recovery before it. No query, gold or merge rule was changed after observing the results.
+
+**Second diagnostic, 29 October 2026:** a separately recorded
+[offline selector replay](../.scratch/knowledge-base/research/22-evidence-checklist-design.md)
+uses the same saved initial queries. Equal turns retain K04's register at 19 and runbook at 2,
+without recovery, but the result fails in two of six route orders and at a five-passage stress
+cap. This confirms that available evidence can be recovered by selection, while showing that
+simple fair allocation is fragile. No semantic support check or actual reranker was tested;
+no production fix is claimed. Both experiments and their failures remain recorded.
+
 ### B-099 · 2026-10-29 · Knowledge-base T22 · Absent-topic verdicts remain uncalibrated
 
 **Symptom:** K05 and K06 expect `none` but return `weak` with `not_calibrated`.

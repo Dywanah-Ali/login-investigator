@@ -1,0 +1,22 @@
+{
+  "base_sha256": "e4b70e749d37b41da620c8345bd1d49beeb48f9b23e6da2944ad6a502b5cab98",
+  "review_method": "Human review of final candidate IDs/text against predeclared evidence needs and known corpus gaps. This uses the answer key and is not a runtime detector. Queries were fixed before the initial run.",
+  "recover": [
+    {
+      "case_id": "K04",
+      "need_id": "mfa",
+      "reason": "The register explicitly covers Amelia, but cross-query fusion drops it to rank 25. Focused-only preserves it at 16. Try the predeclared alternative once; preserve the final 20 cap."
+    },
+    {
+      "case_id": "K05",
+      "need_id": "retention",
+      "reason": "Returned material does not establish the absent company sign-in retention policy. Use the one predeclared alternative to test the bounded stop; do not infer an absence verdict from scores."
+    },
+    {
+      "case_id": "K06",
+      "need_id": "incident",
+      "reason": "Returned ATT&CK descriptions and procedure material are not the absent internal past incident write-up. Use one predeclared alternative then stop with the unresolved need."
+    }
+  ],
+  "no_other_retries": "All other focused+broad positive gold needs are covered. N03 omission was recovered by the broad route. No query or scoring adjustment follows these results."
+}
