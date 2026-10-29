@@ -1652,6 +1652,13 @@ cleanup error, not an assertion failure, and the full command exited 1.
 Exact cleanup succeeded. The affected graph test reran with 1 passed in 2.16 seconds, exit 0,
 including teardown. The fixture concern remains open for T44.
 
+**T24 recurrence, 29 October 2026:** full backend run passed 677 assertions, with two teardown
+errors in `test_numbered_runbook_steps_survive_whole` and
+`test_open_graph_refuses_a_dataset_changed_since_build`, exit 1. Leftovers were
+`li_test_06f7a2ac8597` and `li_test_c36803010095`. Both were checked for attached sessions
+(zero), then dropped without FORCE. The two affected tests reran clean: 2 passed in 2.76 seconds,
+exit 0. No fixture code or database privileges changed. AUD-061 stays open for T44.
+
 ### B-095 · 2026-10-28 · Knowledge-base T19 · Empty requested period reported inverted bounds
 
 **Symptom:** an end-only request before the first login returned an effective start after its
@@ -1798,3 +1805,49 @@ files explicitly. The no-real-keys test now covers the re-ranker factory.
 gets a no-real-keys test in the same change; the test caught this one before commit.
 **Evidence:** `tests/test_no_real_keys.py::test_reranker_factory_cannot_load_a_real_key_in_tests`
 failed before the fix and passed after, with `tests/test_reranking.py` (18 passed together).
+
+### B-102 · 2026-10-29 · Knowledge-base T24 · Startup failure left SQLite memory open
+
+**Symptom:** the new door-4 failure test could still query memory after agent construction raised.
+**Cause:** `services.start` opened memory before building the agent, but only normal shutdown
+closed it. A failed start never returned the Services that shutdown needed.
+**Fix:** an ExitStack owns startup resources until successful construction transfers them to
+`stop`; the application lifespan also closes the knowledge-base context on startup failure.
+**Lesson:** resources acquired before startup finishes need a failure cleanup owner.
+**Evidence:** `test_startup_failure_closes_memory_and_the_knowledge_base` failed before the fix;
+the subsequent 48-test focused run passed, including that failure path and report download.
+
+### B-103 · 2026-10-29 · Knowledge-base T24 · Lookup test assumed a privileged membership
+
+**Symptom:** the first lookup test expected Thomas Price to belong to IT Admins; the real graph
+returned All Staff only.
+**Cause:** the test inferred privilege from department instead of reading the source membership.
+**Fix:** corrected the expectation from `org/memberships.csv`; privileged-path tests use Amelia
+Ward, whose source membership explicitly names IT Admins. No dataset or lookup logic changed.
+**Lesson:** department and privilege are separate facts; test expectations need independent data.
+**Evidence:** corrected lookup and artifact-boundary tests pass in the focused agent run.
+
+### B-104 · 2026-10-29 · Knowledge-base T24 · Browser rejected the new lookup progress event
+
+**Symptom:** the fake-API screen test for `lookup_account` ended the stream instead of displaying
+progress and the saved answer. Its saved tool result also fell through to the old unknown-tool view.
+**Cause:** the Port's stream parser allows only its original three tool names; widened names
+were scheduled for T36 while T24 already registers and emits the first new tool.
+**Fix:** author approved moving this one name forward. Added the existing-line phrase and the
+Account context result label; full evidence and the step stack remain later work.
+**Lesson:** a new tool's end-to-end contract includes the client event-name allowlist.
+**Evidence:** `create then ask streams lookup_account and redraws saved memory` reproduced the
+failure before the compatibility change; passing rerun recorded in T24 evidence.
+
+### B-105 · 2026-10-29 · Knowledge-base T24 · Q04's flag check misses a long structured answer
+
+**Symptom:** Q04 run 1 failed only “flags amelia.ward as possibly compromised (S6)”. The answer
+introduced accounts that “may have been compromised”, listed Amelia with three successful
+sign-ins, and recommended securing her account. All required searches and reputation calls ran.
+**Cause:** observed mismatch with the grader's same-line proximity and restricted-list patterns;
+whether the broader contextual attribution is sufficient remains a review decision.
+**Fix:** not implemented. Recorded AUD-066 for later review; original score preserved.
+**Lesson:** distinguish missing facts from attribution checks that cannot recognise an answer's
+structure; do not widen the grader merely to obtain a passing run.
+**Evidence:** `2026-10-29-204751-654728-fa8f3e8f.json`, Q04 run 1. Overall 62/63 and security
+15/15 meet the agreed gates. Related earlier limitation: B-078.

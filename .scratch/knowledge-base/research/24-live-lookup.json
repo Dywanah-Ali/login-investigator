@@ -1,0 +1,13 @@
+{
+  "question": "Who owns amelia.ward, which department are they in, and which privilege groups do they belong to?",
+  "answer": "Amelia Ward owns the account amelia.ward. She is in the IT department and belongs to the following privilege groups:\n\n1. All Staff (baseline)\n2. IT Admins (privileged)",
+  "tools": [
+    {
+      "name": "lookup_account",
+      "args": {
+        "account_id": "amelia.ward"
+      },
+      "result": "Account context (organisation snapshot):\n{\"account\": \"amelia.ward\", \"owner\": \"Amelia Ward\", \"department\": \"IT\", \"groups\": [{\"name\": \"All Staff\", \"kind\": \"baseline\"}, {\"name\": \"IT Admins\", \"kind\": \"privileged\"}]}"
+    }
+  ]
+}

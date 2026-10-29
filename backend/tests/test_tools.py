@@ -30,9 +30,9 @@ def no_network(monkeypatch):
     monkeypatch.setattr(reputation.requests, "get", refuse)
 
 
-def test_exactly_the_three_read_only_tools_of_the_prd():
+def test_the_port_tools_and_first_knowledge_base_tool_share_one_registry():
     assert [t.name for t in TOOLS] == ["find_suspicious_activity", "search_logins",
-                                      "lookup_ip_reputation"]
+                                      "lookup_ip_reputation", "lookup_account"]
 
 
 def test_tool_descriptions_state_the_input_rules():

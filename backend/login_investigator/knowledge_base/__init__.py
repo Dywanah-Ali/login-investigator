@@ -5,7 +5,7 @@ separate engine. Nothing here imports the API, the agent or the screen.
 """
 
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 import math
 import json
@@ -106,6 +106,23 @@ class KnowledgeBase:
 
     def account_groups(self, username: str) -> GraphWalk:
         return account_groups(self.graph, username)
+
+    def lookup_account(self, account_id: str) -> dict[str, object]:
+        """Return a snapshot of one account's owner, department and memberships.
+
+        Accept the organisation's stable person ID or its login username. All returned records
+        are copies: a caller cannot change the shared graph through the result.
+        """
+        matches = [(node, data) for node, data in self.graph.nodes(data=True)
+                   if data["entity_type"] == "person" and
+                   account_id.lower() in (node.lower(), data["username"].lower())]
+        if len(matches) != 1:
+            return {"status": "not_found", "account": None, "groups": [], "paths": []}
+        person_id, data = matches[0]
+        walk = self.account_groups(data["username"])
+        return {"status": "found", "account": dict(data),
+                "groups": [dict(self.graph.nodes[node]) for node in walk.records],
+                "paths": walk.paths}
 
     def finding_walk(self, finding_id: str) -> GraphWalk:
         if self._log is None:
@@ -330,3 +347,26 @@ async def check_knowledge_base(
     if recorded[0] != expected:
         raise KnowledgeBaseNotReady(STALE)
     return name
+
+
+@asynccontextmanager
+async def open_current_knowledge_base(
+    dataset: Path, state_file: Path,
+) -> AsyncIterator[KnowledgeBase | None]:
+    """Own the checked reader for one application lifetime; no build needs no database."""
+    name = await check_knowledge_base(dataset, state_file)
+    if name is None:
+        yield None
+        return
+    try:
+        reader = reader_settings(replace(ServerSettings.from_env(), database=name))
+    except DatabaseUnavailable:
+        raise KnowledgeBaseNotReady(SETTINGS_INCOMPLETE) from None
+    # Only opening errors are translated. An exception in the caller's body must retain its
+    # own meaning; the context still releases the pool in all cases.
+    async with AsyncExitStack() as cleanup:
+        try:
+            kb = await cleanup.enter_async_context(open_knowledge_base(reader, dataset=dataset))
+        except (OSError, ValueError, SQLAlchemyError):
+            raise KnowledgeBaseNotReady(UNCHECKABLE) from None
+        yield kb

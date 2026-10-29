@@ -593,6 +593,11 @@ questions, and the author accepts the live screen. The initiative closes there.
   model and a full artifact (cited chunks with text and IDs, graph records, every recorded score,
   the verdict), saved by the checkpointer, read by the eval and the screen, never sent to the model.
   Phase 0 proves the artifact survives the SQLite memory round trip (T05 conditions).
+- **T24 browser compatibility (author, 29 October 2026):** accept `lookup_account` in the
+  existing tool progress event and show “Looking up account context…” in the existing single
+  status line; label its saved tool result. This small part of the widened tool-name list moves
+  forward from T36 so the phase-0 lookup works in chat. The remaining names and step stack stay
+  with T36; no new screen or evidence panel is introduced.
 - **Package caps** (T05 d12): five chunks per corpus search; assets and peers paged with a
   `truncated` flag in the content; full lists in the artifact.
 - **Citations** (T05 d6, T07 d6): short per-answer labels L, G and D, numbered per answer, resolved in
@@ -799,6 +804,16 @@ contract moves.
 
 ## Testing Decisions
 
+- **T24 persistence baseline (author, 29 October 2026):** document the lookup artifact's fields
+  and persistence path, separating model content from saved evidence. With a fake model and
+  disposable SQLite memory, measure baseline storage and growth after 1, 10 and 50 repeated
+  lookups in one conversation, including checkpoint/intermediate-write counts and stored bytes
+  as well as database file size; record the method. Close and reopen memory and verify the
+  original artifact without querying the knowledge base again. Run the existing report
+  restart/download test to retain downloads without a model. Measurements establish a baseline,
+  not a performance gate. Retention, archival, deduplication, checkpoint pruning and separate
+  artifact storage remain deferred under AUD-065; no migration or evidence panel is added here.
+
 **What makes a good test here.** A test checks behaviour through a door, never a private detail
 behind it: what a function returns, what the API sends, what the screen shows. A deterministic
 check is a hard pass or fail; anything the model decides is graded by the eval, never by a unit test.
@@ -949,3 +964,5 @@ them.
 | 2026-10-29 | Author's rulings at T21: a twin question states its expected outcome as `conclusion: "benign"`, beside `type`, `gold`, `split` and the provenance line; `verdict` stays the search tool's `none`, `weak` or `found`. K04, the first S6 mixed question, carries two of S6's three expected documents; the next-steps runbook waits for a phase 1 question that asks what to do next | The search tool's verdict is computed in code and the twin's conclusion is the investigator's judgement, so one name for both would blur the two layers. The answer gate demands every gold ID be cited, so gold beyond what a question asks would grade the agent on evidence it was not asked for |
 | 2026-10-29 | Author's T22 ruling: until calibration, corpus search returns `weak` with `not_calibrated`, keeping the `none` rule disabled | The first retrieval implementation must not invent a relevance threshold or imply measured confidence. Scores remain available for T39 calibration |
 | 2026-10-29 | Author's T23 ruling, qualifying the T22 row: a search that returns zero passages gives `none` with reason `empty_result`, with the re-ranker on or off. Any non-empty result stays `weak` / `not_calibrated` until T39; the threshold-based `none` rule stays disabled | Zero passages is a counted fact, not a relevance judgement, so it needs no threshold. Only a filter can empty a result, since exact vector search always returns candidates; K05 and K06 are unaffected |
+| 2026-10-29 | Author approved four T24 persistence checks: document artifact contents/storage path, measure storage at baseline and after 1/10/50 repeated lookups, verify original evidence after close/reopen without querying the source, and retain report downloads without a model | Establish correctness and a measured storage baseline before adding more tools. No new performance threshold or storage architecture; broader scaling decisions deferred under AUD-065 |
+| 2026-10-29 | Author approved minimal T24 browser compatibility: accept lookup_account progress, use the existing status line, and label its saved tool result | The old stream parser rejects unknown tool names. Move this one name forward from T36 so the lookup works end to end; remaining names, step stack and evidence panel stay in their later tickets |

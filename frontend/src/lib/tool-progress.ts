@@ -1,4 +1,4 @@
-export const TOOL_NAMES = ['find_suspicious_activity', 'search_logins', 'lookup_ip_reputation'] as const
+export const TOOL_NAMES = ['find_suspicious_activity', 'search_logins', 'lookup_ip_reputation', 'lookup_account'] as const
 export type ToolName = typeof TOOL_NAMES[number]
 
 export function isToolName(value: unknown): value is ToolName {
@@ -9,6 +9,7 @@ const PHRASES: Record<ToolName, string> = {
   find_suspicious_activity: 'checking the detection rules',
   search_logins: 'searching the sign-in log',
   lookup_ip_reputation: 'looking up IP reputation',
+  lookup_account: 'looking up account context',
 }
 
 /** Only active calls contribute. Repeated invocations of one tool share a phrase. */

@@ -329,13 +329,15 @@ aborted on unmount. Events, each with a JSON `data` field:
 
 | event | data | Meaning |
 |---|---|---|
-| `tool` | `{"name": "search_logins", "call_id": "opaque-id", "phase": "start"}` | Actual invocation lifecycle. `phase` is `start`, `end` or `error`; the same opaque `call_id` correlates one invocation. Names are limited to the three registered tools. No inputs, results or exception text |
+| `tool` | `{"name": "search_logins", "call_id": "opaque-id", "phase": "start"}` | Actual invocation lifecycle. `phase` is `start`, `end` or `error`; the same opaque `call_id` correlates one invocation. Names: `find_suspicious_activity`, `search_logins`, `lookup_ip_reputation`, `lookup_account` (T24). No inputs, results or exception text |
 | `text` | `{"text": "…"}` | A piece of the answer, appended in order |
 | `error` | `{"code": "agent_failed", "message": "The agent stopped before it finished."}` | The answer stopped. The stream ends after it |
 | `done` | `{}` | The answer is complete and stored |
 
 The frontend tracks active calls by `call_id`, including simultaneous calls with the same name.
-Keep one in-chat status line. One active tool type uses its existing phrase; overlapping types
+Keep one in-chat status line. One active tool type uses its existing phrase, including
+“Looking up account context…” for `lookup_account` (T24, author-approved compatibility).
+Overlapping types
 use one combined phrase, such as “Searching the sign-in log and looking up IP reputation…”.
 An `end` or `error` phase removes only that call. With no active calls, use “Thinking…” before
 answer text, then “Writing the answer…” while text is streaming. Clear transient state on

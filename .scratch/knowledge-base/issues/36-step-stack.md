@@ -42,3 +42,7 @@ quick tools keep their single status line.
       findings triaged.
 
 ## Comments
+
+- 2026-10-29: author approved bringing `lookup_account` name support forward into T24 to keep
+  its chat stream working. It uses the existing single status line. This ticket still owns
+  the remaining new tool names and the investigation step stack.

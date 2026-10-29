@@ -35,6 +35,9 @@ class ToolView:
 
 
 def describe(name: str, args: dict, result: str) -> ToolView:
+    if name == "lookup_account":
+        # T24's short labelled briefing only. Full saved evidence belongs to the later panel.
+        return ToolView("Account context", str(args.get("account_id", "")), result, None, result)
     try:
         parsed = json.loads(result)
         raw = json.dumps(parsed, indent=1)

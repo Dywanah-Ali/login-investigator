@@ -57,6 +57,8 @@ def prompt_version() -> str:
         json.dumps(investigator.IncidentReport.model_json_schema(), sort_keys=True),
         json.dumps([[t.name, t.description, t.args] for t in TOOLS], sort_keys=True),
         (REPO_ROOT / "login_investigator" / "investigation_policy.py").read_text(),
+        (REPO_ROOT / "login_investigator" / "tool_evidence.py").read_text(),
+        (REPO_ROOT / "login_investigator" / "knowledge_tools.py").read_text(),
         (REPO_ROOT / "login_investigator" / "report_order.py").read_text(),
     ]
     return hashlib.sha256("\n".join(parts).encode()).hexdigest()[:8]

@@ -91,6 +91,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-062 | Recover all required evidence for a compound retrieval question | Open; K04 candidate-coverage gap, for review before the knowledge-base retrieval gate closes | High | B-098; T22 first live run |
 | AUD-063 | One reader for the OpenRouter key and usage, one test guard for `.env` | Open; candidate for T44 | Medium | B-101; T23 standards review |
 | AUD-064 | What the re-ranker's assessment still needs: a kept-5 check and calibration evidence | Open; for T39 and T41 | Medium | T23 spec review; T23 first live run |
+| AUD-065 | Investigation evidence persistence and storage growth | Open, deferred design; bounded T24 checks approved | Medium | Author discussion before T24, 29 October 2026 |
+| AUD-066 | Review Q04's compromise-attribution check for long structured answers | Open review concern, deferred outside T24 | Low | T24 Port eval Q04 run 1; B-105; related B-078 |
 
 ### AUD-001: Rule filter
 
@@ -942,6 +944,13 @@ with the same InsufficientPrivilege. Recorded under B-094; no privilege or fixtu
 The final full run also passed all 646 assertions but exited 1 on one teardown of an unchanged
 graph test. Exact cleanup and focused rerun evidence are in T22. The fixture issue remains open.
 
+T24 recurrence, 29 October 2026: full backend run passed 677 assertions and exited 1 on
+two teardown errors in unchanged tests (`test_numbered_runbook_steps_survive_whole` and
+`test_open_graph_refuses_a_dataset_changed_since_build`). Same InsufficientPrivilege.
+The exact leftovers `li_test_06f7a2ac8597` and `li_test_c36803010095` were verified to have zero
+attached sessions, then dropped without FORCE. Both affected tests reran clean: 2 passed,
+2.76 seconds, exit 0. No privilege or fixture change; concern stays with T44.
+
 ### AUD-062: Compound retrieval question loses the MFA exception register
 
 T22's first live run misses one of K04's two required passages. The runbook ranks 9; the MFA
@@ -1025,6 +1034,69 @@ before the re-ranker can be judged:
    eight questions proves nothing, but it warns that a single relevance threshold may not refuse
    every absent topic. T39 calibrates on its tuning file under T06 d4; no threshold is set here.
 
+### AUD-065: Investigation evidence persistence and storage growth
+
+Registered at the author's request, 29 October 2026, during the discussion before
+[T24](../../.scratch/knowledge-base/issues/24-first-agent-tool-lookup-account.md).
+The knowledge-base tools add saved evidence beyond the conversation and report. Keeping that
+evidence outside the model's input limits context size, but does not limit storage growth.
+No storage-size or scalability failure has been measured. This is a design concern, not a bug.
+
+Preserve the evidence behind a saved answer rather than reconstructing it from a later version
+of the knowledge base. Existing spec requirements already save artifacts for the screen and
+eval. The later storage review should agree the persistence promise for conversations, reports,
+evidence and downloads; distinguish durable evidence from disposable execution details; and
+measure repeated payloads, checkpoint history, intermediate writes, database growth and reopen
+latency across representative investigation lengths. Include repeated lookups, document searches
+and investigation packages, not only the small account lookup.
+
+Deferred options, to decide from measurements: retention periods, archival, deduplication,
+checkpoint pruning and separate artifact storage. No automatic deletion, storage migration or
+new retention policy is authorised. AUD-032 remains parked with its existing phase-2 trigger;
+moving memory to PostgreSQL alone would not settle retention or duplication.
+
+Read-only inspection on 29 October 2026: `login_investigator/investigations.py` uses one SQLite
+file for the investigation index and `SqliteSaver` memory. `agent.write_report` saves report JSON
+as a named message; `saved_history` reads it without a model. The PDF route renders the saved
+report on download rather than keeping PDF bytes. The installed SQLite saver stores serialized
+checkpoints and intermediate writes. Actual artifact duplication and growth remain unmeasured.
+
+Approved T24 addition, author confirmation in chat on 29 October 2026: document the lookup
+artifact's fields and persistence path; measure baseline storage and growth after 1, 10 and 50
+repeated lookups with a fake model in a disposable database; prove close/reopen
+preserves the original artifact without querying the source again; retain report-download
+behaviour. Record measurements as a baseline, not an invented performance gate. This does not
+implement the deferred storage options or the later evidence panel.
+
+T24 measurement, 29 October 2026: a single lookup artifact is 601 JSON bytes. The disposable
+SQLite file grew from 20,480 bytes at baseline to 40,960 / 811,008 / 16,404,480 bytes after
+1 / 10 / 50 repeated lookups in one investigation. At 50 lookups, 350 checkpoint rows held
+15,815,671 payload bytes, while 450 intermediate writes held 86,770 bytes. Latest-state reopen
+took 0.0181 seconds and restored all 50 artifacts. Repeated growing checkpoint state dominates
+this sample; no concurrency or production-capacity claim is made. Full method and limitations:
+[T24 persistence evidence](../../.scratch/knowledge-base/research/24-persistence-evidence.md).
+The broader storage design remains deferred; measurements do not authorise a remedy.
+
+Trigger to revisit: the post-initiative improvement review, or earlier if measurements show
+storage growth or reopen latency that makes the current design unsuitable. Closure requires an
+author-approved persistence and retention policy, measured evidence for the selected design,
+and tests that retained investigations and reports remain usable after restart and source rebuild.
+
+### AUD-066: Q04 compromise attribution across a long structured answer
+
+T24's live Port API eval (`2026-10-29-204751-654728-fa8f3e8f.json`) passes 62/63 overall
+and 15/15 security. Q04 run 1 fails only the Amelia compromise-attribution check. It opens
+with accounts that "may have been compromised", lists Amelia with S6's three successful
+sign-ins and recommends securing her account. The current `AMELIA_COMPROMISED` pattern expects
+a nearby same-line phrase or a narrowly formatted list. The long introductory claim and
+multi-line list do not match. This is a suspected grader coverage limitation, not a proven
+missing S6 fact or a recurrence of skipped reputation calls; all required calls ran.
+
+Keep the failed score. Future review should decide whether that contextual attribution is
+adequate, then test both valid long-list attribution and unrelated/negated account mentions
+before changing the check. No grader or prompt change is authorised here. B-105 records the
+observation; B-078 is the earlier, separately fixed phrasing limitation.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -1070,6 +1142,9 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 
 | Date | Change | Evidence |
 | --- | --- | --- |
+| 2026-10-29 | T24 resolved: first graph tool, shared checked lifecycle, fenced results and saved artifacts, approved browser compatibility. AUD-065 measurement recorded; AUD-066 added for the one failed Q04 check. Known AUD-061 cleanup recurrence retained with exact cleanup and clean reruns. | T24 evidence; 24 review; 677 backend assertions, 150 frontend; Port API 62/63 and security 15/15 |
+| 2026-10-29 | Author approved AUD-065's four bounded T24 checks; ticket criteria and spec updated. Broader storage design remains deferred. | Author confirmation in chat; T24; spec Testing Decisions and decisions log |
+| 2026-10-29 | Added AUD-065 at the author's request: defer evidence-storage scaling decisions; record current report persistence and propose bounded T24 measurement. No spec change or implementation approved. | Discussion before T24; investigations, agent and PDF-route source inspection |
 | 2026-10-26 | Reopened AUD-047 after T14's safety-net eval: Q02 run 3 again reports no S6 successes; Q02 2/3, Q04 3/3, overall 62/63 and security 15/15. Agent unchanged; behaviour work stays outside T14. | B-076 recurrence; `2026-10-26-202907-b70d0745.json` |
 | 2026-10-18 | Created maintained register AUD-001 to AUD-019. Carried forward discussed enhancements, unresolved concerns and existing future seams. Recorded current report acceptance with scope enhancement deferred. | P-056; linked tickets and bug log |
 

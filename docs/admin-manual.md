@@ -12,6 +12,7 @@ command to run it in the session.
 
 1. [Export the knowledge graph and open it in Gephi Lite](#1-export-the-knowledge-graph-and-open-it-in-gephi-lite)
 2. [Check retrieval without the agent](#2-check-retrieval-without-the-agent)
+3. [Measure saved account-lookup evidence](#3-measure-saved-account-lookup-evidence)
 
 ---
 
@@ -197,3 +198,45 @@ returns `none` with `empty_result` (the author's T23 ruling); only a filter can 
 | `The re-ranker call failed with HTTP <code>` | OpenRouter refused the call. 401 or 402: check the key and credit. 429 or 5xx: wait and run again. No result was saved |
 | `The re-ranker could not be reached` | Check the network and run again. No result was saved |
 | `The re-ranker reply must score every candidate exactly once` | The provider's reply was malformed. Run again; if it repeats, ask Claude or Codex to investigate |
+
+## 3. Measure saved account-lookup evidence
+
+Added 29 October 2026 by knowledge-base ticket 24. This is a development measurement, not
+routine maintenance or a storage limit.
+
+### What it is for
+
+Measure how one investigation's stored evidence grows over 1, 10 and 50 repeated account
+lookups. The probe uses a fake model and disposable SQLite memory. It reads the checked graph
+through the read-only role, makes no paid calls and leaves real investigation memory untouched.
+
+### Before you start
+
+PostgreSQL must be running, the knowledge base built and fresh, and reader settings configured
+in `backend/.env`. Use the default synthetic dataset, which contains Amelia Ward. Development
+dependencies must be installed because the probe reuses the fake model from the test suite.
+
+### Run it
+
+```sh
+uv run --directory backend python ../.scratch/knowledge-base/research/24-storage-probe.py
+```
+
+### Open or check the result
+
+The command prints JSON: preparation time, one artifact's JSON size, checkpoint/write counts
+and payload bytes, database file size at each milestone, and close/reopen time. It asserts that
+all 50 artifacts survive reopening. A WAL checkpoint precedes each file-size reading.
+Results are observations; changing the model's answer length or tool payload changes them.
+The initial measurements and limitations are in `.scratch/knowledge-base/research/24-persistence-evidence.md`.
+
+The running backend prepares its graph once at startup. After rebuilding a dataset, stop and
+restart the backend with its existing launch command to adopt the new build. It checks freshness
+and integrity again before accepting questions. Existing saved artifacts retain their original
+evidence. There is no automatic replacement of the running graph.
+
+### When it refuses
+
+With no build, build the knowledge base first. For a stale or uncheckable build, follow the fixed
+startup message to check the reader settings or rebuild. A failed artifact-restoration assertion
+needs investigation; do not delete real saved investigations to make the probe pass.

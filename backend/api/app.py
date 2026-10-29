@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -24,17 +25,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        # The staleness guard (knowledge-base T18) runs before anything else starts. A stale or
-        # uncheckable build raises fixed text here, so the server never starts and no endpoint
-        # answers. With nothing built, the app runs without a knowledge base: the marker is None,
-        # otherwise the checked database's name, for the knowledge-base tools to come.
-        app.state.knowledge_base = await knowledge_base.check_knowledge_base(
-            settings.dataset_dir, settings.knowledge_base_state)
-        if app.state.knowledge_base is None:
-            log.warning(knowledge_base.NOT_BUILT)
-        app.state.services = start(settings)
-        yield
-        stop(app.state.services)
+        started = time.monotonic()
+        async with knowledge_base.open_current_knowledge_base(
+            settings.dataset_dir, settings.knowledge_base_state,
+        ) as kb:
+            app.state.knowledge_base = kb
+            if kb is None:
+                log.warning(knowledge_base.NOT_BUILT)
+            else:
+                log.info("Knowledge-base preparation completed in %.3f seconds",
+                         time.monotonic() - started)
+            app.state.services = start(settings, kb)
+            try:
+                yield
+            finally:
+                stop(app.state.services)
 
     app = FastAPI(title="Login Investigator", lifespan=lifespan)
     errors.install(app)

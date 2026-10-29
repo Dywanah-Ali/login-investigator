@@ -11,6 +11,8 @@ from langchain.agents.middleware import AgentState, before_model
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langgraph.runtime import Runtime
 
+from login_investigator.tool_evidence import tool_content
+
 
 def _ip(value: Any) -> str | None:
     if not isinstance(value, str):
@@ -66,7 +68,7 @@ def complete_detection_evidence(state: AgentState, runtime: Runtime[Any]) -> dic
                     looked_up.add(address)
             elif call["name"] == "find_suspicious_activity":
                 try:
-                    payload = json.loads(message.text)
+                    payload = json.loads(tool_content(message))
                 except (ValueError, TypeError):
                     continue
                 data = payload.get("data") if isinstance(payload, dict) else None

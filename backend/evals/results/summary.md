@@ -36,3 +36,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-27 15:57 | b70d0745 | 93fbd02 | 21 x 3 | 100% | 100% | yes | api: T17-knowledge-base-build |
 | 2026-10-27 22:37 | b70d0745 | 64a8bcf+changes | 21 x 3 | 100% | 100% | yes | api: T18-staleness-guard |
 | 2026-10-28 12:08 | b70d0745 | 69bee51 | 21 x 3 | 97% | 100% | yes | api: T19-graph-safety-net |
+| 2026-10-29 20:42 | fa8f3e8f | 3993679+changes | 21 x 3 | 98% | 100% | yes | api: T24 lookup account, evidence fence and persistence |

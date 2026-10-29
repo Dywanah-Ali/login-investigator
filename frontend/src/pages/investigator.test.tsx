@@ -131,7 +131,10 @@ test('Enter during input-method composition does not submit the question', async
   expect(fetcher.mock.calls.every(([, options]) => !options?.method || options.method === 'GET')).toBe(true)
 })
 
-test('create then ask locks input, streams tool progress and text, then redraws saved memory', async () => {
+test.each([
+  ['search_logins', 'Searching the sign-in log…'],
+  ['lookup_account', 'Looking up account context…'],
+])('create then ask streams %s and redraws saved memory', async (toolName, phrase) => {
   let stream!: ReadableStreamDefaultController<Uint8Array>
   let saved = false
   const requests: { url: string; options?: RequestInit }[] = []
@@ -150,9 +153,9 @@ test('create then ask locks input, streams tool progress and text, then redraws 
   const posts = requests.filter((r) => r.options?.method === 'POST')
   expect(posts.map((r) => r.url)).toEqual(['/api/investigations', '/api/investigations/case-0/ask'])
   expect(posts.map((r) => JSON.parse(String(r.options?.body)))).toEqual([{ question: 'Investigate' }, { question: 'Investigate' }])
-  await act(async () => { stream.enqueue(new TextEncoder().encode('event: tool\r\ndata: {"name":"search_logins","call_id":"search-1","phase":"start"}\r\n\r\nevent: text\r\ndata: {"text":"Live 🛡 answer"}\r\n\r\n')) })
+  await act(async () => { stream.enqueue(new TextEncoder().encode(`event: tool\r\ndata: ${JSON.stringify({ name: toolName, call_id: 'search-1', phase: 'start' })}\r\n\r\nevent: text\r\ndata: {"text":"Live 🛡 answer"}\r\n\r\n`)) })
   const progress = within(screen.getByRole('region', { name: 'Investigation messages' })).getByRole('status')
-  expect(progress).toHaveTextContent('Searching the sign-in log…')
+  expect(progress).toHaveTextContent(phrase)
   expect(screen.getAllByRole('status')).toHaveLength(1)
   expect(screen.getByText('Live 🛡 answer')).toBeInTheDocument()
   saved = true
@@ -449,7 +452,7 @@ test.each(['answer', 'report'])('browser navigation during an %s aborts the old 
   await vi.waitFor(() => expect(askSignal).toBeDefined())
   if (kind === 'answer') {
     await act(async () => toolStream.enqueue(new TextEncoder().encode(
-      'event: tool\ndata: {"name":"lookup_ip_reputation","call_id":"old-case","phase":"start"}\n\n',
+    'event: tool\ndata: {"name":"lookup_ip_reputation","call_id":"old-case","phase":"start"}\n\n',
     )))
     expect(screen.getByRole('status')).toHaveTextContent('Looking up IP reputation…')
   }

@@ -11,6 +11,7 @@ endpoints only, and a missing model key stops the Investigation endpoints only.
 from __future__ import annotations
 
 import logging
+from contextlib import ExitStack, closing
 from dataclasses import dataclass, field
 from threading import Lock
 from typing import Any
@@ -23,6 +24,7 @@ from api.errors import ApiError
 from api.settings import Settings
 from login_investigator import agent, investigations, loader, rules, tools
 from login_investigator.dashboard import DatasetFacts, dataset_facts
+from login_investigator.knowledge_base import KnowledgeBase
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +50,7 @@ class Services:
     activity_lock: Lock = field(default_factory=Lock)
 
 
-def start(settings: Settings) -> Services:
+def start(settings: Settings, knowledge_base: KnowledgeBase | None = None) -> Services:
     dataset, dataset_error = None, None
     log_path = settings.dataset_dir / "logins.csv"
     try:
@@ -65,24 +67,28 @@ def start(settings: Settings) -> Services:
                          if log_path.is_file()
                          else "The configured log file was not found.")
 
-    memory = investigations.open_memory(settings.memory_path)
-    model, built = None, None
-    try:
-        model = agent.make_model()
-    except RuntimeError as error:  # the model key is not set; the message names the setting
-        log.warning("The agent is unavailable: %s", error)
-    if model is not None:
-        built = agent.build_agent(model, memory)
+    with ExitStack() as cleanup:
+        memory = investigations.open_memory(settings.memory_path)
+        cleanup.enter_context(closing(memory.conn))
+        model, built = None, None
+        try:
+            model = agent.make_model()
+        except RuntimeError as error:  # the model key is not set; the message names the setting
+            log.warning("The agent is unavailable: %s", error)
+        if model is not None:
+            built = agent.build_agent(model, memory, knowledge_base)
 
-    # Last, so a startup that fails earlier hands nothing over that `stop` would never clear. The
-    # agent's tools then read the very frame and findings the dashboards read; with no dataset
-    # they refuse, never falling back to the default log (ticket 22).
-    if dataset is None:
-        tools.use_dataset(None, (), settings.reputation_dir)
-    else:
-        tools.use_dataset(dataset.frame, dataset.findings, settings.reputation_dir)
-    return Services(settings=settings, dataset=dataset, dataset_error=dataset_error,
-                    memory=memory, model=model, agent=built)
+        # The agent's tools read the very frame and findings the dashboards read; with no
+        # dataset they refuse, never falling back to the default log (ticket 22).
+        cleanup.callback(tools.forget_dataset)
+        if dataset is None:
+            tools.use_dataset(None, (), settings.reputation_dir)
+        else:
+            tools.use_dataset(dataset.frame, dataset.findings, settings.reputation_dir)
+        result = Services(settings=settings, dataset=dataset, dataset_error=dataset_error,
+                          memory=memory, model=model, agent=built)
+        cleanup.pop_all()  # Successful startup transfers ownership to stop().
+        return result
 
 
 def stop(svc: Services) -> None:

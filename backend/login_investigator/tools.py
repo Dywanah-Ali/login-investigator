@@ -262,4 +262,12 @@ def lookup_ip_reputation(ip: str) -> str:
         return _error(str(error))
 
 
-TOOLS = (find_suspicious_activity, search_logins, lookup_ip_reputation)
+def tools_for(knowledge_base=None):
+    """The single registry; bind graph tools to the application's checked core instance."""
+    from login_investigator.knowledge_tools import account_tool
+
+    return (find_suspicious_activity, search_logins, lookup_ip_reputation,
+            account_tool(knowledge_base))
+
+
+TOOLS = tools_for()

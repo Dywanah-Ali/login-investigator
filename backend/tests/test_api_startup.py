@@ -200,7 +200,8 @@ def test_a_matching_knowledge_base_starts_the_server_as_before(built, memory_pat
     with TestClient(app) as client:
         assert client.get("/api/dataset").status_code == 200
         assert client.get("/api/overview").status_code == 200
-        assert app.state.knowledge_base == json.loads(state.read_text())["database"]
+        assert isinstance(app.state.knowledge_base, knowledge_base.KnowledgeBase)
+        assert app.state.knowledge_base.engine.url.database == json.loads(state.read_text())["database"]
     assert memory_path.is_file()
 
 

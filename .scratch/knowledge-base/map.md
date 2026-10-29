@@ -191,14 +191,14 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is ticket 23**, which has no unresolved blockers; one session
+line holds its edges. **The frontier is ticket 25**, which has no unresolved blockers; one session
 works at a time, so first by number wins.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
 and is resolved (see Build tickets resolved). T14 to T22 have since resolved; the frontier
 is ticket 23, the re-ranker behind its switch. Ticket 24 is also unblocked. No ticket was
-blocked by 18 or 20. T23 resolved on 29 October 2026; **the frontier is ticket 24**.
+blocked by 18 or 20. T23 and T24 resolved on 29 October 2026; **the frontier is ticket 25**.
 
 T22's live retrieval baseline has a recorded K04 candidate gap (B-098/AUD-062). Re-ranking
 cannot recover a passage outside both candidate lists; review this before closing the later
@@ -418,6 +418,18 @@ the other family from the retrieval builder) was proposed and is not ruled.
   frontend 149; two-axis review triaged. Model: author-confirmed Claude Opus 5.5. The parked
   retrieval-design work (T22 follow-ups) moved to its own decision ticket, 45, by the author's
   ruling.
+
+- [24 The first agent tool end to end](issues/24-first-agent-tool-lookup-account.md)
+  (29 October 2026): account owner, department and groups through the checked read-only graph;
+  one shared instance per backend process, prepared before requests and closed on shutdown or
+  failed startup. One fence for every tool; artifacts persist in SQLite but stay outside model
+  input. Author-approved persistence baseline and minimal lookup progress compatibility delivered.
+  Evidence: 677 backend assertions pass with two known B-094 teardown errors; exact idle cleanup
+  and both affected reruns clean. Frontend 150, types clean, six existing lint warnings. Port API
+  eval 62/63 overall and 15/15 security; live lookup succeeds. Two-axis review cleared after one
+  documentation fix. Storage probe: 601-byte artifact, 16.4 MB SQLite after 50 repeated lookups;
+  broader design remains AUD-065. B-105/AUD-066 records the one graded-answer concern. Model:
+  author-confirmed Astra. No push. T45 still blocks T26.
 
 ## Not yet specified
 
