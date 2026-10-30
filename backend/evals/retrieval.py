@@ -1,6 +1,6 @@
 """The existing eval runner's direct retrieval layer. No agent or answer model is called."""
 
-from dataclasses import asdict, replace
+from dataclasses import asdict
 from datetime import date
 import json
 import hashlib
@@ -13,13 +13,15 @@ from dotenv import dotenv_values
 
 from login_investigator import knowledge_base
 from login_investigator.generator import DATASET_DIR
-from login_investigator.knowledge_base import KnowledgeBase, check_knowledge_base, open_knowledge_base, reader_settings
+from login_investigator.knowledge_base import KnowledgeBase, open_current_knowledge_base
+from login_investigator.workers import owned_operation
+from login_investigator.knowledge_base.evaluation_version import isolated_evaluation
 from login_investigator.knowledge_base.embedding import embedding_service
 from login_investigator.knowledge_base.reranking import reranker_service
 from login_investigator.knowledge_base.retrieval import LIMIT, RRF_K, VerdictPolicy
 from login_investigator.knowledge_base.schema import EMBEDDING_MODEL
 from login_investigator.knowledge_base.staleness import NOT_BUILT, source_fingerprint
-from login_investigator.postgres import ENV_PATH, ServerSettings
+from login_investigator.postgres import ENV_PATH
 
 QUESTIONS = Path(__file__).with_name("knowledge_base_questions.json")
 REQUESTS = Path(__file__).with_name("retrieval_requests.json")
@@ -44,9 +46,9 @@ async def evaluate_retrieval(kb: KnowledgeBase, questions: list[dict]) -> dict:
         walk = None
         if request:
             if request["kind"] == "account_groups":
-                walk = kb.account_groups(request["username"])
+                walk = await owned_operation(lambda: kb.account_groups(request["username"]))
             elif request["kind"] == "finding_radius":
-                walk = kb.finding_walk(request["finding_id"])
+                walk = await owned_operation(lambda: kb.finding_walk(request["finding_id"]))
             else:
                 raise ValueError("Unknown direct graph request")
         elif question["type"] in {"graph_lookup", "mixed"}:
@@ -78,13 +80,17 @@ async def run_retrieval(only: list[str] | None = None) -> tuple[dict, str]:
     values = {**dotenv_values(ENV_PATH), **os.environ}
     dataset = Path(values.get("LI_DATASET_DIR") or DATASET_DIR)
     state = Path(values.get("LI_KNOWLEDGE_BASE_STATE") or knowledge_base.STATE_FILE)
-    name = await check_knowledge_base(dataset, state)
-    if name is None:
-        raise ValueError(NOT_BUILT)
-    reader = reader_settings(replace(ServerSettings.from_env(), database=name))
-    async with embedding_service() as (embedder, usage), reranker_service() as (reranker, rerank_usage):
-        async with open_knowledge_base(reader, dataset=dataset, embedder=embedder, reranker=reranker) as kb:
-            report = await evaluate_retrieval(kb, questions)
+    async with isolated_evaluation(dataset, state) as version:
+        if version.build_id is None:
+            raise ValueError(NOT_BUILT)
+        async with embedding_service() as (embedder, usage), reranker_service() as (reranker, rerank_usage):
+            async with open_current_knowledge_base(version.dataset, version.state_file,
+                                                   embedder=embedder, reranker=reranker) as kb:
+                if kb is None:
+                    raise ValueError(NOT_BUILT)
+                report = await evaluate_retrieval(kb, questions)
+                selected_fingerprint = source_fingerprint(version.dataset)
+                build_id = kb.build_id
     report["embedding_usage"] = asdict(usage)
     report["rerank_usage"] = asdict(rerank_usage)
     policy = VerdictPolicy()
@@ -94,7 +100,8 @@ async def run_retrieval(only: list[str] | None = None) -> tuple[dict, str]:
                                "min_relevance": policy.min_relevance, "reranker": reranker is not None,
                                "reranker_model": reranker.model if reranker else None,
                                "reranker_keep": reranker.top_n if reranker else None,
-                               "source_fingerprint": source_fingerprint(dataset)}
+                               "source_fingerprint": selected_fingerprint,
+                               "graph_build_id": build_id}
     files = [QUESTIONS, REQUESTS, Path(__file__), Path(__file__).with_name("scoring.py"),
              Path(__file__).with_name("run.py")]
     files += sorted(Path(knowledge_base.__file__).parent.glob("*.py"))

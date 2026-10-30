@@ -1639,6 +1639,12 @@ connection metadata to diagnose intermittent teardown problems.
 **Evidence:** test_integrity_rejects_corruption[asset_id] teardown, first corruption run:
 23 passed, 1 error; InsufficientPrivilege, permission denied to terminate process.
 
+**T48 full safety-net recurrence, 30 October 2026:** 709 passed, one teardown error in unchanged
+`test_integrity_rejects_corruption[extra]`, 1186.38 seconds, exit 1. PgAdmin was closed for this
+run, so that does not explain every occurrence. Exact leftover `li_test_b94165a0c68e` was
+verified idle and dropped without FORCE. The affected test then passed in 2.58 seconds with
+successful cleanup. No privilege or fixture change; AUD-061 remains open for T44.
+
 **T22 recurrence, 29 October 2026:** the focused search/runner/results run reports 21 passed,
 1 teardown error after `test_search_combines_ranks_and_keeps_raw_scores`. The same
 InsufficientPrivilege occurs while dropping `li_test_e58b4bd62629`. No assertion failed and no
@@ -1941,3 +1947,73 @@ reader before writing the completion marker.
 **Lesson:** a timeout is evidence to investigate, not permission to relax the test's limit.
 **Evidence:** initial frontend run took 54.49 seconds. The affected-file rerun passed 8/8 in
 30.53 seconds without changes; retained as AUD-069 for recurrence monitoring.
+T48 recurrence: the same unchanged test timed out again at five seconds; 149 passed and one
+failed in 50.20 seconds while other validation was active. No frontend code or timeout changed.
+The separate full T48 rerun passed all 150 tests in 28.27 seconds without changes.
+
+### B-114 · 2026-10-30 · T48 integration · Graph verification blocked the event loop
+
+**Symptom:** the startup integration test detected synchronous Neo4j network calls on the
+asynchronous application's event-loop thread.
+**Cause:** T47's independent verifier called the synchronous driver directly; T48's application
+integration makes that boundary consequential.
+**Fix:** dispatch verification reads to resource-owning workers, joining them on cancellation
+before connection cleanup. Serving-protection checks and driver shutdown use the same rule.
+**Lesson:** an async function can still block if a synchronous dependency performs network work.
+**Evidence:** `test_startup_graph_reads_do_not_block_the_event_loop` failed at the first integrity
+query before the fix. The subsequent focused run is recorded in T48.
+
+### B-115 · 2026-10-30 · T48 test development · Incomplete test observation and type narrowing
+
+**Symptom:** type checking rejected indexing an account typed as `object`; the first paired
+update test then expected `/api/dataset` metadata to change after removing ten login rows.
+**Cause:** the test omitted dictionary narrowing and observed date metadata rather than login
+counts. Removing interior rows did not change the dataset's first/last dates.
+**Fix:** assert the account is a dictionary and compare the overview response, which reports
+the changed login counts. Keep the independent department and retrieved-text checks.
+**Lesson:** observe the public behaviour that actually changes; an unchanged metadata response
+does not establish stale data.
+**Evidence:** initial Pyright reported one error; corrected typecheck passed. First lifecycle
+run reported four passes and the metadata-comparison failure. Corrected rerun is recorded in T48.
+The broader run later found that byte-identical PDF assertions also compared generation metadata.
+The test now preserves the original report JSON and artifact exactly and verifies successful
+PDF downloads; existing PDF-content tests remain in the safety net. That run recorded 77 passes,
+one PDF comparison failure and one recurrence of B-094's unrelated teardown privilege error.
+
+### B-116 · 2026-10-30 · T48 integration · Paired PostgreSQL reads had no statement bound
+
+**Symptom:** the paired-reader timeout test observed `statement_timeout=0`, allowing indefinite
+statement waits even though Neo4j calls had explicit limits.
+**Cause:** the paired opener reused the builder's general engine settings.
+**Fix:** paired readers use bounded connection/pool, lock and statement waits. Builder settings
+remain unchanged. Add a real slow-statement refusal check.
+**Lesson:** bounds must cover every store participating in an investigation.
+**Evidence:** focused failure/cancellation/concurrency run: seven passed, one failed on the zero
+statement limit. Corrected rerun is recorded in T48.
+
+### B-117 · 2026-10-30 · T48 review · Graph shutdown failure skipped PostgreSQL disposal
+
+**Symptom:** both review axes found that a graph close error or cancellation could skip the
+following pool disposal. The failure-injection test observed one remaining PostgreSQL connection.
+**Cause:** sequential cleanup without an independent finally for the second resource.
+**Fix:** dispose the PostgreSQL engine in an unconditional nested finally. Test driver-close
+failure and cancellation after the persistent graph driver has opened.
+**Lesson:** each owned resource needs a cleanup path that another cleanup failure cannot bypass.
+**Evidence:** initial shutdown test failed with one remaining connection and retained its exact
+version recovery state after teardown. Corrected rerun and explicit recovery are recorded in T48.
+
+### B-118 · 2026-10-30 · T48 review · Evaluations reused the application's selected stores
+
+**Symptom:** the spec review found that retrieval/API evaluation entry points created fresh memory
+but still read the selected application databases.
+**Cause:** the old evaluation harness did not own a complete paired-version lifecycle.
+**Fix:** prepare unique source/store/state resources per evaluation, reuse only exact unchanged
+passage vectors from the checked original build, and clean the evaluation's resources on exit.
+No source changes or missing-vector fallback are accepted. Offline versions cannot become live
+evaluation evidence.
+**Lesson:** isolated memory is not isolated evaluation data when the system has several stores.
+**Evidence:** initial isolation test reached the unimplemented preparation path; new lifecycle and
+entry-point checks are recorded in T48.
+The follow-up review found that the no-build branch still exposed the working selection path.
+A test publishing to that path during evaluation failed by trying to read database settings.
+The branch now owns a private absent pointer, so a new application build cannot enter that run.

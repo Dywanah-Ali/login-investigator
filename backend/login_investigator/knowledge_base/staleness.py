@@ -26,6 +26,10 @@ SERVER_DOWN = (f"PostgreSQL is not answering, so the knowledge base cannot be ch
                f"Start it with: {START_COMMAND}")
 SETTINGS_INCOMPLETE = ("The knowledge base cannot be checked because the PostgreSQL settings in "
                        ".env are incomplete. env.example lists them.")
+PAIR_UNCHECKABLE = ("The selected source and database pair cannot be checked. Restore its PostgreSQL "
+                   "and Neo4j services and reader settings, or prepare a replacement from backend/ "
+                   "with: uv run python -m scripts.build_graph_version. Select a verified complete "
+                   "version and restart. See the admin manual for rollback.")
 
 
 class KnowledgeBaseNotReady(RuntimeError):

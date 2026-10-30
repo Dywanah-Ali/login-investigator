@@ -10,6 +10,7 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from login_investigator.workers import owned_operation
 from . import schema
 from .integrity import GraphCounts, GraphIntegrityError
 from .graph_service import execute
@@ -18,7 +19,8 @@ from .neo4j_graph import GraphSettings
 
 async def verify_graph(engine: AsyncEngine, dataset: Path, settings: GraphSettings,
                        build_id: str, fingerprint: str) -> GraphCounts:
-    node_rows = execute(settings, 'MATCH (n) WHERE NOT n:Build RETURN properties(n) AS properties, labels(n) AS labels')
+    node_rows = await owned_operation(lambda: execute(settings,
+        'MATCH (n) WHERE NOT n:Build RETURN properties(n) AS properties, labels(n) AS labels'))
     if any(not isinstance(row['properties'].get('id'), str) for row in node_rows):
         raise GraphIntegrityError('Graph node has no stable identity')
     actual = {row['properties']['id']: row['properties'] for row in node_rows}
@@ -70,8 +72,9 @@ async def verify_graph(engine: AsyncEngine, dataset: Path, settings: GraphSettin
                     observations.setdefault((person, target, relation), set()).add(row['timestamp_utc'])
     for edge, times in observations.items():
         expected_edges[edge] = {'times': sorted(times)}
-    edges = execute(settings, 'MATCH (a)-[r]->(b) RETURN a.id AS source, b.id AS target, '
-                              'type(r) AS relation, properties(r) AS properties')
+    edges = await owned_operation(lambda: execute(settings,
+        'MATCH (a)-[r]->(b) RETURN a.id AS source, b.id AS target, '
+        'type(r) AS relation, properties(r) AS properties'))
     actual_edges = {(row['source'], row['target'], row['relation']): row['properties'] for row in edges}
     if actual != expected or actual_edges != expected_edges or len(edges) != len(expected_edges):
         raise GraphIntegrityError('Graph identities, attributes, passage references or observations differ from sources')
@@ -79,7 +82,7 @@ async def verify_graph(engine: AsyncEngine, dataset: Path, settings: GraphSettin
     if any(key not in connected and row['entity_type'] in {'person', 'group', 'asset', 'device'}
            for key, row in expected.items()):
         raise GraphIntegrityError('Isolated organisation node')
-    if execute(settings, 'MATCH (b:Build) RETURN properties(b) AS properties') != [
+    if await owned_operation(lambda: execute(settings, 'MATCH (b:Build) RETURN properties(b) AS properties')) != [
         {'properties': {'id': build_id, 'fingerprint': fingerprint}}
     ]:
         raise GraphIntegrityError('Graph build identity does not match the pair')

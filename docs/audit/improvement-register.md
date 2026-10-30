@@ -954,6 +954,23 @@ The exact leftovers `li_test_06f7a2ac8597` and `li_test_c36803010095` were verif
 attached sessions, then dropped without FORCE. Both affected tests reran clean: 2 passed,
 2.76 seconds, exit 0. No privilege or fixture change; concern stays with T44.
 
+T48 recurrence, 30 October 2026: the affected-test run hit the same teardown privilege error
+after `test_runner_checks_integrity_before_calling_the_embedding_service` passed. Its exact
+idle leftover was dropped without FORCE. The separate intentional shutdown-failure test also
+retained recovery state. Read-only diagnostics identified a `postgres` connection whose
+application is pgAdmin holding that exact disposable database; a non-FORCE drop refused.
+No connection was terminated and no privilege broadened. The session handoff records the exact
+remaining resource for recovery after pgAdmin disconnects. Resource-closure tests now count
+the configured application reader rather than unrelated pgAdmin/maintenance connections.
+
+The author confirmed manually deleting `li_kb_86d2da6633c7` on 30 October 2026.
+This closes that specific leftover; it does not authorize removal of other builds.
+The final T48 full run passed 709 tests but exited 1 on the same teardown privilege error
+in unchanged `test_integrity_rejects_corruption[extra]`, even with pgAdmin closed. Its exact
+leftover `li_test_b94165a0c68e` was verified idle and dropped without FORCE. The affected test
+reran clean: 1 passed in 2.58 seconds. No role privileges changed. This recurrence remains
+open under T44; closing pgAdmin does not establish a general fix.
+
 ### AUD-062: Compound retrieval question loses the MFA exception register
 
 T22's first live run misses one of K04's two required passages. The runbook ranks 9; the MFA
@@ -1186,6 +1203,10 @@ submission/Reset test at `explorer.test.tsx:80`. The affected file then passed a
 without code or timeout changes. Cause remains unproven; the original run overlapped Docker
 integration startup. Keep B-113's failure evidence. Investigate if it recurs; no UI change or
 relaxed timing threshold is approved. Candidate for the existing T44 cleanup review.
+T48 reproduced the same timeout: 149 passed, one failed in 50.20 seconds, with concurrent
+validation. No frontend changes were made. A separate rerun is recorded in T48; the cause
+remains unproven and this item stays open for investigation.
+The separate full rerun passed all 150 tests in 28.27 seconds without changes.
 
 ## Longer-term capabilities already named in the spec
 

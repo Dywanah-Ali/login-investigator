@@ -4,7 +4,7 @@ The build and LangChain store share one SQLAlchemy async engine on psycopg. Read
 separate engine. Nothing here imports the API, the agent or the screen.
 """
 
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 import math
@@ -66,11 +66,13 @@ class BuildReport:
     previous_database_retained: str | None = None
 
 
-def database_engine(settings: ServerSettings) -> AsyncEngine:
+def database_engine(settings: ServerSettings, *, bounded: bool = False) -> AsyncEngine:
     return create_async_engine(URL.create(
         "postgresql+psycopg", username=settings.user, password=settings.password,
         host=settings.host, port=settings.port, database=settings.database,
-    ), hide_parameters=True)
+    ), hide_parameters=True, pool_timeout=5 if bounded else 30,
+        connect_args=({'connect_timeout': 5, 'options': '-c statement_timeout=10000 -c lock_timeout=5000'}
+                      if bounded else {}))
 
 
 class KnowledgeBase:
@@ -83,6 +85,14 @@ class KnowledgeBase:
         self._graph_queries: GraphQueries | None = None
         self._dataset: Path | None = None
         self._log: pd.DataFrame | None = None
+        self._graph_verifier: Callable[[], Awaitable[GraphCounts]] | None = None
+        self.build_id: str | None = None
+        self.offline_embeddings = False
+
+    @property
+    def source_snapshot(self) -> Path | None:
+        """The selected source world; callers must not fall back to working inputs."""
+        return self._dataset
 
     async def search_corpus(self, query: str, *, filters: SearchFilters | None = None,
                             verdict_policy: VerdictPolicy | None = None) -> SearchResult:
@@ -97,6 +107,10 @@ class KnowledgeBase:
         return self._graph
 
     async def check_graph_integrity(self, graph: nx.MultiDiGraph | None = None) -> GraphCounts:
+        if self._graph_verifier is not None:
+            if graph is not None:
+                raise ValueError('A native graph cannot be checked against an in-memory replacement')
+            return await self._graph_verifier()
         if self._dataset is None:
             raise ValueError("Open the knowledge base with its dataset to check the graph")
         return await check_graph_integrity(self.engine, self._dataset, self.graph if graph is None else graph)
@@ -311,7 +325,13 @@ async def check_knowledge_base(
     if not state_file.exists():
         return None
     try:
-        name = json.loads(state_file.read_text(encoding="utf-8"))["database"]
+        selection = json.loads(state_file.read_text(encoding="utf-8"))
+        if isinstance(selection, dict) and 'format' in selection:
+            async with open_current_knowledge_base(dataset, state_file, server=server) as kb:
+                if kb is None:
+                    return None
+                return kb.engine.url.database
+        name = selection["database"]
         if not isinstance(name, str):
             raise TypeError("database must be a name")
     except (OSError, ValueError, KeyError, TypeError):
@@ -339,22 +359,44 @@ async def check_knowledge_base(
 
 @asynccontextmanager
 async def open_current_knowledge_base(
-    dataset: Path, state_file: Path,
+    dataset: Path, state_file: Path, *, embedder: Embeddings | None = None,
+    reranker: Reranker | None = None, server: ServerSettings | None = None,
 ) -> AsyncIterator[KnowledgeBase | None]:
     """Own the checked reader for one application lifetime; no build needs no database."""
-    name = await check_knowledge_base(dataset, state_file)
+    if state_file.exists():
+        try:
+            selected = json.loads(state_file.read_text())
+            paired = isinstance(selected, dict) and 'format' in selected
+        except (OSError, ValueError):
+            raise KnowledgeBaseNotReady(UNCHECKABLE) from None
+        if paired:
+            from .graph_version import open_version
+            from .graph_selection import read_selection
+            from .staleness import PAIR_UNCHECKABLE
+            async with AsyncExitStack() as cleanup:
+                try:
+                    selected = read_selection(state_file)
+                    kb = await cleanup.enter_async_context(
+                        open_version(Path(selected['current']), server or ServerSettings.from_env(),
+                                     embedder=embedder, reranker=reranker))
+                except Exception:
+                    raise KnowledgeBaseNotReady(PAIR_UNCHECKABLE) from None
+                yield kb
+            return
+    name = await check_knowledge_base(dataset, state_file, server)
     if name is None:
         yield None
         return
     try:
-        reader = reader_settings(replace(ServerSettings.from_env(), database=name))
+        reader = reader_settings(replace(server or ServerSettings.from_env(), database=name))
     except DatabaseUnavailable:
         raise KnowledgeBaseNotReady(SETTINGS_INCOMPLETE) from None
     # Only opening errors are translated. An exception in the caller's body must retain its
     # own meaning; the context still releases the pool in all cases.
     async with AsyncExitStack() as cleanup:
         try:
-            kb = await cleanup.enter_async_context(open_knowledge_base(reader, dataset=dataset))
+            kb = await cleanup.enter_async_context(open_knowledge_base(
+                reader, dataset=dataset, embedder=embedder, reranker=reranker))
         except (OSError, ValueError, SQLAlchemyError):
             raise KnowledgeBaseNotReady(UNCHECKABLE) from None
         yield kb

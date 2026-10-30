@@ -14,6 +14,7 @@ command to run it in the session.
 2. [Check retrieval without the agent](#2-check-retrieval-without-the-agent)
 3. [Measure saved account-lookup evidence](#3-measure-saved-account-lookup-evidence)
 4. [Verify an isolated Neo4j graph version](#4-verify-an-isolated-neo4j-graph-version)
+5. [Select, restart and roll back a paired graph version](#5-select-restart-and-roll-back-a-paired-graph-version)
 
 ---
 
@@ -298,3 +299,98 @@ the version directory is retained with `cleanup.json` naming the exact remaining
 Restore the unavailable service before removing those resources; retain the private state until
 cleanup succeeds. Do not delete unrelated containers or databases.
 The active application pointer is never changed by this command.
+
+## 5. Select, restart and roll back a paired graph version
+
+Added by knowledge-base ticket 48. Native Browser inspection remains its next checkpoint.
+
+### What it is for
+
+Prepare a complete source snapshot with matching PostgreSQL and Neo4j stores, then select it
+for a separately configured application's next restart. The running process keeps its current
+version. Saved investigations and report downloads remain in the same SQLite memory file.
+T49 owns switching the working application after acceptance.
+
+### Before you start
+
+Use section 4's PostgreSQL, Docker and reader prerequisites. Run one selection command at a time.
+Keep the previous version's snapshot, database, container, volume and private `.env` together.
+Do not edit a snapshot or completion marker. The default working pointer is
+`backend/.knowledge-base.json`; use the separate pointer below for T48 verification.
+Port 8012 must be free. No production permission or availability guarantee is implied.
+
+### Run it
+
+From the repository root, prepare a retained offline version:
+
+```sh
+uv run --directory backend python -m scripts.build_graph_version --offline --report .graph-versions/t48-prepared.json
+```
+
+The report's `version_file` is relative to `backend/.graph-versions/`. From `backend/`, set
+the path below using that report's build ID, then select it:
+
+```sh
+LI_GRAPH_VERSION=.graph-versions/BUILD_ID/complete.json
+uv run python -m scripts.select_graph_version --state-file .graph-versions/t48-selection.json --version "$LI_GRAPH_VERSION"
+LI_KNOWLEDGE_BASE_STATE=.graph-versions/t48-selection.json LI_MEMORY_PATH=.graph-versions/t48-memory.sqlite uv run uvicorn api.app:create_app --factory --port 8012
+```
+
+`BUILD_ID` is a placeholder for the completed build's ID. Do not use the working app's port or
+memory file. Offline vectors validate lifecycle and graph behaviour only. For a retrieval
+evaluation, build without `--offline`, which makes paid embedding calls. Run the evaluator with
+`LI_KNOWLEDGE_BASE_STATE` set to the source selection. Both evaluation entry points prepare their
+own unique source snapshot, PostgreSQL database, Neo4j instance and selection file, then dispose
+those resources when the run exits. Exact unchanged passage vectors are copied from the checked
+source build so preparing the isolation does not buy the same embeddings again. Evaluation query
+embeddings, re-ranking and answer-model calls retain their normal costs. Changed source/settings
+or a missing stored vector refuse the copy. Offline versions refuse live evaluation evidence.
+The existing no-build startup path remains available without database prerequisites.
+
+For an update, prepare another version while the old process serves, then select its marker
+using the same command. Stop the separate backend with Ctrl-C and restart with the identical
+environment and command above. Selection itself does not switch an already running process.
+To return to the previous complete version, run this from `backend/`, then stop and restart:
+
+```sh
+uv run python -m scripts.select_graph_version --state-file .graph-versions/t48-selection.json --rollback
+```
+
+Rollback validates the previous version before selection. It preserves the working source files
+and SQLite history. Re-selecting the already selected version does not lose the rollback target.
+No build is automatically removed; retained-build cleanup remains AUD-057.
+
+### Open or check the result
+
+Check `http://127.0.0.1:8012/api/overview` after startup. The selected snapshot supplies login
+analysis, alerts, graph operations and document retrieval. Changing working input files has no
+effect until a new version is built, selected and adopted by restart.
+
+The selection file is credential-free and records the current and previous completion-marker
+paths. Each marker names the shared build identity, fingerprint, source snapshot and stores.
+Do not share private `.env` files. Query/connection waits are bounded, but a complete multi-query
+investigation has no single promised duration. Restart measurements are local observations;
+the maintenance window needs author acceptance before T49 switches the working application.
+
+Measured on 30 October 2026 with two isolated offline versions: initial readiness 30.463 seconds;
+update interruption 21.526 seconds; rollback interruption 26.914 seconds. Readiness meant successful
+overview and investigation-list HTTP responses after full startup checks. A stopped graph refused
+startup in 11.593 seconds. Starting that container, waiting for readiness and restarting the app
+took 107.595 seconds. No model-provider request was made. These local observations include host
+load during validation and are not production limits. See T48's saved measurement evidence.
+
+### When it refuses
+
+A missing or changed snapshot, unavailable store, mixed pair, invalid completion record or
+unverified protection prevents startup. Restore the named version's PostgreSQL and Neo4j
+services, or select a different complete retained version and restart. To restart a stopped
+graph container, use `docker start CONTAINER_NAME`, taking the name from that version's
+completion marker. Restart the application afterward so it resolves the current localhost
+port. Never rebuild into an existing snapshot or overwrite working source files for recovery.
+
+A failed build or publication leaves the prior selection intact. A failed partial startup closes
+both clients. A malformed selection or a selection file in the source snapshot is refused.
+Rollback with no previous complete version refuses. Keep failed-cleanup recovery state as
+described in section 4. The local pointer replacement is one same-directory rename. It does
+not promise distributed atomicity or durability through power loss; restore an explicitly
+verified retained selection after such an event.

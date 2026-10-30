@@ -16,6 +16,8 @@ from typing import Any, Protocol
 import httpx
 
 from login_investigator import agent, reputation
+from api.settings import Settings
+from login_investigator.knowledge_base.evaluation_version import evaluation_version
 
 REPORT_TURN = "REPORT"
 
@@ -71,6 +73,15 @@ def conversation(client: HttpClient, questions: list[str]) -> list[agent.Turn]:
 
 @contextmanager
 def serve() -> Iterator[httpx.Client]:
+    """Give each run its own stores, source snapshot, pointer and memory."""
+    settings = Settings.from_env()
+    with evaluation_version(settings.dataset_dir, settings.knowledge_base_state) as version:
+        with _serve(version.dataset, version.state_file) as client:
+            yield client
+
+
+@contextmanager
+def _serve(dataset: Path, state_file: Path) -> Iterator[httpx.Client]:
     """Start one local API server, then stop it and remove its memory even on failure.
 
     The caller loads .env once, before removing the reputation key. Disabling dotenv in the
@@ -78,6 +89,8 @@ def serve() -> Iterator[httpx.Client]:
     it, rather than releasing a free port for another process to take.
     """
     environ = dict(os.environ)
+    environ["LI_DATASET_DIR"] = str(dataset)
+    environ["LI_KNOWLEDGE_BASE_STATE"] = str(state_file)
     environ.pop(reputation.KEY_NAME, None)
     environ["PYTHON_DOTENV_DISABLED"] = "1"
     with tempfile.TemporaryDirectory(prefix="li-eval-") as folder, socket.socket() as sock:

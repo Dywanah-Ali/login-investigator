@@ -29,7 +29,7 @@ Configuration comes from environment variables, so the eval runner can isolate a
 
 | Variable | Default | Used for |
 |---|---|---|
-| `LI_DATASET_DIR` | `backend/data/datasets/default` | The dataset folder; startup loads its `logins.csv` |
+| `LI_DATASET_DIR` | `backend/data/datasets/default` | Working dataset folder for builds and the legacy/no-build startup path. A paired selection instead loads its frozen source snapshot for every application reader |
 | `LI_MEMORY_PATH` | `backend/memory/investigations.sqlite` | The `SqliteSaver` memory and the investigations table, one file |
 | `LI_REPUTATION_DIR` | `backend/data/ip_reputation` | Saved AbuseIPDB responses |
 | `LI_KNOWLEDGE_BASE_STATE` | `backend/.knowledge-base.json` | The build command's pointer to its last successful knowledge-base build, read by the staleness guard. The build command reads the same variable, from the environment only |
@@ -62,6 +62,22 @@ only locations it names are the repo's own `backend/`, `.env` and `env.example`.
 error is suppressed, never chained. The fingerprint is SHA-256 over the embedding model, the vector
 length, the chunking settings and every file in the dataset folder by relative path and content,
 skipping hidden entries. The guard connects as the read-only role.
+
+Paired versions (T46/T48) extend this startup contract without changing endpoint shapes.
+The configured state file may select a complete PostgreSQL/Neo4j pair and its source snapshot.
+Startup checks both stores, their shared identity, the snapshot fingerprint, graph integrity
+and serving protection before loading the application. Login analysis, alerts and agent log
+tools read that snapshot; edits in the working dataset apply only to a future build. Selection
+changes take effect on restart. A missing state file retains the no-build behaviour above.
+An invalid or unavailable paired version refuses startup with fixed text:
+
+> The selected source and database pair cannot be checked. Restore its PostgreSQL and Neo4j
+> services and reader settings, or prepare a replacement from backend/ with: uv run python -m
+> scripts.build_graph_version. Select a verified complete version and restart. See the admin
+> manual for rollback.
+
+Saved investigation evidence and report downloads retain their original contents across
+version changes. They are not reconstructed from the replacement graph.
 
 ## Shared filter parameters
 

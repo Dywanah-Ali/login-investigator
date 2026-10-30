@@ -47,6 +47,7 @@ async def run(args: argparse.Namespace) -> dict[str, object]:
                 samples.append(1000 * (time.perf_counter() - tick))
         resources = json.loads(docker('stats', '--no-stream', '--format', '{{json .}}', version.container))
         return {'build_id': version.build_id, 'database': version.database,
+                'version_file': version.marker.relative_to(args.versions_dir.resolve()).as_posix(),
                 'container': version.container, 'image': IMAGE, 'driver': '6.1.0',
                 'offline_embeddings': args.offline, 'disposed': args.dispose,
                 'preparation_seconds': round(preparation, 3), 'lookup_median_ms': round(statistics.median(samples), 3),

@@ -11,6 +11,15 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **T48 lifecycle checkpoint, 30 October 2026:** checkpoints 1–2 are implemented and verified.
+  Coherent startup, update/rollback, saved evidence and evaluation isolation are complete.
+  Evidence: 21 focused lifecycle tests, 709 full backend passes with one known AUD-061
+  teardown error followed by exact cleanup and a passing affected-test rerun; 150 frontend
+  passes, clean types and cleared two-axis review. T48 stays claimed. Continue checkpoint 3,
+  native Browser inspection and the author's walkthrough, in a fresh session. Gephi remains
+  until acceptance. Restart measurements are recorded; T49 still owns maintenance-window
+  acceptance and the working-application switch.
+
 - **Current priority, T47 closure on 30 October 2026:** [T48 paired lifecycle and native inspection](issues/48-paired-lifecycle-and-native-inspection.md).
   [T47](issues/47-neo4j-build-and-graph-answers.md) is resolved: isolated paired builds and exact
   Neo4j graph answers are verified. The working application remains on its prior build.

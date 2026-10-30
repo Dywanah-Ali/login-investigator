@@ -9,6 +9,7 @@ import logging
 import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from dataclasses import replace
 
 from fastapi import FastAPI
 
@@ -35,7 +36,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             else:
                 log.info("Knowledge-base preparation completed in %.3f seconds",
                          time.monotonic() - started)
-            app.state.services = start(settings, kb)
+            selected_settings = (replace(settings, dataset_dir=kb.source_snapshot)
+                                 if kb is not None and kb.source_snapshot is not None else settings)
+            app.state.services = start(selected_settings, kb)
             try:
                 yield
             finally:

@@ -30,8 +30,7 @@ def capture_snapshot(source: Path, destination: Path) -> str:
 import asyncio
 import json
 import uuid
-from collections.abc import AsyncIterator, Callable
-from typing import TypeVar
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, replace
 
@@ -39,34 +38,14 @@ from dotenv import dotenv_values
 from langchain_core.embeddings import Embeddings
 from sqlalchemy import text
 
+from login_investigator.workers import owned_operation
 from login_investigator.loader import load_log
 from login_investigator.postgres import ServerSettings, check_server, create_fresh_database, drop_database
-from . import KnowledgeBase, build_knowledge_base, database_engine, reader_settings
+from . import KnowledgeBase, Reranker, build_knowledge_base, database_engine, reader_settings
 from .graph_ingestion import import_graph
 from .graph_service import GraphService, docker, check_serving_protection, execute
 from .graph_verification import verify_graph
 from .neo4j_graph import GraphSettings, Neo4jQueries, GraphUnavailable
-
-
-T = TypeVar('T')
-
-
-async def owned_operation(operation: Callable[[], T]) -> T:
-    """Cancellation waits for the resource owner before cleanup may start."""
-    task = asyncio.create_task(asyncio.to_thread(operation))
-    try:
-        return await asyncio.shield(task)
-    except asyncio.CancelledError:
-        while not task.done():
-            try:
-                await asyncio.shield(task)
-            except asyncio.CancelledError:
-                continue
-            except Exception:
-                break
-        if not task.cancelled():
-            task.exception()  # Retrieve a worker failure while preserving the cancellation.
-        raise
 
 
 @dataclass(frozen=True)
@@ -175,8 +154,9 @@ def dispose_resources(service: GraphService, database: ServerSettings | None, di
 
 
 @asynccontextmanager
-async def open_version(marker: Path, server: ServerSettings) -> AsyncIterator[KnowledgeBase]:
-    """Open an explicitly selected completed pair as a reader. T48 integrates app selection."""
+async def open_version(marker: Path, server: ServerSettings, *, embedder: Embeddings | None = None,
+                       reranker: Reranker | None = None) -> AsyncIterator[KnowledgeBase]:
+    """Own both read clients for one selected source world, including failed startup."""
     value = json.loads(marker.read_text())
     version = GraphVersion(**value, marker=marker)
     if (not re.fullmatch(r'[0-9a-f]{32}', version.build_id)
@@ -192,9 +172,9 @@ async def open_version(marker: Path, server: ServerSettings) -> AsyncIterator[Kn
     directory = marker.parent
     service = GraphService(version.container, directory)
     values = dotenv_values(directory / '.env')
-    settings = GraphSettings(service.uri(), values.get('LI_GRAPH_USER') or '', values.get('LI_GRAPH_PASSWORD') or '')
+    settings = GraphSettings(await owned_operation(service.uri), values.get('LI_GRAPH_USER') or '', values.get('LI_GRAPH_PASSWORD') or '')
     database = replace(server, database=version.database)
-    engine = database_engine(reader_settings(database))
+    engine = database_engine(reader_settings(database), bounded=True)
     graph = None
     try:
         async with engine.connect() as connection:
@@ -202,16 +182,29 @@ async def open_version(marker: Path, server: ServerSettings) -> AsyncIterator[Kn
             fingerprints = (await connection.execute(text('SELECT fingerprint FROM build_record'))).all()
         if rows != [(version.build_id, version.fingerprint)] or fingerprints != [(version.fingerprint,)]:
             raise ValueError('PostgreSQL and graph build identities do not match')
-        await asyncio.to_thread(check_serving_protection, settings)
+        await owned_operation(lambda: check_serving_protection(settings))
         await verify_graph(engine, snapshot, settings, version.build_id, version.fingerprint)
-        kb = KnowledgeBase(engine)
-        graph = Neo4jQueries(settings, load_log(snapshot / 'logins.csv'))
+        kb = KnowledgeBase(engine, embedder, reranker)
+        kb._dataset = snapshot
+        kb._log = await owned_operation(lambda: load_log(snapshot / 'logins.csv'))
+        kb.build_id = version.build_id
+        kb.offline_embeddings = version.offline_embeddings
+
+        async def check_integrity():
+            if source_fingerprint(snapshot) != version.fingerprint:
+                raise ValueError('Source snapshot changed')
+            return await verify_graph(engine, snapshot, settings, version.build_id, version.fingerprint)
+
+        kb._graph_verifier = check_integrity
+        graph = Neo4jQueries(settings, kb._log)
         kb._graph_queries = graph
         yield kb
     finally:
-        if graph is not None:
-            graph.close()
-        await engine.dispose()
+        try:
+            if graph is not None:
+                await owned_operation(graph.close)
+        finally:
+            await engine.dispose()
 
 
 def remove_version(version: GraphVersion, server: ServerSettings) -> None:

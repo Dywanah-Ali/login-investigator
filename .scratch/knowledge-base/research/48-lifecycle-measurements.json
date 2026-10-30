@@ -1,0 +1,15 @@
+{
+  "offline_embeddings": true,
+  "readiness": "GET /api/overview and GET /api/investigations",
+  "provider_calls": 0,
+  "build_ids": [
+    "e2e4547ca4d24fd9b11b9b67cfc493d9",
+    "d9db10c8248745eca7aa127873a2a7c9"
+  ],
+  "initial_ready_seconds": 30.463,
+  "update_interruption_seconds": 21.526,
+  "rollback_interruption_seconds": 26.914,
+  "unavailable_graph_startup_refused_seconds": 11.593,
+  "graph_recovery_seconds": 107.595,
+  "working_pointer_unchanged": true
+}
