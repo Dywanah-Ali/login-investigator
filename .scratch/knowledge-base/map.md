@@ -11,7 +11,14 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
-- **T48 lifecycle checkpoint, 30 October 2026:** checkpoints 1–2 are implemented and verified.
+- **Current priority, T48 closure on 30 October 2026:** [T49 migration acceptance](issues/49-neo4j-migration-acceptance.md).
+  T48 is resolved: paired lifecycle and native inspection complete; author accepted organisation
+  and S6 Browser views; Gephi retired with history preserved. Evidence: full pre-retirement
+  backend 710 passes, final native suite 2 passes, post-retirement core/graph/native 53 passes,
+  frontend 150, clean types and clear two-axis reviews. Working application remains unchanged.
+  T49 owns live migration gates, maintenance-window acceptance and the switch. T45 remains separate.
+
+- **Earlier T48 lifecycle checkpoint, 30 October 2026:** checkpoints 1–2 are implemented and verified.
   Coherent startup, update/rollback, saved evidence and evaluation isolation are complete.
   Evidence: 21 focused lifecycle tests, 709 full backend passes with one known AUD-061
   teardown error followed by exact cleanup and a passing affected-test rerun; 150 frontend
@@ -20,7 +27,7 @@ value it adds to the app, not for the sake of demonstrating RAG.
   until acceptance. Restart measurements are recorded; T49 still owns maintenance-window
   acceptance and the working-application switch.
 
-- **Current priority, T47 closure on 30 October 2026:** [T48 paired lifecycle and native inspection](issues/48-paired-lifecycle-and-native-inspection.md).
+- **Previous priority, T47 closure on 30 October 2026:** [T48 paired lifecycle and native inspection](issues/48-paired-lifecycle-and-native-inspection.md).
   [T47](issues/47-neo4j-build-and-graph-answers.md) is resolved: isolated paired builds and exact
   Neo4j graph answers are verified. The working application remains on its prior build.
   T49 still gates migration acceptance and T25/T27. T45 remains independently available.
@@ -62,6 +69,11 @@ value it adds to the app, not for the sake of demonstrating RAG.
   primary sources. The course's solution kits stay closed.
 
 ## Decisions so far
+
+- [T48 Paired lifecycle and native inspection](issues/48-paired-lifecycle-and-native-inspection.md):
+  coherent startup, restart-based update/rollback, saved-evidence continuity and isolated evaluations;
+  exact native Browser views accepted by the author, followed by Gephi retirement. Full and affected
+  safety checks and independent reviews pass. Application selection unchanged; T49 is next.
 
 - [T47 Build the Neo4j graph and preserve its answers](issues/47-neo4j-build-and-graph-answers.md):
   isolated immutable-source pairs, reference-only graph ingestion, independent integrity and
@@ -234,8 +246,8 @@ for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 t
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
 line holds its edges. The build frontier reached ticket 25 after T24. As of 30 October 2026,
 T46's decision is resolved and its approved migration is T47 → T48 → T49. T49 now holds T25
-and T27. **The next priority is ticket 48**, ahead of the otherwise unblocked T45 by the
-author's approved sequence. T47 is resolved; the active application switch awaits T49.
+and T27. **The next priority is ticket 49**, ahead of the otherwise unblocked T45 by the
+author's approved sequence. T47 and T48 are resolved; the active application switch awaits T49.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,

@@ -1196,6 +1196,11 @@ The T47 command publishes only Bolt on localhost; HTTP is not published. These r
 are recorded for the production-readiness review, not silently treated as production safeguards.
 No telemetry/network-policy change was made under this observation.
 
+T48 native inspection update, 30 October 2026 (author walkthrough accepted; T48 resolved): newly created serving containers also publish
+Browser HTTP on localhost, after sealing the graph read-only. The builder container still exposes
+only Bolt. Browser starts in read access mode; this is a client preference, not least privilege.
+The accepted Community administrative limitation and future production gate remain unchanged.
+
 ### AUD-069: Explorer interaction timeout under concurrent validation
 
 T47's unchanged frontend suite recorded 149 passes and one five-second timeout in the valid-IP

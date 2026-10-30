@@ -61,7 +61,9 @@ class GraphService:
                      '--env', 'NEO4J_server_memory_heap_max__size=512m',
                      '--env', 'NEO4J_server_memory_pagecache_size=256m']
         if read_only:
-            arguments += ['--env', 'NEO4J_server_databases_read__only=neo4j']
+            arguments += ['--env', 'NEO4J_server_databases_read__only=neo4j',
+                          '--publish', '127.0.0.1::7474',
+                          '--env', 'NEO4J_browser_post__connect__cmd=access-mode read']
         else:
             arguments += ['--env-file', str(self.directory / 'builder' / '.env')]
         self.creation_attempted = True

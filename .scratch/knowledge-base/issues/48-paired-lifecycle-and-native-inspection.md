@@ -1,7 +1,7 @@
 # 48: Integrate updates, rollback and native graph inspection
 
 Type: build
-Status: claimed
+Status: resolved
 Blocked by: 47
 Blocks: 49
 Phase: 0
@@ -59,20 +59,20 @@ Neo4j Browser is an operator inspection tool, not a new analyst screen.
 
 ## Checkpoint 3: native graph inspection
 
-- [ ] Provide saved/tested Browser queries for the organisation and a finding's neighbourhood.
+- [x] Provide saved/tested Browser queries for the organisation and a finding's neighbourhood.
       Match the same core walk's exact node/edge identities, including device peers and
       shared-address context; independent Browser logic must not silently redefine the radius.
-- [ ] Identify the connected build and source version. Verify styling and node/result limits
+- [x] Identify the connected build and source version. Verify styling and node/result limits
       so a truncated display cannot be mistaken for the full result. Use the read-only serving
       graph and document the accepted Community administrative limitation.
-- [ ] Explain that passage nodes are references and Browser does not automatically fetch text
+- [x] Explain that passage nodes are references and Browser does not automatically fetch text
       from PostgreSQL. No GEXF file or alternative portable graph export is promised.
-- [ ] Record the author's live walkthrough of organisation and finding views. Only after that
+- [x] Record the author's live walkthrough of organisation and finding views. Only after that
       acceptance retire the Gephi command and its format-specific tests/manual instructions.
       Preserve historical T20 evidence and the future in-app Graph tab scope.
-- [ ] Update the admin manual for every adopted build, inspection, activation, rollback and
+- [x] Update the admin manual for every adopted build, inspection, activation, rollback and
       recovery task, and test its commands exactly as written. Secrets remain outside outputs.
-- [ ] Relevant safety net/type checks pass; required two-axis review is triaged. Run agreed
+- [x] Relevant safety net/type checks pass; required two-axis review is triaged. Run agreed
       eval gates for any agent-behaviour change. Record all bugs and remaining concerns.
 
 ## Boundaries and handoff
@@ -169,3 +169,73 @@ owns final acceptance, switching and removal of remaining obsolete NetworkX path
 
 - 2026-10-30 — Created using `to-tickets` after author approval. Native inspection replaces
   the initially proposed GEXF-preservation work. No code or live walkthrough completed yet.
+
+- 2026-10-30 — Checkpoint 3 resumed on the author's instruction; Astra already confirmed.
+  Browser parameters are derived from the core radius, with directed device/address peer
+  edges and build/source guards. The organisation view excludes passage references; those
+  remain inspectable separately. New serving containers expose Browser HTTP on localhost
+  only, alongside existing Bolt. Gephi remains until the author's walkthrough acceptance.
+- 2026-10-30 — Documentation: Neo4j Community 2026.10.1 / driver 6.1.0; Context Hub search
+  has driver coverage but no Browser guide. Reused T47/T48 driver parameter/session notes;
+  checked official [Browser settings](https://neo4j.com/docs/browser/operations/browser-settings/),
+  [styling](https://neo4j.com/docs/browser/operations/browser-styling/) and
+  [parameters](https://neo4j.com/docs/browser/operations/query-parameters/): read access mode,
+  recordLimit/maxVizNodes, GraSS captions/relationship colours and :params maps.
+- 2026-10-30 — Browser verification harness: installed Playwright 1.61.1; Context Hub
+  `playwright/playwright` 1.60.0 documents the reused stable Chromium/context/locator APIs.
+  The harness uses a fresh browser context and never prints credentials or records login traces.
+  No dependency added to the application.
+
+- 2026-10-30 — Native inspection runtime checks: organisation 170 nodes/326 relationships;
+  S6 55/64, complete TRUE and matching source/build identity. Browser 2026.10.21 settings,
+  explicit GraSS import, captions and colours checked; auto-connect off. Node limit 10 produced
+  an explicit truncated-canvas warning while the table retained 55/64; restoring 1000 restored
+  the full graph. Record limit 1 retained the full one-row query result. Evidence:
+  `research/48-native-inspection-verification.md`. Independent final reviews: Standards 0,
+  Spec 0. Author live walkthrough remains pending, so Gephi is retained and T48 stays open.
+- 2026-10-30 — Verification so far: native/retained-export focused suite 11 passed in 265.43 s;
+  parameter syntax regression separately passed; frontend 150 passed in 44.53 s; both type
+  checks pass; six existing lint warnings remain. Full backend and final native-expression
+  test run pending. B-119 through B-123 retain the environment, fixture and Browser iterations.
+- 2026-10-30 — Final native regression suite passed: 2 tests in 238.66 s, including live Cypher
+  evaluation of generated Browser parameter syntax and exact peer/core identities. The final
+  walkthrough command succeeded with output in the isolated pair's `walkthrough/` directory.
+  The pair `05f15cfcb66b48aaa7e2c5cfddd116c3` is retained for the author's live acceptance.
+
+- 2026-10-30 — Full backend safety net passed cleanly: 710 tests in 1439.60 s (23:59),
+  no teardown errors. That run collected before the final parameter-syntax test was added;
+  the final native suite separately passed both tests in 238.66 s. Frontend 150 passed,
+  both type checks clean, six existing lint warnings. No provider calls or live agent eval:
+  no prompts, tool contracts or answer behaviour changed. Final two-axis rechecks both clear.
+  The author requested step-by-step Browser guidance; live walkthrough is in progress,
+  with no acceptance or Gephi retirement inferred.
+
+- 2026-10-30 — Author live walkthrough: connected to the retained inspection pair; screenshot confirms exact build/source identity. Author confirmed display limits, auto-connect off and read mode. Organisation screenshot confirms 170 nodes/326 relationships. After styling instructions, author responded positively. Finding view and explicit final native-inspection acceptance remain pending; Gephi is retained.
+
+- 2026-10-30 — Author completed the S6 live view: graph screenshot shows the styled neighbourhood and selected UK office address; table screenshot confirms matching build/source, node_count 55, relationship_count 64 and complete TRUE. Explained shared-address context and passage-reference/PostgreSQL-text boundary. Both native views have been walked through; explicit acceptance requested before Gephi retirement.
+
+- 2026-10-30 — Author explicitly accepted native Browser inspection as the Gephi replacement
+  and instructed retirement. Removed `scripts/export_graph.py`, the GEXF writer/core export
+  method and `test_graph_export.py`; replaced active manual instructions with a native-inspection
+  link. Historical T20/spec/bug evidence remains. Native identity, device-peer and address-context
+  coverage replaces format-specific checks. Remaining NetworkX query removal stays in T49.
+  Post-retirement import/type/core regression checks and review are in progress.
+
+- 2026-10-30 — Post-retirement checks passed: 53 knowledge-base, graph and native-inspection
+  tests in 160.11 s, no failures or teardown errors. Pyright clean. Retirement review:
+  Standards 0, Spec 0 after updating closure wording. Full pre-retirement backend run was
+  710 clean passes; final native-expression suite separately passed 2; frontend 150, clean
+  frontend types and six existing lint warnings. No further application code changed afterward.
+  All T48 criteria are evidenced. T48 resolved; T49 is next. Working application pointer remains
+  unchanged; no push, paid provider call or maintenance-window acceptance is implied.
+
+## Answer
+
+Completed paired startup, update/rollback, saved-evidence continuity and isolated evaluations in
+checkpoints 1–2. Checkpoint 3 now provides core-derived native Browser inspection with exact
+node/edge identities, build/source guards, verified styling and display-limit behaviour. The
+author completed organisation and S6 views and explicitly accepted the replacement. Gephi's
+command, writer, public export method, format-specific tests and active manual instructions are
+retired; historical T20 evidence remains. The native walkthrough pair is retained separately.
+T49 owns final migration evaluation, maintenance-window acceptance, working-app switch and
+remaining obsolete NetworkX removal. AUD-068 remains the production-readiness gate.

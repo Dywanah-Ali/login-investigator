@@ -80,3 +80,10 @@ not start implementation or approve paid model runs beyond the project's existin
 
 - 2026-10-30 — Created using `to-tickets` after author approval. T25/T27 explicitly wait
   for this gate; resolving the architecture decision alone cannot release them.
+
+- 2026-10-30 — T48 resolved after the author's native Browser walkthrough and explicit acceptance.
+  Gephi export command/writer/method/tests are retired; remaining NetworkX cleanup remains here.
+  Native evidence and final reviews are linked from T48. The separate offline inspection pair
+  is retained for the author; it is not live retrieval evidence or the selected application build.
+  Maintenance-window acceptance, live migration gates and application switch remain unapproved
+  and unperformed. This ticket is next, not started.

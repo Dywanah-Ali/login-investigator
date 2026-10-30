@@ -10,116 +10,21 @@ command to run it in the session.
 
 ## Contents
 
-1. [Export the knowledge graph and open it in Gephi Lite](#1-export-the-knowledge-graph-and-open-it-in-gephi-lite)
+1. [Retired Gephi workflow](#1-retired-gephi-workflow)
 2. [Check retrieval without the agent](#2-check-retrieval-without-the-agent)
 3. [Measure saved account-lookup evidence](#3-measure-saved-account-lookup-evidence)
 4. [Verify an isolated Neo4j graph version](#4-verify-an-isolated-neo4j-graph-version)
 5. [Select, restart and roll back a paired graph version](#5-select-restart-and-roll-back-a-paired-graph-version)
+6. [Inspect a paired graph in Neo4j Browser](#6-inspect-a-paired-graph-in-neo4j-browser)
 
 ---
 
-## 1. Export the knowledge graph and open it in Gephi Lite
+## 1. Retired Gephi workflow
 
-Added 28 October 2026 by knowledge-base ticket 20.
-
-### What it is for
-
-A builder's wall chart: a file you open in Gephi Lite to inspect the synthetic organisation by
-eye. It is not the analyst's view; the app's own Graph tab (phase 1) draws only the walk the
-agent made. The export writes either the **whole graph** or **one finding's walk**: the accounts
-the finding reached, their groups and assets, and the people who share a device or an address
-with them.
-
-### Before you start
-
-| Need | How to tell |
-|---|---|
-| PostgreSQL running | The script refuses with the start command if it is not |
-| A built knowledge base that matches the dataset | The script refuses with the rebuild command if it is missing or stale |
-| The reader password in `backend/.env` | Already set up; the script refuses with a setup message if not |
-
-### Run it
-
-Whole graph:
-
-```
-uv run --directory backend python -m scripts.export_graph --output ~/Downloads/graph.gexf
-```
-
-One finding's walk, here S6:
-
-```
-uv run --directory backend python -m scripts.export_graph --finding-id F-password-spraying-d06a7545 --output ~/Downloads/s6.gexf
-```
-
-`--output` is required; the file goes exactly where it says. Any normal folder works.
-**Never save into the dataset folder** (`backend/data/datasets/default/`): a new file there makes
-the knowledge base stale and the app refuses to start (bug B-096). The script refuses that
-location.
-
-A success prints `Wrote <path>`.
-
-**Finding IDs.** The app does not show them yet; the Alerts panel gains a finding ID column in
-knowledge-base ticket 32. The IDs on the `default` dataset (from ticket 13) are below. They are
-made from the log, so they change if the log is regenerated.
-
-| Finding ID | First seen (UTC) | Address | Users |
-|---|---|---|---|
-| `F-new-country-f2ec8467` | 2026-10-02 08:17 | 203.0.113.70 | 1 |
-| `F-brute-force-4d4fd1ab` | 2026-10-05 06:00 | 198.51.100.30 | 1 |
-| `F-success-after-failures-cc1083a7` | 2026-10-05 06:00 | 198.51.100.30 | 1 |
-| `F-password-spraying-4a90a716` | 2026-10-06 03:04 | 2.57.122.53 | 35 |
-| `F-new-country-830a45a8` | 2026-10-06 13:47 | 91.142.73.116 | 1 |
-| `F-password-spraying-d06a7545` (S6) | 2026-10-07 02:00 | 45.148.10.80 | 20 |
-| `F-new-country-1ef7362b` | 2026-10-07 02:10 | 45.148.10.80 | 1 |
-| `F-brute-force-0ce5e14e` | 2026-10-08 01:12 | 185.218.86.24 | 1 |
-| `F-success-after-failures-9a4beef6` | 2026-10-08 01:32 | 185.218.86.24 | 1 |
-| `F-new-country-4a3d5d22` | 2026-10-08 02:32 | 185.218.86.24 | 1 |
-
-### Open the result in Gephi Lite
-
-1. Open [Gephi Lite](https://gephi.org/gephi-lite/) in the browser.
-2. Choose to open a local file and select the `.gexf` file.
-   - To jump to a folder, press **Cmd + Shift + G** and paste its path.
-   - A folder whose name starts with a dot (such as `.scratch`) is hidden on a Mac. Press
-     **Cmd + Shift + .** in the file picker to show hidden items.
-3. Nodes are coloured by type:
-
-   | Colour | Node type |
-   |---|---|
-   | Blue | person |
-   | Orange | group |
-   | Red | asset |
-   | Green | device |
-   | Purple | network address |
-   | Grey | document chunk |
-
-4. **The whole graph is busy**: 320 of its 490 nodes are document chunks. For a clean view of the
-   organisation, add a filter on `entity_type` in the Filters panel and leave out `chunk` (the
-   author's ruling, 28 October 2026). A layout such as ForceAtlas 2 spreads the nodes apart.
-
-Click a node to see its attributes, such as `department` or `sensitivity`. A `used_address` or
-`used_device` edge carries its successful sign-in times in `times`.
-
-### When it refuses
-
-Every refusal starts with `Export refused:` and leaves no file.
-
-| Message says | What to do |
-|---|---|
-| no knowledge base has been built | Build it: `uv run --directory backend python -m scripts.build_knowledge_base` (costs about $0.001 in embeddings) |
-| built from older files or settings | The dataset changed since the build. Rebuild with the same command |
-| PostgreSQL is not answering | Start PostgreSQL with the command the message gives |
-| cannot be checked | Check the reader's login in `backend/.env`, or rebuild |
-| No finding has this ID | Check the ID against the table above; the log may have been regenerated |
-| The finding reaches no account | Expected for a spray with no successful sign-in, such as `F-password-spraying-4a90a716`: there is no walk to draw |
-| outside the dataset folder | Choose another `--output` folder |
-
-`Export failed (<ErrorName>)` means an unexpected error. Its details are hidden on purpose,
-because database errors can carry hosts and credentials. Ask Claude or Codex to investigate.
-
-**Colours all grey?** The file was written before the B-097 fix (28 October 2026): Gephi Lite
-ignores colours that carry a transparency value. Export it again.
+Retired on 30 October 2026 after the author's native Browser walkthrough and acceptance in T48.
+Use [section 6: native graph inspection](#6-inspect-a-paired-graph-in-neo4j-browser).
+The export command is removed. [T20's historical evidence](../.scratch/knowledge-base/issues/20-gephi-export.md)
+and its bug history remain preserved.
 
 ## 2. Check retrieval without the agent
 
@@ -394,3 +299,97 @@ Rollback with no previous complete version refuses. Keep failed-cleanup recovery
 described in section 4. The local pointer replacement is one same-directory rename. It does
 not promise distributed atomicity or durability through power loss; restore an explicitly
 verified retained selection after such an event.
+
+## 6. Inspect a paired graph in Neo4j Browser
+
+Added by T48 and accepted after the author's live walkthrough on 30 October 2026. Browser
+replaces the retired Gephi workflow. It is an operator tool; the planned in-app Graph tab remains separate.
+
+### What it is for
+
+Inspect the organisation and the exact neighbourhood calculated by the core for each finding.
+The neighbourhood includes permissions, device peers and shared-address context. A purple
+`used_address` relationship is context, not evidence of exposure or overlapping sessions.
+
+### Before you start
+
+Start Docker Desktop and PostgreSQL. Use a complete isolated pair built with the current
+`build_graph_version` command in section 4. Its serving container publishes HTTP and Bolt only
+on localhost. Older pairs without an HTTP binding need a fresh build for this walkthrough.
+The application selection stays unchanged. Offline embeddings are sufficient for graph inspection.
+Neo4j Community retains administrative powers under AUD-068; read access mode alone is not a
+permission boundary. The serving database's write protection is checked before preparation.
+
+### Run it
+
+From the repository root, first build a separate offline inspection pair:
+
+```sh
+uv run --directory backend python -m scripts.build_graph_version --offline --report ../.graph-versions/t48-inspection-build.json
+```
+
+Use the `version_file` value from that report after `.graph-versions/` below. The command
+runs inside `backend`, where retained pairs live. Choose a new output
+directory each time. Replace `BUILD_ID` with the generated build ID:
+
+```sh
+uv run --directory backend python -m scripts.inspect_graph --version-file .graph-versions/BUILD_ID/complete.json --output .graph-versions/BUILD_ID/inspection
+```
+
+The command checks both stores and the source snapshot. It prepares all findings without paid
+calls. Add `--finding-id F-...` to prepare just one finding. It never selects an application build.
+
+### Open or check the result
+
+Open `browser_url` from `inspection/inspection.json`. Connect to its `bolt_uri`, database `neo4j`,
+user `li_serving`. Copy the password privately from this build's `.env` file into the login form.
+Do not paste credentials into queries, chat or screenshots. The report and saved queries contain
+no password. After a container restart, regenerate into a new output folder to refresh its
+localhost ports.
+
+1. Run `:access-mode read`. Run `identity.cypher` and compare both values with `inspection.json`.
+2. Open Settings with the gear icon. Set Visualization node limit to `1000` and Record limit
+   to `1000`. Ensure Automatically connect result nodes is off, so Browser does not add
+   relationships beyond the core walk. The bundled Browser 2026.10.21 does not support `:config`.
+   Increase the node limit before inspecting a result with more than 1,000 nodes. Each saved
+   query returns one row containing all nodes/relationships and their counts. The graph canvas
+   can still hide nodes; compare its visible counts to that row and the report. At a limit of 10,
+   the verified S6 view displayed “Initial display limit hit at 10 nodes” while its table retained
+   55 nodes and 64 relationships. A partial canvas is not the full result. Do not expand nodes
+   while comparing the exact saved neighbourhood.
+3. Run `:style`, then upload `inspection.grass` and confirm Import in the preview. Node captions
+   show stable IDs, whose prefixes identify their types. Zoom in to read captions. The results overview lists relationship types. Grants are red, device use green and
+   address use purple. All nodes currently share the `Entity` label, so node colour is uniform.
+4. Paste `organisation-parameters.txt`, execute it, then execute `organisation.cypher`. Use the
+   result frame’s Save and open in tab button to keep the query in the Queries sidebar. This view includes all organisation nodes and relationships,
+   including isolated networks, but excludes passage references.
+5. Choose a finding from `inspection.json`. Execute its `F-...-parameters.txt`, then `finding.cypher`.
+   Use Save and open in tab to keep the query. Check `complete=true` and both counts against the report.
+   Zero nodes means the finding reached no account under the core rules. The accompanying
+   `F-...-context.json` records the period, permissions caveat and separate address context.
+6. Load the appropriate parameter file whenever changing views or reconnecting. A query against
+   a different build/source returns no row; it is not a valid empty neighbourhood.
+
+Passage nodes contain stable references only. Browser does not fetch passage text from
+PostgreSQL. To inspect those references separately, run:
+
+```cypher
+MATCH (n:Entity {entity_type:'chunk'}) RETURN n.id AS passage_id ORDER BY passage_id;
+```
+
+This table has its own Browser record limit. It is not part of the organisation or finding view.
+There is no portable graph export in this workflow.
+
+### When it refuses
+
+| Symptom | Action |
+| --- | --- |
+| Preparation refused | Check that both services run, the version is complete, and the output folder is new. Never edit the immutable snapshot |
+| No Browser HTTP binding | Prepare a new isolated pair with the current command; do not alter the working application's selection |
+| Query returns no row | Compare connection identity and reload parameters from the matching build |
+| `complete=false` or counts differ | Stop the inspection and investigate; do not accept the view as complete |
+| Canvas shows fewer nodes than the counts | Raise Visualization node limit in Settings, rerun, and compare again. Do not infer missing evidence from the canvas |
+
+Retain the isolated pair for the author's walkthrough. There is no automatic removal after
+inspection. Any later cleanup must identify only this pair; no global database or Docker cleanup
+is part of inspection.

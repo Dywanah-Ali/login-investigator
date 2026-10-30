@@ -2017,3 +2017,60 @@ entry-point checks are recorded in T48.
 The follow-up review found that the no-build branch still exposed the working selection path.
 A test publishing to that path during evaluation failed by trying to read database settings.
 The branch now owns a private absent pointer, so a new application build cannot enter that run.
+
+### B-119 · 2026-10-30 · T48 native inspection · Missing local Neo4j image
+
+**Symptom:** the native inspection integration test and isolated walkthrough build failed before
+Neo4j creation with `GraphUnavailable`. Docker inspection confirmed the pinned image absent.
+**Cause:** local Docker no longer contained `neo4j:2026.10.1`; why it was removed is unknown.
+**Fix:** restore the pinned image with the documented Docker pull, then rerun. Temporary build
+resources followed the existing failure cleanup.
+**Lesson:** a prior handoff's runtime availability must be checked in the new session.
+**Evidence:** initial native inspection run: one failure in 5.00 seconds. Recovery pending.
+
+### B-120 · 2026-10-30 · T48 inspection test · Default data did not exercise device peers
+
+**Symptom:** exact query/core comparisons passed for every default finding, but the test's
+coverage assertion failed because no default finding has device peers.
+**Cause:** the test assumed the baseline dataset contained a peer case.
+**Fix:** plant a successful shared-device observation in a disposable source copy before building
+its test pair. Keep the real dataset and walkthrough pair unchanged.
+**Lesson:** assert that edge-case fixtures actually exercise the branch being verified.
+**Evidence:** first restored-image run failed its coverage assertion in 85.32 seconds, with clean
+resource teardown. Corrected rerun pending.
+
+### B-121 · 2026-10-30 · T48 manual validation · Wrong relative version path
+
+**Symptom:** the first inspection preparation command failed with FileNotFoundError.
+**Cause:** draft instructions used a repository-root version path, but `uv --directory backend`
+changes the working directory and the builder stores pairs under `backend/.graph-versions`.
+**Fix:** use `.graph-versions/BUILD_ID/complete.json` relative to backend; correct the manual and
+rerun the exact command.
+**Lesson:** test operator commands with their documented working-directory semantics.
+**Evidence:** first command refused without changing the application selection; corrected run pending.
+
+### B-122 · 2026-10-30 · T48 Browser verification · Current UI rejects documented config command
+
+**Symptom:** the Neo4j 2026.10.1 bundled Browser returns UnknownCommandError for `:config`.
+**Cause:** the bundled Query/Browser interface differs from the documented Browser settings
+interface. Reading documentation did not establish runtime support.
+**Fix:** verify supported Settings controls in the live interface and replace the draft manual's
+`:config` instructions. Check parameter and styling commands in that same runtime.
+**Lesson:** an operator walkthrough must be tested against the shipped interface.
+**Evidence:** authenticated Browser response explicitly says `:config` is not currently available.
+
+### B-123 · 2026-10-30 · T48 Browser verification · JSON map keys rejected by Browser
+
+**Symptom:** the generated `:params` command failed with a Cypher syntax error on quoted map keys.
+**Cause:** Browser evaluates the parameter map as Cypher; JSON object syntax is not interchangeable.
+Driver parameter tests accepted the Python map and therefore did not exercise this command layer.
+**Fix:** render fixed allowlisted map keys as Cypher identifiers while JSON-escaping all values.
+Verify the generated command in Browser and evaluate its map in a real database test.
+**Lesson:** test the operator's command representation as well as the underlying database query.
+**Evidence:** authenticated Browser rejected the original organisation parameter file.
+
+T48 checkpoint-3 follow-up: B-119 recovered after restoring the pinned image; B-120 corrected
+fixture passed in the 11-test native/export run; B-121 corrected command produced the checked
+bundle. B-122 Settings, GraSS preview/import and explicit label/type styles were verified in
+Browser 2026.10.21. Generic style defaults were ignored by its importer and removed. B-123's
+corrected parameter file executed successfully in Browser; its syntax regression passed.

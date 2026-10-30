@@ -172,3 +172,26 @@ def finding_radius(graph: nx.MultiDiGraph, log: pd.DataFrame, finding: Finding,
             AddressReuse(by_address),
         ))
     return FindingRadius(finding.finding_id, _iso(finding.first_seen), _iso(finding.last_seen), period, results)
+
+
+@dataclass(frozen=True)
+class Neighbourhood:
+    """Exact directed identities used by the radius, including address context."""
+    nodes: list[str]
+    edges: list[tuple[str, str, str]]
+
+
+def radius_neighbourhood(radius: FindingRadius) -> Neighbourhood:
+    nodes = {account.account["person_id"] for account in radius.accounts}
+    edges: set[tuple[str, str, str]] = set()
+    for account in radius.accounts:
+        for path in account.access_paths:
+            edges.add((path[0], path[1], "member_of"))
+            if len(path) == 3:
+                edges.add((path[1], path[2], "grants"))
+        address_paths = [path for match in account.address_reuse.by_address for path in match.paths]
+        for paths, relation in ((account.device_paths, "used_device"), (address_paths, "used_address")):
+            for subject, shared, peer in paths:
+                edges.update({(subject, shared, relation), (peer, shared, relation)})
+    nodes.update(node for source, target, _ in edges for node in (source, target))
+    return Neighbourhood(sorted(nodes), sorted(edges))
