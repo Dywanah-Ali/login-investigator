@@ -13,6 +13,7 @@ command to run it in the session.
 1. [Export the knowledge graph and open it in Gephi Lite](#1-export-the-knowledge-graph-and-open-it-in-gephi-lite)
 2. [Check retrieval without the agent](#2-check-retrieval-without-the-agent)
 3. [Measure saved account-lookup evidence](#3-measure-saved-account-lookup-evidence)
+4. [Verify an isolated Neo4j graph version](#4-verify-an-isolated-neo4j-graph-version)
 
 ---
 
@@ -240,3 +241,60 @@ evidence. There is no automatic replacement of the running graph.
 With no build, build the knowledge base first. For a stale or uncheckable build, follow the fixed
 startup message to check the reader settings or rebuild. A failed artifact-restoration assertion
 needs investigation; do not delete real saved investigations to make the probe pass.
+
+
+## 4. Verify an isolated Neo4j graph version
+
+Added 30 October 2026 by knowledge-base ticket 47.
+
+### What it is for
+
+Build a separate PostgreSQL/Neo4j pair from a frozen source copy, verify exact graph contents,
+check graph write prevention before and after restart, then query an account. The working
+application keeps its existing build. T48 and T49 own application integration and acceptance.
+
+### Before you start
+
+PostgreSQL and Docker Desktop must be running. Existing PostgreSQL builder and reader settings
+must be present in `.env`. Neo4j Community 2026.10.1 must be available locally:
+
+```
+docker pull neo4j:2026.10.1
+```
+
+The graph service listens only on localhost. Its serving account retains Community administrative
+powers. This is the accepted development limitation in AUD-068, not production readiness.
+
+### Run it
+
+From the repository root, exercise the complete command with offline embeddings and dispose
+only the version this command creates:
+
+```
+uv run --directory backend python -m scripts.build_graph_version --offline --dispose --report ../.scratch/knowledge-base/research/47-command-result.json
+```
+
+Offline embeddings test graph behaviour only. They cannot support a retrieval evaluation.
+The version records this mode. To retain a version for further development inspection, omit
+`--dispose`. To create real embeddings, also omit `--offline`; that makes paid provider calls.
+Neither form switches the active application pointer. Retained versions live under the ignored
+`backend/.graph-versions/` directory. Each has its own PostgreSQL database and Docker volume.
+No earlier build is automatically deleted.
+
+### Open or check the result
+
+The JSON report includes the account answer, build ID, preparation duration, five lookup timings,
+and one container-memory observation. These measurements do not establish a capacity guarantee
+or a speed improvement. A retained version's `complete.json` is written only after verification.
+Its sibling `.env` holds serving credentials. Never copy that file into a report or ticket.
+
+### When it refuses
+
+A missing service produces a nonzero exit. Start Docker Desktop, confirm the pinned image exists,
+and restart PostgreSQL with `brew services restart postgresql@18` if needed. Check the existing
+builder and reader settings. An integrity or security failure requires diagnosis before retrying;
+never bypass the verifier or edit source snapshots. Ordinary failed builds clean their own resources. If Docker is unavailable during cleanup,
+the version directory is retained with `cleanup.json` naming the exact remaining resources.
+Restore the unavailable service before removing those resources; retain the private state until
+cleanup succeeds. Do not delete unrelated containers or databases.
+The active application pointer is never changed by this command.

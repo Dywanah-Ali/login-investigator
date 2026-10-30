@@ -11,6 +11,11 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **Current priority, T47 closure on 30 October 2026:** [T48 paired lifecycle and native inspection](issues/48-paired-lifecycle-and-native-inspection.md).
+  [T47](issues/47-neo4j-build-and-graph-answers.md) is resolved: isolated paired builds and exact
+  Neo4j graph answers are verified. The working application remains on its prior build.
+  T49 still gates migration acceptance and T25/T27. T45 remains independently available.
+
 - **Origin.** The bootcamp's week 2 brief (RAG, with GraphRAG as one suggested use case) is the
   inspiration. By the author's ruling of 20 October 2026 it is not a contract: nothing is
   submitted, there is no deadline and no owed deliverable. See `CLAUDE.md`.
@@ -36,6 +41,13 @@ value it adds to the app, not for the sake of demonstrating RAG.
   primary sources. The course's solution kits stay closed.
 
 ## Decisions so far
+
+- [T47 Build the Neo4j graph and preserve its answers](issues/47-neo4j-build-and-graph-answers.md):
+  isolated immutable-source pairs, reference-only graph ingestion, independent integrity and
+  corruption refusal, retired builder credentials and serving protection across restart;
+  existing graph answers and frozen S6 gold preserved. Cancellation/partial-failure cleanup
+  verified. Evidence: 686 backend and 150 frontend tests, clean types, cleared two-axis review,
+  tested admin command and local measurements. No active application switch; T48 is next.
 
 <!-- one line per resolved ticket: [title](link): gist -->
 

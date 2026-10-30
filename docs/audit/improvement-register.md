@@ -93,6 +93,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-064 | What the re-ranker's assessment still needs: a kept-5 check and calibration evidence | Open; for T39 and T41 | Medium | T23 spec review; T23 first live run |
 | AUD-065 | Investigation evidence persistence and storage growth | Open, deferred design; bounded T24 checks approved | Medium | Author discussion before T24, 29 October 2026 |
 | AUD-066 | Review Q04's compromise-attribution check for long structured answers | Open review concern, deferred outside T24 | Low | T24 Port eval Q04 run 1; B-105; related B-078 |
+| AUD-069 | Intermittent Explorer interaction timeout during T47 safety checks | Open observation; affected-file rerun passed, investigate if repeated | Low | B-113; T47 frontend safety net |
 
 ### AUD-001: Rule filter
 
@@ -1096,6 +1097,14 @@ Keep the failed score. Future review should decide whether that contextual attri
 adequate, then test both valid long-list attribution and unrelated/negated account mentions
 before changing the check. No grader or prompt change is authorised here. B-105 records the
 observation; B-078 is the earlier, separately fixed phrasing limitation.
+
+### AUD-069: Explorer interaction timeout under concurrent validation
+
+T47's unchanged frontend suite recorded 149 passes and one five-second timeout in the valid-IP
+submission/Reset test at `explorer.test.tsx:80`. The affected file then passed all eight tests
+without code or timeout changes. Cause remains unproven; the original run overlapped Docker
+integration startup. Keep B-113's failure evidence. Investigate if it recurs; no UI change or
+relaxed timing threshold is approved. Candidate for the existing T44 cleanup review.
 
 ## Longer-term capabilities already named in the spec
 

@@ -36,9 +36,10 @@ from .chunking import Chunk, read_chunks
 from .access import check_reader_role, grant_read_only, reader_settings as reader_settings
 from .mentions import find_mentions
 from .graph import build_graph
+from .graph_queries import GraphQueries, NetworkXQueries
 from .gexf import ExportRefused as ExportRefused, finding_neighbourhood, write_gexf
 from .integrity import GraphCounts, GraphIntegrityError as GraphIntegrityError, check_graph_integrity
-from .radius import FindingRadius, GraphWalk, account_groups, finding_radius, radius_walk
+from .radius import FindingRadius, GraphWalk
 from .reranking import Reranker as Reranker, RerankerUnavailable as RerankerUnavailable
 from .retrieval import SearchFilters as SearchFilters, SearchResult, VerdictPolicy as VerdictPolicy, search_corpus
 from .staleness import (
@@ -79,6 +80,7 @@ class KnowledgeBase:
         self._embedder = embedder
         self._reranker = reranker
         self._graph: nx.MultiDiGraph | None = None
+        self._graph_queries: GraphQueries | None = None
         self._dataset: Path | None = None
         self._log: pd.DataFrame | None = None
 
@@ -99,38 +101,23 @@ class KnowledgeBase:
             raise ValueError("Open the knowledge base with its dataset to check the graph")
         return await check_graph_integrity(self.engine, self._dataset, self.graph if graph is None else graph)
 
+    @property
+    def graph_queries(self) -> GraphQueries:
+        if self._graph_queries is None:
+            raise ValueError("Open the knowledge base with its dataset to use the graph")
+        return self._graph_queries
+
     def finding_radius(self, finding: Finding, start: str | None = None, end: str | None = None) -> FindingRadius:
-        if self._log is None:
-            raise ValueError("Open the knowledge base with its dataset to compute a radius")
-        return finding_radius(self.graph, self._log, finding, start, end)
+        return self.graph_queries.finding_radius(finding, start, end)
 
     def account_groups(self, username: str) -> GraphWalk:
-        return account_groups(self.graph, username)
+        return self.graph_queries.account_groups(username)
 
     def lookup_account(self, account_id: str) -> dict[str, object]:
-        """Return a snapshot of one account's owner, department and memberships.
-
-        Accept the organisation's stable person ID or its login username. All returned records
-        are copies: a caller cannot change the shared graph through the result.
-        """
-        matches = [(node, data) for node, data in self.graph.nodes(data=True)
-                   if data["entity_type"] == "person" and
-                   account_id.lower() in (node.lower(), data["username"].lower())]
-        if len(matches) != 1:
-            return {"status": "not_found", "account": None, "groups": [], "paths": []}
-        person_id, data = matches[0]
-        walk = self.account_groups(data["username"])
-        return {"status": "found", "account": dict(data),
-                "groups": [dict(self.graph.nodes[node]) for node in walk.records],
-                "paths": walk.paths}
+        return self.graph_queries.lookup_account(account_id)
 
     def finding_walk(self, finding_id: str) -> GraphWalk:
-        if self._log is None:
-            raise ValueError("Open the knowledge base with its dataset to walk a finding")
-        finding = next((f for f in detect_all(self._log) if f.finding_id == finding_id), None)
-        if finding is None:
-            raise ValueError("No finding has this ID in the dataset's log")
-        return radius_walk(self.finding_radius(finding))
+        return self.graph_queries.finding_walk(finding_id)
 
     def export_gexf(self, path: Path, finding_id: str | None = None) -> None:
         """Write the checked graph, or one finding's neighbourhood, as GEXF for Gephi Lite."""
@@ -214,6 +201,7 @@ async def open_knowledge_base(
             kb._graph, kb._log = await build_graph(engine, dataset)
             await kb.check_graph_integrity()
             nx.freeze(kb.graph)
+            kb._graph_queries = NetworkXQueries(kb.graph, kb._log)
         yield kb
     finally:
         await engine.dispose()

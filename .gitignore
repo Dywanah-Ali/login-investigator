@@ -33,3 +33,6 @@ build/
 
 # macOS
 .DS_Store
+
+# Isolated graph versions, immutable snapshots and private serving credentials.
+.graph-versions/

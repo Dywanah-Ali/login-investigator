@@ -1869,3 +1869,62 @@ the T24 follow-up. No model prompt or stored evidence change.
 Final evidence: 677 backend tests passed with no cleanup error in this run; 150 frontend tests
 passed; final affected-tool/API rerun 13 passed; two existing saved lookup displays verified
 through the live API; both review axes cleared. The original UI iteration remains recorded above.
+
+### B-108 · 2026-10-30 · T47 · Type-check invocation used the repository root
+
+**Symptom:** the first type check reported 59 errors outside the configured backend scope.
+**Cause:** `uv --project backend` selected the environment but did not change the tool's working directory.
+**Fix:** run `uv run pyright` from `backend/`.
+**Lesson:** environment selection and tool configuration discovery are separate.
+**Evidence:** the corrected invocation passed with zero errors before the Neo4j modules were added.
+
+### B-109 · 2026-10-30 · T47 · Query typing edit broke import syntax
+
+**Symptom:** the graph-version test could not collect because the importer had a syntax error.
+**Cause:** adding `LiteralString` typing changed an adjacent string literal into a function call without an explicit concatenation operator.
+**Fix:** add the explicit concatenation; keep all relationship names restricted to code-owned values.
+**Lesson:** run a syntax check immediately after changing query construction.
+**Evidence:** failed collection retained in the session; corrected focused suite passed 7/7 and
+final backend suite passed 686/686 under T47.
+
+### B-110 · 2026-10-30 · T47 · Restart check retained an obsolete Docker port
+
+**Symptom:** the expanded graph-version test timed out waiting for the serving graph after restart.
+Four other focused tests passed, including corruption refusal and the device witness.
+**Cause:** the service uses a dynamically allocated localhost port. The restart path reused the
+pre-restart connection address rather than reading Docker's current binding.
+**Fix:** resolve the serving address again after restart before checking readiness and protection.
+**Lesson:** resource identity survives restart; a dynamically assigned network address need not.
+**Evidence:** failed focused run: 1 failed, 4 passed in 332.17 seconds. Corrected command passed, and final backend suite passed 686/686 under T47.
+
+### B-111 · 2026-10-30 · T47 review · Cancellation and partial Docker failure could escape cleanup
+
+**Symptom:** review found that a cancelled worker could finish creating a resource after cleanup,
+and a failed Docker command could leave an unrecorded container. Cleanup also removed recovery state
+when resource deletion failed.
+**Cause:** cancellation did not join the resource-owning thread; ownership was recorded only after
+command success; nested finally blocks always removed the version directory.
+**Fix:** await resource-owning workers before cancellation cleanup, reconcile unique ownership labels,
+and retain credential-free cleanup instructions and private state if disposal is incomplete.
+**Lesson:** cleanup must follow confirmed resource ownership, including ambiguous external outcomes.
+**Evidence:** independent standards and spec review findings; failure-injection checks recorded in T47.
+
+### B-112 · 2026-10-30 · T47 review · Build ignored the configured PostgreSQL reader
+
+**Symptom:** an alternate reader could receive only the pair-table grant while the default role
+received the main build grants. Completion could be written before opening the configured reader.
+**Cause:** the new build path omitted the existing builder's reader_role argument.
+**Fix:** resolve one reader, pass its role into preparation, and verify graph sources through that
+reader before writing the completion marker.
+**Lesson:** access configuration must travel through the entire build and verification path.
+**Evidence:** spec-review finding and corrected reader-based verification before publication.
+
+### B-113 · 2026-10-30 · T47 safety net · Existing Explorer interaction timed out
+
+**Symptom:** the frontend suite returned 149 passes and one failure at
+`explorer.test.tsx:80`, the valid-IP submission and Reset interaction, after its five-second limit.
+**Cause:** not established. No frontend code changed; the run overlapped Neo4j integration startup.
+**Fix:** no application or timeout change. Rerun the affected file separately and retain both results.
+**Lesson:** a timeout is evidence to investigate, not permission to relax the test's limit.
+**Evidence:** initial frontend run took 54.49 seconds. The affected-file rerun passed 8/8 in
+30.53 seconds without changes; retained as AUD-069 for recurrence monitoring.
