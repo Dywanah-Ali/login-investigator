@@ -1870,6 +1870,19 @@ Final evidence: 677 backend tests passed with no cleanup error in this run; 150 
 passed; final affected-tool/API rerun 13 passed; two existing saved lookup displays verified
 through the live API; both review axes cleared. The original UI iteration remains recorded above.
 
+### B-107 · 2026-10-30 · T46 research · External probe could not import the backend
+
+**Symptom:** the first parity-probe invocation stopped with `ModuleNotFoundError` for
+`login_investigator`, before creating databases or containers.
+**Cause:** `uv --project backend` selects dependencies but does not install this non-packaged
+project or add its directory to an external script's import path.
+**Fix:** the disposable script explicitly adds the repository's backend directory before imports.
+**Lesson:** test a research command from its documented working directory; environment selection
+does not imply local-package importability.
+**Evidence:** initial invocation failed at import. Corrected run `ff605c4bbc` completed all 38
+named checks and cleaned its resources; results under the T46 research directory. The later
+`ac601a07d9` exception was deliberate failure injection and verified cleanup, not a recurrence.
+
 ### B-108 · 2026-10-30 · T47 · Type-check invocation used the repository root
 
 **Symptom:** the first type check reported 59 errors outside the configured backend scope.

@@ -1,0 +1,338 @@
+{
+  "run": "ff605c4bbc",
+  "image": "neo4j:2026.10.1",
+  "driver": "6.1.0",
+  "psycopg": "3.3.6",
+  "checks": [
+    {
+      "name": "serving_container_has_no_builder_credential"
+    },
+    {
+      "name": "retired_builder_login_rejected"
+    },
+    {
+      "name": "independent_source_roundtrip",
+      "nodes": 490,
+      "edges": 583
+    },
+    {
+      "name": "handoff_is_read_only"
+    },
+    {
+      "name": "networkx_full_graph_parity"
+    },
+    {
+      "name": "account_lookup_parity",
+      "count": 53
+    },
+    {
+      "name": "all_detected_findings_full_radius_parity",
+      "count": 10
+    },
+    {
+      "name": "dated_address_and_coverage_parity",
+      "count": 4
+    },
+    {
+      "name": "s6_frozen_gold"
+    },
+    {
+      "name": "serving_container_has_no_builder_credential"
+    },
+    {
+      "name": "retired_builder_login_rejected"
+    },
+    {
+      "name": "independent_source_roundtrip",
+      "nodes": 490,
+      "edges": 584
+    },
+    {
+      "name": "handoff_is_read_only"
+    },
+    {
+      "name": "networkx_full_graph_parity"
+    },
+    {
+      "name": "account_lookup_parity",
+      "count": 53
+    },
+    {
+      "name": "all_detected_findings_full_radius_parity",
+      "count": 10
+    },
+    {
+      "name": "dated_address_and_coverage_parity",
+      "count": 4
+    },
+    {
+      "name": "positive_device_witness"
+    },
+    {
+      "name": "failed_and_empty_device_excluded"
+    },
+    {
+      "name": "device_peer_needs_both_sides_in_half_open_window"
+    },
+    {
+      "name": "device_peer_needs_both_sides_in_half_open_window"
+    },
+    {
+      "name": "distinct_source_versions"
+    },
+    {
+      "name": "mixed_build_refused_without_changing_active"
+    },
+    {
+      "name": "incomplete_build_refused_without_changing_active"
+    },
+    {
+      "name": "activate_matching_replacement"
+    },
+    {
+      "name": "rollback_to_previous_pair"
+    },
+    {
+      "name": "unavailable_graph_refused"
+    },
+    {
+      "name": "serving_container_has_no_builder_credential"
+    },
+    {
+      "name": "retired_builder_login_rejected"
+    },
+    {
+      "name": "independent_source_roundtrip",
+      "nodes": 490,
+      "edges": 583
+    },
+    {
+      "name": "handoff_is_read_only"
+    },
+    {
+      "name": "networkx_full_graph_parity"
+    },
+    {
+      "name": "account_lookup_parity",
+      "count": 53
+    },
+    {
+      "name": "all_detected_findings_full_radius_parity",
+      "count": 10
+    },
+    {
+      "name": "dated_address_and_coverage_parity",
+      "count": 4
+    },
+    {
+      "name": "s6_frozen_gold"
+    },
+    {
+      "name": "rebuild_and_reactivate_matching_graph"
+    },
+    {
+      "name": "source_dataset_unchanged"
+    }
+  ],
+  "builds": [
+    {
+      "id": "A-ff605c4bbc",
+      "postgres": "li_test_bfa151c4c3c1",
+      "pg_build_seconds": 6.391,
+      "fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa"
+    },
+    {
+      "id": "B-ff605c4bbc",
+      "postgres": "li_test_9542e2394b37",
+      "pg_build_seconds": 3.424,
+      "fingerprint": "21ed88bb5dee3cc14dd187d8b70d455516a396cf82a2b2e5af3636009f92bec6"
+    }
+  ],
+  "cleanup": [
+    {
+      "resource": "li-t46-pair-ff605c4bbc-recovered",
+      "ok": true
+    },
+    {
+      "resource": "li-t46-pair-ff605c4bbc-recovered-data",
+      "ok": true
+    },
+    {
+      "resource": "li-t46-pair-ff605c4bbc-b",
+      "ok": true
+    },
+    {
+      "resource": "li-t46-pair-ff605c4bbc-b-data",
+      "ok": true
+    },
+    {
+      "resource": "li-t46-pair-ff605c4bbc-a",
+      "ok": true
+    },
+    {
+      "resource": "li-t46-pair-ff605c4bbc-a-data",
+      "ok": true
+    },
+    {
+      "resource": "li_test_9542e2394b37",
+      "ok": true
+    },
+    {
+      "resource": "li_test_bfa151c4c3c1",
+      "ok": true
+    }
+  ],
+  "neo_builds": [
+    {
+      "resource": "li-t46-pair-ff605c4bbc-a",
+      "build_id": "A-ff605c4bbc",
+      "nodes": 490,
+      "edges": 583,
+      "import_seconds": 4.318,
+      "prepare_and_handoff_seconds": 50.145
+    },
+    {
+      "resource": "li-t46-pair-ff605c4bbc-b",
+      "build_id": "B-ff605c4bbc",
+      "nodes": 490,
+      "edges": 584,
+      "import_seconds": 3.032,
+      "prepare_and_handoff_seconds": 40.182
+    },
+    {
+      "resource": "li-t46-pair-ff605c4bbc-recovered",
+      "build_id": "A-ff605c4bbc",
+      "nodes": 490,
+      "edges": 583,
+      "import_seconds": 5.809,
+      "prepare_and_handoff_seconds": 48.991
+    }
+  ],
+  "latency": [
+    {
+      "dataset": "default",
+      "warm_s6_median_ms": {
+        "networkx_ms": 7.803,
+        "neo4j_ms": 97.517
+      },
+      "samples": {
+        "networkx_ms": [
+          10.148213000320538,
+          7.964391000314208,
+          11.070954999922833,
+          10.655539000254066,
+          7.640656000148738,
+          6.602489000215428,
+          6.596868000087852,
+          7.63980299961986,
+          10.743288000412576,
+          7.385495999187697
+        ],
+        "neo4j_ms": [
+          142.08222900015244,
+          141.1188720003338,
+          116.34939600025973,
+          120.42898900017462,
+          95.22423899943533,
+          86.99106400035816,
+          85.42145899991738,
+          94.42893600044044,
+          86.19795899994642,
+          99.809538000045
+        ]
+      }
+    },
+    {
+      "dataset": "variant",
+      "warm_s6_median_ms": {
+        "networkx_ms": 6.641,
+        "neo4j_ms": 78.633
+      },
+      "samples": {
+        "networkx_ms": [
+          6.600122000236297,
+          6.820403999881819,
+          6.6813419998652535,
+          6.331399000373494,
+          7.04951500028983,
+          6.579339000381879,
+          6.296968000242487,
+          6.545297999764443,
+          6.926492000275175,
+          6.7648839994944865
+        ],
+        "neo4j_ms": [
+          76.26950000030774,
+          87.20377900044696,
+          79.41414400011126,
+          80.92619800027023,
+          79.91217099970527,
+          77.8525969999464,
+          77.29441399987991,
+          76.3008970006922,
+          91.36755899999116,
+          74.75276500008476
+        ]
+      }
+    },
+    {
+      "dataset": "default",
+      "warm_s6_median_ms": {
+        "networkx_ms": 9.089,
+        "neo4j_ms": 103.893
+      },
+      "samples": {
+        "networkx_ms": [
+          8.491859998684959,
+          8.678694000991527,
+          9.349787000246579,
+          8.755844999541296,
+          9.794580999368918,
+          8.857202999934088,
+          9.121177999986685,
+          9.057783001480857,
+          9.424955000213231,
+          10.915017999650445
+        ],
+        "neo4j_ms": [
+          105.46815299858281,
+          103.80619399984425,
+          102.80871599934471,
+          100.76947299967287,
+          101.78089200053364,
+          101.72093599976506,
+          105.50370199962344,
+          120.07922299926577,
+          106.51134200088563,
+          103.97908900085895
+        ]
+      }
+    }
+  ],
+  "recovery_rebuild_seconds": 59.929,
+  "resource_samples": [
+    {
+      "BlockIO": "3.22MB / 324MB",
+      "CPUPerc": "1.55%",
+      "Container": "li-t46-pair-ff605c4bbc-a",
+      "ID": "587802a9c0c7",
+      "MemPerc": "9.00%",
+      "MemUsage": "714.4MiB / 7.752GiB",
+      "Name": "li-t46-pair-ff605c4bbc-a",
+      "NetIO": "117kB / 2.72MB",
+      "PIDs": "82"
+    },
+    {
+      "BlockIO": "3.2MB / 324MB",
+      "CPUPerc": "2.46%",
+      "Container": "li-t46-pair-ff605c4bbc-recovered",
+      "ID": "adcfb23c5079",
+      "MemPerc": "8.88%",
+      "MemUsage": "705.1MiB / 7.752GiB",
+      "Name": "li-t46-pair-ff605c4bbc-recovered",
+      "NetIO": "111kB / 2.71MB",
+      "PIDs": "87"
+    }
+  ],
+  "completed": true
+}

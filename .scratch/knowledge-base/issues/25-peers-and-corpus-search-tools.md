@@ -2,7 +2,7 @@
 
 Type: build
 Status: ready-for-agent
-Blocked by: 22, 24
+Blocked by: 22, 24, 49
 Phase: 0
 Model: standard (Opus 5.5 or Sol 6.1)
 
@@ -46,3 +46,10 @@ ticket 24: typed, read-only, fenced, short content for the model and a full arti
 - 2026-10-26, consequence of the author's ruling at ticket 11: `device_id` is empty on attacker rows
   and on employee sign-ins from a phone. `find_peers` never treats an empty device as shared, so two
   sign-ins from unregistered machines are not peers by device.
+
+- 2026-10-30 — Author-approved architecture review: T46 blocks further graph integration.
+  This combined ticket stays on hold; its corpus-search portion has not been split out.
+  If migration is chosen, T46 must add the required migration blockers before it closes.
+
+- 2026-10-30 — T46 resolved with an approved migration. T49 now blocks this ticket until
+  the replacement is accepted. Closing the architecture decision does not release this hold.

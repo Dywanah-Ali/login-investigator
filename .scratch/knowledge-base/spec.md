@@ -10,6 +10,10 @@ them. Existing terms (Investigation, Finding, Alert, Rule severity) are defined 
 Revised on 25 October 2026 after Codex's review; the triage and the author's six rulings are in
 `reviews/spec-review-2026-10-25-triage.md`.
 
+T46 revision, 30 October 2026: this spec now describes the approved Neo4j migration target.
+T47–T49 implement and accept it; the existing application remains on the prior implementation
+until that sequence completes. Resolved T02/T19/T20/T24 records remain historical evidence.
+
 Every decision below cites the ticket that made it, as `T04 d6` (ticket 04, decision 6) or `T05 R3`
 (ticket 05, ruling 3). A decision that no ticket made, and that the author ruled while this spec
 was written, is marked **[spec ruling]**. The author ruled eight on 25 October 2026, one pop-up at a
@@ -65,7 +69,8 @@ From the author's side:
 - The app refuses to start on a database built from older files than the ones on disk.
 - A second eval question file measures retrieval and answers separately, with per-question hard
   gates, and the Port's eval keeps passing unchanged beside it (T06 d1 to d8).
-- A script writes the whole graph to a Gephi file for inspection by eye (T08 d9).
+- Native Neo4j Browser inspection shows the graph and a finding's neighbourhood (T46).
+  This replaces the Gephi/GEXF workflow after the author's walkthrough; the in-app Graph tab remains.
 - Langfuse mirrors traces and eval runs behind a switch; the repo stays the source of truth
   (T06 d10).
 
@@ -244,12 +249,14 @@ questions, and the author accepts the live screen. The initiative closes there.
     from an old world.
 67. As the author, I want a test that needs PostgreSQL to fail loudly with the start command when the
     service is down, never skip, so that a missing database is never mistaken for a pass.
-68. As the author, I want the agent to read the knowledge base through a role that can only read and
-    through hand-written functions only, so that nothing the model writes can change data.
+68. As the author, I want the agent to use hand-written read-only functions, with PostgreSQL
+    reader privileges and database-enforced graph-data write prevention. Neo4j Community's
+    administrative access is an accepted development limitation under T46, not least privilege.
 69. As the author, I want a graph integrity check to run every time the graph is built and fail on
     the first mismatch, so that a silent build error never becomes a confident wrong answer.
-70. As the author, I want to export the graph to a GEXF file and open it in Gephi Lite, so that I can
-    inspect the whole synthetic organisation by eye.
+70. As the author, I want tested native Neo4j Browser views of the organisation and a finding's
+    neighbourhood, with build identity and display limits visible, so I can inspect the graph
+    by eye without a separate Gephi export (T46 supersedes T08 d9 for future builds).
 
 **The eval runner (the author or Codex, without Claude)**
 
@@ -399,29 +406,56 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 ### The store and the build (T02, T03)
 
-- **One store** (T02 d1): the author's Homebrew PostgreSQL 18.6 with pgvector holds the
-  organisation's tables, the chunks, their vectors and their keyword index. The first build step
-  proves pgvector compiles on the Intel Mac and the extension loads (T02 conditions).
-- **Always-on service, tests only connect** (T02 d4). If it is down, the shared fixture fails at
-  once with the exact start command.
-- **Fresh database per test session and per eval run** (T02 d5), built from pinned inputs and dropped
-  afterwards. Tests that need it fail loudly, never skip. Today's tests stay service-free.
+- **Two stores, one version** (T46 supersedes T02 d1): Neo4j Community serves graph queries;
+  PostgreSQL with pgvector owns passage text, metadata, embeddings and keyword search.
+  Neo4j holds organisation entities, typed relationships and passage references joined by
+  stable chunk IDs and `mentions` edges, not duplicate passage text. PostgreSQL organisation
+  reference tables remain for independent checks and existing consumers during migration.
+  Source files remain authoritative. Neo4j 2026.10.1 and Python driver 6.1.0 were proved on
+  the Intel Mac; build tickets pin their adopted versions and recheck changed behaviours.
+- **Service prerequisites** (T02 d4, extended by T46): PostgreSQL remains the installed service;
+  Neo4j build/serving instances are separately managed and isolated. Tests that require either
+  service fail loudly with the appropriate start instruction, never silently skip.
+- **Fresh resources per test session and eval run** (T02 d5, extended by T46): use unique
+  PostgreSQL databases, graph resources, source snapshots and state files. Clean failed builds;
+  prove isolation from the active pair. Tests not requiring these services remain service-free.
 - **The files are the truth** (T02 d6). The loader is the sync job; the database is a build artefact,
   never edited by hand. Full rebuild on every build (incremental sync is AUD-033).
-- **[spec ruling] The running app's database is built once and stays.** "Every run" means every
+- **[spec ruling, extended by T46] The running app's pair is built once and stays.** "Every run" means every
   build, never a question or a chat session. A build happens at the start of each test session, at
   the start of each eval run, and when the author or Codex runs the one build command after the
-  world's files change. Nothing watches the files.
+  world's files change. Nothing watches the files. Capture an immutable source snapshot;
+  build and independently validate both stores before publishing a credential-free pointer
+  naming their shared build ID, fingerprint and source snapshot. Adopt the new pair on a
+  planned restart. Retain the previous pair and matching snapshot for explicit rollback by
+  selection and restart. Do not publish a partial pair or automatically delete prior versions.
+  Measure interruption during actual application integration; no maximum has been assumed.
 - **[spec ruling] The staleness guard.** Every build records in the database a fingerprint of the
   dataset folder's files (hidden entries skipped; T18 decision 3) together with the embedding model, the vector length and the chunking
-  settings. At startup the app recomputes the fingerprint from the folder. **[review ruling 6]** On
+  settings. Under T46, startup recomputes it from the selected immutable source snapshot and
+  checks both stores' matching build identity and readiness. All login analysis, retrieval and
+  graph reads use that selected version. Editing working source inputs prepares a future
+  rebuild; it does not mutate the published snapshot. Tampering with the selected snapshot
+  or mixing versions is refused. **[review ruling 6]** On
   a mismatch, the server does not start: startup fails loudly with fixed text naming the build command. This is
   stricter than today's invalid log, where the server starts and the dataset endpoints answer with
-  an error. The app never answers from a database built from an older world.
-- **Read-only by two locks** (T02 d8): the agent's tools are hand-written parameterised functions in
-  the core, with no model-written SQL; the agent connects with a role that can only read. The build
-  uses a separate role.
+  an error. The app never combines a database with a different source world. T18's no-build
+  startup remains: without a published knowledge base, start with the existing non-KB behaviour.
+- **Read-only controls** (T02 d8, qualified by T46): tools are hand-written parameterised core
+  functions, with no model-written SQL or Cypher. PostgreSQL retains separate builder and reader
+  roles. Neo4j uses isolated writable preparation, retired builder credentials and graph-data
+  read-only serving before publication. Verify write refusal, restart persistence and builder
+  separation; Community's administrative powers remain the explicit exception below.
 - **Agent memory stays in SQLite** (T02 d9; AUD-032).
+- **T46 development-stage ruling, 30 October 2026:** Neo4j Community is selected for development
+  under the approved migration tickets despite lacking a restricted reader identity. Its serving
+  account's administrative powers are an explicitly accepted development-stage limitation,
+  not evidence of least privilege. Carry graph-data write prevention and separate writable
+  builds from the proof into integration tests. Before production use, review permissions, recovery,
+  availability, monitoring and cost, including an Enterprise upgrade or another suitable
+  control. AUD-068 tracks that future gate. The approved build sequence is T47 to T49;
+  implementation starts separately under each ticket's model-confirmation rule. The exception
+  does not weaken PostgreSQL reader separation or permit model-written queries or agent writes.
 - **[author's ruling, 25 October 2026] Our code reaches its tables through SQLAlchemy Core**, not
   its ORM, on the psycopg driver (`postgresql+psycopg://`). The tables are defined in code and
   created at each build. One engine and its connection pool are shared with LangChain's store,
@@ -487,17 +521,17 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 ### The graph (T02, T06, T08)
 
-- **App lifecycle (author, 28 October 2026, after T19):** when a knowledge-base build exists,
-  prepare the in-memory graph once per backend process during startup, after the freshness
-  check and before accepting questions. Build it through the core opening and run the integrity
-  check before making it available. Agent tools reuse that checked instance across questions
-  and investigations; neither the first graph question nor subsequent questions rebuild it.
-  The app owns the knowledge-base context and closes its engine/pool on shutdown; individual
-  database connections are borrowed only for queries, not held for a conversation. Each backend
-  worker owns its own instance. A rebuilt dataset is adopted on a controlled restart, with
-  freshness and integrity checked again; automatic hot replacement is not introduced. Keep
-  T18's no-build behaviour: the app can start without graph capabilities. Integration belongs
-  to T24, including measured startup preparation time and lifecycle tests. T19's core is unchanged.
+- **App lifecycle (T46, replacing the T19/T24 in-memory preparation detail):** each backend
+  process opens one knowledge-base context owning its PostgreSQL pool and Neo4j driver. Check
+  source freshness, pair identity/readiness, graph integrity and serving protection before
+  accepting questions. Reuse these clients across investigations with short-lived per-query
+  sessions; close both on shutdown or partial startup failure. Do not rebuild a graph on a
+  question. Adopt rebuilt versions only on controlled restart; no automatic hot replacement.
+  Preserve T18's no-build behaviour. T48 verifies this integration and measures interruption.
+- **Execution and errors (T46):** preserve the named synchronous graph operations for existing
+  tool callers; move network waits off the event loop at asynchronous callers. Use bounded
+  calls, fixed public failures and explicit cleanup. Test cancellation and concurrent
+  investigations without leaking per-call state. No database-native objects cross core results.
 
 - **VPN address meaning (author, 28 October 2026):** the synthetic VPN pool represents
   session-assigned addresses reused over time, following the remote-access policy. It is not a
@@ -520,9 +554,11 @@ questions, and the author accepts the live screen. The initiative closes there.
   permissions. This supersedes fixed "that week" wording for these relationships. S6's ten
   address-reuse matches are expected for the default period; narrower requests may return fewer.
 
-- **Walked in NetworkX** (T02 d2), built in memory from the tables when the knowledge base opens, with
-  named traversal functions in the core. Chunks are nodes too, joined to entities by `mentions` edges
-  (T02 d7).
+- **Walked in Neo4j** (T46 supersedes T02 d2), through fixed parameterised queries behind named
+  core operations. Chunks remain reference nodes joined to entities by `mentions` edges; their
+  text and search metadata stay in PostgreSQL. Preserve exact IDs, records, deterministic path
+  ordering and date semantics. Retire NetworkX query/export paths at T49; no second permanent
+  graph engine or transient Gephi exporter is required in the selected final architecture.
 - **[review ruling 1] "Used address" edges come from the log.** No organisation table links a person
   to a network address; the log is already the truth for who signed in from where. The build draws
   one `used address` edge per distinct user and network address pair in the log, for addresses in
@@ -551,9 +587,13 @@ questions, and the author accepts the live screen. The initiative closes there.
   Plus no isolated node of type person, group, asset or device. A chunk with no `mentions` edge is
   valid when its text names no entity, as the row above checks; a network address no one used may
   stand alone. The retrieval layer reports the check as its precondition.
-- **The Gephi export** (T08 d9): a script calling one core function that sets colour by node type and
-  writes the whole graph, or one finding's neighbourhood, as GEXF. No download endpoint. Attribute
-  names never use the reserved `id`, `label` or `pid`.
+- **Native inspection** (T46 supersedes T08 d9 and the future maintenance of T20's export):
+  use Neo4j Browser against the intended read-only serving graph, with tested queries for the
+  organisation and a finding's exact neighbourhood. Verify node/edge identities, build identity,
+  styling and display/result limits. Record the author's walkthrough before retiring the
+  Gephi command and its GEXF-specific tests. The Browser shows passage references, not automatic
+  PostgreSQL passage-text joins. No replacement portable GEXF deliverable is promised. Historical
+  T20 evidence remains. Browser is an admin inspection tool, not the in-app saved-evidence Graph tab.
 
 ### The IDs (T05)
 
@@ -804,6 +844,15 @@ contract moves.
 
 ## Testing Decisions
 
+- **T46 migration acceptance:** T47 proves reference-only graph ingestion and independent
+  integrity, complete lookup/radius/path/date equivalence and isolated read-only handoff. T48
+  proves coherent source selection across application readers, paired activation/rollback,
+  saved-evidence continuity, connection/cancellation/concurrency handling and native inspection.
+  T49 runs the backend/frontend/type/review safety net and agreed live eval gates before the
+  working application switches, measures interruption/recovery and retires obsolete paths.
+  Keep frozen gold unchanged; T45/AUD-062 retrieval gaps are not waived by graph migration.
+  Full commands for adopted manual tasks are tested and recorded in the admin manual.
+
 - **T24 persistence baseline (author, 29 October 2026):** document the lookup artifact's fields
   and persistence path, separating model content from saved evidence. With a fake model and
   disposable SQLite memory, measure baseline storage and growth after 1, 10 and 50 repeated
@@ -825,7 +874,7 @@ work proves it is done.
 | # | Door | What is tested there | Prior art |
 |---|---|---|---|
 | 1 | The dataset generator | The world's tables, log and answer key agree; the Port's stories keep their rows; B1 and B2 trip the rules; S6 and the twins fall on days apart from S1 to S5 | The generator tests |
-| 2 | **The knowledge-base door in the core** (new) | One function opens a dataset's knowledge base; every query is a named function on it: investigate a finding, look up an account, find peers, search the corpus, project the walk, export to GEXF. Tested here: the integrity check and its corruption tests, one of which swaps two valid link endpoints without changing any count, one of which changes a node attribute a walk reads; a chunk with no mentions passing; the answer-key test recomputing S6's radius from the tables through the same radius function the tool uses, moved here from door 1 at the ticket cut; the walk equals the gold set; the three fusion traps and the two-question regression; filters before both legs; the three verdicts; the package caps and `truncated` flags; the GEXF write-and-read-back against the integrity check's counts and the reserved-name test; the read-only role refusing a write; the staleness guard refusing a database built from a changed file | The core tests for rules, search and stats |
+| 2 | **The knowledge-base door in the core** (new) | One function opens a dataset's knowledge base; every query is a named function on it: investigate a finding, look up an account, find peers, search the corpus, project the walk. Tested here: independent graph integrity and corruption checks, including valid-but-swapped endpoints and changed attributes; unmentioned chunk references; reference IDs/mentions matching PostgreSQL without text duplication; exact S6 gold records/paths and dated peers; unchanged fusion/filter/verdict/cap contracts; PostgreSQL reader write refusal and Neo4j serving write refusal; matching build identities, source snapshots and stale/incomplete-pair refusal; native inspection query results matching the same core neighbourhood. T46 replaces GEXF-specific checks after native inspection acceptance | The core tests for rules, search and stats |
 | 3 | The agent with a fake model | The fence on every tool result; the before-model hook adding a missing step; the after-model hook sending the model back once on an unresolved label; the model-call limit; `playbook_status` completing a step and naming one that cannot run; the artifact surviving the SQLite round trip; with Langfuse switched on against a fake destination, the callback handler sending traces with the masking hook applied | The agent and investigation-policy tests with their fake model |
 | 4 | The API through the test client | `finding_id` on alerts; `evidence`, `radii`, `unresolved` and `graph` on reopen, projected from the artifact; the artifact download carrying nothing beyond its fields; `step` events only from the investigation tool; the widened `tool` names; the server refusing to start on a stale database, with fixed text | The investigations and startup API tests |
 | 5 | The screens with a fake API | The finding ID column; the Investigate question carrying the ID; the evidence panel and its highlight; plain-text rendering of every data field; the step stack and its collapse; the Graph tab's click rule, empty state and read-only switch-off test | The Investigator and Alerts page tests with the fake API, and the repository-rules test |
@@ -833,7 +882,8 @@ work proves it is done.
 
 - **[spec ruling] Door 2 uses a fake embedder and a fake re-ranker,** handed in at the door the way
   the agent tests hand in a fake model, so the test suite stays key-free and offline. It still needs
-  the real PostgreSQL, built fresh per session and failing loudly. Only the eval's retrieval layer
+  the real PostgreSQL and, for graph integration, isolated Neo4j resources built fresh and
+  failing loudly if prerequisites are missing. Only the eval's retrieval layer
   and the one-string embedder check call OpenRouter (T03 conditions).
 - **Doors 1 to 5 are code, gated by tests and the build loop's two-axis code review**
   (standards and spec, findings triaged; Matt Pocock's skill, `mp-code-review` in both Claude Code
@@ -847,8 +897,9 @@ work proves it is done.
 - **Types**: every new Python file is clean under the type checker and never joins its ignore list.
 - **The author's looks**, recorded as dated lines on their build tickets, never as screenshots: the
   live screen on S6, one twin and one answer with no walk, with every drawn edge matching a hop line
-  or a "walked, not cited" line (T07, T08 phase 1 acceptance); the GEXF file opened once in Gephi
-  Lite (T08 d9); one real eval run seen in Langfuse (AUD-036).
+  or a "walked, not cited" line (T07, T08 phase 1 acceptance); native Browser inspection of the
+  organisation and finding neighbourhood (T46 replaces the future Gephi requirement);
+  one real eval run seen in Langfuse (AUD-036).
 
 ## Out of Scope
 
@@ -881,7 +932,7 @@ it into tracer-bullet tickets; the order is the dependency floor, not the ticket
 | 4 | The ATT&CK fetch script and pinned version | 0 |
 | 5 | The Codex brief and the consistency script, then the corpus delivery | 0 |
 | 6 | Ingestion: chunking, embeddings, the link table, the build and read-only roles, the build command and the staleness guard | 0 |
-| 7 | The graph build with the log's `used address` edges, and its integrity check; the GEXF export and its tests; the author's Gephi Lite look | 0 |
+| 7 | The graph build with the log's `used address` edges, and its integrity check; native Neo4j inspection and the author's walkthrough after T46; T20's GEXF delivery remains historical | 0 |
 | 8 | The first knowledge-base questions with their gold IDs or expected verdicts, written before retrieval first runs (map, evaluation stance) | 0 |
 | 9 | Hybrid retrieval with fusion, filters, the re-ranker switch and the three verdicts | 0 |
 | 10 | The playbook list, the four new tools with content plus artifact, the artifact round trip | 0 |
@@ -966,3 +1017,5 @@ them.
 | 2026-10-29 | Author's T23 ruling, qualifying the T22 row: a search that returns zero passages gives `none` with reason `empty_result`, with the re-ranker on or off. Any non-empty result stays `weak` / `not_calibrated` until T39; the threshold-based `none` rule stays disabled | Zero passages is a counted fact, not a relevance judgement, so it needs no threshold. Only a filter can empty a result, since exact vector search always returns candidates; K05 and K06 are unaffected |
 | 2026-10-29 | Author approved four T24 persistence checks: document artifact contents/storage path, measure storage at baseline and after 1/10/50 repeated lookups, verify original evidence after close/reopen without querying the source, and retain report downloads without a model | Establish correctness and a measured storage baseline before adding more tools. No new performance threshold or storage architecture; broader scaling decisions deferred under AUD-065 |
 | 2026-10-29 | Author approved minimal T24 browser compatibility: accept lookup_account progress, use the existing status line, and label its saved tool result | The old stream parser rejects unknown tool names. Move this one name forward from T36 so the lookup works end to end; remaining names, step stack and evidence panel stay in their later tickets |
+| 2026-10-30 | Author accepted Community's retained administrative access as a development-stage limitation so T46 may continue. Prove graph-data write prevention and build isolation; review permissions, recovery, availability, monitoring and cost before production use, including a possible Enterprise upgrade. No Neo4j selection or application migration approved | Distinguish current development from the future shared analyst service. Official documentation provides an edition-upgrade path, but an upgrade alone does not configure or prove production safeguards. PostgreSQL reader separation and fixed read-only agent tools remain unchanged |
+| 2026-10-30 | Subsequent T46 ruling: select Neo4j Community for graph queries and PostgreSQL/pgvector for passage content/search, with stable passage references in Neo4j. Prepare verified matching pairs from immutable source snapshots; adopt by restart and retain the previous complete version for rollback. Replace Gephi export with tested native Browser inspection and the author's walkthrough; preserve the in-app Graph tab and saved evidence. Approve consolidated build tickets 47–49 and their dependency chain; application coding starts separately | Author approved the design and three-ticket proposal after reviewing the security tradeoff, proof results, ownership split, rollback lifecycle and native-visualisation documentation. Supersedes T02's one-store/NetworkX choice and T08/T20's future GEXF requirement, while retaining their history. Proof establishes feasibility, not final reference-only ingestion, integrated downtime or production readiness; those remain explicit acceptance work |

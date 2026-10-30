@@ -1,0 +1,26 @@
+{
+  "run": "ac601a07d9",
+  "image": "neo4j:2026.10.1",
+  "driver": "6.1.0",
+  "psycopg": "3.3.6",
+  "checks": [
+    {
+      "name": "injected_failure_has_no_published_pair"
+    }
+  ],
+  "builds": [
+    {
+      "id": "A-ac601a07d9",
+      "postgres": "li_test_bbf79419a518",
+      "pg_build_seconds": 4.885,
+      "fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa"
+    }
+  ],
+  "cleanup": [
+    {
+      "resource": "li_test_bbf79419a518",
+      "ok": true
+    }
+  ],
+  "injected_failure": "after_pg_before_graph_or_publication"
+}

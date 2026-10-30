@@ -93,6 +93,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-064 | What the re-ranker's assessment still needs: a kept-5 check and calibration evidence | Open; for T39 and T41 | Medium | T23 spec review; T23 first live run |
 | AUD-065 | Investigation evidence persistence and storage growth | Open, deferred design; bounded T24 checks approved | Medium | Author discussion before T24, 29 October 2026 |
 | AUD-066 | Review Q04's compromise-attribution check for long structured answers | Open review concern, deferred outside T24 | Low | T24 Port eval Q04 run 1; B-105; related B-078 |
+| AUD-067 | Review the graph foundation against the application's intended direction | Open; T46 decision resolved, migration acceptance owned by T49; T25/T27 held | High | Author discussion and approval, 30 October 2026; T02 and T24 |
+| AUD-068 | Production readiness after the development-stage Neo4j migration | Open, deferred until production is proposed; not a development-migration blocker | High | T46 author-approved Community limitation and later Enterprise/readiness review |
 | AUD-069 | Intermittent Explorer interaction timeout during T47 safety checks | Open observation; affected-file rerun passed, investigate if repeated | Low | B-113; T47 frontend safety net |
 
 ### AUD-001: Rule filter
@@ -1098,6 +1100,85 @@ adequate, then test both valid long-list attribution and unrelated/negated accou
 before changing the check. No grader or prompt change is authorised here. B-105 records the
 observation; B-078 is the earlier, separately fixed phrasing limitation.
 
+### AUD-067: Graph foundation review
+
+The author questioned whether T02's small, bounded graph assumption still fits the intended
+application and proposed Neo4j Community for graph queries with PostgreSQL/pgvector retained
+for document retrieval. On 30 October 2026 the author approved opening
+[T46](../../.scratch/knowledge-base/issues/46-graph-store-architecture-review.md), with a scoped
+architecture review and a disposable proof to agree before application changes.
+
+This is an architecture concern, not a demonstrated NetworkX defect or capacity failure.
+Compare database-enforced read-only serving, separate build access, exact graph answers,
+cross-store build consistency, isolated tests/evaluations, recovery and operating burden.
+Community edition limitations must be checked on the exact release; a database-wide read-only
+setting is a candidate to test, not an assumed equivalent of PostgreSQL's reader role.
+
+T25 and T27 wait for T46. T45's compound-retrieval work remains separate. T02's history and
+the current spec are preserved; neither migration nor a security exception is approved.
+Closure requires the author's recorded ruling backed by the agreed evidence and explicit
+disposition of the hold. If migration is chosen, implementation blockers must be established
+before T46 closes; audit closure follows the required implementation and parity evidence.
+
+T46 progress, 30 October 2026: author confirmed Astra and agreed a shared analyst service,
+measured maintenance downtime, free editions first and an isolated security-first proof.
+[Pinned Community 2026.10.1 research](../../.scratch/knowledge-base/research/46-community-read-only-feasibility.md)
+supports graph read-only configuration but identifies administrative capabilities retained
+by authenticated users and a writable system database. This is source evidence of a mismatch
+with unprivileged serving, not a reproduced live failure. The broader proof awaits discussion
+of this finding; no migration decision or security exception exists. T25/T27 remain held.
+
+Subsequent author ruling, 30 October 2026: continue the Community evaluation with retained
+administrative access accepted as a development-stage limitation. The spec records this
+conditional exception. Graph-data write prevention and separate writable builds still need
+proof. Production use requires a separate review of permissions, recovery, availability,
+monitoring and cost, including the possible Enterprise upgrade. No migration is approved;
+T25/T27 remain held. This supersedes the preceding no-exception status for this narrow point.
+
+Live proof, 30 October 2026: Community 2026.10.1 rejected graph/schema writes and the two
+tested access-mode bypass attempts before and after restart, while allowing user administration.
+[Results](../../.scratch/knowledge-base/research/46-community-security-result.json) record 24
+outcomes; graph snapshots were unchanged and disposable resources cleaned. This supports the
+accepted development boundary, not full production security or the remaining T46 proof gates.
+
+Further proof, 30 October 2026: [parity and pair lifecycle evidence](../../.scratch/knowledge-base/research/46-parity-and-pair-proof.md)
+records 38 checks across original, variant and rebuilt graphs, plus deliberate failed-build
+cleanup. Exact query answers, dated peers, source IDs, S6 gold, read-only handoff, mismatch
+refusal, activation and rollback passed. The unoptimised candidate is slower on the small
+fixture; no speed/capacity claim is made. Actual application downtime, production readiness
+and final migration design remain unresolved. [Impact inventory](../../.scratch/knowledge-base/research/46-impact-inventory.md)
+identifies the synchronous/asynchronous boundary and export/integrity coupling. T46 stays open;
+the author's engine ruling and reviewed migration tickets are still required.
+
+Final T46 ruling, 30 October 2026: author selected Neo4j Community plus PostgreSQL/pgvector,
+approved passage references without duplicate content, complete-version restart/rollback and
+native Browser inspection replacing Gephi. The spec and decision log are updated; approved
+build tickets are [47](../../.scratch/knowledge-base/issues/47-neo4j-build-and-graph-answers.md),
+[48](../../.scratch/knowledge-base/issues/48-paired-lifecycle-and-native-inspection.md) and
+[49](../../.scratch/knowledge-base/issues/49-neo4j-migration-acceptance.md). T46 resolves as a
+decision; this audit item remains open until T49's implementation evidence. T25/T27 depend on
+T49. The earlier pending-ruling statements above are historical, not the current status.
+
+### AUD-068: Production readiness after the development-stage Neo4j migration
+
+The author explicitly accepts Neo4j Community's retained administrative powers during current
+development. This is not least-privilege serving and does not authorise a production offering.
+Before production is proposed, open a scoped readiness review covering permissions, availability,
+recovery/backup, monitoring and operating/licensing cost. Assess Enterprise or other suitable
+controls at that time; the documented edition-upgrade path does not establish configured security
+or availability. No purchase, deployment date, capacity target or downtime guarantee is assumed.
+
+Source: T46's approved design and development-stage ruling, 30 October 2026. Owner: the future
+production-readiness initiative; T49 must carry this condition forward without closing it.
+Closure requires an author-approved production scope and evidence that its controls and operating
+procedures work. This item does not block the authorised development migration T47–T49.
+
+T47 startup observation, 30 October 2026: the pinned Community image logs anonymous usage
+telemetry, Fleet discovery on the Docker bridge, and a forwarded-header allow-hosts warning.
+The T47 command publishes only Bolt on localhost; HTTP is not published. These runtime defaults
+are recorded for the production-readiness review, not silently treated as production safeguards.
+No telemetry/network-policy change was made under this observation.
+
 ### AUD-069: Explorer interaction timeout under concurrent validation
 
 T47's unchanged frontend suite recorded 149 passes and one five-second timeout in the valid-IP
@@ -1151,6 +1232,7 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 
 | Date | Change | Evidence |
 | --- | --- | --- |
+| 2026-10-30 | Added AUD-067 and T46 graph foundation review; T25/T27 held. T02 and the current spec preserved pending a new ruling. | Author's approval to create the decision ticket; T46 scope and proposed proof |
 | 2026-10-29 | T24 resolved: first graph tool, shared checked lifecycle, fenced results and saved artifacts, approved browser compatibility. AUD-065 measurement recorded; AUD-066 added for the one failed Q04 check. Known AUD-061 cleanup recurrence retained with exact cleanup and clean reruns. | T24 evidence; 24 review; 677 backend assertions, 150 frontend; Port API 62/63 and security 15/15 |
 | 2026-10-29 | Author approved AUD-065's four bounded T24 checks; ticket criteria and spec updated. Broader storage design remains deferred. | Author confirmation in chat; T24; spec Testing Decisions and decisions log |
 | 2026-10-29 | Added AUD-065 at the author's request: defer evidence-storage scaling decisions; record current report persistence and propose bounded T24 measurement. No spec change or implementation approved. | Discussion before T24; investigations, agent and PDF-route source inspection |

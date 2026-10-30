@@ -2,7 +2,7 @@
 
 Type: build
 Status: ready-for-agent
-Blocked by: 24
+Blocked by: 24, 49
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
 
@@ -44,3 +44,10 @@ check, so screen and exam cannot disagree.
       findings triaged.
 
 ## Comments
+
+- 2026-10-30 — Author-approved architecture review: hold integration with saved graph evidence
+  until T46 settles the foundation and contract impact. If migration is chosen, T46 must add
+  the required migration blockers before it closes.
+
+- 2026-10-30 — T46 resolved with an approved migration. T49 now blocks this ticket until
+  the replacement is accepted. Existing saved-evidence contracts remain part of its gate.

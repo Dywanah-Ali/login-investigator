@@ -16,6 +16,18 @@ value it adds to the app, not for the sake of demonstrating RAG.
   Neo4j graph answers are verified. The working application remains on its prior build.
   T49 still gates migration acceptance and T25/T27. T45 remains independently available.
 
+- **Previous priority from T46, 30 October 2026:** [T47 Neo4j build and graph answers](issues/47-neo4j-build-and-graph-answers.md).
+  [T46](issues/46-graph-store-architecture-review.md) resolved with the author's migration ruling
+  and approved three-ticket sequence: T47, [T48 lifecycle and native inspection](issues/48-paired-lifecycle-and-native-inspection.md),
+  then [T49 migration acceptance](issues/49-neo4j-migration-acceptance.md). PostgreSQL owns passage
+  content/search; Neo4j owns graph queries and passage references. Verified pairs include source
+  snapshots, switch by restart and retain the previous complete version for rollback. Native
+  Browser inspection replaces Gephi after the author's walkthrough. Community administrative
+  access remains an accepted development limitation; AUD-068 gates production readiness.
+  T25/T27 now wait for T49, not merely the architecture decision. T45 remains independently
+  unblocked and still holds T26. T47 is now resolved; T48 is next. The active app has not switched.
+  T02/T20 remain resolved history; the revised spec governs the replacement.
+
 - **Origin.** The bootcamp's week 2 brief (RAG, with GraphRAG as one suggested use case) is the
   inspiration. By the author's ruling of 20 October 2026 it is not a contract: nothing is
   submitted, there is no deadline and no owed deliverable. See `CLAUDE.md`.
@@ -50,6 +62,14 @@ value it adds to the app, not for the sake of demonstrating RAG.
   tested admin command and local measurements. No active application switch; T48 is next.
 
 <!-- one line per resolved ticket: [title](link): gist -->
+
+- [T46 Graph foundation review](issues/46-graph-store-architecture-review.md): migrate to Neo4j
+  Community plus PostgreSQL/pgvector under the approved development security exception; keep
+  passage content in PostgreSQL and references/relationships in Neo4j; complete source/store
+  versions switch by restart with rollback; replace Gephi with native inspection. Proof: selected
+  write refusals, 38 parity/lifecycle checks and failed-build cleanup; limits remain explicit.
+  Author approved consolidated T47–T49 using `to-tickets`; T49 holds T25/T27. AUD-067 waits for
+  implementation acceptance and AUD-068 records the future production gate.
 
 - [Use-case research](issues/01-use-case-research.md): the graph holds durable relationships
   (people, accounts, groups, grants, assets, networks, incidents) and the log stays the source of
@@ -203,14 +223,17 @@ The spec was cut into 34 build tickets, 09 to 42, with `mp-to-tickets`; the auth
 granularity and ruled two points (the S6 radius test moves to ticket 19; every phase 1 ticket waits
 for ticket 29). Phase 0 is 09 to 31, with ticket 29 as its gate; phase 1 is 32 to 42, with ticket
 42 as the initiative's gate. Tickets 16 and 42 are the author's to run. Each ticket's `Blocked by`
-line holds its edges. **The frontier is ticket 25**, which has no unresolved blockers; one session
-works at a time, so first by number wins.
+line holds its edges. The build frontier reached ticket 25 after T24. As of 30 October 2026,
+T46's decision is resolved and its approved migration is T47 → T48 → T49. T49 now holds T25
+and T27. **The next priority is ticket 48**, ahead of the otherwise unblocked T45 by the
+author's approved sequence. T47 is resolved; the active application switch awaits T49.
 
 Ticket 43 was opened on 26 October 2026 by the author's ruling, to restore the Port eval's margin
 (Q02 and Q04, AUD-046 and AUD-047) before T14. It is taken ahead of the frontier by that ruling,
 and is resolved (see Build tickets resolved). T14 to T22 have since resolved; the frontier
 is ticket 23, the re-ranker behind its switch. Ticket 24 is also unblocked. No ticket was
-blocked by 18 or 20. T23 and T24 resolved on 29 October 2026; **the frontier is ticket 25**.
+blocked by 18 or 20. T23 and T24 resolved on 29 October 2026; T25 was the next build ticket
+until the T46 architecture hold on 30 October 2026.
 
 T22's live retrieval baseline has a recorded K04 candidate gap (B-098/AUD-062). Re-ranking
 cannot recover a passage outside both candidate lists; review this before closing the later
@@ -225,7 +248,8 @@ Ticket 45 was opened on 29 October 2026 by the author's ruling, after T23: the p
 retrieval-design work becomes its own decision ticket (research, then grilling, strongest
 model), covering compound questions on both the chat path and the package path, and what
 K04's gate measures. It blocks T26 and AUD-062's closure; T24 and T25 proceed meanwhile.
-See [ticket 45](issues/45-compound-question-retrieval-design.md).
+See [ticket 45](issues/45-compound-question-retrieval-design.md). The later T46 ruling holds
+T25 and prioritises the graph foundation review; T45's retrieval scope and T26 blocker remain.
 
 Ticket 44, the phase 0 cleanup, was opened on 28 October 2026 by the author's ruling after T18.
 It collects the foundation's small debts (AUD-057, AUD-058, AUD-059 under the new settings rule,
@@ -245,7 +269,7 @@ every later ticket; the standard models (Opus 5.5, Sol 6.1) take the rest.
 
 | Model | Tickets | Reason |
 |---|---|---|
-| Strongest | 17, 19, 22, 24, 26, 27, 28, 29, 45 | Load-bearing seams: the build, the graph, fusion, the tool pattern and fence, the package, the resolver, the playbook hooks, the eval gate, and compound-question retrieval (45, added 29 October 2026) |
+| Strongest | 17, 19, 22, 24, 26, 27, 28, 29, 45, 46, 47, 48, 49 | Load-bearing seams: the build, graph, fusion, tools, package, resolver, playbook, eval gates, retrieval design, graph foundation and the approved migration build/lifecycle/acceptance sequence |
 | Strongest if budget allows | 30, 37, 41 | Judge design, the hardest frontend drawing, the BM25 leg and an honest on-versus-off call |
 | Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40, 44 | Standard build work on seams the strongest tickets set |
 | None | 42 | The author's ticket |

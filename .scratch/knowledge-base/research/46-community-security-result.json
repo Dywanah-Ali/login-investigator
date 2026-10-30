@@ -1,0 +1,268 @@
+{
+  "image": "neo4j:2026.10.1",
+  "driver": "6.1.0",
+  "resource": "li-t46-security-c649bb467f",
+  "checks": [
+    {
+      "phase": "read_only_start",
+      "check": "create_node",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "update_node",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "create_relationship",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "delete_relationship",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "delete_node",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "create_index",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "change_read_only_setting",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.Procedure.ProcedureNotFound"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "alter_access",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.Statement.UnsupportedAdministrationCommand"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "create_user",
+      "outcome": "allowed"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "alter_other_user",
+      "outcome": "allowed"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "drop_user",
+      "outcome": "allowed"
+    },
+    {
+      "phase": "read_only_start",
+      "check": "write_after_bypass_attempts",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "after_restart",
+      "check": "create_node",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "after_restart",
+      "check": "update_node",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "after_restart",
+      "check": "create_relationship",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "after_restart",
+      "check": "delete_relationship",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "after_restart",
+      "check": "delete_node",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "after_restart",
+      "check": "create_index",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    },
+    {
+      "phase": "after_restart",
+      "check": "change_read_only_setting",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.Procedure.ProcedureNotFound"
+    },
+    {
+      "phase": "after_restart",
+      "check": "alter_access",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.Statement.UnsupportedAdministrationCommand"
+    },
+    {
+      "phase": "after_restart",
+      "check": "create_user",
+      "outcome": "allowed"
+    },
+    {
+      "phase": "after_restart",
+      "check": "alter_other_user",
+      "outcome": "allowed"
+    },
+    {
+      "phase": "after_restart",
+      "check": "drop_user",
+      "outcome": "allowed"
+    },
+    {
+      "phase": "after_restart",
+      "check": "write_after_bypass_attempts",
+      "outcome": "rejected",
+      "code": "Neo.ClientError.General.WriteOnReadOnlyAccessDatabase"
+    }
+  ],
+  "server": [
+    {
+      "name": "Neo4j Kernel",
+      "versions": [
+        "2026.10.1"
+      ],
+      "edition": "community"
+    },
+    {
+      "name": "Cypher",
+      "versions": [
+        "5",
+        "25"
+      ],
+      "edition": ""
+    }
+  ],
+  "baseline": {
+    "nodes": [
+      {
+        "id": 1,
+        "value": "original"
+      },
+      {
+        "id": 2,
+        "value": "original"
+      }
+    ],
+    "edges": [
+      {
+        "source": 1,
+        "type": "LINK",
+        "target": 2
+      }
+    ]
+  },
+  "read_only_start_read": {
+    "nodes": [
+      {
+        "id": 1,
+        "value": "original"
+      },
+      {
+        "id": 2,
+        "value": "original"
+      }
+    ],
+    "edges": [
+      {
+        "source": 1,
+        "type": "LINK",
+        "target": 2
+      }
+    ]
+  },
+  "read_only_start_after": {
+    "nodes": [
+      {
+        "id": 1,
+        "value": "original"
+      },
+      {
+        "id": 2,
+        "value": "original"
+      }
+    ],
+    "edges": [
+      {
+        "source": 1,
+        "type": "LINK",
+        "target": 2
+      }
+    ]
+  },
+  "after_restart_read": {
+    "nodes": [
+      {
+        "id": 1,
+        "value": "original"
+      },
+      {
+        "id": 2,
+        "value": "original"
+      }
+    ],
+    "edges": [
+      {
+        "source": 1,
+        "type": "LINK",
+        "target": 2
+      }
+    ]
+  },
+  "after_restart_after": {
+    "nodes": [
+      {
+        "id": 1,
+        "value": "original"
+      },
+      {
+        "id": 2,
+        "value": "original"
+      }
+    ],
+    "edges": [
+      {
+        "source": 1,
+        "type": "LINK",
+        "target": 2
+      }
+    ]
+  },
+  "completed": true,
+  "cleanup": [
+    {
+      "operation": "rm",
+      "ok": true
+    },
+    {
+      "operation": "volume",
+      "ok": true
+    }
+  ]
+}
