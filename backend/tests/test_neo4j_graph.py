@@ -2,7 +2,11 @@
 
 import pytest
 
-from login_investigator.knowledge_base.neo4j_graph import GraphUnavailable, Neo4jQueries, GraphSettings
+from login_investigator.knowledge_base.neo4j_graph import (
+    GraphSettings,
+    GraphUnavailable,
+    Neo4jQueries,
+)
 
 
 def test_unavailable_graph_has_a_fixed_public_error():

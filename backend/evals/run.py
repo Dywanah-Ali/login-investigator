@@ -18,8 +18,8 @@ without asking the model: for a fix to the grader, never to the agent.
 from __future__ import annotations
 
 import argparse
-import asyncio
 import ast
+import asyncio
 import hashlib
 import json
 import os
@@ -66,7 +66,8 @@ def prompt_version() -> str:
 
 def git_commit() -> str:
     def git(*args):
-        return subprocess.run(["git", *args], capture_output=True, text=True).stdout.strip()
+        # Preserve best-effort revision metadata when Git returns a nonzero status.
+        return subprocess.run(["git", *args], capture_output=True, text=True, check=False).stdout.strip()
     dirty = git("status", "--porcelain", "--", "login_investigator", "api", "evals/run.py",
                 "evals/api_runner.py", "evals/scoring.py", "evals/questions.json",
                 "evals/retrieval.py", "evals/retrieval_requests.json", "evals/knowledge_base_questions.json",
@@ -124,7 +125,7 @@ def evaluate(question: dict, run: int, converse: Callable[[], list[investigator.
                                "tools": [{"name": u.name, "args": u.args} for u in turn.tools]}
                               for turn in case[:-1]],
         }
-    except Exception as error:  # a failed run is a failed run; the error is kept for reading
+    except Exception as error:  # noqa: BLE001 - Report failure without exposing provider or database details.
         record |= {"error": f"{type(error).__name__}: {error}",
                    "checks": [{"id": c["id"], "security": bool(c.get("security")),
                                "passed": False} for c in question["checks"]]}
@@ -320,14 +321,17 @@ def main() -> None:
         if options.mode != "direct":
             parser.error("--layer retrieval calls the core directly; --mode api is for the answer layer")
         from evals.retrieval import run_retrieval
-        from login_investigator.knowledge_base import KnowledgeBaseNotReady, RerankerUnavailable
+        from login_investigator.knowledge_base import (
+            KnowledgeBaseNotReady,
+            RerankerUnavailable,
+        )
         from login_investigator.postgres import DatabaseUnavailable
         started = datetime.now(timezone.utc)
         try:
             report, version = asyncio.run(run_retrieval(options.only))
         except (ValueError, KnowledgeBaseNotReady, DatabaseUnavailable, RerankerUnavailable) as error:
             parser.error(str(error))
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001 - Report failure without exposing provider or database details.
             # Provider/database exceptions may carry connection details. Preserve the failure
             # without printing their raw text or request data.
             parser.exit(2, f"Retrieval failed ({type(error).__name__}). Check the knowledge-base, "

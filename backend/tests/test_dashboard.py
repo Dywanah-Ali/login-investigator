@@ -8,9 +8,9 @@ from datetime import date
 import pandas as pd
 import pytest
 
-from login_investigator.search import filter_logins
-from login_investigator.rules import detect_all
 from login_investigator.dashboard import alerts_for_view, dataset_facts, date_window
+from login_investigator.rules import detect_all
+from login_investigator.search import filter_logins
 
 UTC = "UTC"
 

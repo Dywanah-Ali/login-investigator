@@ -2,7 +2,12 @@
 
 from collections.abc import Callable
 
-from langchain.agents.middleware import ModelRequest, ModelResponse, wrap_model_call, wrap_tool_call
+from langchain.agents.middleware import (
+    ModelRequest,
+    ModelResponse,
+    wrap_model_call,
+    wrap_tool_call,
+)
 from langchain_core.messages import ToolMessage
 from langgraph.prebuilt.tool_node import ToolCallRequest
 from langgraph.types import Command

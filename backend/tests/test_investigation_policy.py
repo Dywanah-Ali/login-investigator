@@ -7,10 +7,10 @@ from langchain.agents import create_agent
 from langchain_core.messages import AIMessage
 from langchain_core.tools import ToolException, tool
 from langgraph.checkpoint.memory import InMemorySaver
+from test_agent import FakeModel, tool_call
 
 from login_investigator.agent import ask, history
 from login_investigator.investigation_policy import complete_detection_evidence
-from test_agent import FakeModel, tool_call
 
 
 @pytest.mark.parametrize('existing,filtered,failing', [(False, False, False), (True, False, False),

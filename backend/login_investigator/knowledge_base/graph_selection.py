@@ -5,8 +5,9 @@ import tempfile
 from pathlib import Path
 
 from login_investigator.postgres import ServerSettings
+
 from .graph_version import open_version
-from .staleness import KnowledgeBaseNotReady, PAIR_UNCHECKABLE
+from .staleness import PAIR_UNCHECKABLE, KnowledgeBaseNotReady
 
 
 def read_selection(state_file: Path) -> dict:
@@ -52,7 +53,7 @@ async def select_version(marker: Path, state_file: Path,
             handle.write('\n')
         temporary.replace(state_file)
         return selected
-    except Exception:
+    except Exception:  # noqa: BLE001 - Refuse rollback with a fixed, credential-safe error.
         raise KnowledgeBaseNotReady(PAIR_UNCHECKABLE) from None
     finally:
         if temporary is not None:
@@ -66,5 +67,5 @@ async def rollback_version(state_file: Path, server: ServerSettings | None = Non
         if previous is None:
             raise ValueError('There is no previous complete version')
         return await select_version(Path(previous), state_file, server)
-    except Exception:
+    except Exception:  # noqa: BLE001 - Refuse rollback with a fixed, credential-safe error.
         raise KnowledgeBaseNotReady(PAIR_UNCHECKABLE) from None

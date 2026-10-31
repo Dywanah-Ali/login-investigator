@@ -12,6 +12,7 @@ from sqlalchemy import select
 
 from login_investigator.postgres import ServerSettings
 from login_investigator.workers import owned_operation
+
 from . import open_current_knowledge_base, schema
 from .graph_selection import select_version
 from .graph_version import build_version, remove_version
@@ -80,7 +81,7 @@ async def isolated_evaluation(dataset: Path, state_file: Path, *, root: Path | N
             if fingerprints != [version.fingerprint]:
                 raise ValueError('Source version changed while preparing the evaluation')
             await select_version(version.marker, selected, server)
-        except Exception:
+        except Exception:  # noqa: BLE001 - Refuse an incomplete evaluation copy without exposing credentials.
             raise KnowledgeBaseNotReady(EVALUATION_UNAVAILABLE) from None
         yield EvaluationVersion(version.snapshot, selected, version.build_id)
     finally:

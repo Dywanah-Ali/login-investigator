@@ -27,7 +27,6 @@ from login_investigator.rules import (
     SUCCESS_AFTER_MIN_FAILURES,
 )
 
-
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 
 

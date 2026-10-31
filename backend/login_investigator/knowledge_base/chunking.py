@@ -5,10 +5,11 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 import tiktoken
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from login_investigator.corpus_check import split_front_matter
+
 
 @dataclass(frozen=True)
 class ChunkSettings:

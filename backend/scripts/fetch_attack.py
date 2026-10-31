@@ -10,7 +10,11 @@ import json
 from pathlib import Path
 from urllib.request import urlopen
 
-from login_investigator.attack_corpus import ATTACK_COMMIT, ATTACK_VERSION, write_attack_corpus
+from login_investigator.attack_corpus import (
+    ATTACK_COMMIT,
+    ATTACK_VERSION,
+    write_attack_corpus,
+)
 
 SOURCE = f"https://raw.githubusercontent.com/mitre-attack/attack-stix-data/{ATTACK_COMMIT}"
 BUNDLE_URL = f"{SOURCE}/enterprise-attack/enterprise-attack-{ATTACK_VERSION}.json"

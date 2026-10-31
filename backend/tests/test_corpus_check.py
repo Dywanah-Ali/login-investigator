@@ -9,7 +9,13 @@ from pathlib import Path
 import pytest
 
 from login_investigator.corpus_check import (
-    World, absent_topic_terms, brief_errors, check_corpus, contains_term, mention_errors, read_brief,
+    World,
+    absent_topic_terms,
+    brief_errors,
+    check_corpus,
+    contains_term,
+    mention_errors,
+    read_brief,
 )
 from scripts.check_corpus import main
 

@@ -12,8 +12,8 @@ any per-test guard, so they are where a guard that starts too late lets the keys
 without `.env` there is no key to leak, and these tests pass either way.
 """
 
-import os
 import asyncio
+import os
 
 import pytest
 from fastapi.testclient import TestClient

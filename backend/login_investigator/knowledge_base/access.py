@@ -9,7 +9,7 @@ from dotenv import dotenv_values
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from login_investigator.postgres import DatabaseUnavailable, ENV_PATH, ServerSettings
+from login_investigator.postgres import ENV_PATH, DatabaseUnavailable, ServerSettings
 
 
 def reader_settings(

@@ -6,8 +6,8 @@ import pytest
 
 
 def test_missing_version_preserves_existing_selection(tmp_path):
-    from login_investigator.knowledge_base.graph_selection import select_version
     from login_investigator.knowledge_base import KnowledgeBaseNotReady
+    from login_investigator.knowledge_base.graph_selection import select_version
 
     pointer = tmp_path / 'selected.json'
     pointer.write_text('{"format":"paired-v1","current":"/previous/complete.json","previous":null}')
@@ -18,8 +18,8 @@ def test_missing_version_preserves_existing_selection(tmp_path):
 
 
 def test_rollback_without_previous_version_refuses_without_rewriting(tmp_path):
-    from login_investigator.knowledge_base.graph_selection import rollback_version
     from login_investigator.knowledge_base import KnowledgeBaseNotReady
+    from login_investigator.knowledge_base.graph_selection import rollback_version
 
     pointer = tmp_path / 'selected.json'
     pointer.write_text('{"format":"paired-v1","current":"/current/complete.json","previous":null}')

@@ -43,5 +43,5 @@ def test_the_memory_file_and_its_side_files_are_git_ignored():
                  memory.with_name(memory.name + "-shm")):
         relative = name.relative_to(investigations.REPO_ROOT)
         check = subprocess.run(["git", "check-ignore", "-q", str(relative)],
-                               cwd=investigations.REPO_ROOT)
+                               cwd=investigations.REPO_ROOT, check=False)
         assert check.returncode == 0, f"{relative} is not git-ignored"

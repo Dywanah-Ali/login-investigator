@@ -7,7 +7,8 @@ from typing import Any, LiteralString, cast
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from login_investigator.loader import load_log, TIMESTAMP_FORMAT
+from login_investigator.loader import TIMESTAMP_FORMAT, load_log
+
 from . import schema
 from .graph_service import execute
 from .neo4j_graph import GraphSettings

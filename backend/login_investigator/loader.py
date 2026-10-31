@@ -79,7 +79,7 @@ def _find_problems(df: pd.DataFrame, timestamps: pd.Series) -> list[str]:
         line = index + 2  # line 1 is the header
 
         def bad(column: str, why: str) -> None:
-            problems.append(f"line {line}, column '{column}': {why}")
+            problems.append(f"line {line}, column '{column}': {why}")  # noqa: B023 - This callback completes within the current iteration.
 
         raw_time = row["timestamp_utc"]
         if not TIMESTAMP_PATTERN.match(raw_time):
@@ -127,7 +127,7 @@ def parse_utc(value, name: str) -> pd.Timestamp:
             )
         value = value.strip()
     elif not isinstance(value, (datetime, date)):
-        raise ValueError(f"{name} {value!r} is not a date and time")
+        raise ValueError(f"{name} {value!r} is not a date and time")  # noqa: TRY004 - Preserve the existing invalid-input ValueError contract.
     try:
         moment = pd.Timestamp(value)
     except (ValueError, TypeError):

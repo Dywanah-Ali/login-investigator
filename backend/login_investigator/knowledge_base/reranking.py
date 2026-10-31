@@ -1,11 +1,11 @@
 """The re-ranker behind its switch (T03 d5). Scores order evidence; until T39 they decide nothing."""
 
+import math
+import os
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator, Mapping, Sequence
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-import math
-import os
 from pathlib import Path
 
 import httpx
@@ -122,7 +122,7 @@ class OpenRouterReranker(Reranker):
                 if type(index) is not int or not 0 <= index < len(texts) or index in scores:
                     raise ValueError
                 if isinstance(value, bool) or not isinstance(value, int | float):
-                    raise ValueError
+                    raise ValueError  # noqa: TRY004 - Preserve the existing invalid-input ValueError contract.
                 scores[index] = float(value)
         except (KeyError, TypeError, ValueError):
             scores = {}

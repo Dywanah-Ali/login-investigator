@@ -4,7 +4,8 @@ import asyncio
 import json
 
 import pytest
-from tests.test_api_startup import built  # noqa: F401
+
+from tests.test_api_startup import built as built  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
 
 
 def test_evaluation_without_a_knowledge_base_needs_no_database(tmp_path, monkeypatch):
@@ -34,6 +35,7 @@ def test_evaluation_without_a_knowledge_base_needs_no_database(tmp_path, monkeyp
 
 def test_evaluation_builds_its_own_pair_and_cleans_after_caller_failure(built, tmp_path):
     import psycopg
+
     from login_investigator.knowledge_base import open_current_knowledge_base
     from login_investigator.knowledge_base.evaluation_version import isolated_evaluation
     from login_investigator.knowledge_base.graph_service import GraphService

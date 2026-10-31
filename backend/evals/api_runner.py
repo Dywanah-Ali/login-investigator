@@ -15,8 +15,8 @@ from typing import Any, Protocol
 
 import httpx
 
-from login_investigator import agent, reputation
 from api.settings import Settings
+from login_investigator import agent, reputation
 from login_investigator.knowledge_base.evaluation_version import evaluation_version
 
 REPORT_TURN = "REPORT"

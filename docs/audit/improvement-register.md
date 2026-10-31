@@ -43,8 +43,8 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-009 | Resolve existing frontend lint warnings | Open maintenance concern | Medium | Parity evidence |
 | AUD-010 | Review frontend bundle size | Open performance concern | Low | Parity evidence |
 | AUD-011 | Extend backend type checking to copied files | Deferred until after Parity | Medium | Ticket 21; backend configuration |
-| AUD-012 | Align editor Python environment with command-line checks | Previously recorded, current state unverified | Low | Ticket 21 comments |
-| AUD-013 | Decide and configure project Python linting | Previously recorded, current state unverified | Low | Ticket 21 comments |
+| AUD-012 | Align editor Python environment with command-line checks | Closed: backend import verified and author confirmed Pylance warning cleared, 31 October 2026 | Low | Ticket 21 comments; author editor check |
+| AUD-013 | Decide and configure project Python linting | Closed: author-approved policy, pinned tool, reviewed baseline and tested commands, 31 October 2026 | Low | Ticket 21 comments; tooling ticket 01 |
 | AUD-014 | Automate agreed project checks | Previously recorded, current state unverified | Medium | Ticket 21 comments |
 | AUD-020 | Distinguish whole-investigation recall from the latest account focus | Author clarified missing accounts; narrowing observed, cause partly inferred | Medium | P-058/P-059; B-060 |
 | AUD-021 | Report prompt-injection evidence consistently | Open defect against existing instructions | High | B-057; P-058 |
@@ -96,6 +96,9 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-067 | Review the graph foundation against the application's intended direction | Open; T46 decision resolved, migration acceptance owned by T49; T25/T27 held | High | Author discussion and approval, 30 October 2026; T02 and T24 |
 | AUD-068 | Production readiness after the development-stage Neo4j migration | Open, deferred until production is proposed; not a development-migration blocker | High | T46 author-approved Community limitation and later Enterprise/readiness review |
 | AUD-069 | Intermittent Explorer interaction timeout during T47 safety checks | Open observation; affected-file rerun passed, investigate if repeated | Low | B-113; T47 frontend safety net |
+| AUD-070 | Consider Pydantic Evals for evaluation orchestration | Open, future option; defer adoption pending a concrete maintenance need | Low | Author and Codex discussion, 31 October 2026; official documentation linked below |
+| AUD-071 | Inspect passage text by graph passage ID | Parked by the author; no implementation approved or added to T49 | Low | T48 learning walkthrough with the author, 31 October 2026 |
+| AUD-072 | Neo4j graph-integrity test query returned unavailable during import cleanup verification | Open intermittent observation; verification recovered with 701 backend passes, root cause unproven | Medium | B-124; 31 October 2026 import cleanup and follow-up |
 
 ### AUD-001: Rule filter
 
@@ -235,6 +238,68 @@ state before treating them as defects or implementing changes.
 | AUD-012 | Editor uses the intended backend environment and agrees with the command-line checker on a representative file. |
 | AUD-013 | An agreed project lint configuration has a documented command and a reviewed baseline. |
 | AUD-014 | Agreed checks run automatically in the selected workflow and a deliberate failure is detected. No publishing or deployment is implied. |
+
+31 October 2026, AUD-012 closed: `sqlalchemy.ext.asyncio` imports successfully under
+`backend/.venv/bin/python` with SQLAlchemy 2.1.6. The author's terminal initially used the
+repository-root `.venv`, a different environment. After selecting the backend interpreter in
+VS Code, the author confirmed the Pylance warning disappeared. Backend Pyright was also clean
+in the same session. No package reinstall or dependency change was needed.
+
+31 October 2026, AUD-013 partial progress: the author approved a focused backend import cleanup
+after the T48 learning walkthrough. Editor-bundled Ruff 0.17.3, restricted to `--select I --fix`,
+fixed 102 import diagnostics across 76 Python files. A structural comparison against HEAD
+confirmed only import ordering, grouping and spacing changes. The import-only check passes;
+127 other diagnostics remain outside this work. Ruff's verbose output confirms default settings
+are in use. No project lint configuration was introduced, so AUD-013 remains open. Backend
+Pyright reports zero errors or warnings; frontend tests pass 150/150. Initial full backend
+verification was interrupted after 373 passes and one graph query failure; its isolated rerun
+failed at Neo4j startup readiness. On the author's follow-up, the diagnostic and normal focused
+runs passed, followed by all 701 backend tests in 957.38 seconds. The import cleanup's
+verification gap is resolved; B-124/AUD-072 retain the intermittent failure and unproven cause.
+No paid agent evaluation ran because no prompt, tool contract or non-import logic changed.
+
+31 October 2026, AUD-013 follow-up: the author chose documented exceptions at the 12 reviewed
+`BLE001` handlers rather than disabling the rule across the project. Each now has a line-level
+`noqa: BLE001` with its reason: safe error translation, continuing cleanup, preserving
+cancellation, or recording failed evaluations. The nine affected Python syntax trees are
+identical before and after the comment edits. Import and BLE001 checks pass; an in-memory
+unapproved broad-catch example still triggers BLE001. The remaining baseline is 115 diagnostics.
+The earlier 701 backend passes, 150 frontend passes and clean type checks remain applicable to
+the unchanged executable code; no services were rerun for these comment-only changes.
+Project lint configuration remains undecided, so AUD-013 stays open. Documentation: Ruff 0.17.3,
+official [BLE001 rule](https://docs.astral.sh/ruff/rules/blind-except/) and
+[line-level suppression](https://docs.astral.sh/ruff/linter/#error-suppression); checked the
+rule-specific suppression syntax and confirmed it with the installed editor binary.
+
+31 October 2026, remaining Ruff baseline reviewed at the author's request: 115 diagnostics
+across 21 rule codes after the BLE001 exceptions. The following is a proposal, not an adopted
+configuration or approval for behaviour changes:
+
+| Group | Count | Reviewed finding and proposed treatment |
+| --- | --- | --- |
+| Style and simplification | 46 | Consider ignoring UP017, SIM117, SIM102, SIM113, FURB167, FURB162, FURB192, RUF007, RUF015, ASYNC115, C405 and B009. Existing spelling and structure are valid; no correctness defect established. A CLI-only preview leaves 69 diagnostics. |
+| Imported pytest fixtures (F811) | 37 | All cases are fixture parameters shadowing imported fixtures in seven test files. Prefer explicit same-name import aliases over disabling F811. A stdin-only preview on test_corpus_search.py removed its seven warnings; no file changed. |
+| Deliberate constructs | 25 | ISC004 (16): intentional joined strings, make grouping explicit with parentheses. B023 (5): callbacks finish before the next iteration, document or bind values explicitly. TRY004 (3): preserve existing validation error contracts with explained exceptions. PLE2502 (1): hostile control character deliberately tested, spell it as a Unicode escape while preserving the runtime value. Keep these rules enabled. |
+| Small cleanup candidates | 7 | F401 (2): unused imports; RUF059 (1): unused binding; PLW1510 (3): make subprocess failure policy explicit after checking each caller; ASYNC210 (1): blocking localhost HTTP probe inside an asynchronous test. Review/fix separately rather than hiding these categories. No runtime failure established by this lint review. |
+
+The review changed no Python or Ruff settings. Keep correctness checks and reviewed BLE001
+exceptions; agree the proposed policy before implementation. Reference: Ruff 0.17.3 official
+[F811](https://docs.astral.sh/ruff/rules/redefined-while-unused/),
+[B023](https://docs.astral.sh/ruff/rules/function-uses-loop-variable/), and
+[ISC004](https://docs.astral.sh/ruff/rules/implicit-string-concatenation-in-collection-literal/)
+documentation, with local code inspection and non-writing CLI previews.
+
+31 October 2026, author approved the proposal above and instructed implementation. Work is
+recorded in [tooling ticket 01](../../.scratch/tooling/issues/01-ruff-policy.md). Ruff 0.17.3 is
+pinned, the twelve style preferences are relaxed, and the other reviewed diagnostics are
+resolved with explicit intent or small cleanup. Full-policy Ruff and backend types pass;
+frontend 150 pass. Diagnostic probes confirm F821, BLE001 and B023 still detect new mistakes.
+The final full backend run passed all 701 tests in 993.52 seconds, with no failures or teardown
+errors. B-125 records a tooling error during suppression cleanup and its verified correction;
+admin manual section 7 contains tested setup/check commands. AUD-013 is closed on the agreed
+policy and verified baseline. The Python 3.12 target's TypeVar-style warning (UP047) and explicit
+fixture-alias warning (PLC0414) have specific explained exceptions; no additional rule was
+disabled project-wide. AUD-072 remains separately open and did not recur in this run.
 
 ### AUD-020: Answer completeness versus stored memory
 
@@ -1213,6 +1278,73 @@ validation. No frontend changes were made. A separate rerun is recorded in T48; 
 remains unproven and this item stays open for investigation.
 The separate full rerun passed all 150 tests in 28.27 seconds without changes.
 
+### AUD-070: Pydantic Evals adoption path
+
+Recorded at the author's request, 31 October 2026. An evaluation framework organises the exam;
+its quality still depends on the questions, gold evidence and grading rules. Pydantic Evals
+offers reusable evaluators, experiment reports and repeated comparisons. It is independent of
+Pydantic AI, so adoption would not require replacing LangChain. Sources:
+[overview](https://pydantic.dev/docs/ai/evals/evals/) and
+[core concepts](https://pydantic.dev/docs/ai/evals/getting-started/core-concepts/).
+
+Codex recommendation: defer adoption. Our runner, deterministic scorer, saved results and
+version fingerprints already cover much of the machinery. Langfuse is the agreed inspection
+mirror (AUD-036). Adding a second runner now risks duplicate maintenance and does not resolve
+retrieval gaps or weak grading rules.
+
+Trigger to revisit: after migration acceptance, repeated model/retrieval comparisons or the
+faithfulness-judge implementation expose a concrete maintenance problem. Proposed path: agree
+a small ticket, wrap the existing scorer and a representative subset of saved cases in Pydantic
+Evals, then compare verdicts and reporting effort with the current harness. Keep one source of
+truth for questions and scoring, preserve acceptance thresholds and saved evidence, and keep
+the judge advisory. Adopt only if the trial demonstrates useful simplification without a
+permanent duplicate runner; otherwise retain the current harness. Closure evidence: recorded
+comparison results and the author's adoption or rejection decision. Registration authorises
+no dependency, implementation or spec change.
+
+### AUD-071: Operator inspection of passage text by graph passage ID
+
+- **Source:** Author discussion during the [T48 learning walkthrough](../../.scratch/knowledge-base/issues/48-paired-lifecycle-and-native-inspection.md), 31 October 2026.
+- **Current boundary:** Neo4j passage nodes contain references and relationships. PostgreSQL owns
+  passage text. Neo4j Browser does not automatically fetch that text; this is an accepted T48
+  scope boundary, not a migration defect.
+- **Operator need:** See the relevant passage text associated with a specific passage ID in a
+  graph node. No broader document-browsing capability was requested.
+- **Status and ruling:** Parked at the author's explicit request. Discussion considered adding
+  it to T49, but no scope expansion was approved. T49 and the planned in-app Graph tab remain
+  unchanged. Reopen only when the author requests it.
+- **Decision still needed:** Where the text appears, including whether inspection must happen
+  inside Browser or through a separate lookup. No implementation mechanism is selected.
+- **Acceptance when reopened:** Agree the operator workflow, retrieve exact passage text and
+  source information from the matching build, and verify missing IDs and version mismatches
+  cannot silently return unrelated evidence. Preserve PostgreSQL as the passage-text owner.
+  Closure requires tested evidence and author review; none exists yet.
+
+### AUD-072: Graph-integrity test service failure during import cleanup verification
+
+- **Source:** [B-124](../bug-log.md), 31 October 2026.
+- **Observation:** `test_corrupt_graph_refused_and_successful_device_witness_preserved`
+  raised `GraphUnavailable` during its device-peer query in the unrestricted regression run.
+  The run was interrupted after 373 passes and one failure to investigate. The driver cause
+  is suppressed, so timeout or import-order causation is not established.
+- **Initial follow-up:** the isolated rerun failed in 133.99 seconds because Neo4j did not
+  become ready within 120 seconds. This establishes a service-readiness problem in that run,
+  but does not diagnose the earlier query failure.
+- **31 October recovery evidence:** the author requested investigation and completion of
+  verification. Without changing application code, timeouts or Docker settings, a temporary
+  diagnostic run passed in 35.77 seconds (two harness-only pytest import-rewrite warnings).
+  Graph readiness took 17.79 seconds; container state showed `OOMKilled=false` and memory
+  usage was 713.8 MiB. The normal focused test then passed in 37.40 seconds. The complete
+  backend suite passed all 701 tests in 957.38 seconds, including the previously failing
+  graph-integrity check in 34.07 seconds. No failures or teardown errors occurred in that run.
+- **Status:** verification gap resolved; intermittent observation remains open because the
+  original driver cause was not captured. No speculative timeout increase or service restart
+  was applied. If it recurs, capture driver error code and container state before cleanup.
+  Final process/container inspection found no running tests and only the pre-existing retained
+  walkthrough graph container. No application selection changed and no paid services ran.
+- **Closure evidence:** establish the cause or disposition with reproducible evidence and
+  author review. A passing rerun alone does not prove the underlying problem fixed.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -1362,3 +1494,9 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-28 | T18 staleness guard built and reviewed. Added AUD-058 (chunking code outside the fingerprint) and AUD-059 (two readers of `LI_DATASET_DIR`), both unresolved review concerns. Final safety net: 585 backend, 149 frontend, clean types, Port API eval 63/63 overall and 15/15 security. Six existing lint warnings (AUD-009) remain; no parked behaviour concern reopened. | T18; B-089, B-090; `reviews/18-code-review-2026-10-28.md`; `2026-10-27-224010-b70d0745.json` |
 | 2026-10-28 | T19 graph and exact S6 radius verified: 612 backend, 149 frontend, clean types, zero findings per review axis, Port API eval 61/63 and 15/15. AUD-060 closed; AUD-061 registered for T44. AUD-047 recurrence is S2 outcome omission, not an S6 zero-success claim. | T19; B-076 and B-091 to B-095; 19 review and evidence |
 | 2026-10-29 | T23 re-ranker behind its switch. Added AUD-063 (one OpenRouter reader and one `.env` test guard) and AUD-064 (kept-5 check and calibration evidence for T39 and T41). AUD-062 note: the re-ranker keeps K04's runbook at rank 1; the MFA register is still absent. | T23; B-101; `reviews/23-code-review-2026-10-29.md`; `2026-10-29-150414-681065-retrieval-0331ac624577.json` |
+| 2026-10-31 | Added AUD-070 at the author's request: Pydantic Evals potential value, recommendation to defer, and a bounded comparison trial before any adoption decision. | Author and Codex discussion; official Pydantic documentation |
+| 2026-10-31 | Added AUD-071 at the author's request: park operator passage-text inspection by graph passage ID. Display location remains undecided; no expansion of T49 or implementation approval. | Author; T48 learning walkthrough |
+| 2026-10-31 | Author-approved import-only cleanup fixed 102 Ruff diagnostics in 76 backend files; import and type checks plus 150 frontend tests pass. Backend run interrupted after 373 passes and one graph query failure; isolated rerun failed on Neo4j readiness. AUD-013 remains open; B-124/AUD-072 record the verification gap. Test processes ended and only the pre-existing retained walkthrough graph container remains. | Author; import cleanup verification |
+| 2026-10-31 | At the author's request, investigated AUD-072 and completed verification without application or service-setting changes. Diagnostic and normal focused reruns pass; full backend 701 passed in 957.38 seconds. Import cleanup verification gap resolved; intermittent failure remains open with root cause unproven. Test resources cleaned up; retained inspection container preserved. | B-124; AUD-072 follow-up |
+| 2026-10-31 | Closed AUD-012 after the author's backend-interpreter selection cleared Pylance's import warning. For AUD-013, the author chose 12 reasoned line-level BLE001 exceptions; comments only, syntax trees unchanged, lint and detection probe pass. 115 other diagnostics remain; no project-wide rule disabled. | Author confirmation and selected option; Ruff verification |
+| 2026-10-31 | Closed AUD-013 after applying the approved policy: Ruff 0.17.3 pinned, twelve style preferences relaxed, remaining intentional patterns clarified and seven cleanup items handled. Full-policy Ruff and backend types clean; backend 701 passed in 993.52 seconds, frontend 150 passed. Admin commands tested; B-125 corrected and recorded. Only the retained inspection graph remains; no test process remains. | Tooling ticket 01; admin manual section 7; author approval |

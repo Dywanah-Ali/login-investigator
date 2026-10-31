@@ -1,7 +1,7 @@
 """Capture source inputs for one isolated, reproducible graph version."""
 
-import shutil
 import re
+import shutil
 from pathlib import Path
 
 from .staleness import source_fingerprint
@@ -38,14 +38,26 @@ from dotenv import dotenv_values
 from langchain_core.embeddings import Embeddings
 from sqlalchemy import text
 
-from login_investigator.workers import owned_operation
 from login_investigator.loader import load_log
-from login_investigator.postgres import ServerSettings, check_server, create_fresh_database, drop_database
-from . import KnowledgeBase, Reranker, build_knowledge_base, database_engine, reader_settings
+from login_investigator.postgres import (
+    ServerSettings,
+    check_server,
+    create_fresh_database,
+    drop_database,
+)
+from login_investigator.workers import owned_operation
+
+from . import (
+    KnowledgeBase,
+    Reranker,
+    build_knowledge_base,
+    database_engine,
+    reader_settings,
+)
 from .graph_ingestion import import_graph
-from .graph_service import GraphService, docker, check_serving_protection, execute
+from .graph_service import GraphService, check_serving_protection, docker, execute
 from .graph_verification import verify_graph
-from .neo4j_graph import GraphSettings, Neo4jQueries, GraphUnavailable
+from .neo4j_graph import GraphSettings, GraphUnavailable, Neo4jQueries
 
 
 @dataclass(frozen=True)
@@ -136,12 +148,12 @@ def dispose_resources(service: GraphService, database: ServerSettings | None, di
     failures = []
     try:
         service.remove()
-    except Exception:
+    except Exception:  # noqa: BLE001 - Retain recovery metadata for any database cleanup failure.
         failures.append('neo4j')
     if database is not None:
         try:
             drop_database(database)
-        except Exception:
+        except Exception:  # noqa: BLE001 - Retain recovery metadata for any database cleanup failure.
             failures.append('postgresql')
     if failures:
         (directory / 'cleanup.json').write_text(json.dumps({

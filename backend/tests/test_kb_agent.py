@@ -1,27 +1,28 @@
 """T24: the first graph tool through the agent and application lifecycle doors."""
 
-import json
 import asyncio
+import json
 import sqlite3
-from contextlib import asynccontextmanager
 from collections import Counter
+from contextlib import asynccontextmanager
 from dataclasses import replace
-
-from sqlalchemy import text
 
 import pytest
 from fastapi.testclient import TestClient
 from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
-from sqlalchemy.exc import DBAPIError
 from pydantic import Field
+from sqlalchemy import text
+from sqlalchemy.exc import DBAPIError
 
 from api.app import create_app
 from login_investigator import agent, investigations, knowledge_base
-from tests.test_agent import FakeModel, tool_call
-from tests.test_api_startup import built, memory_path, startup_settings  # noqa: F401
-from tests.test_knowledge_base import FakeEmbedder, publish
 from login_investigator.postgres import create_fresh_database, drop_database
+from tests.test_agent import FakeModel, tool_call
+from tests.test_api_startup import built as built  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
+from tests.test_api_startup import memory_path as memory_path  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
+from tests.test_api_startup import startup_settings
+from tests.test_knowledge_base import FakeEmbedder, publish
 
 
 class ObservingModel(FakeModel):

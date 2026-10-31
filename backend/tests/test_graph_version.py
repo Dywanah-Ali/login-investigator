@@ -27,9 +27,15 @@ def test_snapshot_is_independent_and_refuses_reuse(tmp_path: Path):
 def test_isolated_version_opens_reference_graph_and_keeps_active_pointer(tmp_path: Path):
     import asyncio
     import json
-    from login_investigator.knowledge_base.graph_version import build_version, open_version, remove_version
-    from login_investigator.postgres import ServerSettings
+
     from test_knowledge_base import DATASET, FakeEmbedder
+
+    from login_investigator.knowledge_base.graph_version import (
+        build_version,
+        open_version,
+        remove_version,
+    )
+    from login_investigator.postgres import ServerSettings
 
     active = tmp_path / 'active.json'
     active.write_text('{"database":"untouched"}')
@@ -52,10 +58,14 @@ def test_isolated_version_opens_reference_graph_and_keeps_active_pointer(tmp_pat
                     async with kb.engine.begin() as connection:
                         await connection.execute(text("UPDATE graph_pair SET build_id='reader-write'"))
 
-                from login_investigator.knowledge_base import open_knowledge_base, reader_settings
+                from dataclasses import asdict, replace
+
+                from login_investigator.knowledge_base import (
+                    open_knowledge_base,
+                    reader_settings,
+                )
                 from login_investigator.loader import load_log
-                from login_investigator.rules import detect_all, NEW_COUNTRY
-                from dataclasses import replace, asdict
+                from login_investigator.rules import NEW_COUNTRY, detect_all
                 async with open_knowledge_base(reader_settings(replace(ServerSettings.from_env(), database=version.database)),
                                                dataset=version.snapshot) as previous:
                     for finding in detect_all(load_log(version.snapshot / 'logins.csv')):
@@ -90,6 +100,7 @@ def test_isolated_version_opens_reference_graph_and_keeps_active_pointer(tmp_pat
                     pytest.fail('Mismatched fingerprint was accepted')
             version.marker.write_text(original)
             from sqlalchemy import text
+
             from login_investigator.knowledge_base import database_engine
             engine = database_engine(replace(ServerSettings.from_env(), database=version.database))
             try:
@@ -108,9 +119,11 @@ def test_isolated_version_opens_reference_graph_and_keeps_active_pointer(tmp_pat
 
 def test_failed_embedding_build_leaves_no_resources_or_marker(tmp_path: Path):
     import asyncio
+
+    from test_knowledge_base import DATASET, FakeEmbedder
+
     from login_investigator.knowledge_base.graph_version import build_version
     from login_investigator.postgres import ServerSettings
-    from test_knowledge_base import DATASET, FakeEmbedder
 
     class FailedEmbedder(FakeEmbedder):
         def embed_documents(self, texts: list[str]) -> list[list[float]]:
@@ -127,9 +140,11 @@ def test_cancelled_partial_docker_creation_finishes_before_cleanup(tmp_path: Pat
     import asyncio
     import subprocess
     import threading
+
+    from test_knowledge_base import DATASET, FakeEmbedder
+
     from login_investigator.knowledge_base.graph_version import build_version
     from login_investigator.postgres import ServerSettings
-    from test_knowledge_base import DATASET, FakeEmbedder
 
     original_run = subprocess.run
     created: list[str] = []
@@ -174,11 +189,16 @@ def test_unknown_docker_ownership_retains_recovery_state(tmp_path: Path, monkeyp
     import json
     import subprocess
     from dataclasses import replace
+
+    from test_knowledge_base import DATASET, FakeEmbedder
+
     from login_investigator.knowledge_base.graph_service import GraphService
-    from login_investigator.knowledge_base.graph_version import build_version, dispose_resources
+    from login_investigator.knowledge_base.graph_version import (
+        build_version,
+        dispose_resources,
+    )
     from login_investigator.knowledge_base.neo4j_graph import GraphUnavailable
     from login_investigator.postgres import ServerSettings
-    from test_knowledge_base import DATASET, FakeEmbedder
 
     original_run = subprocess.run
     lost_response = False
@@ -210,9 +230,11 @@ def test_unknown_docker_ownership_retains_recovery_state(tmp_path: Path, monkeyp
 
 def test_configured_reader_must_be_separate_before_completion(tmp_path: Path, monkeypatch):
     import asyncio
+
+    from test_knowledge_base import DATASET, FakeEmbedder
+
     from login_investigator.knowledge_base.graph_version import build_version
     from login_investigator.postgres import DatabaseUnavailable, ServerSettings
-    from test_knowledge_base import DATASET, FakeEmbedder
 
     server = ServerSettings.from_env()
     monkeypatch.setenv('LI_PG_READER_USER', server.user)

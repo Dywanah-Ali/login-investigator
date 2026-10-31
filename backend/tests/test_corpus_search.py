@@ -8,10 +8,16 @@ from pathlib import Path
 import pytest
 from langchain_core.embeddings import Embeddings
 from pydantic import Field
+from test_knowledge_base import DATASET
+from test_knowledge_base import build_database as build_database  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
 
-from login_investigator.knowledge_base import Reranker, build_knowledge_base, open_knowledge_base, reader_settings
+from login_investigator.knowledge_base import (
+    Reranker,
+    build_knowledge_base,
+    open_knowledge_base,
+    reader_settings,
+)
 from login_investigator.postgres import ServerSettings
-from test_knowledge_base import DATASET, build_database  # noqa: F401
 
 
 class RankedEmbedder(Embeddings):

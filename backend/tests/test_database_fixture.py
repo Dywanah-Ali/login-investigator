@@ -5,8 +5,6 @@ Every test that asks for `fresh_database` needs the running service, and fails w
 
 import psycopg
 
-from login_investigator import postgres
-
 INNER_CONFTEST = "from postgres_fixture import fresh_database  # noqa: F401\n"
 
 

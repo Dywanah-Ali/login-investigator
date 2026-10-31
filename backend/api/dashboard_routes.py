@@ -16,8 +16,8 @@ from api.services import Dataset, dataset
 from login_investigator.dashboard import alerts_for_view
 from login_investigator.loader import TIMESTAMP_FORMAT, to_records
 from login_investigator.rules import GENERAL_ASSUMPTIONS, RULE_GUIDE, RuleGuide
-from login_investigator.severity import RULE_SEVERITY, SEVERITY_NOTE
 from login_investigator.search import export_csv, summarize
+from login_investigator.severity import RULE_SEVERITY, SEVERITY_NOTE
 from login_investigator.stats import hourly_counts, top_failed_ips
 
 router = APIRouter()

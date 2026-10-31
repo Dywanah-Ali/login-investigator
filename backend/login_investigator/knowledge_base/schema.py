@@ -1,8 +1,8 @@
 """The build's relational tables. PostgreSQL remains the durable source for graph walks."""
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import JSON, Column, Date, ForeignKey, MetaData, Table, Text
 from sqlalchemy.dialects.postgresql import TSVECTOR
-from pgvector.sqlalchemy import Vector
 
 EMBEDDING_MODEL = "openai/text-embedding-3-small"
 VECTOR_SIZE = 1536

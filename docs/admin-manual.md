@@ -16,6 +16,7 @@ command to run it in the session.
 4. [Verify an isolated Neo4j graph version](#4-verify-an-isolated-neo4j-graph-version)
 5. [Select, restart and roll back a paired graph version](#5-select-restart-and-roll-back-a-paired-graph-version)
 6. [Inspect a paired graph in Neo4j Browser](#6-inspect-a-paired-graph-in-neo4j-browser)
+7. [Check Python code with Ruff](#7-check-python-code-with-ruff)
 
 ---
 
@@ -393,3 +394,48 @@ There is no portable graph export in this workflow.
 Retain the isolated pair for the author's walkthrough. There is no automatic removal after
 inspection. Any later cleanup must identify only this pair; no global database or Docker cleanup
 is part of inspection.
+
+## 7. Check Python code with Ruff
+
+Added for AUD-013 on 31 October 2026 after the author's lint-policy approval.
+
+### What it is for
+
+Check backend Python code using the project's reviewed rules. Ruff checks likely mistakes and
+import ordering; Pyright remains the separate type checker. The policy keeps the pinned Ruff
+defaults, explicitly includes import ordering, and relaxes twelve reviewed style preferences.
+Intentional exceptions have a rule-specific comment explaining why they are allowed.
+
+### Before you start
+
+Run from the repository root. Install the locked development tools if needed:
+
+```sh
+uv sync --locked --directory backend
+```
+
+Ruff is pinned to 0.17.3 in `backend/pyproject.toml` and `backend/uv.lock`. VS Code should use
+the backend Python environment. If its Ruff extension reports a version mismatch, use the
+project's pinned tool rather than removing the version check.
+
+### Run it
+
+```sh
+uv run --locked --directory backend ruff check .
+```
+
+This command checks without changing files. It needs no database, Docker service or API key.
+
+### Open or check the result
+
+`All checks passed!` and exit code 0 mean the current policy is satisfied. A warning includes
+its file, line and rule code. Review the code's intent before fixing or adding an exception.
+The policy is not a formatting mandate and does not establish runtime correctness.
+
+### When it refuses
+
+Diagnostics return exit code 1. Fix confirmed problems; use a specific explained exception for
+an intentional pattern. Setup/configuration errors return exit code 2; check the locked tool
+installation and configuration. Do not use blanket ignores or unsafe fixes to obtain a green
+result. When checking for stale suppression comments, run the full policy: enabling only
+`RUF100` can incorrectly classify comments for disabled rules as unused (B-125).

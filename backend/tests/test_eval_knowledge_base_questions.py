@@ -7,10 +7,12 @@ import csv
 import json
 from pathlib import Path
 
+from test_knowledge_base import FakeEmbedder
+from test_knowledge_base import build_database as build_database  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
+
 from login_investigator.generator import DATASET_DIR
 from login_investigator.knowledge_base import build_knowledge_base, open_knowledge_base
 from login_investigator.postgres import ServerSettings
-from test_knowledge_base import FakeEmbedder, build_database  # noqa: F401
 
 QUESTIONS_PATH = Path(__file__).resolve().parents[1] / "evals" / "knowledge_base_questions.json"
 QUESTIONS = json.loads(QUESTIONS_PATH.read_text(encoding="utf-8"))["questions"]

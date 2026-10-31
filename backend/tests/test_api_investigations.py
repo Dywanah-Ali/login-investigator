@@ -1,22 +1,22 @@
 """Ticket 16, through HTTP with the copied model fixture and real temporary memory."""
 
 import json
-from io import BytesIO
 from concurrent.futures import ThreadPoolExecutor
+from io import BytesIO
 from threading import Event
 
-import pytest
 import anyio
+import pytest
 from fastapi.testclient import TestClient
 from langchain_core.messages import AIMessage, AIMessageChunk
 from langchain_core.outputs import ChatGenerationChunk
 from langchain_core.runnables import RunnableLambda
 from pypdf import PdfReader
+from test_agent import REPORT, FakeModel, tool_call
 
 from api.app import create_app
 from api.settings import Settings
 from login_investigator import agent
-from test_agent import FakeModel, REPORT, tool_call
 
 
 @pytest.fixture

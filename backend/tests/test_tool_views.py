@@ -5,7 +5,11 @@ import json
 import pytest
 
 from login_investigator.tool_views import describe
-from login_investigator.tools import find_suspicious_activity, lookup_ip_reputation, search_logins
+from login_investigator.tools import (
+    find_suspicious_activity,
+    lookup_ip_reputation,
+    search_logins,
+)
 
 LAST_NIGHT = {"start": "2026-10-07T18:00:00Z", "end": "2026-10-08T09:00:00Z"}
 

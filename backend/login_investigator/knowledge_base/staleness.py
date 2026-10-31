@@ -11,6 +11,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from login_investigator.postgres import START_COMMAND
+
 from . import chunking, schema
 
 BUILD_COMMAND = "uv run python -m scripts.build_knowledge_base"

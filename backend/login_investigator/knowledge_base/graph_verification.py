@@ -11,9 +11,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from login_investigator.workers import owned_operation
+
 from . import schema
-from .integrity import GraphCounts, GraphIntegrityError
 from .graph_service import execute
+from .integrity import GraphCounts, GraphIntegrityError
 from .neo4j_graph import GraphSettings
 
 

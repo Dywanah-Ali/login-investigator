@@ -28,6 +28,31 @@ dev = [
     "pypdf==6.20.0",
     "pyright==1.1.414",
     "pytest>=9.1.1",
+    "ruff==0.17.3",
+]
+
+[tool.ruff]
+required-version = "==0.17.3"
+target-version = "py312"
+unsafe-fixes = false
+
+[tool.ruff.lint]
+# Keep the pinned version's default checks, plus explicit import ordering.
+# AUD-013: relax these reviewed style preferences, not correctness checks.
+extend-select = ["I"]
+ignore = [
+    "UP017",    # timezone.utc is already explicit and supported.
+    "SIM117",   # Nested contexts can make resource ownership clearer.
+    "SIM102",   # Nested conditions can make validation steps clearer.
+    "SIM113",   # Explicit counters are allowed.
+    "FURB167",  # Both short and long regex flag names are allowed.
+    "FURB162",  # Explicit UTC suffix normalization is allowed.
+    "FURB192",  # Sorting before selecting a value is allowed.
+    "RUF007",   # Adjacent-pair zip expressions are allowed.
+    "RUF015",   # Materializing small test results is allowed.
+    "ASYNC115", # Existing sleep(0) scheduling checkpoints are allowed.
+    "C405",     # Explicit set construction is allowed.
+    "B009",     # Constant getattr is allowed for dynamically typed objects.
 ]
 
 [tool.pyright]

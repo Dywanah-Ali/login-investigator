@@ -2074,3 +2074,55 @@ fixture passed in the 11-test native/export run; B-121 corrected command produce
 bundle. B-122 Settings, GraSS preview/import and explicit label/type styles were verified in
 Browser 2026.10.21. Generic style defaults were ignored by its importer and removed. B-123's
 corrected parameter file executed successfully in Browser; its syntax regression passed.
+
+### B-124 · 2026-10-31 · Import cleanup verification · Neo4j graph query unavailable
+
+**Symptom:** the unrestricted backend regression run failed
+`test_corrupt_graph_refused_and_successful_device_witness_preserved` when its device-peer
+query raised `GraphUnavailable`. The run was interrupted for investigation after 373 passes
+and this one failure. An earlier sandboxed run could not access local services and is not
+evidence of the same defect.
+**Cause:** unresolved. The query wrapper suppresses the underlying Neo4j/driver exception;
+the observed fixed error does not establish a timeout, service outage or import-order cause.
+**Fix:** none applied. The focused rerun failed in 133.99 seconds with
+`Neo4j did not become ready within 120 seconds. Check Docker Desktop resources.` This
+establishes a service-readiness problem in the rerun, not the cause of the original query
+failure. Unrelated query/error-handling changes are outside the authorised import cleanup.
+**Lesson:** an import-only structural comparison does not replace runtime checks, and a
+generic service error must not be reported as a diagnosed timeout.
+**Evidence:** `/tmp/login-import-cleanup-backend-access.log` and
+`/tmp/login-import-cleanup-graph-rerun.log`; AUD-072 tracks the unresolved concern.
+
+**31 October follow-up, requested by the author:** no application code, timeout or Docker
+configuration change was needed to recover verification. A temporary diagnostic harness ran
+the existing test without changing query or readiness behaviour: 1 passed in 35.77 seconds,
+with two pytest import-rewrite warnings caused by pre-importing modules in that harness.
+Readiness took 17.79 seconds; the container reported `OOMKilled=false`, 713.8 MiB memory,
+and successful cleanup. These observations describe the passing run, not the earlier failure.
+The uninstrumented focused command passed in 37.40 seconds. The full normal backend command,
+`.venv/bin/python -m pytest -v --tb=short --durations=10` from `backend/` with local-service
+access, passed all 701 tests in 957.38 seconds, including this test in 34.07 seconds. No failure
+or teardown error occurred. Only the pre-existing retained inspection container remained;
+no pytest process remained. The verification gap is resolved; AUD-072 remains open for the
+intermittent failure's unproven cause.
+
+Evidence: `/tmp/li-graph-diagnostic.log`, `/tmp/li-graph-focused-normal.log`,
+`/tmp/li-graph-full-verification.log`. Diagnostic harness documentation: pytest 9.1.1;
+Context Hub search did not return core invocation guidance, so official
+[pytest invocation documentation](https://docs.pytest.org/en/stable/how-to/usage.html#calling-pytest-from-python-code)
+was used for one `pytest.main` call with explicit arguments and its return code. Existing
+T48 Neo4j driver/session documentation applies to the unchanged driver 6.1.0 calls.
+
+### B-125 · 2026-10-31 · Ruff policy setup · Isolated suppression check removed valid exceptions
+
+**Symptom:** running Ruff with only `RUF100` selected removed valid reviewed suppression
+comments alongside genuinely stale fixture comments. The next full-policy lint check exposed
+29 diagnostics, including the already-reviewed BLE001 handlers. No executable logic changed.
+**Cause:** unused-suppression detection was run with the referenced rules disabled, so it
+treated their suppressions as unnecessary in that restricted configuration.
+**Fix:** restored the 12 previously approved BLE001 comments from the pre-edit snapshot,
+restored the new specific exceptions and shared-fixture registration comment, and checked
+the full agreed policy. The complete Ruff check passes. Documented the safe checking approach
+in admin manual section 7; no runtime code or tests were altered to hide these diagnostics.
+**Lesson:** evaluate suppression necessity against the policy it is intended to suppress,
+not with a standalone unused-suppression rule.

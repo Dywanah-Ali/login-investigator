@@ -1,8 +1,9 @@
 """The eval runner uses the public HTTP API, never the app's memory or private state."""
 
+from pathlib import Path
+
 import httpx
 import pytest
-from pathlib import Path
 from fastapi.testclient import TestClient
 from langchain_core.messages import AIMessage
 
@@ -11,7 +12,7 @@ from api.settings import Settings
 from evals import api_runner, run
 from evals.scoring import load_questions
 from login_investigator import agent
-from tests.test_agent import FakeModel, REPORT, tool_call
+from tests.test_agent import REPORT, FakeModel, tool_call
 
 
 def test_eval_server_uses_temporary_memory_and_cannot_reload_real_keys(monkeypatch, tmp_path):

@@ -5,7 +5,7 @@ from typing import Any
 
 from langchain_core.tools import BaseTool, tool
 
-from login_investigator.knowledge_base import KnowledgeBase, NOT_BUILT
+from login_investigator.knowledge_base import NOT_BUILT, KnowledgeBase
 
 
 def account_tool(kb: KnowledgeBase | None) -> BaseTool:

@@ -1,27 +1,27 @@
 """The existing eval runner's direct retrieval layer. No agent or answer model is called."""
 
+import hashlib
+import json
+import os
+import time
 from dataclasses import asdict
 from datetime import date
-import json
-import hashlib
-import os
 from pathlib import Path
-import time
 
-from evals.scoring import score_retrieval
 from dotenv import dotenv_values
 
+from evals.scoring import score_retrieval
 from login_investigator import knowledge_base
 from login_investigator.generator import DATASET_DIR
 from login_investigator.knowledge_base import KnowledgeBase, open_current_knowledge_base
-from login_investigator.workers import owned_operation
-from login_investigator.knowledge_base.evaluation_version import isolated_evaluation
 from login_investigator.knowledge_base.embedding import embedding_service
+from login_investigator.knowledge_base.evaluation_version import isolated_evaluation
 from login_investigator.knowledge_base.reranking import reranker_service
 from login_investigator.knowledge_base.retrieval import LIMIT, RRF_K, VerdictPolicy
 from login_investigator.knowledge_base.schema import EMBEDDING_MODEL
 from login_investigator.knowledge_base.staleness import NOT_BUILT, source_fingerprint
 from login_investigator.postgres import ENV_PATH
+from login_investigator.workers import owned_operation
 
 QUESTIONS = Path(__file__).with_name("knowledge_base_questions.json")
 REQUESTS = Path(__file__).with_name("retrieval_requests.json")
@@ -46,9 +46,9 @@ async def evaluate_retrieval(kb: KnowledgeBase, questions: list[dict]) -> dict:
         walk = None
         if request:
             if request["kind"] == "account_groups":
-                walk = await owned_operation(lambda: kb.account_groups(request["username"]))
+                walk = await owned_operation(lambda: kb.account_groups(request["username"]))  # noqa: B023 - This callback completes within the current iteration.
             elif request["kind"] == "finding_radius":
-                walk = await owned_operation(lambda: kb.finding_walk(request["finding_id"]))
+                walk = await owned_operation(lambda: kb.finding_walk(request["finding_id"]))  # noqa: B023 - This callback completes within the current iteration.
             else:
                 raise ValueError("Unknown direct graph request")
         elif question["type"] in {"graph_lookup", "mixed"}:

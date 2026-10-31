@@ -7,9 +7,9 @@ from langchain.agents import create_agent
 from langchain_core.messages import AIMessage
 from langchain_core.tools import ToolException, tool
 from langgraph.checkpoint.memory import InMemorySaver
+from test_agent import FakeModel, tool_call
 
 from login_investigator.agent import ask, history
-from test_agent import FakeModel, tool_call
 
 
 def graph(tools, requests):

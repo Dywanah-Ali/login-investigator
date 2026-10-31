@@ -126,7 +126,7 @@ class GraphService:
         template = '{{ index .Config.Labels "li.owner" }}' if kind == 'container' else '{{ index .Labels "li.owner" }}'
         try:
             result = subprocess.run(['docker', kind, 'inspect', '--format', template, name],
-                                    capture_output=True, text=True, timeout=15)
+                                    capture_output=True, text=True, timeout=15, check=False)
         except (OSError, subprocess.SubprocessError):
             raise GraphUnavailable('Docker resource ownership could not be checked; retain recovery state') from None
         if result.returncode == 0:

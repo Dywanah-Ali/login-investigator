@@ -117,7 +117,7 @@ def test_a_character_the_font_lacks_is_shown_as_missing():
 
 
 def test_control_characters_become_spaces():
-    assert report_pdf.plain("a\x00b\tc‮d\r\ne") == "a b c d\ne"
+    assert report_pdf.plain("a\x00b\tc\u202ed\r\ne") == "a b c d\ne"
 
 
 def test_file_name_never_uses_the_model_text():

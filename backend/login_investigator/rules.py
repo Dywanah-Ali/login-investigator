@@ -14,7 +14,12 @@ from datetime import timedelta
 import numpy as np
 import pandas as pd
 
-from login_investigator.loader import TIMESTAMP_FORMAT, account_key, parse_window, to_records
+from login_investigator.loader import (
+    TIMESTAMP_FORMAT,
+    account_key,
+    parse_window,
+    to_records,
+)
 
 # --- Thresholds. The reason for each one is in RULE_GUIDE and GENERAL_ASSUMPTIONS below, written
 # to be quoted; the Alerts screen shows the same text. ---
@@ -84,12 +89,12 @@ RULE_GUIDE = (
 )
 
 GENERAL_ASSUMPTIONS = (
-    "These thresholds are assumptions tuned to this synthetic dataset, not general facts about "
-    "attackers. A real deployment would set them from its own baseline of normal activity.",
-    "We assume an hour is long enough to catch an automated tool and short enough that, in this "
-    "dataset, a busy office's ordinary typos never add up.",
-    f"We assume flagged activity separated by a pause longer than "
-    f"{int(INCIDENT_GAP.total_seconds() // 60)} minutes is two separate incidents.",
+    ("These thresholds are assumptions tuned to this synthetic dataset, not general facts about "
+    "attackers. A real deployment would set them from its own baseline of normal activity."),
+    ("We assume an hour is long enough to catch an automated tool and short enough that, in this "
+    "dataset, a busy office's ordinary typos never add up."),
+    (f"We assume flagged activity separated by a pause longer than "
+    f"{int(INCIDENT_GAP.total_seconds() // 60)} minutes is two separate incidents."),
     "Usernames are compared without regard to case, so changing case cannot split a count.",
 )
 

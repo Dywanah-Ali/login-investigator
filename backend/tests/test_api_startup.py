@@ -17,10 +17,21 @@ from fastapi.testclient import TestClient
 
 from api.app import create_app
 from api.settings import Settings
-from login_investigator import agent, generator, investigations, knowledge_base, loader, rules
+from login_investigator import (
+    agent,
+    generator,
+    investigations,
+    knowledge_base,
+    loader,
+    rules,
+)
 from login_investigator.knowledge_base import build_knowledge_base
 from login_investigator.knowledge_base.staleness import NOT_BUILT, STALE, UNCHECKABLE
-from login_investigator.postgres import ServerSettings, create_fresh_database, drop_database
+from login_investigator.postgres import (
+    ServerSettings,
+    create_fresh_database,
+    drop_database,
+)
 from tests.test_knowledge_base import DATASET, FakeEmbedder, publish, sample_dataset
 
 LOG_FAILED_VALIDATION = "The log failed validation. The server log lists the problems."

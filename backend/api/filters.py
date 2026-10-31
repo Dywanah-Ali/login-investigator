@@ -8,9 +8,9 @@ field and never the value.
 from __future__ import annotations
 
 import re
-from ipaddress import ip_address
 from dataclasses import dataclass
 from datetime import date, datetime
+from ipaddress import ip_address
 from typing import Annotated
 
 import pandas as pd

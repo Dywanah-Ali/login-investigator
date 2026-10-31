@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from login_investigator.loader import TIMESTAMP_FORMAT, load_log
+
 from . import schema
 
 

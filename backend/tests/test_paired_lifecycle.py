@@ -9,7 +9,10 @@ from fastapi.testclient import TestClient
 
 from api.app import create_app
 from api.settings import Settings
-from login_investigator.knowledge_base.graph_version import build_version, remove_version
+from login_investigator.knowledge_base.graph_version import (
+    build_version,
+    remove_version,
+)
 from login_investigator.postgres import ServerSettings
 from tests.test_knowledge_base import DATASET, FakeEmbedder, sample_dataset
 
@@ -17,6 +20,7 @@ from tests.test_knowledge_base import DATASET, FakeEmbedder, sample_dataset
 def assert_reader_disconnected(version):
     """Count this application's reader, not pgAdmin or server maintenance connections."""
     import psycopg
+
     from login_investigator.knowledge_base import reader_settings
 
     server = ServerSettings.from_env()
@@ -58,7 +62,9 @@ def test_app_reads_selected_snapshot_when_working_log_changes(version, tmp_path)
 
 def test_startup_graph_reads_do_not_block_the_event_loop(version, monkeypatch):
     import threading
+
     from neo4j import Session
+
     from login_investigator.knowledge_base.graph_version import open_version
 
     owner = threading.current_thread()
@@ -80,7 +86,9 @@ def test_startup_graph_reads_do_not_block_the_event_loop(version, monkeypatch):
 def test_direct_retrieval_uses_native_integrity_and_worker_graph_reads(version, monkeypatch):
     import threading
     from pathlib import Path
+
     from neo4j import Session
+
     from evals.retrieval import evaluate_retrieval
     from login_investigator.knowledge_base.graph_version import open_version
 
@@ -104,12 +112,18 @@ def test_direct_retrieval_uses_native_integrity_and_worker_graph_reads(version, 
 
 
 def test_update_and_rollback_move_logs_graph_and_retrieval_together(version, tmp_path, monkeypatch):
-    from login_investigator.knowledge_base import open_current_knowledge_base
-    from login_investigator.knowledge_base import KnowledgeBaseNotReady
-    from login_investigator.knowledge_base.graph_selection import select_version, rollback_version
-    from login_investigator import agent
-    from tests.test_agent import FakeModel, tool_call
     from langchain_core.messages import AIMessage, ToolMessage
+
+    from login_investigator import agent
+    from login_investigator.knowledge_base import (
+        KnowledgeBaseNotReady,
+        open_current_knowledge_base,
+    )
+    from login_investigator.knowledge_base.graph_selection import (
+        rollback_version,
+        select_version,
+    )
+    from tests.test_agent import FakeModel, tool_call
 
     monkeypatch.setattr(agent, 'make_model', lambda: FakeModel(responses=[
         tool_call('lookup_account', {'account_id': 'amelia.ward'}), AIMessage('Amelia Ward belongs to IT.')]))
@@ -207,11 +221,12 @@ def test_update_and_rollback_move_logs_graph_and_retrieval_together(version, tmp
 @pytest.mark.parametrize('damage', ['missing_marker', 'changed_snapshot', 'mixed_database', 'bad_format',
                                   'postgres_unavailable', 'graph_unavailable'])
 def test_invalid_pair_refuses_before_application_services(version, tmp_path, damage, monkeypatch):
-    from login_investigator.knowledge_base import KnowledgeBaseNotReady
-    from login_investigator.knowledge_base.staleness import PAIR_UNCHECKABLE
-    from login_investigator.knowledge_base.graph_service import docker, GraphService
-    from login_investigator.knowledge_base.neo4j_graph import GraphSettings
     from dotenv import dotenv_values
+
+    from login_investigator.knowledge_base import KnowledgeBaseNotReady
+    from login_investigator.knowledge_base.graph_service import GraphService, docker
+    from login_investigator.knowledge_base.neo4j_graph import GraphSettings
+    from login_investigator.knowledge_base.staleness import PAIR_UNCHECKABLE
 
     marker_bytes = version.marker.read_bytes()
     log = version.snapshot / 'logins.csv'
@@ -258,7 +273,9 @@ def test_invalid_pair_refuses_before_application_services(version, tmp_path, dam
 
 def test_cancelled_startup_waits_for_graph_worker_before_cleanup(version, monkeypatch):
     import threading
+
     from neo4j import Session
+
     from login_investigator.knowledge_base.graph_version import open_version
 
     reached, release = threading.Event(), threading.Event()
@@ -293,10 +310,12 @@ def test_cancelled_startup_waits_for_graph_worker_before_cleanup(version, monkey
 
 def test_concurrent_investigations_keep_their_own_account_evidence(version, tmp_path, monkeypatch):
     from concurrent.futures import ThreadPoolExecutor
+
     from langchain_core.messages import AIMessage, ToolMessage
-    from langchain_core.outputs import ChatResult, ChatGeneration
-    from tests.test_agent import FakeModel, tool_call
+    from langchain_core.outputs import ChatGeneration, ChatResult
+
     from login_investigator import agent
+    from tests.test_agent import FakeModel, tool_call
 
     class AccountModel(FakeModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
@@ -334,6 +353,7 @@ def test_concurrent_investigations_keep_their_own_account_evidence(version, tmp_
 def test_paired_reader_bounds_postgresql_statements(version):
     from sqlalchemy import text
     from sqlalchemy.exc import DBAPIError
+
     from login_investigator.knowledge_base.graph_version import open_version
 
     async def check():
@@ -351,6 +371,7 @@ def test_paired_reader_bounds_postgresql_statements(version):
 def test_partial_app_startup_closes_graph_drivers_and_reader_pool(version, tmp_path, monkeypatch):
     from neo4j import GraphDatabase
     from neo4j.exceptions import DriverError
+
     from login_investigator import agent
 
     drivers = []
@@ -382,6 +403,7 @@ def test_partial_app_startup_closes_graph_drivers_and_reader_pool(version, tmp_p
 
 def test_shutdown_failure_still_disposes_the_postgresql_pool(version, monkeypatch):
     from neo4j import Driver
+
     from login_investigator.knowledge_base.graph_version import open_version
     from login_investigator.knowledge_base.neo4j_graph import Neo4jQueries
 
@@ -415,7 +437,9 @@ def test_shutdown_failure_still_disposes_the_postgresql_pool(version, monkeypatc
 
 def test_cancelled_shutdown_joins_graph_close_and_disposes_postgresql(version, monkeypatch):
     import threading
+
     from neo4j import Driver
+
     from login_investigator.knowledge_base.graph_version import open_version
     from login_investigator.knowledge_base.neo4j_graph import Neo4jQueries
 

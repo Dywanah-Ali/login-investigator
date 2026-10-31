@@ -21,12 +21,16 @@ from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from pydantic import BaseModel, Field
 
 from login_investigator.generator import CAPTURED_AT, REPO_ROOT, WINDOW_START
-from login_investigator.loader import TIMESTAMP_FORMAT
 from login_investigator.investigation_policy import complete_detection_evidence
+from login_investigator.loader import TIMESTAMP_FORMAT
 from login_investigator.progress import ToolLifecycle, ToolProgress
 from login_investigator.report_order import timeline_instant
+from login_investigator.tool_evidence import (
+    briefings_only,
+    fence_tool_result,
+    tool_content,
+)
 from login_investigator.tools import TOOLS, tools_for
-from login_investigator.tool_evidence import briefings_only, fence_tool_result, tool_content
 
 MODEL = "openai/gpt-4o-mini"
 OPENROUTER_URL = "https://openrouter.ai/api/v1"

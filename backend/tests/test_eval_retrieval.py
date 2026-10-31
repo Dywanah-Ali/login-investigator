@@ -1,15 +1,22 @@
 """Door 6: direct retrieval is graded from evidence, with no answer-generating model."""
 
-from evals import scoring
 import asyncio
 import json
 import sys
 from pathlib import Path
-import pytest
 
-from login_investigator.knowledge_base import Reranker, build_knowledge_base, open_knowledge_base, reader_settings
+import pytest
+from test_knowledge_base import DATASET, FakeEmbedder
+from test_knowledge_base import build_database as build_database  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
+
+from evals import scoring
+from login_investigator.knowledge_base import (
+    Reranker,
+    build_knowledge_base,
+    open_knowledge_base,
+    reader_settings,
+)
 from login_investigator.postgres import ServerSettings
-from test_knowledge_base import DATASET, FakeEmbedder, build_database  # noqa: F401
 
 
 def test_retrieval_requires_every_gold_chunk_in_the_fused_twenty_not_just_the_union():
@@ -127,6 +134,7 @@ def test_runner_checks_integrity_before_calling_the_embedding_service(build_data
 
 def test_saved_retrieval_results_use_per_question_gates_and_rescore_offline(tmp_path, monkeypatch):
     from datetime import datetime, timezone
+
     from evals import run
 
     monkeypatch.setattr(run, "RESULTS", tmp_path)
@@ -153,8 +161,9 @@ def test_saved_retrieval_results_use_per_question_gates_and_rescore_offline(tmp_
 def test_retrieval_command_preserves_the_safe_staleness_instruction(
     build_database: ServerSettings, tmp_path: Path, monkeypatch, capsys,
 ):
-    from evals import run
     from test_knowledge_base import sample_dataset
+
+    from evals import run
     from login_investigator.knowledge_base.staleness import STALE
 
     dataset = sample_dataset(tmp_path / "dataset")

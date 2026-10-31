@@ -87,7 +87,7 @@ async def prepare_inspection(marker: Path, output: Path, finding_id: str | None 
         descriptor = json.loads(marker.read_text())
         graph = kb.graph_queries
         if not isinstance(graph, Neo4jQueries):
-            raise ValueError('Native inspection requires a paired graph version')
+            raise ValueError('Native inspection requires a paired graph version')  # noqa: TRY004 - Preserve the existing invalid-input ValueError contract.
         findings = detect_all(await owned_operation(lambda: load_log(snapshot / 'logins.csv')))
         if finding_id is not None and finding_id not in {f.finding_id for f in findings}:
             raise ValueError('No finding has this ID in the selected source snapshot')
@@ -111,9 +111,9 @@ async def prepare_inspection(marker: Path, output: Path, finding_id: str | None 
         for finding in findings:
             if finding_id is not None and finding.finding_id != finding_id:
                 continue
-            radius = await owned_operation(lambda: kb.finding_radius(finding))
+            radius = await owned_operation(lambda: kb.finding_radius(finding))  # noqa: B023 - This callback completes within the current iteration.
             params = finding_parameters(radius, kb.build_id or '', descriptor['fingerprint'])
-            result = (await owned_operation(lambda: graph._read(FINDING, **params)))[0]
+            result = (await owned_operation(lambda: graph._read(FINDING, **params)))[0]  # noqa: B023 - This callback completes within the current iteration.
             if not result['complete']:
                 raise ValueError('Browser identities do not match the core neighbourhood')
             stem = finding.finding_id

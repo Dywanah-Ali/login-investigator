@@ -6,15 +6,18 @@ import json
 import statistics
 import sys
 import time
-from dataclasses import asdict
 from pathlib import Path
 
 from langchain_core.embeddings import Embeddings
 
 from login_investigator.generator import DATASET_DIR, REPO_ROOT
 from login_investigator.knowledge_base.embedding import embedding_service
-from login_investigator.knowledge_base.graph_version import build_version, open_version, remove_version
-from login_investigator.knowledge_base.graph_service import docker, IMAGE
+from login_investigator.knowledge_base.graph_service import IMAGE, docker
+from login_investigator.knowledge_base.graph_version import (
+    build_version,
+    open_version,
+    remove_version,
+)
 from login_investigator.knowledge_base.schema import VECTOR_SIZE
 from login_investigator.postgres import ServerSettings
 
@@ -69,7 +72,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         result = asyncio.run(run(args))
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001 - Exit with a safe message for any isolated-build failure.
         print(f'Isolated graph build failed ({type(error).__name__}). Start Docker Desktop, '
               'run docker pull neo4j:2026.10.1, and check PostgreSQL and reader settings. '
               'The active application pointer is unchanged.', file=sys.stderr)

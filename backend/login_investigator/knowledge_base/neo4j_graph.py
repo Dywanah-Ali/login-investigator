@@ -11,9 +11,18 @@ import pandas as pd
 from neo4j import GraphDatabase, Query
 from neo4j.exceptions import DriverError, Neo4jError
 
-from login_investigator.rules import Finding, detect_all, BRUTE_FORCE, PASSWORD_SPRAYING
-from .radius import (AccountRadius, AddressMatches, AddressReuse, FindingRadius, GraphWalk,
-                     _period, _iso, radius_walk)
+from login_investigator.rules import BRUTE_FORCE, PASSWORD_SPRAYING, Finding, detect_all
+
+from .radius import (
+    AccountRadius,
+    AddressMatches,
+    AddressReuse,
+    FindingRadius,
+    GraphWalk,
+    _iso,
+    _period,
+    radius_walk,
+)
 
 
 class GraphUnavailable(RuntimeError):

@@ -4,19 +4,18 @@ The build and LangChain store share one SQLAlchemy async engine on psycopg. Read
 separate engine. Nothing here imports the API, the agent or the screen.
 """
 
-from collections.abc import AsyncIterator, Awaitable, Callable
-from contextlib import AsyncExitStack, asynccontextmanager
-from pathlib import Path
-import math
 import json
+import math
 import tempfile
 import time
+from collections.abc import AsyncIterator, Awaitable, Callable
+from contextlib import AsyncExitStack, asynccontextmanager
 from dataclasses import dataclass, replace
+from pathlib import Path
 
-import tiktoken
 import networkx as nx
 import pandas as pd
-
+import tiktoken
 from langchain_core.embeddings import Embeddings
 from langchain_postgres import PGEngine, PGVectorStore
 from langchain_postgres.v2.engine import Column as PGColumn
@@ -27,23 +26,43 @@ from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from login_investigator.corpus_check import read_table
 from login_investigator.generator import REPO_ROOT
-from login_investigator.rules import Finding
 from login_investigator.postgres import (
-    DatabaseUnavailable, ServerSettings, check_server, create_fresh_database, drop_database,
+    DatabaseUnavailable,
+    ServerSettings,
+    check_server,
+    create_fresh_database,
+    drop_database,
 )
-from . import chunking as chunking, schema as schema
+from login_investigator.rules import Finding
+
+from . import chunking as chunking
+from . import schema as schema
+from .access import check_reader_role, grant_read_only
+from .access import reader_settings as reader_settings
 from .chunking import Chunk, read_chunks
-from .access import check_reader_role, grant_read_only, reader_settings as reader_settings
-from .mentions import find_mentions
 from .graph import build_graph
 from .graph_queries import GraphQueries, NetworkXQueries
-from .integrity import GraphCounts, GraphIntegrityError as GraphIntegrityError, check_graph_integrity
+from .integrity import GraphCounts, check_graph_integrity
+from .integrity import GraphIntegrityError as GraphIntegrityError
+from .mentions import find_mentions
 from .radius import FindingRadius, GraphWalk
-from .reranking import Reranker as Reranker, RerankerUnavailable as RerankerUnavailable
-from .retrieval import SearchFilters as SearchFilters, SearchResult, VerdictPolicy as VerdictPolicy, search_corpus
+from .reranking import Reranker as Reranker
+from .reranking import RerankerUnavailable as RerankerUnavailable
+from .retrieval import SearchFilters as SearchFilters
+from .retrieval import SearchResult, search_corpus
+from .retrieval import VerdictPolicy as VerdictPolicy
 from .staleness import (
-    NOT_BUILT as NOT_BUILT, SERVER_DOWN, SETTINGS_INCOMPLETE, STALE, UNCHECKABLE,
-    KnowledgeBaseNotReady as KnowledgeBaseNotReady, source_fingerprint,
+    NOT_BUILT as NOT_BUILT,
+)
+from .staleness import (
+    SERVER_DOWN,
+    SETTINGS_INCOMPLETE,
+    STALE,
+    UNCHECKABLE,
+    source_fingerprint,
+)
+from .staleness import (
+    KnowledgeBaseNotReady as KnowledgeBaseNotReady,
 )
 
 # Where the build command publishes its pointer and the app's startup reads it. Git-ignored.
@@ -353,8 +372,8 @@ async def open_current_knowledge_base(
         except (OSError, ValueError):
             raise KnowledgeBaseNotReady(UNCHECKABLE) from None
         if paired:
-            from .graph_version import open_version
             from .graph_selection import read_selection
+            from .graph_version import open_version
             from .staleness import PAIR_UNCHECKABLE
             async with AsyncExitStack() as cleanup:
                 try:
@@ -362,7 +381,7 @@ async def open_current_knowledge_base(
                     kb = await cleanup.enter_async_context(
                         open_version(Path(selected['current']), server or ServerSettings.from_env(),
                                      embedder=embedder, reranker=reranker))
-                except Exception:
+                except Exception:  # noqa: BLE001 - Refuse startup with a fixed, credential-safe error.
                     raise KnowledgeBaseNotReady(PAIR_UNCHECKABLE) from None
                 yield kb
             return

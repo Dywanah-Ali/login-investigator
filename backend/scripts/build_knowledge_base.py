@@ -56,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         result = asyncio.run(run(args))
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001 - Exit with a safe message for any build failure.
         # Provider and database exceptions can contain credentials or source text. Never print them.
         print(f"Build failed ({type(error).__name__}). Check the dataset, PostgreSQL setup and "
               "embedding credentials. The previous database has been retained.", file=sys.stderr)

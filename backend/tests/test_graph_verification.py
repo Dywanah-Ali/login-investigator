@@ -7,8 +7,15 @@ from pathlib import Path
 from typing import LiteralString
 
 import pytest
+from test_knowledge_base import FakeEmbedder
+from test_knowledge_base import build_database as build_database  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
+from test_knowledge_graph import graph_dataset
 
-from login_investigator.knowledge_base import build_knowledge_base, database_engine, GraphIntegrityError
+from login_investigator.knowledge_base import (
+    GraphIntegrityError,
+    build_knowledge_base,
+    database_engine,
+)
 from login_investigator.knowledge_base.graph_ingestion import import_graph
 from login_investigator.knowledge_base.graph_service import GraphService, execute
 from login_investigator.knowledge_base.graph_verification import verify_graph
@@ -16,9 +23,7 @@ from login_investigator.knowledge_base.neo4j_graph import Neo4jQueries
 from login_investigator.knowledge_base.staleness import source_fingerprint
 from login_investigator.loader import load_log, parse_utc
 from login_investigator.postgres import ServerSettings
-from login_investigator.rules import Finding, NEW_COUNTRY
-from test_knowledge_base import FakeEmbedder, build_database  # noqa: F401
-from test_knowledge_graph import graph_dataset
+from login_investigator.rules import NEW_COUNTRY, Finding
 
 
 def test_corrupt_graph_refused_and_successful_device_witness_preserved(build_database: ServerSettings, tmp_path: Path):
@@ -63,10 +68,10 @@ def test_corrupt_graph_refused_and_successful_device_witness_preserved(build_dat
                  "MATCH (n:Entity {id:'wrong-reference'}) SET n.id='sample@1.0#access-policy/scope/1'"),
                 ("MATCH (a:Entity {id:'user-amelia.ward'})-[r:used_device]->() SET r.times=['2026-10-07T11:05:00Z']",
                  "MATCH (a:Entity {id:'user-amelia.ward'})-[r:used_device]->() SET r.times=['2026-10-07T11:00:00Z']"),
-                ("MATCH (a:Entity {id:'group-it-admins'})-[r:grants]->(b:Entity {id:'asset-domain-controller'}), "
-                 "(c:Entity {id:'group-all-staff'}) DELETE r CREATE (c)-[:grants]->(b)",
-                 "MATCH (a:Entity {id:'group-all-staff'})-[r:grants]->(b:Entity {id:'asset-domain-controller'}), "
-                 "(c:Entity {id:'group-it-admins'}) DELETE r CREATE (c)-[:grants]->(b)"),
+                (("MATCH (a:Entity {id:'group-it-admins'})-[r:grants]->(b:Entity {id:'asset-domain-controller'}), "
+                 "(c:Entity {id:'group-all-staff'}) DELETE r CREATE (c)-[:grants]->(b)"),
+                 ("MATCH (a:Entity {id:'group-all-staff'})-[r:grants]->(b:Entity {id:'asset-domain-controller'}), "
+                 "(c:Entity {id:'group-it-admins'}) DELETE r CREATE (c)-[:grants]->(b)")),
             ]
             for damage, repair in changes:
                 execute(settings, damage)

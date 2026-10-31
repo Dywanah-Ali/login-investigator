@@ -13,7 +13,11 @@ from fastapi.testclient import TestClient
 from api.app import create_app
 from api.settings import Settings
 from login_investigator import generator, investigations, reputation, tools
-from login_investigator.tools import find_suspicious_activity, lookup_ip_reputation, search_logins
+from login_investigator.tools import (
+    find_suspicious_activity,
+    lookup_ip_reputation,
+    search_logins,
+)
 
 LOG_REFUSED = "The configured sign-in log failed validation, so it cannot be read."
 

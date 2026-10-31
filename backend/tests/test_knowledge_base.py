@@ -2,9 +2,9 @@
 
 import asyncio
 import json
+import re
 import shutil
 import socket
-import re
 from collections.abc import Iterator
 from dataclasses import replace
 from pathlib import Path
@@ -16,14 +16,24 @@ from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
 from login_investigator.knowledge_base import (
-    KnowledgeBaseNotReady, build_knowledge_base, check_knowledge_base, chunking, open_knowledge_base,
+    KnowledgeBaseNotReady,
+    build_knowledge_base,
+    check_knowledge_base,
+    chunking,
+    open_knowledge_base,
     schema,
 )
 from login_investigator.knowledge_base.staleness import (
-    SERVER_DOWN, SETTINGS_INCOMPLETE, STALE, UNCHECKABLE,
+    SERVER_DOWN,
+    SETTINGS_INCOMPLETE,
+    STALE,
+    UNCHECKABLE,
 )
 from login_investigator.postgres import (
-    DatabaseUnavailable, ServerSettings, create_fresh_database, drop_database,
+    DatabaseUnavailable,
+    ServerSettings,
+    create_fresh_database,
+    drop_database,
 )
 
 DATASET = Path(__file__).resolve().parents[1] / "data/datasets/default"
@@ -267,8 +277,9 @@ def test_incomplete_embedding_response_fails_instead_of_dropping_passages(
 def test_rebuild_publishes_only_complete_database_and_preserves_chunk_ids(
     fresh_database: ServerSettings, tmp_path: Path,
 ):
-    from login_investigator.knowledge_base import rebuild_knowledge_base
     import json
+
+    from login_investigator.knowledge_base import rebuild_knowledge_base
     dataset = sample_dataset(tmp_path / "dataset")
     state = tmp_path / "active.json"
     created: list[ServerSettings] = []

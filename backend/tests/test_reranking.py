@@ -8,7 +8,9 @@ import httpx
 import pytest
 
 from login_investigator.knowledge_base.reranking import (
-    RerankerUnavailable, reranker_enabled, reranker_service,
+    RerankerUnavailable,
+    reranker_enabled,
+    reranker_service,
 )
 
 KEY = {"OPENROUTER_API_KEY": "test-key-not-real"}

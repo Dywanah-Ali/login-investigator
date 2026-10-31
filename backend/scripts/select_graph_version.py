@@ -6,7 +6,10 @@ import json
 import sys
 from pathlib import Path
 
-from login_investigator.knowledge_base.graph_selection import select_version, rollback_version
+from login_investigator.knowledge_base.graph_selection import (
+    rollback_version,
+    select_version,
+)
 from login_investigator.knowledge_base.staleness import KnowledgeBaseNotReady
 
 

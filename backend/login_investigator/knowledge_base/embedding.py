@@ -11,6 +11,7 @@ from langchain_openai import OpenAIEmbeddings
 from pydantic import SecretStr
 
 from login_investigator.postgres import ENV_PATH
+
 from .schema import EMBEDDING_MODEL, VECTOR_SIZE
 
 

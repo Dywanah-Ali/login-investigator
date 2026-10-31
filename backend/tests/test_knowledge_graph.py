@@ -4,20 +4,25 @@ import asyncio
 import csv
 import json
 import shutil
-from pathlib import Path
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 from sqlalchemy import text
+from test_knowledge_base import DATASET, FakeEmbedder, sample_dataset
+from test_knowledge_base import build_database as build_database  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
 
 from login_investigator.knowledge_base import (
-    GraphIntegrityError, KnowledgeBaseNotReady, build_knowledge_base, open_knowledge_base, database_engine,
+    GraphIntegrityError,
+    KnowledgeBaseNotReady,
+    build_knowledge_base,
+    database_engine,
+    open_knowledge_base,
     reader_settings,
 )
-from login_investigator.postgres import ServerSettings
 from login_investigator.loader import load_log, parse_utc
-from login_investigator.rules import detect_all, PASSWORD_SPRAYING, NEW_COUNTRY, Finding
-from test_knowledge_base import DATASET, FakeEmbedder, build_database, sample_dataset  # noqa: F401
+from login_investigator.postgres import ServerSettings
+from login_investigator.rules import NEW_COUNTRY, PASSWORD_SPRAYING, Finding, detect_all
 
 
 def graph_dataset(tmp_path: Path) -> Path:

@@ -1,9 +1,9 @@
 """Hybrid corpus retrieval. Ranks order evidence; they do not establish relevance."""
 
+import math
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from datetime import date
-import math
 from typing import Any, Literal
 
 from langchain_core.documents import Document

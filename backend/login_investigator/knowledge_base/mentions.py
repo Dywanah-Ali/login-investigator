@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 from login_investigator.corpus_check import read_table
+
 from .chunking import Chunk
 
 # Owners in document front matter are teams, not account mentions. Only passage text is scanned.

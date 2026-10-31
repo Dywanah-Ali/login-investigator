@@ -10,7 +10,14 @@ import networkx as nx
 import pandas as pd
 
 from login_investigator.rules import Finding, detect_all
-from .radius import FindingRadius, GraphWalk, account_groups, finding_radius, radius_walk
+
+from .radius import (
+    FindingRadius,
+    GraphWalk,
+    account_groups,
+    finding_radius,
+    radius_walk,
+)
 
 
 class GraphQueries(Protocol):
@@ -45,7 +52,7 @@ class NetworkXQueries:
                    account_id.lower() in (node.lower(), data["username"].lower())]
         if len(matches) != 1:
             return {"status": "not_found", "account": None, "groups": [], "paths": []}
-        person_id, data = matches[0]
+        _person_id, data = matches[0]
         walk = self.account_groups(data["username"])
         return {"status": "found", "account": dict(data),
                 "groups": [dict(self.graph.nodes[node]) for node in walk.records],

@@ -2,23 +2,31 @@
 
 import asyncio
 import csv
-import shutil
 import json
+import shutil
 from dataclasses import replace
 from pathlib import Path
 
 import pytest
+from test_knowledge_base import DATASET, FakeEmbedder
 
 from login_investigator.knowledge_base import open_knowledge_base, reader_settings
-from login_investigator.knowledge_base.graph_version import build_version, open_version, remove_version
-from login_investigator.knowledge_base.inspection import FINDING, ORGANISATION, finding_parameters
+from login_investigator.knowledge_base.graph_version import (
+    build_version,
+    open_version,
+    remove_version,
+)
+from login_investigator.knowledge_base.inspection import (
+    FINDING,
+    ORGANISATION,
+    finding_parameters,
+)
+from login_investigator.knowledge_base.inspection import prepare_inspection as prepare
 from login_investigator.knowledge_base.neo4j_graph import Neo4jQueries
 from login_investigator.knowledge_base.radius import radius_neighbourhood
 from login_investigator.loader import load_log
 from login_investigator.postgres import ServerSettings
 from login_investigator.rules import detect_all
-from login_investigator.knowledge_base.inspection import prepare_inspection as prepare
-from test_knowledge_base import DATASET, FakeEmbedder
 
 
 def identities(graph, query, parameters):
@@ -85,8 +93,11 @@ def test_browser_queries_equal_checked_core_and_reject_wrong_build(tmp_path: Pat
                         assert identities(graph, FINDING, selection) == (expected_nodes, expected_edges)
                         assert set(radius_neighbourhood(radius).edges) == expected_edges
                     assert saw_device_peer and saw_address and saw_empty
-                from login_investigator.knowledge_base.inspection import browser_parameters
                 from neo4j import Query
+
+                from login_investigator.knowledge_base.inspection import (
+                    browser_parameters,
+                )
                 # Execute the actual generated command's expression, including escaping.
                 escaped = {**selection, 'nodes': ['quote" slash\\ newline\n'], 'edges': []}
                 with graph.driver.session(database='neo4j', default_access_mode='READ') as session:
@@ -107,9 +118,13 @@ def test_browser_queries_equal_checked_core_and_reject_wrong_build(tmp_path: Pat
             assert (output / 'organisation.cypher').read_text() == ORGANISATION + ';\n'
             assert json.loads((output / 'inspection.json').read_text()) == report
             from urllib.request import urlopen
-            with urlopen(str(report['browser_url']), timeout=10) as response:
-                assert response.status == 200
-                assert b'Neo4j' in response.read()
+
+            def check_browser():
+                with urlopen(str(report['browser_url']), timeout=10) as response:
+                    assert response.status == 200
+                    assert b'Neo4j' in response.read()
+
+            await asyncio.to_thread(check_browser)
             with pytest.raises(FileExistsError):
                 await prepare(version.marker, output)
             with pytest.raises(ValueError, match='No finding'):
