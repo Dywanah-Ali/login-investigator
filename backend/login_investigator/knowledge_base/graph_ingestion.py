@@ -37,20 +37,20 @@ async def import_graph(engine: AsyncEngine, dataset: Path, settings: GraphSettin
         for chunk in (await connection.scalars(select(schema.chunks.c.chunk_id))).all():
             nodes.append({'id': chunk, 'entity_type': 'chunk'})
     people = {node['username'].lower(): node['id'] for node in nodes if node['entity_type'] == 'person'}
-    addresses = {node['address']: node['id'] for node in nodes if node['entity_type'] == 'network'}
     devices = {node['id'] for node in nodes if node['entity_type'] == 'device'}
     log = load_log(dataset / 'logins.csv')
-    observed: dict[tuple[str, str, str], set[str]] = defaultdict(set)
+    # Successful sign-ins draw used_device edges only. Network nodes stay as organisation facts
+    # without used_address edges (author's T50 ruling, 1 November 2026).
+    observed: dict[tuple[str, str], set[str]] = defaultdict(set)
     for row in log.loc[log['outcome'] == 'success'].to_dict('records'):
         person = people[str(row['username']).lower()]
         device = str(row['device_id'])
         if device and device not in devices:
             raise ValueError('Sign-in names an unregistered device')
-        for target, relation in ((addresses.get(row['source_ip']), 'used_address'), (device, 'used_device')):
-            if target:
-                observed[person, target, relation].add(row['timestamp_utc'].strftime(TIMESTAMP_FORMAT))
-    for (source, target, relation), times in observed.items():
-        edges[relation].append({'source': source, 'target': target, 'properties': {'times': sorted(times)}})
+        if device:
+            observed[person, device].add(row['timestamp_utc'].strftime(TIMESTAMP_FORMAT))
+    for (source, target), times in observed.items():
+        edges['used_device'].append({'source': source, 'target': target, 'properties': {'times': sorted(times)}})
     execute(settings, 'CREATE CONSTRAINT entity_id FOR (n:Entity) REQUIRE n.id IS UNIQUE')
     execute(settings, 'UNWIND $rows AS row CREATE (n:Entity) SET n = row', rows=nodes)
     # Relationship names come only from the fixed mapping above, never from source input.

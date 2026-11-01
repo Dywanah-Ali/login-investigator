@@ -60,23 +60,23 @@ async def verify_graph(engine: AsyncEngine, dataset: Path, settings: GraphSettin
                 raise GraphIntegrityError('Passage mention has an invalid target')
             expected_edges[row['chunk_id'], row['entity_id'], 'mentions'] = {}
     people = {row['username'].lower(): key for key, row in expected.items() if row['entity_type'] == 'person'}
-    networks = {row['address']: key for key, row in expected.items() if row['entity_type'] == 'network'}
     observations = {}
     with (dataset / 'logins.csv').open(newline='') as handle:
         for row in csv.DictReader(handle):
-            if row['outcome'] != 'success':
+            if row['outcome'] != 'success' or not row['device_id']:
                 continue
             person = people[row['username'].lower()]
-            for target, relation in ((networks.get(row['source_ip']), 'used_address'),
-                                     (row['device_id'], 'used_device')):
-                if target:
-                    observations.setdefault((person, target, relation), set()).add(row['timestamp_utc'])
+            observations.setdefault((person, row['device_id'], 'used_device'), set()).add(row['timestamp_utc'])
     for edge, times in observations.items():
         expected_edges[edge] = {'times': sorted(times)}
     edges = await owned_operation(lambda: execute(settings,
         'MATCH (a)-[r]->(b) RETURN a.id AS source, b.id AS target, '
         'type(r) AS relation, properties(r) AS properties'))
     actual_edges = {(row['source'], row['target'], row['relation']): row['properties'] for row in edges}
+    # Address-sharing context was removed (author's ruling, 1 November 2026, T50): a graph that
+    # links a person to a network address is refused by name, not only by the comparison below.
+    if any(row['relation'] == 'used_address' for row in edges):
+        raise GraphIntegrityError('Graph draws used_address edges, which the build no longer records')
     if actual != expected or actual_edges != expected_edges or len(edges) != len(expected_edges):
         raise GraphIntegrityError('Graph identities, attributes, passage references or observations differ from sources')
     connected = {node for source, target, _ in expected_edges for node in (source, target)}

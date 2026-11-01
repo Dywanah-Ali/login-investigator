@@ -626,18 +626,11 @@ def generate(seed: int = SEED) -> World:
     asset_groups = [(f"asset-{slug}", f"group-{holder}")
                     for slug, _, _, holder in ASSETS if f"group-{holder}" in target_groups]
     target_vpn_index = vpn_users.index(target) % 4
-    network_peers = [_person_id(u) for i, u in enumerate(vpn_users)
-                     if i % 4 == target_vpn_index and u != target]
     paths = [[_person_id(target), group] for group in target_groups]
     paths += [[_person_id(target), group, asset] for asset, group in asset_groups]
     network = f"net-vpn-{target_vpn_index + 1}"
-    network_paths = [[_person_id(target), network, peer] for peer in sorted(network_peers)]
-    office_peers = sorted(_person_id(user) for user in UK_USERS if user != target)
-    address_context = [
-        {"network_id": "net-uk-office", "accounts": office_peers,
-         "paths": [[_person_id(target), "net-uk-office", peer] for peer in office_peers]},
-        {"network_id": network, "accounts": sorted(network_peers), "paths": sorted(network_paths)},
-    ]
+    # No address-sharing context in the answer key (author's T25 gate ruling, 1 November 2026,
+    # carried out by T50). The VPN address keeps its meaning; co-users are not recorded.
     scenarios["S6"] = {
         "type": "password_spraying", "attacker_ip": S6_IP, "country": "NL", "user": target,
         "targets": targets, "failures": S6_ACCOUNTS, "successes": len(S6_SUCCESS_MINUTES),
@@ -649,8 +642,6 @@ def generate(seed: int = SEED) -> World:
         "blast_radius": {
             "groups": target_groups, "assets": sorted(a for a, _ in asset_groups),
             "device_peers": [],
-            "address_reuse_context": {"by_address": address_context,
-                                      "meaning": "Address reuse is context, not evidence of exposure or spread."},
             "device_id": _laptop_id(target), "network_id": network,
             "network_address": VPN_POOL[target_vpn_index],
             "paths": sorted(paths),

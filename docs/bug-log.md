@@ -2292,3 +2292,45 @@ configuration. Keep the failed attempt distinct from actual activation evidence.
 **B-134 follow-up:** both reviewers cleared the correction. The guarded retry activated the
 accepted pair and passed readiness, current-version reader checks and exact reopening of all
 25 original investigations. The first attempt remains a recorded failure before selection.
+
+
+### B-135 · 2026-11-01 · T50 full verification · Docker-ownership test also lost its PostgreSQL cleanup
+
+**Symptom:** in the full backend run after T50 (661 passed, 2 failed, 1033.30 seconds),
+`test_unknown_docker_ownership_retains_recovery_state` expected `cleanup.json` to name only
+`neo4j` as incomplete and found `['neo4j', 'postgresql']`. The simulated Docker loss worked as
+designed; the forced drop of the disposable database `li_kb_6ccecd2520c4` failed as well. The
+failing assertion stopped the test before its own disposal step, so the test's container
+`li-graph-de432ffc826e4e4d80269da620ac2b62` (state Created), its volume and that database remain.
+**Cause:** not captured. The error text of the drop is not kept in `cleanup.json`. The same
+test passed alone 15 minutes later, so load during the full run or the AUD-061 termination
+privilege are the candidates; neither is proven.
+**Fix:** none to code in T50; the change under test does not touch this path. Affected rerun:
+the test passed in isolation. The three leftover resources are listed for the author's cleanup
+ruling, not removed by the builder (the manual forbids removing resources the run did not own).
+**Lesson:** a cleanup record that lists what failed but not why cannot be diagnosed after the
+fact; retaining the drop's error text in `cleanup.json` would make the next occurrence
+diagnosable. A test that asserts before it disposes leaves debris on failure.
+**Evidence:** full run log and isolated rerun (3 passed in 325.75 seconds) in the T50 session;
+`docker ps -a` after both runs; database list through the project's PostgreSQL settings. The
+two further databases `li_kb_0af9160cc4ed` and `li_kb_c38b82a72616` are the superseded T17 and
+T18 builds already covered by AUD-057, and the volume `li-graph-4f085e16833e4ecc9a97ecac2afcaf06-data`
+has no container or version directory; origin unknown, also for the author's ruling.
+
+
+### B-136 · 2026-11-01 · T50 full verification · Concurrent investigations hit a locked SQLite memory
+
+**Symptom:** `test_concurrent_investigations_keep_their_own_account_evidence` failed in the
+same full run. Two investigations started in parallel against a fresh memory file; one stream
+ended with `event: error` (`agent_failed`), and the captured log shows
+`sqlite3.OperationalError: database is locked` raised inside the checkpointer's `setup()`
+while it ran its table-creation script.
+**Cause:** the first use of a new memory file creates the checkpointer's tables. Two threads
+reached that step at once, and SQLite allowed only one writer. Why the second did not wait out
+the lock (busy timeout) is not established; this is the first recorded occurrence.
+**Fix:** none in T50; the agent, the memory and the API are unchanged by this ticket. The
+test passed in isolation. Registered as AUD-075 so the next occurrence is recognised.
+**Lesson:** a concurrency test on a brand-new store exercises first-use setup as well as the
+behaviour under test. Separate the two, or make setup happen once before the threads start.
+**Evidence:** full run log lines for the test, including the traceback through
+`langgraph/checkpoint/sqlite/__init__.py setup()`; isolated rerun passed.

@@ -15,8 +15,6 @@ from login_investigator.rules import BRUTE_FORCE, PASSWORD_SPRAYING, Finding, de
 
 from .radius import (
     AccountRadius,
-    AddressMatches,
-    AddressReuse,
     FindingRadius,
     GraphWalk,
     _iso,
@@ -82,13 +80,11 @@ class Neo4jQueries:
             raise ValueError("No finding has this ID in the dataset's log")
         return radius_walk(self.finding_radius(finding))
 
-    def _peers(self, person: str, relation: str, lower: pd.Timestamp, upper: pd.Timestamp) -> list[dict[str, Any]]:
-        # These are the only two supported peer relationships; no caller supplies Cypher.
-        queries: dict[str, LiteralString] = {
-            'used_device': 'MATCH (p:Entity {id:$id})-[a:used_device]->(shared:Entity)<-[b:used_device]-(peer:Entity) ',
-            'used_address': 'MATCH (p:Entity {id:$id})-[a:used_address]->(shared:Entity)<-[b:used_address]-(peer:Entity) ',
-        }
-        return self._read(queries[relation] +
+    def _device_peers(self, person: str, lower: pd.Timestamp, upper: pd.Timestamp) -> list[dict[str, Any]]:
+        # Shared devices are the only supported peer relationship (T50 removed shared
+        # addresses); no caller supplies Cypher.
+        return self._read(
+            'MATCH (p:Entity {id:$id})-[a:used_device]->(shared:Entity)<-[b:used_device]-(peer:Entity) '
             'WHERE peer.id <> p.id '
             'WITH shared, peer, [t IN a.times WHERE datetime(t)>=datetime($start) AND datetime(t)<datetime($end)] AS subject_times, '
             '[t IN b.times WHERE datetime(t)>=datetime($start) AND datetime(t)<datetime($end)] AS peer_times '
@@ -115,21 +111,12 @@ class Neo4jQueries:
                                 'RETURN g.id AS group_id, properties(a) AS asset ORDER BY g.id, a.id', id=person)
             asset_map = {row['asset']['id']: domain_record(row['asset']) for row in assets}
             paths = sorted(result['paths'] + [[person, row['group_id'], row['asset']['id']] for row in assets])
-            device = self._peers(person, 'used_device', lower, upper)
+            device = self._device_peers(person, lower, upper)
             device_map = {row['peer']['id']: domain_record(row['peer']) for row in device}
-            address = self._peers(person, 'used_address', lower, upper)
-            grouped = []
-            for shared in sorted({row['shared']['id'] for row in address}):
-                matches = [row for row in address if row['shared']['id'] == shared]
-                grouped.append(AddressMatches(domain_record(matches[0]['shared']),
-                    [domain_record(row['peer']) for row in matches],
-                    [[person, shared, row['peer']['id']] for row in matches],
-                    [{'shared_id': shared, 'account_id': row['peer']['id'],
-                      'subject_times': row['subject_times'], 'peer_times': row['peer_times']} for row in matches]))
             accounts.append(AccountRadius(result['account'], result['groups'],
                 [asset_map[key] for key in sorted(asset_map)], paths,
                 [device_map[key] for key in sorted(device_map)],
-                sorted([person, row['shared']['id'], row['peer']['id']] for row in device), AddressReuse(grouped)))
+                sorted([person, row['shared']['id'], row['peer']['id']] for row in device)))
         accounts.sort(key=lambda account: account.account['person_id'])
         return FindingRadius(finding.finding_id, _iso(finding.first_seen), _iso(finding.last_seen), period, accounts)
 

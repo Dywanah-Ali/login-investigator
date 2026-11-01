@@ -43,15 +43,11 @@ def source_organisation(dataset):
         with (dataset / 'org' / (name + '.csv')).open() as handle:
             edges.update((row[left], row[right], relation) for row in csv.DictReader(handle))
     people = {r['username'].lower(): r['person_id'] for r in tables['people']}
-    addresses = {r['address']: r['network_id'] for r in tables['networks']}
+    # Network nodes appear with no address edges (T50): the log draws used_device edges only.
     with (dataset / 'logins.csv').open() as handle:
         for row in csv.DictReader(handle):
-            if row['outcome'] == 'success':
-                person = people[row['username'].lower()]
-                if row['device_id']:
-                    edges.add((person, row['device_id'], 'used_device'))
-                if row['source_ip'] in addresses:
-                    edges.add((person, addresses[row['source_ip']], 'used_address'))
+            if row['outcome'] == 'success' and row['device_id']:
+                edges.add((people[row['username'].lower()], row['device_id'], 'used_device'))
     return nodes, edges
 
 
@@ -89,7 +85,7 @@ def test_browser_queries_equal_checked_core_and_reject_wrong_build(tmp_path: Pat
                 assert isinstance(graph, Neo4jQueries)
                 org_nodes, org_edges = source_organisation(version.snapshot)
                 assert identities(graph, ORGANISATION, params) == (org_nodes, org_edges)
-                saw_device_peer = saw_address = saw_empty = False
+                saw_device_peer = saw_empty = False
                 selection = {**params, "nodes": [], "edges": []}
                 for finding in detect_all(load_log(version.snapshot / 'logins.csv')):
                     radius = kb.finding_radius(finding)
@@ -102,19 +98,17 @@ def test_browser_queries_equal_checked_core_and_reject_wrong_build(tmp_path: Pat
                         for path in account.access_paths:
                             if len(path) == 3:
                                 expected_edges.add((path[1], path[2], 'grants'))
-                        peer_paths = [(p, 'used_device') for p in account.device_paths]
-                        peer_paths += [(p, 'used_address') for m in account.address_reuse.by_address for p in m.paths]
-                        for (person, shared, peer), relation in peer_paths:
-                            expected_edges.add((person, shared, relation))
-                            expected_edges.add((peer, shared, relation))
+                        for person, shared, peer in account.device_paths:
+                            expected_edges.add((person, shared, 'used_device'))
+                            expected_edges.add((peer, shared, 'used_device'))
                         saw_device_peer |= bool(account.device_peers)
-                        saw_address |= bool(account.address_reuse.by_address)
                     expected_nodes.update(n for a, b, _ in expected_edges for n in (a, b))
                     saw_empty |= not radius.accounts
                     selection = finding_parameters(radius, version.build_id, version.fingerprint)
                     assert identities(graph, FINDING, selection) == (expected_nodes, expected_edges)
                     assert set(radius_neighbourhood(radius).edges) == expected_edges
-                assert saw_device_peer and saw_address and saw_empty
+                    assert not any(relation == 'used_address' for _, _, relation in expected_edges)
+                assert saw_device_peer and saw_empty
                 from neo4j import Query
 
                 from login_investigator.knowledge_base.inspection import (

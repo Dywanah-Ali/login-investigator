@@ -11,11 +11,18 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
-- **Current priority, T25 gate closed on 1 November 2026:** [T50 remove address-sharing context](issues/50-remove-address-sharing-context.md).
+- **Current priority, T50 resolved on 1 November 2026:** [T25 account peers and corpus-search tools](issues/25-peers-and-corpus-search-tools.md),
+  now unblocked (T22, T24, T49, T50 all resolved). Its `find_peers` takes `account_id | device_id`
+  only. T45 still blocks T26. Two spec wording questions wait for the author: phase 1's "spread
+  and shared ground" (shared ground is now device only) and the draft Graph tab schema's
+  `network` node type.
+
+- **Previous priority, T25 gate closed on 1 November 2026:** [T50 remove address-sharing context](issues/50-remove-address-sharing-context.md).
   The author ruled that sharing an address answers no investigation question in this app, added
   no allocation evidence (AUD-073) and removed address-sharing context everywhere
   ([research note 25](research/25-shared-address-value.md)). Spec and decision log updated.
-  T50 blocks T25 and T26. T27 is unaffected; T45 still blocks T26.
+  T50 blocked T25 and T26 and is resolved: no `used_address` edges, no address context in the
+  radius or answer key, new pair `f937ea59…` activated by restart with the previous pair retained.
 
 - **Required gate before T25, author ruling on 1 November 2026 (closed, see above):** hold T25 implementation
   for a separate dedicated session on the investigative value of shared network-address
@@ -327,6 +334,15 @@ author to confirm the model is set, and records the model used in a dated commen
 the other family from the retrieval builder) was proposed and is not ruled.
 
 ### Build tickets resolved
+
+- [50 Remove address-sharing context](issues/50-remove-address-sharing-context.md)
+  (1 November 2026): the graph draws no `used_address` edges and the integrity check refuses one
+  by name; network nodes stay with their `mentions` links; the radius, walk, neighbourhood and
+  answer key carry no address co-user context; `truth.json` regenerated with only that key
+  removed. New pair `f937ea59…` built from the previous pair's passage vectors (0 provider
+  calls), parity-checked, inspected (organisation 170 nodes / 185 relationships, S6 10 / 9),
+  selected and activated by restart; 25 saved investigations reopen identically. Pairs built
+  before T50 need the earlier code to open. Built on Fable 5.1 by the author's ruling.
 
 - [09 PostgreSQL with pgvector, and the loud test fixture](issues/09-postgres-pgvector-and-test-fixture.md)
   (25 October 2026): pgvector 0.8.7 on the Homebrew PostgreSQL 18.6, psycopg 3.3.6 pinned; a

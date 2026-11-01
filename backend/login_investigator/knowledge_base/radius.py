@@ -1,4 +1,4 @@
-"""Named, deterministic graph walks. Shared addresses are context, never exposed accounts."""
+"""Named, deterministic graph walks. No address-sharing context since T50 (1 November 2026)."""
 
 from dataclasses import dataclass
 from typing import Any, cast
@@ -21,20 +21,6 @@ class Period:
 
 
 @dataclass(frozen=True)
-class AddressMatches:
-    network: dict[str, Any]
-    accounts: list[dict[str, Any]]
-    paths: list[list[str]]
-    observations: list[dict[str, Any]]
-
-
-@dataclass(frozen=True)
-class AddressReuse:
-    by_address: list[AddressMatches]
-    meaning: str = "Shared address context, not evidence of exposure or spread; session overlap unknown."
-
-
-@dataclass(frozen=True)
 class AccountRadius:
     account: dict[str, Any]
     groups: list[dict[str, Any]]
@@ -42,7 +28,6 @@ class AccountRadius:
     access_paths: list[list[str]]
     device_peers: list[dict[str, Any]]
     device_paths: list[list[str]]
-    address_reuse: AddressReuse
 
 
 @dataclass(frozen=True)
@@ -91,7 +76,7 @@ def _period(log: pd.DataFrame, start: str | None, end: str | None) -> tuple[Peri
 
 @dataclass(frozen=True)
 class Neighbourhood:
-    """Exact directed identities used by the radius, including address context."""
+    """Exact directed identities used by the radius: permissions and device peers."""
     nodes: list[str]
     edges: list[tuple[str, str, str]]
 
@@ -104,9 +89,7 @@ def radius_neighbourhood(radius: FindingRadius) -> Neighbourhood:
             edges.add((path[0], path[1], "member_of"))
             if len(path) == 3:
                 edges.add((path[1], path[2], "grants"))
-        address_paths = [path for match in account.address_reuse.by_address for path in match.paths]
-        for paths, relation in ((account.device_paths, "used_device"), (address_paths, "used_address")):
-            for subject, shared, peer in paths:
-                edges.update({(subject, shared, relation), (peer, shared, relation)})
+        for subject, shared, peer in account.device_paths:
+            edges.update({(subject, shared, "used_device"), (peer, shared, "used_device")})
     nodes.update(node for source, target, _ in edges for node in (source, target))
     return Neighbourhood(sorted(nodes), sorted(edges))

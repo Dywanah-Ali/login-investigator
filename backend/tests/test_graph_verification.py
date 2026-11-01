@@ -113,7 +113,14 @@ def test_corrupt_graph_refused_and_successful_device_witness_preserved(build_dat
                 with pytest.raises(GraphIntegrityError):
                     await verify_graph(engine, dataset, settings, 'test-build', fingerprint)
                 execute(settings, repair)
-            for relation in ['member_of', 'grants', 'assigned_device', 'mentions', 'used_address', 'used_device']:
+            # T50: a used_address edge is refused by name, even between two valid nodes.
+            execute(settings, "MATCH (a:Entity {id:'user-amelia.ward'}), (n:Entity {id:'net-vpn-4'}) "
+                              "CREATE (a)-[:used_address {times:['2026-10-07T11:00:00Z']}]->(n)")
+            with pytest.raises(GraphIntegrityError, match='used_address'):
+                await verify_graph(engine, dataset, settings, 'test-build', fingerprint)
+            execute(settings, "MATCH (:Entity {id:'user-amelia.ward'})-[r:used_address]->() DELETE r")
+            await verify_graph(engine, dataset, settings, 'test-build', fingerprint)
+            for relation in ['member_of', 'grants', 'assigned_device', 'mentions', 'used_device']:
                 edge = execute(settings,
                     'MATCH (a)-[r]->(b) WHERE type(r)=$relation '
                     'RETURN a.id AS source, b.id AS target, properties(r) AS properties LIMIT 1',
@@ -141,11 +148,14 @@ def test_corrupt_graph_refused_and_successful_device_witness_preserved(build_dat
                 radius = graph.finding_radius(finding).accounts[0]
                 assert [p['person_id'] for p in radius.device_peers] == ['user-emily.foster']
                 assert radius.device_paths == [['user-amelia.ward', 'dev-laptop-amelia.ward', 'user-emily.foster']]
-                assert [p['person_id'] for p in radius.address_reuse.by_address[0].accounts] == [
-                    'user-emily.foster', 'user-isabel.knight']
+                # Three users signed in from 203.0.113.54; none of that reaches the radius (T50).
+                assert not hasattr(radius, 'address_reuse')
                 for start, end in [('2026-10-07T11:00:00Z', '2026-10-07T11:01:00Z'),
                                    ('2026-10-07T11:01:00Z', '2026-10-07T11:05:00Z')]:
                     assert graph.finding_radius(finding, start, end).accounts[0].device_peers == []
+                # Positive dated witness: a window holding both sign-ins keeps the peer.
+                kept = graph.finding_radius(finding, '2026-10-07T11:00:00Z', '2026-10-07T11:02:00Z').accounts[0]
+                assert [p['person_id'] for p in kept.device_peers] == ['user-emily.foster']
                 outside = graph.finding_radius(finding, '2026-09-01', '2026-11-01')
                 assert outside.period.outside_record_bounds
                 assert outside.permissions_basis == 'organisation snapshot; historical permissions unknown'

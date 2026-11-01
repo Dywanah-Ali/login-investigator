@@ -1,0 +1,33 @@
+{
+  "ticket": "T50",
+  "previous_build": "3d58516ccfe84f74ade0ee255607fe19",
+  "build_id": "f937ea5949f44cfb97f0f9e62920a4ee",
+  "source_fingerprint": "80c33ee795de5313f958d217477c6fb4c4b6433063570878c26a6ab555fd086d",
+  "provider_calls": 0,
+  "passages_compared": 320,
+  "accounts_compared": 50,
+  "findings_compared": 10,
+  "dated_radii_compared": 40,
+  "used_address_edges_before": 141,
+  "used_address_edges_after": 0,
+  "graph_counts": {
+    "nodes": {
+      "person": 50,
+      "group": 4,
+      "asset": 10,
+      "device": 53,
+      "network": 53,
+      "chunk": 320
+    },
+    "edges": {
+      "member_of": 61,
+      "grants": 10,
+      "assigned_device": 57,
+      "mentions": 257,
+      "used_device": 57
+    }
+  },
+  "working_pointer_unchanged": true,
+  "marker": ".graph-versions/f937ea5949f44cfb97f0f9e62920a4ee/complete.json",
+  "preparation_and_parity_seconds": 91.968
+}

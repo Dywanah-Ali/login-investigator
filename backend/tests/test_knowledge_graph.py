@@ -3,6 +3,7 @@
 import asyncio
 import json
 import shutil
+from dataclasses import asdict
 from pathlib import Path
 
 import pytest
@@ -36,15 +37,16 @@ def test_s6_radius_matches_the_planted_answer_key(paired_default):
             assert [g["group_id"] for g in radius.groups] == gold["groups"]
             assert [a["asset_id"] for a in radius.assets] == gold["assets"]
             assert [p["person_id"] for p in radius.device_peers] == gold["device_peers"]
-            context = gold["address_reuse_context"]
-            assert [{"network_id": match.network["network_id"],
-                     "accounts": [p["person_id"] for p in match.accounts], "paths": match.paths}
-                    for match in radius.address_reuse.by_address] == context["by_address"]
             assert radius.access_paths == gold["paths"]
             assert all("sensitivity" in asset and "owner_id" in asset for asset in radius.assets)
             assert result.permissions_basis == "organisation snapshot; historical permissions unknown"
-            assert "not evidence of exposure or spread" in radius.address_reuse.meaning
-            assert (await kb.check_graph_integrity()).nodes["chunk"] == 320
+            # T50: no address-sharing context reaches the radius, the key or anything downstream.
+            assert "address_reuse_context" not in gold
+            assert not hasattr(radius, "address_reuse")
+            assert "address" not in json.dumps(asdict(result)).lower().replace("network_address", "")
+            counts = await kb.check_graph_integrity()
+            assert counts.nodes["chunk"] == 320
+            assert "used_address" not in counts.edges
 
     asyncio.run(check())
 
@@ -57,16 +59,12 @@ def test_dates_filter_both_sides_and_preserve_requested_coverage(paired_default)
     async def check():
         async with open_version(paired_default.marker, ServerSettings.from_env()) as kb:
             radius = kb.finding_radius(finding, "2026-10-07T11:03:00Z", "2026-10-07T11:11:00Z")
-            assert len(radius.accounts[0].address_reuse.by_address) == 1
-            match = radius.accounts[0].address_reuse.by_address[0]
-            assert match.network["network_id"] == "net-vpn-4"
-            assert [p["person_id"] for p in match.accounts] == ["user-emily.foster"]
             assert radius.period.effective_start == "2026-10-07T11:03:00Z"
             assert radius.period.effective_end == "2026-10-07T11:11:00Z"
-            # The subject also needs an observation in the period; a peer's observation alone
-            # must not use the subject's earlier graph edge to manufacture a shared address.
+            # Amelia shares no device in the default log, in any period. The dated positive
+            # witness for device peers lives in test_graph_verification.
+            assert radius.accounts[0].device_peers == []
             no_subject = kb.finding_radius(finding, "2026-10-07T11:07:00Z", "2026-10-07T11:11:00Z")
-            assert no_subject.accounts[0].address_reuse.by_address == []
             assert no_subject.accounts[0].device_peers == []
             wide = kb.finding_radius(finding, "2026-09-01", "2026-11-01")
             assert wide.period.outside_record_bounds
@@ -77,7 +75,7 @@ def test_dates_filter_both_sides_and_preserve_requested_coverage(paired_default)
                 with pytest.raises(ValueError):
                     kb.finding_radius(finding, start, end)
             before = kb.finding_radius(finding, end="2026-09-01")
-            assert before.accounts[0].address_reuse.by_address == []
+            assert before.accounts[0].device_peers == []
             assert before.period.outside_record_bounds
             assert before.period.effective_start is None and before.period.effective_end is None
             # Snapshot permissions stay present and explicitly labelled even outside log bounds.

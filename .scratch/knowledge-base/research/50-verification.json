@@ -1,0 +1,52 @@
+{
+  "ticket": "T50",
+  "date": "2026-11-01",
+  "model": "Claude Fable 5.1 (author's ruling; ticket line was standard)",
+  "base_commit": "012de46539ddd0e5c9f1d6da1f5cc5ff8762bb80",
+  "affected_tests_first_run": {
+    "files": ["test_graph_verification", "test_knowledge_graph", "test_native_inspection", "test_graph_version", "test_eval_retrieval"],
+    "passed": 23, "failed": 0, "seconds": 378.81,
+    "sandbox": "disabled; the Docker socket is denied inside the sandbox"
+  },
+  "generator_tests": {"passed": 32, "failed": 0, "seconds": 2.86, "sandbox": "enabled"},
+  "answer_key": {
+    "regenerated": true,
+    "changed_files": ["backend/data/datasets/default/truth.json"],
+    "removed_key": "scenarios.S6.blast_radius.address_reuse_context",
+    "rest_identical": "committed file normalised with the key removed equals the regenerated file; 337 lines deleted"
+  },
+  "paired_build": {
+    "evidence": "50-preparation.json",
+    "build_id": "f937ea5949f44cfb97f0f9e62920a4ee",
+    "previous_build": "3d58516ccfe84f74ade0ee255607fe19",
+    "provider_calls": 0,
+    "used_address_edges_before": 141,
+    "used_address_edges_after": 0
+  },
+  "native_inspection": {
+    "organisation_nodes": 170, "organisation_relationships": 185,
+    "previous_organisation_relationships": 326,
+    "s6_nodes": 10, "s6_relationships": 9, "previous_s6": [55, 64]
+  },
+  "activation": {
+    "selected": "f937ea5949f44cfb97f0f9e62920a4ee", "previous_retained": "3d58516ccfe84f74ade0ee255607fe19",
+    "restart": "carried backend 56794/56795 stopped after identity check; new backend started on port 8000",
+    "overview_identical": true, "listing_identical": true, "saved_investigations_reopened": 25, "saved_evidence_identical": true
+  },
+  "backend_full": {
+    "passed": 661, "failed": 2, "seconds": 1033.30,
+    "failures": ["B-135 test_unknown_docker_ownership_retains_recovery_state", "B-136 test_concurrent_investigations_keep_their_own_account_evidence"],
+    "in_t50_files": false
+  },
+  "backend_affected_rerun": {"passed": 3, "failed": 0, "seconds": 325.75,
+    "tests": ["the two failures above", "test_graph_verification with the positive dated device witness added after review"]},
+  "frontend_full": {"passed": 150, "failed": 0, "seconds": 13.38},
+  "backend_types": "pass", "ruff": "pass",
+  "review": {"tool": "mp-code-review", "standards_fixed": 3, "standards_judgement_kept": 3, "spec_fixed": 2, "spec_author_ruling_needed": 1},
+  "full_runs_wholly_clean": false,
+  "leftover_resources_for_author": [
+    "container li-graph-de432ffc826e4e4d80269da620ac2b62 (Created) and volume li-graph-de432ffc826e4e4d80269da620ac2b62-data, database li_kb_6ccecd2520c4 (B-135)",
+    "volume li-graph-4f085e16833e4ecc9a97ecac2afcaf06-data, origin unknown",
+    "databases li_kb_0af9160cc4ed and li_kb_c38b82a72616, superseded T17/T18 builds (AUD-057)"
+  ]
+}

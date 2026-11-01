@@ -105,9 +105,9 @@ rollback, recovery and Browser inspection commands.
 
 The core's `open_current_knowledge_base` owns the checked pair. Its named functions return plain
 domain records. `lookup_account` is already an agent tool. `finding_radius(finding, start=None,
-end=None)` returns account permissions, assets, device peers and separate shared-address context.
-Dates filter login observations; permissions remain a snapshot. Shared addresses do not prove
-exposure or spread. The remaining integration tickets and planned saved-evidence Graph tab
+end=None)` returns account permissions, assets and device peers. Dates filter login observations;
+permissions remain a snapshot. The graph draws no shared-address edges and the radius carries no
+address co-user context (T50). The remaining integration tickets and planned saved-evidence Graph tab
 remain separate. The legacy NetworkX engine and GEXF export have been retired.
 
 ## Evaluate the agent

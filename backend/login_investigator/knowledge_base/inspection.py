@@ -59,9 +59,6 @@ relationship.grants {
 relationship.used_device {
   color: #2CA02C;
 }
-relationship.used_address {
-  color: #9467BD;
-}
 '''
 
 

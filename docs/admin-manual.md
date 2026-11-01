@@ -255,6 +255,12 @@ uv run python -m scripts.select_graph_version --state-file .knowledge-base.json 
 
 Rollback preserves source files and SQLite history. Re-selecting the already selected version
 does not lose the rollback target. No build is automatically removed; retention remains AUD-057.
+Rollback is to a pair built by the same code rules. The current integrity check refuses any graph
+with `used_address` edges (T50, 1 November 2026), so pairs built before T50, including the
+retained `3d58516c…` and `eb6c7d59…`, open only under the code as of commit `012de46` or
+earlier. Rolling back to one of them therefore means two steps, not one: select the retained
+pair as above, and run the backend from a checkout of that earlier code. The T50 pair is
+`f937ea59…`.
 For a separate rehearsal, substitute `.graph-versions/t49/rehearsal.json` for the state file,
 port `8012` and a separate memory file. T49 used copied memory and a scripted account lookup.
 
@@ -319,8 +325,9 @@ replaces the retired Gephi workflow. It is an operator tool; the planned in-app 
 ### What it is for
 
 Inspect the organisation and the exact neighbourhood calculated by the core for each finding.
-The neighbourhood includes permissions, device peers and shared-address context. A purple
-`used_address` relationship is context, not evidence of exposure or overlapping sessions.
+The neighbourhood includes permissions and device peers. Since T50 (1 November 2026) the graph
+draws no `used_address` relationships: network nodes appear in the organisation view as facts,
+reached only by passage mentions, and the finding view carries no address context.
 
 ### Before you start
 
@@ -365,19 +372,21 @@ localhost ports.
    Increase the node limit before inspecting a result with more than 1,000 nodes. Each saved
    query returns one row containing all nodes/relationships and their counts. The graph canvas
    can still hide nodes; compare its visible counts to that row and the report. At a limit of 10,
-   the verified S6 view displayed “Initial display limit hit at 10 nodes” while its table retained
-   55 nodes and 64 relationships. A partial canvas is not the full result. Do not expand nodes
+   the T48 S6 view (then 55 nodes and 64 relationships, before T50 removed address edges)
+   displayed “Initial display limit hit at 10 nodes” while its table retained the full result.
+   Since T50 the S6 neighbourhood is 10 nodes and 9 relationships, and the organisation view
+   170 nodes and 185 relationships. A partial canvas is not the full result. Do not expand nodes
    while comparing the exact saved neighbourhood.
 3. Run `:style`, then upload `inspection.grass` and confirm Import in the preview. Node captions
-   show stable IDs, whose prefixes identify their types. Zoom in to read captions. The results overview lists relationship types. Grants are red, device use green and
-   address use purple. All nodes currently share the `Entity` label, so node colour is uniform.
+   show stable IDs, whose prefixes identify their types. Zoom in to read captions. The results overview lists relationship types. Grants are red and device use
+   green. All nodes currently share the `Entity` label, so node colour is uniform.
 4. Paste `organisation-parameters.txt`, execute it, then execute `organisation.cypher`. Use the
    result frame’s Save and open in tab button to keep the query in the Queries sidebar. This view includes all organisation nodes and relationships,
    including isolated networks, but excludes passage references.
 5. Choose a finding from `inspection.json`. Execute its `F-...-parameters.txt`, then `finding.cypher`.
    Use Save and open in tab to keep the query. Check `complete=true` and both counts against the report.
    Zero nodes means the finding reached no account under the core rules. The accompanying
-   `F-...-context.json` records the period, permissions caveat and separate address context.
+   `F-...-context.json` records the period, the permissions caveat and the device peers.
 6. Load the appropriate parameter file whenever changing views or reconnecting. A query against
    a different build/source returns no row; it is not a valid empty neighbourhood.
 

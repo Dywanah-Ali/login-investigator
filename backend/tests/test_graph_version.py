@@ -71,8 +71,7 @@ def test_isolated_version_opens_reference_graph_and_keeps_active_pointer(tmp_pat
                 assert [a['asset_id'] for a in radius.assets] == gold['assets']
                 assert radius.access_paths == gold['paths']
                 assert [p['person_id'] for p in radius.device_peers] == gold['device_peers']
-                assert [{'network_id': m.network['network_id'], 'accounts': [p['person_id'] for p in m.accounts],
-                         'paths': m.paths} for m in radius.address_reuse.by_address] == gold['address_reuse_context']['by_address']
+                assert 'address_reuse_context' not in gold and not hasattr(radius, 'address_reuse')
             # A complete-looking file cannot legitimise a mismatched pair or edited snapshot.
             original = version.marker.read_text()
             descriptor = json.loads(original)
