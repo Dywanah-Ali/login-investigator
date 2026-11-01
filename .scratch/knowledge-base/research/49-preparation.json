@@ -1,0 +1,35 @@
+{
+  "baseline_commit": "13f5fdd",
+  "source_fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa",
+  "working_pointer_sha256": "09412e45a833a4a780144c7342506e3f480527b8855b410e88ac9889c4c2d993",
+  "provider_calls": 0,
+  "passages_compared": 320,
+  "accounts_compared": 50,
+  "findings_compared": 10,
+  "dated_radii_compared": 40,
+  "versions": [
+    {
+      "role": "rollback",
+      "build_id": "eb6c7d59d40d4a94b87633593ae8649f",
+      "database": "li_kb_d7b09820b1ac",
+      "container": "li-graph-eb6c7d59d40d4a94b87633593ae8649f",
+      "fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa",
+      "snapshot": ".graph-versions/eb6c7d59d40d4a94b87633593ae8649f/source",
+      "offline_embeddings": false,
+      "marker": ".graph-versions/eb6c7d59d40d4a94b87633593ae8649f/complete.json",
+      "preparation_and_parity_seconds": 180.522
+    },
+    {
+      "role": "candidate",
+      "build_id": "3d58516ccfe84f74ade0ee255607fe19",
+      "database": "li_kb_3ca76ff45cc2",
+      "container": "li-graph-3d58516ccfe84f74ade0ee255607fe19",
+      "fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa",
+      "snapshot": ".graph-versions/3d58516ccfe84f74ade0ee255607fe19/source",
+      "offline_embeddings": false,
+      "marker": ".graph-versions/3d58516ccfe84f74ade0ee255607fe19/complete.json",
+      "preparation_and_parity_seconds": 191.785
+    }
+  ],
+  "working_pointer_unchanged": true
+}

@@ -46,3 +46,23 @@ def pytest_unconfigure(config):
     _guard.undo()
     while _folders:
         shutil.rmtree(_folders.pop(), ignore_errors=True)
+
+
+@pytest.fixture(scope="session")
+def paired_default(tmp_path_factory):
+    import asyncio
+
+    from login_investigator.knowledge_base.graph_version import (
+        build_version,
+        remove_version,
+    )
+    from login_investigator.postgres import ServerSettings
+    from tests.test_knowledge_base import DATASET, FakeEmbedder
+
+    server = ServerSettings.from_env()
+    root = tmp_path_factory.mktemp("paired-default")
+    version = asyncio.run(build_version(DATASET, root, server, FakeEmbedder(), offline_embeddings=True))
+    try:
+        yield version
+    finally:
+        remove_version(version, server)

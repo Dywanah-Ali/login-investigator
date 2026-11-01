@@ -3,11 +3,13 @@
 import argparse
 import asyncio
 import json
+import os
 import statistics
 import sys
 import time
 from pathlib import Path
 
+from dotenv import dotenv_values
 from langchain_core.embeddings import Embeddings
 
 from login_investigator.generator import DATASET_DIR, REPO_ROOT
@@ -19,7 +21,7 @@ from login_investigator.knowledge_base.graph_version import (
     remove_version,
 )
 from login_investigator.knowledge_base.schema import VECTOR_SIZE
-from login_investigator.postgres import ServerSettings
+from login_investigator.postgres import ENV_PATH, ServerSettings
 
 
 class OfflineEmbeddings(Embeddings):
@@ -62,8 +64,9 @@ async def run(args: argparse.Namespace) -> dict[str, object]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    values = {**dotenv_values(ENV_PATH), **os.environ}
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--dataset-dir', type=Path, default=DATASET_DIR)
+    parser.add_argument('--dataset-dir', type=Path, default=Path(values.get('LI_DATASET_DIR') or DATASET_DIR))
     parser.add_argument('--versions-dir', type=Path, default=REPO_ROOT / '.graph-versions')
     parser.add_argument('--offline', action='store_true', help='Use offline vectors for graph checks only')
     parser.add_argument('--dispose', action='store_true', help='Remove only the newly built pair after checking it')

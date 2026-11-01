@@ -93,12 +93,12 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-064 | What the re-ranker's assessment still needs: a kept-5 check and calibration evidence | Open; for T39 and T41 | Medium | T23 spec review; T23 first live run |
 | AUD-065 | Investigation evidence persistence and storage growth | Open, deferred design; bounded T24 checks approved | Medium | Author discussion before T24, 29 October 2026 |
 | AUD-066 | Review Q04's compromise-attribution check for long structured answers | Open review concern, deferred outside T24 | Low | T24 Port eval Q04 run 1; B-105; related B-078 |
-| AUD-067 | Review the graph foundation against the application's intended direction | Open; T46 decision resolved, migration acceptance owned by T49; T25/T27 held | High | Author discussion and approval, 30 October 2026; T02 and T24 |
+| AUD-067 | Review the graph foundation against the application's intended direction | Closed on T49 development migration and parity evidence, 1 November 2026; T25/T27 released | High | Author discussion and approval, 30 October 2026; T02 and T24 |
 | AUD-068 | Production readiness after the development-stage Neo4j migration | Open, deferred until production is proposed; not a development-migration blocker | High | T46 author-approved Community limitation and later Enterprise/readiness review |
 | AUD-069 | Intermittent Explorer interaction timeout during T47 safety checks | Open observation; affected-file rerun passed, investigate if repeated | Low | B-113; T47 frontend safety net |
 | AUD-070 | Consider Pydantic Evals for evaluation orchestration | Open, future option; defer adoption pending a concrete maintenance need | Low | Author and Codex discussion, 31 October 2026; official documentation linked below |
 | AUD-071 | Inspect passage text by graph passage ID | Parked by the author; no implementation approved or added to T49 | Low | T48 learning walkthrough with the author, 31 October 2026 |
-| AUD-072 | Neo4j graph-integrity test query returned unavailable during import cleanup verification | Open intermittent observation; verification recovered with 701 backend passes, root cause unproven | Medium | B-124; 31 October 2026 import cleanup and follow-up |
+| AUD-072 | Neo4j graph-integrity test query returned unavailable during import cleanup verification | Open intermittent observation; T49 full graph checks passed, root cause unproven | Medium | B-124; 31 October 2026 import cleanup and follow-up |
 
 ### AUD-001: Rule filter
 
@@ -1036,6 +1036,13 @@ leftover `li_test_b94165a0c68e` was verified idle and dropped without FORCE. The
 reran clean: 1 passed in 2.58 seconds. No role privileges changed. This recurrence remains
 open under T44; closing pgAdmin does not establish a general fix.
 
+T49 recurrence, 1 November 2026: the full run passed the privileged-reader refusal assertion,
+but its fixture teardown hit the same permission-to-terminate error. After the suite exited,
+the exact leftover `li_test_22b850f6b794` had zero attached sessions and was dropped without
+FORCE. No role privileges changed. B-133 records the full run and targeted follow-up.
+All three affected tests then passed in 209.14 seconds, including teardown. The broader
+intermittent cleanup concern remains open.
+
 ### AUD-062: Compound retrieval question loses the MFA exception register
 
 T22's first live run misses one of K04's two required passages. The runbook ranks 9; the MFA
@@ -1182,6 +1189,16 @@ adequate, then test both valid long-list attribution and unrelated/negated accou
 before changing the check. No grader or prompt change is authorised here. B-105 records the
 observation; B-078 is the earlier, separately fixed phrasing limitation.
 
+T49 follow-up, 1 November 2026: approved live Port evaluation
+`2026-11-01-104006-806272-13987838.json` passes 60/63 overall and 15/15 security.
+Q04 fails the same Amelia-attribution check in all three repetitions. All three answers contain
+S6's three successful sign-ins. Run 1 uses a general possible-compromise introduction and
+recommends securing Amelia; run 2 recommends securing other accounts; run 3 only recommends
+monitoring Amelia. The latter answers also warrant a substantive attribution review. Do not
+classify every failure as a grader defect. Scores and thresholds remain unchanged. This
+migration does not authorise prompt/grader changes or another paid run. B-105 retains the
+recurrence and the issue remains open.
+
 ### AUD-067: Graph foundation review
 
 The author questioned whether T02's small, bounded graph assumption still fits the intended
@@ -1241,6 +1258,24 @@ build tickets are [47](../../.scratch/knowledge-base/issues/47-neo4j-build-and-g
 decision; this audit item remains open until T49's implementation evidence. T25/T27 depend on
 T49. The earlier pending-ruling statements above are historical, not the current status.
 
+T49 progress, 1 November 2026: author accepted the measured candidate and maintenance/recovery
+plan. Two retained pairs match all 320 passage rows/vectors, 50 accounts, ten findings and
+40 dated radii. The live Port gate passes 60/63 and 15/15 security; all eight retrieval results
+match the previous baseline exactly, preserving its known failures. NetworkX and the obsolete
+publishing command are retired; both review axes pass after recorded operator/privacy fixes.
+Final full verification and working activation remain pending. AUD-067 and the T25/T27 hold
+remain open until that evidence is complete.
+
+**Closed, 1 November 2026:** T49 completed the author-accepted development migration. The
+working application now selects the verified Neo4j/PostgreSQL pair; 25 saved investigations
+reopen identically. NetworkX is retired, both recovery routes are tested and retained, and the
+final operator commands, regression cases and two-axis reviews are complete. Full-run findings
+and passing affected reruns remain explicit in [T49 verification](../../.scratch/knowledge-base/research/49-verification.json);
+[activation evidence](../../.scratch/knowledge-base/research/49-working-activation.json) records
+actual readiness and readers. Exact graph/passage parity and live gates are linked from T49.
+The retrieval baseline's existing failures are preserved, not waived. T25/T27 are released by
+T49's resolved status. AUD-068 remains open as the separate production gate.
+
 ### AUD-068: Production readiness after the development-stage Neo4j migration
 
 The author explicitly accepts Neo4j Community's retained administrative powers during current
@@ -1266,6 +1301,11 @@ Browser HTTP on localhost, after sealing the graph read-only. The builder contai
 only Bolt. Browser starts in read access mode; this is a client preference, not least privilege.
 The accepted Community administrative limitation and future production gate remain unchanged.
 
+T49 closure, 1 November 2026: the development application is now active on the accepted pair.
+Restart/rollback/recovery measurements and the earlier cold-start/readiness failures are
+recorded in T49, B-126 and B-131. They establish local recovery evidence, not availability
+bounds. Community administrative powers remain accepted only for development; this gate is open.
+
 ### AUD-069: Explorer interaction timeout under concurrent validation
 
 T47's unchanged frontend suite recorded 149 passes and one five-second timeout in the valid-IP
@@ -1277,6 +1317,11 @@ T48 reproduced the same timeout: 149 passed, one failed in 50.20 seconds, with c
 validation. No frontend changes were made. A separate rerun is recorded in T48; the cause
 remains unproven and this item stays open for investigation.
 The separate full rerun passed all 150 tests in 28.27 seconds without changes.
+T49 reproduced the same timeout on 1 November: 149 passed, one failed in 49.95 seconds.
+Only frontend type/lint checks overlapped, not a Neo4j build. Cause remains unproven; no
+frontend or timeout change was made. The separate affected file passed all eight tests in
+22.60 seconds. B-113 preserves both results; this concern remains open.
+
 
 ### AUD-070: Pydantic Evals adoption path
 
@@ -1342,6 +1387,16 @@ no dependency, implementation or spec change.
   was applied. If it recurs, capture driver error code and container state before cleanup.
   Final process/container inspection found no running tests and only the pre-existing retained
   walkthrough graph container. No application selection changed and no paid services ran.
+- **1 November T49 recurrence:** B-131 records nine focused passes and seven shared-fixture
+  setup errors when the serving restart exceeded the existing 120-second readiness deadline.
+  The failed build cleaned its resources. A temporary diagnostic retry captures the underlying
+  driver class/code and container state before any repeat cleanup. No settings were relaxed.
+  The diagnostic retry then passed all 15 focused tests in 265.92 seconds. Both serving
+  restarts completed under unchanged limits; the original cause remains unknown.
+- **T49 final verification:** the complete backend run passed all graph availability, integrity,
+  paired lifecycle and native-inspection checks. Its separate legacy-test mismatch and known
+  PostgreSQL teardown recurrence were recovered through a test-only correction, exact cleanup
+  and three passing affected tests. No graph service setting changed.
 - **Closure evidence:** establish the cause or disposition with reproducible evidence and
   author review. A passing rerun alone does not prove the underlying problem fixed.
 

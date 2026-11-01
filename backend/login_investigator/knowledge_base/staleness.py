@@ -14,9 +14,10 @@ from login_investigator.postgres import START_COMMAND
 
 from . import chunking, schema
 
-BUILD_COMMAND = "uv run python -m scripts.build_knowledge_base"
+BUILD_COMMAND = "uv run python -m scripts.build_graph_version"
 NOT_BUILT = (f"No knowledge base has been built, so the app runs without it. "
-             f"Build it from backend/ with: {BUILD_COMMAND}")
+             f"Prepare it from backend/ with: {BUILD_COMMAND}. Then use scripts.select_graph_version "
+             "to select its complete version for the configured state file and restart. See the admin manual.")
 STALE = (f"The knowledge base was built from older files or settings. "
          f"Rebuild it from backend/ with: {BUILD_COMMAND}")
 # PostgreSQL gives no error code at connection time that tells a wrong login from a missing

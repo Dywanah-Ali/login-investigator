@@ -1,11 +1,32 @@
 """Each evaluation owns resources that cannot replace the application's version."""
 
 import asyncio
-import json
 
 import pytest
 
-from tests.test_api_startup import built as built  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
+from login_investigator.knowledge_base.graph_selection import select_version
+from login_investigator.knowledge_base.graph_version import (
+    build_version,
+    remove_version,
+)
+from login_investigator.postgres import ServerSettings
+from tests.test_knowledge_base import FakeEmbedder
+from tests.test_knowledge_graph import graph_dataset
+
+
+@pytest.fixture
+def evaluation_source(tmp_path):
+    server = ServerSettings.from_env()
+    # Inject a test provider at the normal build seam. This fixture is not live evaluation
+    # evidence. The separate offline-mode refusal test continues to enforce that boundary.
+    version = asyncio.run(build_version(graph_dataset(tmp_path / 'source'),
+                                        tmp_path / 'versions', server, FakeEmbedder()))
+    state = tmp_path / 'selected.json'
+    try:
+        asyncio.run(select_version(version.marker, state, server))
+        yield version, state
+    finally:
+        remove_version(version, server)
 
 
 def test_evaluation_without_a_knowledge_base_needs_no_database(tmp_path, monkeypatch):
@@ -33,7 +54,7 @@ def test_evaluation_without_a_knowledge_base_needs_no_database(tmp_path, monkeyp
     asyncio.run(check())
 
 
-def test_evaluation_builds_its_own_pair_and_cleans_after_caller_failure(built, tmp_path):
+def test_evaluation_builds_its_own_pair_and_cleans_after_caller_failure(evaluation_source, tmp_path):
     import psycopg
 
     from login_investigator.knowledge_base import open_current_knowledge_base
@@ -42,9 +63,10 @@ def test_evaluation_builds_its_own_pair_and_cleans_after_caller_failure(built, t
     from login_investigator.postgres import ServerSettings
     from tests.test_knowledge_base import FakeEmbedder
 
-    dataset, state = built
+    source, state = evaluation_source
+    dataset = source.snapshot
     before = state.read_bytes()
-    original_database = json.loads(before)['database']
+    original_database = source.database
     observed = {}
 
     async def check():

@@ -1,0 +1,16 @@
+{
+  "build_id": "3d58516ccfe84f74ade0ee255607fe19",
+  "fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa",
+  "offline_embeddings": false,
+  "organisation_nodes": 170,
+  "organisation_relationships": 326,
+  "s6": {
+    "finding_id": "F-password-spraying-d06a7545",
+    "rule": "password_spraying",
+    "nodes": 55,
+    "relationships": 64
+  },
+  "browser_http_status": 200,
+  "provider_calls": 0,
+  "output": "backend/.graph-versions/3d58516ccfe84f74ade0ee255607fe19/inspection-t49"
+}

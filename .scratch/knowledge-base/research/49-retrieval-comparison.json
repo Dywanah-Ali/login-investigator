@@ -1,0 +1,111 @@
+{
+  "baseline": "2026-10-29-150414-681065-retrieval-0331ac624577.json",
+  "candidate": "2026-11-01-103813-673055-retrieval-7d7cff5dcc5c.json",
+  "configuration": {
+    "embedding_model": "openai/text-embedding-3-small",
+    "rrf_k": 60,
+    "dense_limit": 20,
+    "keyword_limit": 20,
+    "fused_limit": 20,
+    "none_enabled": false,
+    "min_similarity": null,
+    "min_relevance": null,
+    "reranker": true,
+    "reranker_model": "cohere/rerank-v3.5",
+    "reranker_keep": 5,
+    "source_fingerprint": "e928c8dc54a9747896a58215fb06886664a601a3ea0c8de690af6ed3515f3afa",
+    "graph_build_id": "a41ebc65fccb46b6b3795d0b7598a268"
+  },
+  "questions": [
+    {
+      "question": "K01",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": true,
+      "first_gold_rank_equal": true,
+      "fused_top20_equal": true,
+      "kept_equal": true
+    },
+    {
+      "question": "K02",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": true,
+      "first_gold_rank_equal": true,
+      "fused_top20_equal": true,
+      "kept_equal": true
+    },
+    {
+      "question": "K03",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": true,
+      "first_gold_rank_equal": true
+    },
+    {
+      "question": "K04",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": false,
+      "first_gold_rank_equal": true,
+      "fused_top20_equal": true,
+      "kept_equal": true
+    },
+    {
+      "question": "K05",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": false,
+      "first_gold_rank_equal": true,
+      "fused_top20_equal": true,
+      "kept_equal": true
+    },
+    {
+      "question": "K06",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": false,
+      "first_gold_rank_equal": true,
+      "fused_top20_equal": true,
+      "kept_equal": true
+    },
+    {
+      "question": "K07",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": true,
+      "first_gold_rank_equal": true,
+      "fused_top20_equal": true,
+      "kept_equal": true
+    },
+    {
+      "question": "K08",
+      "checks_equal": true,
+      "graph_equal": true,
+      "passed": true,
+      "first_gold_rank_equal": true,
+      "fused_top20_equal": true,
+      "kept_equal": true
+    }
+  ],
+  "known_failing_questions": [
+    "K04",
+    "K05",
+    "K06"
+  ],
+  "knowledge_base_gate_passed": false,
+  "migration_regression_passed": true,
+  "usage": {
+    "embedding_usage": {
+      "requests": 7,
+      "tokens": 138,
+      "cost_usd": 2.76e-06
+    },
+    "rerank_usage": {
+      "requests": 7,
+      "search_units": 7,
+      "tokens": 0,
+      "cost_usd": 0.007
+    }
+  }
+}

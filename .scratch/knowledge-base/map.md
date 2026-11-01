@@ -11,7 +11,14 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
-- **Current priority, T48 closure on 30 October 2026:** [T49 migration acceptance](issues/49-neo4j-migration-acceptance.md).
+- **Current priority, T49 closure on 1 November 2026:** [T25 account peers and corpus-search tools](issues/25-peers-and-corpus-search-tools.md).
+  [T49](issues/49-neo4j-migration-acceptance.md) is resolved: the author accepted the measured
+  switch/recovery plan, Neo4j is active, NetworkX is retired, and all 25 saved investigations
+  reopen identically. Full-run findings and passing affected reruns are preserved, with clear
+  two-axis reviews. AUD-067 closes; AUD-068 remains open. T27 is also released. T45 remains
+  separate and still blocks T26; existing retrieval gaps are not waived.
+
+- **Previous priority, T48 closure on 30 October 2026:** [T49 migration acceptance](issues/49-neo4j-migration-acceptance.md).
   T48 is resolved: paired lifecycle and native inspection complete; author accepted organisation
   and S6 Browser views; Gephi retired with history preserved. Evidence: full pre-retirement
   backend 710 passes, final native suite 2 passes, post-retirement core/graph/native 53 passes,
@@ -69,6 +76,13 @@ value it adds to the app, not for the sake of demonstrating RAG.
   primary sources. The course's solution kits stay closed.
 
 ## Decisions so far
+
+- [T49 Verified Neo4j migration](issues/49-neo4j-migration-acceptance.md): working application
+  selected after author acceptance, live regression gates, final checks and independent reviews.
+  PostgreSQL keeps passage content/search; Neo4j owns reference-only graph queries. Saved
+  investigations survive exactly, paired rollback and archived implementation recovery are
+  tested and retained, and NetworkX is retired. T25/T27 are released; production and retrieval
+  limitations remain explicit.
 
 - [T48 Paired lifecycle and native inspection](issues/48-paired-lifecycle-and-native-inspection.md):
   coherent startup, restart-based update/rollback, saved-evidence continuity and isolated evaluations;

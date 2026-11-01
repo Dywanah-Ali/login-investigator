@@ -4,13 +4,11 @@ import asyncio
 import csv
 import json
 import shutil
-from dataclasses import replace
 from pathlib import Path
 
 import pytest
 from test_knowledge_base import DATASET, FakeEmbedder
 
-from login_investigator.knowledge_base import open_knowledge_base, reader_settings
 from login_investigator.knowledge_base.graph_version import (
     build_version,
     open_version,
@@ -27,6 +25,34 @@ from login_investigator.knowledge_base.radius import radius_neighbourhood
 from login_investigator.loader import load_log
 from login_investigator.postgres import ServerSettings
 from login_investigator.rules import detect_all
+
+
+def source_organisation(dataset):
+    """Independent Browser oracle from source rows, excluding passage references."""
+    tables = {}
+    nodes = set()
+    for name, key in [('people', 'person_id'), ('groups', 'group_id'), ('assets', 'asset_id'),
+                      ('devices', 'device_id'), ('networks', 'network_id')]:
+        with (dataset / 'org' / (name + '.csv')).open() as handle:
+            tables[name] = list(csv.DictReader(handle))
+        nodes.update(row[key] for row in tables[name])
+    edges = set()
+    for name, left, right, relation in [('memberships', 'person_id', 'group_id', 'member_of'),
+                                      ('grants', 'group_id', 'asset_id', 'grants'),
+                                      ('device_assignments', 'person_id', 'device_id', 'assigned_device')]:
+        with (dataset / 'org' / (name + '.csv')).open() as handle:
+            edges.update((row[left], row[right], relation) for row in csv.DictReader(handle))
+    people = {r['username'].lower(): r['person_id'] for r in tables['people']}
+    addresses = {r['address']: r['network_id'] for r in tables['networks']}
+    with (dataset / 'logins.csv').open() as handle:
+        for row in csv.DictReader(handle):
+            if row['outcome'] == 'success':
+                person = people[row['username'].lower()]
+                if row['device_id']:
+                    edges.add((person, row['device_id'], 'used_device'))
+                if row['source_ip'] in addresses:
+                    edges.add((person, addresses[row['source_ip']], 'used_address'))
+    return nodes, edges
 
 
 def identities(graph, query, parameters):
@@ -61,38 +87,34 @@ def test_browser_queries_equal_checked_core_and_reject_wrong_build(tmp_path: Pat
             async with open_version(version.marker, server) as kb:
                 graph = kb.graph_queries
                 assert isinstance(graph, Neo4jQueries)
-                async with open_knowledge_base(reader_settings(replace(server, database=version.database)),
-                                               dataset=version.snapshot) as legacy:
-                    org_nodes = {n for n, d in legacy.graph.nodes(data=True) if d['entity_type'] != 'chunk'}
-                    org_edges = {(a, b, r) for a, b, r in legacy.graph.edges(keys=True)
-                                 if a in org_nodes and b in org_nodes}
-                    assert identities(graph, ORGANISATION, params) == (org_nodes, org_edges)
-                    saw_device_peer = saw_address = saw_empty = False
-                    selection = {**params, "nodes": [], "edges": []}
-                    for finding in detect_all(load_log(version.snapshot / 'logins.csv')):
-                        radius = kb.finding_radius(finding)
-                        expected_nodes = {a.account['person_id'] for a in radius.accounts}
-                        expected_edges = set()
-                        # Independent oracle from the public result, not the projection helper.
-                        for account in radius.accounts:
-                            for group in account.groups:
-                                expected_edges.add((account.account['person_id'], group['group_id'], 'member_of'))
-                            for path in account.access_paths:
-                                if len(path) == 3:
-                                    expected_edges.add((path[1], path[2], 'grants'))
-                            peer_paths = [(p, 'used_device') for p in account.device_paths]
-                            peer_paths += [(p, 'used_address') for m in account.address_reuse.by_address for p in m.paths]
-                            for (person, shared, peer), relation in peer_paths:
-                                expected_edges.add((person, shared, relation))
-                                expected_edges.add((peer, shared, relation))
-                            saw_device_peer |= bool(account.device_peers)
-                            saw_address |= bool(account.address_reuse.by_address)
-                        expected_nodes.update(n for a, b, _ in expected_edges for n in (a, b))
-                        saw_empty |= not radius.accounts
-                        selection = finding_parameters(radius, version.build_id, version.fingerprint)
-                        assert identities(graph, FINDING, selection) == (expected_nodes, expected_edges)
-                        assert set(radius_neighbourhood(radius).edges) == expected_edges
-                    assert saw_device_peer and saw_address and saw_empty
+                org_nodes, org_edges = source_organisation(version.snapshot)
+                assert identities(graph, ORGANISATION, params) == (org_nodes, org_edges)
+                saw_device_peer = saw_address = saw_empty = False
+                selection = {**params, "nodes": [], "edges": []}
+                for finding in detect_all(load_log(version.snapshot / 'logins.csv')):
+                    radius = kb.finding_radius(finding)
+                    expected_nodes = {a.account['person_id'] for a in radius.accounts}
+                    expected_edges = set()
+                    # Independent oracle from the public result, not the projection helper.
+                    for account in radius.accounts:
+                        for group in account.groups:
+                            expected_edges.add((account.account['person_id'], group['group_id'], 'member_of'))
+                        for path in account.access_paths:
+                            if len(path) == 3:
+                                expected_edges.add((path[1], path[2], 'grants'))
+                        peer_paths = [(p, 'used_device') for p in account.device_paths]
+                        peer_paths += [(p, 'used_address') for m in account.address_reuse.by_address for p in m.paths]
+                        for (person, shared, peer), relation in peer_paths:
+                            expected_edges.add((person, shared, relation))
+                            expected_edges.add((peer, shared, relation))
+                        saw_device_peer |= bool(account.device_peers)
+                        saw_address |= bool(account.address_reuse.by_address)
+                    expected_nodes.update(n for a, b, _ in expected_edges for n in (a, b))
+                    saw_empty |= not radius.accounts
+                    selection = finding_parameters(radius, version.build_id, version.fingerprint)
+                    assert identities(graph, FINDING, selection) == (expected_nodes, expected_edges)
+                    assert set(radius_neighbourhood(radius).edges) == expected_edges
+                assert saw_device_peer and saw_address and saw_empty
                 from neo4j import Query
 
                 from login_investigator.knowledge_base.inspection import (

@@ -1,0 +1,51 @@
+{
+  "baseline_commit": "13f5fdd86648c4fac6644b94e04efeadb09f3431",
+  "backend_full": {
+    "passed": 662,
+    "failed": 1,
+    "teardown_errors": 1,
+    "seconds": 874.12,
+    "findings": [
+      "B-133 legacy test fixture assumption",
+      "AUD-061 teardown privilege recurrence"
+    ]
+  },
+  "backend_affected_rerun": {
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 209.14
+  },
+  "frontend_full": {
+    "passed": 149,
+    "failed": 1,
+    "seconds": 49.95,
+    "finding": "B-113 / AUD-069 existing Explorer five-second timeout"
+  },
+  "frontend_affected_rerun": {
+    "passed": 8,
+    "failed": 0,
+    "seconds": 22.6
+  },
+  "backend_types": "pass",
+  "frontend_types": "pass",
+  "ruff": "pass",
+  "frontend_lint": {
+    "exit_code": 0,
+    "existing_warnings": 6,
+    "audit": "AUD-009"
+  },
+  "review": {
+    "standards_open_findings": 0,
+    "spec_open_findings": 0
+  },
+  "service_and_test_timeouts_changed": false,
+  "paid_calls_in_tests_and_operator_checks": 0,
+  "full_runs_wholly_clean": false,
+  "all_final_cases_verified_by_full_runs_and_affected_reruns": true,
+  "remaining_intermittent_concerns": [
+    "AUD-061",
+    "AUD-069",
+    "AUD-072"
+  ]
+}

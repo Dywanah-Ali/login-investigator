@@ -6,16 +6,14 @@ import sys
 from pathlib import Path
 
 import pytest
-from test_knowledge_base import DATASET, FakeEmbedder
+from test_knowledge_base import FakeEmbedder
 from test_knowledge_base import build_database as build_database  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
 
 from evals import scoring
 from login_investigator.knowledge_base import (
     Reranker,
-    build_knowledge_base,
-    open_knowledge_base,
-    reader_settings,
 )
+from login_investigator.knowledge_base.graph_version import open_version
 from login_investigator.postgres import ServerSettings
 
 
@@ -52,7 +50,7 @@ def test_absent_topic_is_reported_as_a_miss_while_none_is_disabled():
     assert result["checks"] == [{"id": "verdict", "passed": False, "expected": "none", "actual": "weak"}]
 
 
-def test_direct_runner_walks_the_world_without_using_gold_to_choose_records(build_database: ServerSettings):
+def test_direct_runner_walks_the_world_without_using_gold_to_choose_records(paired_default):
     from evals.retrieval import evaluate_retrieval
 
     questions = json.loads((Path(__file__).parents[1] / "evals/knowledge_base_questions.json").read_text())["questions"]
@@ -61,8 +59,7 @@ def test_direct_runner_walks_the_world_without_using_gold_to_choose_records(buil
     questions[0]["gold"]["records"].append("group-invented")
 
     async def check():
-        await build_knowledge_base(DATASET, build_database, FakeEmbedder())
-        async with open_knowledge_base(reader_settings(build_database), dataset=DATASET, embedder=FakeEmbedder()) as kb:
+        async with open_version(paired_default.marker, ServerSettings.from_env(), embedder=FakeEmbedder()) as kb:
             report = await evaluate_retrieval(kb, questions)
         assert report["integrity"]["nodes"]["person"] == 50
         first, second = report["records"]
@@ -80,21 +77,18 @@ class LengthReranker(Reranker):
         return [len(content) % 1000 / 1000 for content in texts]
 
 
-def test_runner_records_reranker_scores_and_kept_chunks_and_grades_the_fused_twenty(
-    build_database: ServerSettings,
-):
+def test_runner_records_reranker_scores_and_kept_chunks_and_grades_the_fused_twenty(paired_default):
     from evals.retrieval import evaluate_retrieval
 
     questions = json.loads((Path(__file__).parents[1] / "evals/knowledge_base_questions.json").read_text())["questions"]
     questions = [q for q in questions if q["id"] == "K04"]
 
     async def check():
-        await build_knowledge_base(DATASET, build_database, FakeEmbedder())
-        async with open_knowledge_base(reader_settings(build_database), dataset=DATASET,
-                                       embedder=FakeEmbedder()) as kb:
+        async with open_version(paired_default.marker, ServerSettings.from_env(),
+                                embedder=FakeEmbedder()) as kb:
             [off] = (await evaluate_retrieval(kb, questions))["records"]
-        async with open_knowledge_base(reader_settings(build_database), dataset=DATASET,
-                                       embedder=FakeEmbedder(), reranker=LengthReranker()) as kb:
+        async with open_version(paired_default.marker, ServerSettings.from_env(),
+                                embedder=FakeEmbedder(), reranker=LengthReranker()) as kb:
             [on] = (await evaluate_retrieval(kb, questions))["records"]
         search = on["artifact"]["search"]
         assert len(search["chunks"]) == 5
@@ -114,21 +108,33 @@ def test_runner_records_reranker_scores_and_kept_chunks_and_grades_the_fused_twe
     asyncio.run(check())
 
 
-def test_runner_checks_integrity_before_calling_the_embedding_service(build_database: ServerSettings):
+def test_runner_checks_integrity_before_calling_the_embedding_service(paired_default):
+    from dataclasses import replace
+
+    from sqlalchemy import text
+
     from evals.retrieval import evaluate_retrieval
-    from login_investigator.knowledge_base import GraphIntegrityError
+    from login_investigator.knowledge_base import GraphIntegrityError, database_engine
 
     class MustNotQuery(FakeEmbedder):
         def embed_query(self, text: str) -> list[float]:
-            raise AssertionError("A corrupt graph must stop before retrieval")
+            raise AssertionError("A corrupt pair must stop before retrieval")
 
     async def check():
-        await build_knowledge_base(DATASET, build_database, FakeEmbedder())
-        async with open_knowledge_base(reader_settings(build_database), dataset=DATASET, embedder=MustNotQuery()) as kb:
-            kb.graph.nodes["user-amelia.ward"]["department"] = "corrupted"
-            with pytest.raises(GraphIntegrityError):
-                await evaluate_retrieval(kb, [{"id": "test", "type": "document_lookup", "turns": ["MFA"]}])
-
+        server = ServerSettings.from_env()
+        engine = database_engine(replace(server, database=paired_default.database))
+        try:
+            async with open_version(paired_default.marker, server, embedder=MustNotQuery()) as kb:
+                try:
+                    async with engine.begin() as connection:
+                        await connection.execute(text("UPDATE people SET department='wrong' WHERE person_id='user-amelia.ward'"))
+                    with pytest.raises(GraphIntegrityError):
+                        await evaluate_retrieval(kb, [{'id': 'test', 'type': 'document_lookup', 'turns': ['MFA']}])
+                finally:
+                    async with engine.begin() as connection:
+                        await connection.execute(text("UPDATE people SET department='IT' WHERE person_id='user-amelia.ward'"))
+        finally:
+            await engine.dispose()
     asyncio.run(check())
 
 
@@ -158,24 +164,15 @@ def test_saved_retrieval_results_use_per_question_gates_and_rescore_offline(tmp_
     assert rescored["records"][0]["checks"][0]["actual"] == "weak"
 
 
-def test_retrieval_command_preserves_the_safe_staleness_instruction(
-    build_database: ServerSettings, tmp_path: Path, monkeypatch, capsys,
-):
-    from test_knowledge_base import sample_dataset
-
+def test_retrieval_command_preserves_the_safe_staleness_instruction(tmp_path, monkeypatch, capsys):
     from evals import run
-    from login_investigator.knowledge_base.staleness import STALE
+    from login_investigator.knowledge_base.staleness import PAIR_UNCHECKABLE
 
-    dataset = sample_dataset(tmp_path / "dataset")
-    asyncio.run(build_knowledge_base(dataset, build_database, FakeEmbedder()))
-    state = tmp_path / "active.json"
-    state.write_text(json.dumps({"database": build_database.database}))
-    path = dataset / "corpus/own/sample.md"
-    path.write_text(path.read_text() + "\nA new policy statement.\n")
-    monkeypatch.setenv("LI_DATASET_DIR", str(dataset))
-    monkeypatch.setenv("LI_KNOWLEDGE_BASE_STATE", str(state))
-    monkeypatch.setattr(sys, "argv", ["evals.run", "--layer", "retrieval"])
+    state = tmp_path / 'active.json'
+    state.write_text(json.dumps({'format': 'paired-v1', 'current': str(tmp_path / 'missing.json'), 'previous': None}))
+    monkeypatch.setenv('LI_KNOWLEDGE_BASE_STATE', str(state))
+    monkeypatch.setattr(sys, 'argv', ['evals.run', '--layer', 'retrieval'])
     with pytest.raises(SystemExit) as caught:
         run.main()
     assert caught.value.code == 2
-    assert STALE in capsys.readouterr().err
+    assert PAIR_UNCHECKABLE in capsys.readouterr().err

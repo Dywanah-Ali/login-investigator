@@ -39,10 +39,13 @@ the agent to write an answer or judge the benign twins. Run it after each knowle
 
 ### Before you start
 
-PostgreSQL must be running, the published knowledge base must match the dataset, and the reader
-password and `OPENROUTER_API_KEY` must be set in `backend/.env`. The command uses real query
-embeddings and therefore makes a small paid request per text question. It does not rebuild the
-database or embed the documents again.
+PostgreSQL and Docker Desktop must be running, with the pinned Neo4j image from section 4.
+The selected complete pair and source snapshot must pass their integrity checks. The reader
+password and `OPENROUTER_API_KEY` must be set in `backend/.env`. Each run creates its own
+disposable PostgreSQL/Neo4j pair and source snapshot. It copies exact stored passage vectors,
+so it does not buy document embeddings again. Real query embeddings make a small paid request
+per text question. The run disposes only its own resources and leaves the application selection
+unchanged.
 
 The re-ranker is **on by default**. With it on, each text question makes one more small paid
 request: Cohere's re-ranker, through OpenRouter, scores the 20 fused passages and the best 5 are
@@ -120,8 +123,9 @@ through the read-only role, makes no paid calls and leaves real investigation me
 
 ### Before you start
 
-PostgreSQL must be running, the knowledge base built and fresh, and reader settings configured
-in `backend/.env`. Use the default synthetic dataset, which contains Amelia Ward. Development
+PostgreSQL and the selected pair's Neo4j service must be running, with reader settings configured
+in `backend/.env`. Select a complete pair through section 5 first. Use the default synthetic
+source snapshot, which contains Amelia Ward. Development
 dependencies must be installed because the probe reuses the fake model from the test suite.
 
 ### Run it
@@ -138,9 +142,9 @@ all 50 artifacts survive reopening. A WAL checkpoint precedes each file-size rea
 Results are observations; changing the model's answer length or tool payload changes them.
 The initial measurements and limitations are in `.scratch/knowledge-base/research/24-persistence-evidence.md`.
 
-The running backend prepares its graph once at startup. After rebuilding a dataset, stop and
-restart the backend with its existing launch command to adopt the new build. It checks freshness
-and integrity again before accepting questions. Existing saved artifacts retain their original
+The running backend prepares its graph once at startup. After preparing a new paired version,
+select it through section 5, then stop and restart the backend to adopt that version. It checks
+the selected snapshot and both stores before accepting questions. Existing saved artifacts retain their original
 evidence. There is no automatic replacement of the running graph.
 
 ### When it refuses
@@ -158,7 +162,7 @@ Added 30 October 2026 by knowledge-base ticket 47.
 
 Build a separate PostgreSQL/Neo4j pair from a frozen source copy, verify exact graph contents,
 check graph write prevention before and after restart, then query an account. The working
-application keeps its existing build. T48 and T49 own application integration and acceptance.
+application keeps its selected build until explicit selection and restart under section 5.
 
 ### Before you start
 
@@ -178,13 +182,14 @@ From the repository root, exercise the complete command with offline embeddings 
 only the version this command creates:
 
 ```
-uv run --directory backend python -m scripts.build_graph_version --offline --dispose --report ../.scratch/knowledge-base/research/47-command-result.json
+uv run --directory backend python -m scripts.build_graph_version --offline --dispose --report ../.scratch/knowledge-base/research/49-command-result.json
 ```
 
 Offline embeddings test graph behaviour only. They cannot support a retrieval evaluation.
 The version records this mode. To retain a version for further development inspection, omit
 `--dispose`. To create real embeddings, also omit `--offline`; that makes paid provider calls.
-Neither form switches the active application pointer. Retained versions live under the ignored
+The explicit `--dataset-dir` option wins over `LI_DATASET_DIR` in the environment, then `.env`,
+then the bundled dataset. Neither form switches the active application pointer. Retained versions live under the ignored
 `backend/.graph-versions/` directory. Each has its own PostgreSQL database and Docker volume.
 No earlier build is automatically deleted.
 
@@ -208,98 +213,103 @@ The active application pointer is never changed by this command.
 
 ## 5. Select, restart and roll back a paired graph version
 
-Added by knowledge-base ticket 48. Native Browser inspection remains its next checkpoint.
+Added by T48; final development-migration procedure accepted under T49 on 1 November 2026.
 
 ### What it is for
 
-Prepare a complete source snapshot with matching PostgreSQL and Neo4j stores, then select it
-for a separately configured application's next restart. The running process keeps its current
-version. Saved investigations and report downloads remain in the same SQLite memory file.
-T49 owns switching the working application after acceptance.
+Adopt one verified source/PostgreSQL/Neo4j version on a planned restart. Saved investigations
+and report downloads remain in the same SQLite memory file. Selection does not change an
+already running process. The previous complete pair remains available for rollback.
 
 ### Before you start
 
 Use section 4's PostgreSQL, Docker and reader prerequisites. Run one selection command at a time.
-Keep the previous version's snapshot, database, container, volume and private `.env` together.
-Do not edit a snapshot or completion marker. The default working pointer is
-`backend/.knowledge-base.json`; use the separate pointer below for T48 verification.
-Port 8012 must be free. No production permission or availability guarantee is implied.
+Keep each retained snapshot, PostgreSQL database, graph container/volume and private `.env`
+together. Never edit a snapshot or completion marker. The default working pointer is
+`backend/.knowledge-base.json`. An old PostgreSQL-only pointer is refused; restoring one also
+requires the archived pre-migration code described below. No production guarantee is implied.
 
 ### Run it
 
-From the repository root, prepare a retained offline version:
-
-```sh
-uv run --directory backend python -m scripts.build_graph_version --offline --report .graph-versions/t48-prepared.json
-```
-
-The report's `version_file` is relative to `backend/.graph-versions/`. From `backend/`, set
-the path below using that report's build ID, then select it:
+Prepare and verify a complete version using section 4. A working version needs real embeddings;
+its retained paid variant omits **both `--offline` and `--dispose`**. Keeping `--dispose`
+would delete the new version before it could be selected. The exact offline disposable command is the tested operator
+smoke check. T49's accepted working version reuses the checked original live passage vectors,
+compared byte-for-value in the preparation evidence, rather than buying them again.
+Offline vectors cannot support live evaluation evidence. Change into `backend/` before the
+commands below. Use the report's generated build ID in place of `BUILD_ID`. Validate/select the complete pair, stop the current backend with
+Ctrl-C, then restart it:
 
 ```sh
 LI_GRAPH_VERSION=.graph-versions/BUILD_ID/complete.json
-uv run python -m scripts.select_graph_version --state-file .graph-versions/t48-selection.json --version "$LI_GRAPH_VERSION"
-LI_KNOWLEDGE_BASE_STATE=.graph-versions/t48-selection.json LI_MEMORY_PATH=.graph-versions/t48-memory.sqlite uv run uvicorn api.app:create_app --factory --port 8012
+uv run python -m scripts.select_graph_version --state-file .knowledge-base.json --version "$LI_GRAPH_VERSION"
+uv run uvicorn api.app:create_app --factory --port 8000
 ```
 
-`BUILD_ID` is a placeholder for the completed build's ID. Do not use the working app's port or
-memory file. Offline vectors validate lifecycle and graph behaviour only. For a retrieval
-evaluation, build without `--offline`, which makes paid embedding calls. Run the evaluator with
-`LI_KNOWLEDGE_BASE_STATE` set to the source selection. Both evaluation entry points prepare their
-own unique source snapshot, PostgreSQL database, Neo4j instance and selection file, then dispose
-those resources when the run exits. Exact unchanged passage vectors are copied from the checked
-source build so preparing the isolation does not buy the same embeddings again. Evaluation query
-embeddings, re-ranking and answer-model calls retain their normal costs. Changed source/settings
-or a missing stored vector refuse the copy. Offline versions refuse live evaluation evidence.
-The existing no-build startup path remains available without database prerequisites.
-
-For an update, prepare another version while the old process serves, then select its marker
-using the same command. Stop the separate backend with Ctrl-C and restart with the identical
-environment and command above. Selection itself does not switch an already running process.
-To return to the previous complete version, run this from `backend/`, then stop and restart:
+To return to the previous complete pair, validate/select it, stop the backend, then use the same
+startup command:
 
 ```sh
-uv run python -m scripts.select_graph_version --state-file .graph-versions/t48-selection.json --rollback
+uv run python -m scripts.select_graph_version --state-file .knowledge-base.json --rollback
 ```
 
-Rollback validates the previous version before selection. It preserves the working source files
-and SQLite history. Re-selecting the already selected version does not lose the rollback target.
-No build is automatically removed; retained-build cleanup remains AUD-057.
+Rollback preserves source files and SQLite history. Re-selecting the already selected version
+does not lose the rollback target. No build is automatically removed; retention remains AUD-057.
+For a separate rehearsal, substitute `.graph-versions/t49/rehearsal.json` for the state file,
+port `8012` and a separate memory file. T49 used copied memory and a scripted account lookup.
+
+Both evaluation entry points prepare unique source snapshots, PostgreSQL databases, Neo4j
+instances and selection files, then dispose their own resources. Exact unchanged passage
+vectors are copied from the checked selected version. Evaluation query embeddings, reranking
+and answer-model calls retain their normal costs. Missing vectors, changed settings/source or
+an offline version refuse live evidence. Evaluations never select their copy for the application.
 
 ### Open or check the result
 
-Check `http://127.0.0.1:8012/api/overview` after startup. The selected snapshot supplies login
-analysis, alerts, graph operations and document retrieval. Changing working input files has no
-effect until a new version is built, selected and adopted by restart.
+Check `http://127.0.0.1:8000/api/overview` and reopen a saved investigation. The selected snapshot
+supplies login analysis, alerts, graph queries and retrieval. Working-input changes wait for a
+new build and restart. The credential-free pointer records current and previous completion
+markers, each naming the shared identity, fingerprint and stores. Never share private `.env` files.
 
-The selection file is credential-free and records the current and previous completion-marker
-paths. Each marker names the shared build identity, fingerprint, source snapshot and stores.
-Do not share private `.env` files. Query/connection waits are bounded, but a complete multi-query
-investigation has no single promised duration. Restart measurements are local observations;
-the maintenance window needs author acceptance before T49 switches the working application.
-
-Measured on 30 October 2026 with two isolated offline versions: initial readiness 30.463 seconds;
-update interruption 21.526 seconds; rollback interruption 26.914 seconds. Readiness meant successful
-overview and investigation-list HTTP responses after full startup checks. A stopped graph refused
-startup in 11.593 seconds. Starting that container, waiting for readiness and restarting the app
-took 107.595 seconds. No model-provider request was made. These local observations include host
-load during validation and are not production limits. See T48's saved measurement evidence.
+T49's sequential local rehearsal measured 21.235 seconds from legacy to paired readiness,
+13.442 seconds for an update and 14.642 seconds for rollback. A stopped graph refused startup
+in 8.839 seconds; graph restart plus application readiness took 59.896 seconds. Saved account
+evidence reopened exactly after every restart. Actual lookup, S6 graph answer and document
+self-retrieval passed on both pairs. These are observations, not promised limits. The first
+archived cold start under concurrent evaluation builds exceeded 120 seconds; B-126 preserves it.
+The author accepted the measured plan including this caveat. See
+[T49 measurements](../.scratch/knowledge-base/research/49-lifecycle-measurements.json).
 
 ### When it refuses
 
-A missing or changed snapshot, unavailable store, mixed pair, invalid completion record or
-unverified protection prevents startup. Restore the named version's PostgreSQL and Neo4j
-services, or select a different complete retained version and restart. To restart a stopped
-graph container, use `docker start CONTAINER_NAME`, taking the name from that version's
-completion marker. Restart the application afterward so it resolves the current localhost
-port. Never rebuild into an existing snapshot or overwrite working source files for recovery.
+A missing or changed snapshot, unavailable store, mixed pair, invalid marker or unverified write
+protection prevents startup. The fixed error names preparing a replacement and selecting a
+complete version. Restore only the services named by the retained marker, or select another
+verified pair and restart. For a stopped graph, use `docker start CONTAINER_NAME`, with the exact
+name from its marker, wait for readiness and restart the backend so it resolves current ports.
+Never rebuild over a snapshot, remove an unrelated container, or overwrite the working sources.
 
-A failed build or publication leaves the prior selection intact. A failed partial startup closes
-both clients. A malformed selection or a selection file in the source snapshot is refused.
-Rollback with no previous complete version refuses. Keep failed-cleanup recovery state as
-described in section 4. The local pointer replacement is one same-directory rename. It does
-not promise distributed atomicity or durability through power loss; restore an explicitly
-verified retained selection after such an event.
+A failed preparation/selection leaves the prior pointer intact. Partial startup closes both
+clients. Rollback without a previous complete version refuses. The pointer replacement is a
+same-directory rename, not a distributed transaction or a power-loss durability guarantee.
+After such an event, restore an explicitly verified retained selection. Section 4 describes
+failed-cleanup metadata; keep it until exact resource cleanup succeeds.
+
+**Pre-migration implementation recovery:** T49 retains baseline code `13f5fdd`, its lockfile and
+separate environment, original pointer and frozen source under ignored
+`backend/.graph-versions/t49/legacy-recovery/`. Its archived backend `.env` is a local link to the
+original `.env`; credentials are not copied into reports. The original PostgreSQL database is
+retained. Stop the current backend first. From the current `backend/`, run:
+
+```sh
+LI_RECOVERY_ROOT="$PWD/.graph-versions/t49/legacy-recovery"
+LI_DATASET_DIR="$LI_RECOVERY_ROOT/source" LI_KNOWLEDGE_BASE_STATE="$LI_RECOVERY_ROOT/selection.json" LI_MEMORY_PATH="$PWD/memory/investigations.sqlite" uv run --directory "$LI_RECOVERY_ROOT/code/backend" --frozen uvicorn api.app:create_app --factory --port 8000
+```
+
+This uses the old implementation and its old graph dependency in its own environment, with the
+same saved investigations. It does not rewrite the new application's pointer. To leave this
+recovery mode, stop it and run the current backend's ordinary startup command. The preserved
+archive is a recovery copy, not a second graph engine maintained in the application.
 
 ## 6. Inspect a paired graph in Neo4j Browser
 

@@ -1,0 +1,52 @@
+{
+  "graph_preparation_seconds": 3.2303,
+  "artifact_json_bytes": 601,
+  "saved_artifacts_after_50": 50,
+  "samples": {
+    "0": {
+      "checkpoints": {
+        "rows": 0,
+        "payload_bytes": 0
+      },
+      "writes": {
+        "rows": 0,
+        "payload_bytes": 0
+      },
+      "file_bytes": 20480
+    },
+    "1": {
+      "checkpoints": {
+        "rows": 7,
+        "payload_bytes": 10991
+      },
+      "writes": {
+        "rows": 9,
+        "payload_bytes": 1733
+      },
+      "file_bytes": 40960
+    },
+    "10": {
+      "checkpoints": {
+        "rows": 70,
+        "payload_bytes": 679101
+      },
+      "writes": {
+        "rows": 90,
+        "payload_bytes": 17330
+      },
+      "file_bytes": 811008
+    },
+    "50": {
+      "checkpoints": {
+        "rows": 350,
+        "payload_bytes": 15815622
+      },
+      "writes": {
+        "rows": 450,
+        "payload_bytes": 86770
+      },
+      "file_bytes": 16400384
+    }
+  },
+  "reopen_seconds": 0.0164
+}

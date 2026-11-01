@@ -1,10 +1,8 @@
 """Door 2: build and read a knowledge base using real PostgreSQL and offline embeddings."""
 
 import asyncio
-import json
 import re
 import shutil
-import socket
 from collections.abc import Iterator
 from dataclasses import replace
 from pathlib import Path
@@ -18,16 +16,12 @@ from sqlalchemy.exc import DBAPIError
 from login_investigator.knowledge_base import (
     KnowledgeBaseNotReady,
     build_knowledge_base,
-    check_knowledge_base,
     chunking,
     open_knowledge_base,
     schema,
 )
 from login_investigator.knowledge_base.staleness import (
-    SERVER_DOWN,
-    SETTINGS_INCOMPLETE,
     STALE,
-    UNCHECKABLE,
 )
 from login_investigator.postgres import (
     DatabaseUnavailable,
@@ -274,42 +268,6 @@ def test_incomplete_embedding_response_fails_instead_of_dropping_passages(
         asyncio.run(build_knowledge_base(sample_dataset(tmp_path), build_database, IncompleteEmbedder()))
 
 
-def test_rebuild_publishes_only_complete_database_and_preserves_chunk_ids(
-    fresh_database: ServerSettings, tmp_path: Path,
-):
-    import json
-
-    from login_investigator.knowledge_base import rebuild_knowledge_base
-    dataset = sample_dataset(tmp_path / "dataset")
-    state = tmp_path / "active.json"
-    created: list[ServerSettings] = []
-
-    async def check():
-        for _ in range(2):
-            report = await rebuild_knowledge_base(dataset, fresh_database, FakeEmbedder(), state)
-            database = replace(fresh_database, database=report.database)
-            created.append(database)
-            assert report.documents == 1 and report.chunks == 1
-            assert report.organisation_rows["people"] == 50
-            assert report.vector_dimensions == [1536]
-            assert report.keyword_index is True
-            assert json.loads(state.read_text())["database"] == database.database
-        async with open_knowledge_base(created[0]) as first, open_knowledge_base(created[1]) as second:
-            assert [chunk.id for chunk in await first.chunks()] == [chunk.id for chunk in await second.chunks()]
-        assert created[0].database != created[1].database
-        saved = state.read_bytes()
-        (dataset / "corpus/own/sample.md").write_text("broken front matter")
-        with pytest.raises(ValueError):
-            await rebuild_knowledge_base(dataset, fresh_database, FakeEmbedder(), state)
-        assert state.read_bytes() == saved
-
-    try:
-        asyncio.run(check())
-    finally:
-        for database in created:
-            drop_database(database)
-
-
 def test_five_added_document_kinds_follow_policy_sizes(
     build_database: ServerSettings, tmp_path: Path,
 ):
@@ -351,23 +309,6 @@ def test_privileged_reader_is_rejected_before_any_embedding_call(
     with pytest.raises(DatabaseUnavailable, match="separate unprivileged role"):
         asyncio.run(build_knowledge_base(sample_dataset(tmp_path), build_database, MustNotEmbed(),
                                          reader_role=build_database.user))
-
-
-def test_invalid_publication_state_does_not_start_a_build(
-    fresh_database: ServerSettings, tmp_path: Path,
-):
-    from login_investigator.knowledge_base import rebuild_knowledge_base
-
-    class MustNotEmbed(FakeEmbedder):
-        def embed_documents(self, texts: list[str]) -> list[list[float]]:
-            raise AssertionError("Embedding should not run for invalid publication state")
-
-    dataset = sample_dataset(tmp_path / "dataset")
-    state = tmp_path / "active.json"
-    state.write_text("[]")
-    with pytest.raises(ValueError, match="state file"):
-        asyncio.run(rebuild_knowledge_base(dataset, fresh_database, MustNotEmbed(), state))
-    assert state.read_text() == "[]"
 
 
 def test_attack_cleaning_preserves_the_independently_written_visible_text(
@@ -435,10 +376,9 @@ Keep the warning with the command.
     asyncio.run(check())
 
 
-def publish(state: Path, database: ServerSettings) -> Path:
-    """The pointer file the build command writes after a successful build."""
-    state.write_text(json.dumps({"database": database.database}))
-    return state
+async def checked_storage(dataset, database):
+    async with open_knowledge_base(database, dataset=dataset) as kb:
+        return kb.engine.url.database
 
 
 def test_the_guard_accepts_a_database_built_from_the_same_files(
@@ -446,13 +386,12 @@ def test_the_guard_accepts_a_database_built_from_the_same_files(
 ):
     dataset = sample_dataset(tmp_path / "dataset")
     asyncio.run(build_knowledge_base(dataset, build_database, FakeEmbedder()))
-    state = publish(tmp_path / "active.json", build_database)
-    assert asyncio.run(check_knowledge_base(dataset, state, build_database)) == build_database.database
+    assert asyncio.run(checked_storage(dataset, build_database)) == build_database.database
     # Hidden entries, such as tooling state or Finder's files, are not part of the world.
     (dataset / ".claude").mkdir()
     (dataset / ".claude" / "notes").write_text("tooling")
     (dataset / "corpus" / ".DS_Store").write_bytes(b"\0")
-    assert asyncio.run(check_knowledge_base(dataset, state, build_database)) == build_database.database
+    assert asyncio.run(checked_storage(dataset, build_database)) == build_database.database
 
 
 def test_the_guard_refuses_a_database_built_from_a_changed_file(
@@ -460,7 +399,6 @@ def test_the_guard_refuses_a_database_built_from_a_changed_file(
 ):
     dataset = sample_dataset(tmp_path / "dataset")
     asyncio.run(build_knowledge_base(dataset, build_database, FakeEmbedder()))
-    state = publish(tmp_path / "active.json", build_database)
 
     def edit(folder: Path) -> None:
         path = folder / "corpus/own/sample.md"
@@ -477,7 +415,7 @@ def test_the_guard_refuses_a_database_built_from_a_changed_file(
         shutil.copytree(dataset, variant)
         change(variant)
         with pytest.raises(KnowledgeBaseNotReady) as caught:
-            asyncio.run(check_knowledge_base(variant, state, build_database))
+            asyncio.run(checked_storage(variant, build_database))
         assert str(caught.value) == STALE, name
         assert str(tmp_path) not in str(caught.value)
     # The same files under a changed embedding or chunking setting are also an older world. The
@@ -490,79 +428,6 @@ def test_the_guard_refuses_a_database_built_from_a_changed_file(
         with monkeypatch.context() as patch:
             patch.setattr(module, name, value)
             with pytest.raises(KnowledgeBaseNotReady) as caught:
-                asyncio.run(check_knowledge_base(dataset, state, build_database))
+                asyncio.run(checked_storage(dataset, build_database))
             assert str(caught.value) == STALE, value
-    assert asyncio.run(check_knowledge_base(dataset, state, build_database)) == build_database.database
-
-
-def test_the_guard_is_silent_when_nothing_has_been_built(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    """Decision 1: no pointer file, no build. The guard never reads the database settings."""
-    def must_not_read(*args, **kwargs):
-        raise AssertionError("No database settings are needed when nothing has been built")
-
-    monkeypatch.setattr(ServerSettings, "from_env", must_not_read)
-    assert asyncio.run(check_knowledge_base(DATASET, tmp_path / "absent.json")) is None
-
-
-@pytest.mark.parametrize("pointer", ["not json", "[]", '{"database": 7}', "{}"])
-def test_the_guard_refuses_a_pointer_it_cannot_read(tmp_path: Path, pointer: str):
-    state = tmp_path / "active.json"
-    state.write_text(pointer)
-    with pytest.raises(KnowledgeBaseNotReady) as caught:
-        asyncio.run(check_knowledge_base(DATASET, state))
-    assert str(caught.value) == UNCHECKABLE
-
-
-def test_the_guard_refuses_a_build_it_cannot_check(
-    build_database: ServerSettings, tmp_path: Path,
-):
-    """Decision 2: fail closed. A missing database, or one with no recorded fingerprint, stops it."""
-    dataset = sample_dataset(tmp_path / "dataset")
-    missing = publish(tmp_path / "missing.json", replace(build_database, database="li_kb_000000000000"))
-    with pytest.raises(KnowledgeBaseNotReady) as caught:
-        asyncio.run(check_knowledge_base(dataset, missing, build_database))
-    assert str(caught.value) == UNCHECKABLE
-    # A database built before the guard existed has no record. Grant the reader so only that differs.
-    asyncio.run(grant_read_only_for_test(build_database))
-    unrecorded = publish(tmp_path / "unrecorded.json", build_database)
-    with pytest.raises(KnowledgeBaseNotReady) as caught:
-        asyncio.run(check_knowledge_base(dataset, unrecorded, build_database))
-    assert str(caught.value) == UNCHECKABLE
-
-
-async def grant_read_only_for_test(database: ServerSettings) -> None:
-    from login_investigator.knowledge_base import database_engine, reader_settings
-    from login_investigator.knowledge_base.access import grant_read_only
-    engine = database_engine(database)
-    try:
-        await grant_read_only(engine, database.database, reader_settings(database).user)
-    finally:
-        await engine.dispose()
-
-
-def test_the_guard_names_the_start_command_when_postgresql_is_down(
-    fresh_database: ServerSettings, tmp_path: Path,
-):
-    with socket.socket() as sock:  # a port that nothing listens on
-        sock.bind(("127.0.0.1", 0))
-        port = sock.getsockname()[1]
-    stopped = replace(fresh_database, host="127.0.0.1", port=port)
-    state = publish(tmp_path / "active.json", fresh_database)
-    with pytest.raises(KnowledgeBaseNotReady) as caught:
-        asyncio.run(check_knowledge_base(DATASET, state, stopped))
-    assert str(caught.value) == SERVER_DOWN
-    assert str(port) not in str(caught.value)
-
-
-def test_the_guard_refuses_when_the_database_settings_are_incomplete(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
-):
-    def incomplete(*args, **kwargs):
-        raise DatabaseUnavailable("LI_PG_PASSWORD is not set.")
-
-    monkeypatch.setattr(ServerSettings, "from_env", incomplete)
-    state = tmp_path / "active.json"
-    state.write_text(json.dumps({"database": "li_kb_000000000000"}))
-    with pytest.raises(KnowledgeBaseNotReady) as caught:
-        asyncio.run(check_knowledge_base(DATASET, state))
-    assert str(caught.value) == SETTINGS_INCOMPLETE
+    assert asyncio.run(checked_storage(dataset, build_database)) == build_database.database

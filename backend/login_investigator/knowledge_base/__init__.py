@@ -4,16 +4,13 @@ The build and LangChain store share one SQLAlchemy async engine on psycopg. Read
 separate engine. Nothing here imports the API, the agent or the screen.
 """
 
-import json
 import math
-import tempfile
 import time
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AsyncExitStack, asynccontextmanager
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-import networkx as nx
 import pandas as pd
 import tiktoken
 from langchain_core.embeddings import Embeddings
@@ -21,17 +18,12 @@ from langchain_postgres import PGEngine, PGVectorStore
 from langchain_postgres.v2.engine import Column as PGColumn
 from langchain_postgres.v2.hybrid_search_config import HybridSearchConfig
 from sqlalchemy import URL, func, select, text
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from login_investigator.corpus_check import read_table
 from login_investigator.generator import REPO_ROOT
 from login_investigator.postgres import (
-    DatabaseUnavailable,
     ServerSettings,
-    check_server,
-    create_fresh_database,
-    drop_database,
 )
 from login_investigator.rules import Finding
 
@@ -40,9 +32,8 @@ from . import schema as schema
 from .access import check_reader_role, grant_read_only
 from .access import reader_settings as reader_settings
 from .chunking import Chunk, read_chunks
-from .graph import build_graph
-from .graph_queries import GraphQueries, NetworkXQueries
-from .integrity import GraphCounts, check_graph_integrity
+from .graph_queries import GraphQueries
+from .integrity import GraphCounts
 from .integrity import GraphIntegrityError as GraphIntegrityError
 from .mentions import find_mentions
 from .radius import FindingRadius, GraphWalk
@@ -55,8 +46,6 @@ from .staleness import (
     NOT_BUILT as NOT_BUILT,
 )
 from .staleness import (
-    SERVER_DOWN,
-    SETTINGS_INCOMPLETE,
     STALE,
     UNCHECKABLE,
     source_fingerprint,
@@ -81,7 +70,6 @@ class BuildReport:
     keyword_parser: dict[str, list[dict[str, object]]]
     input_tokens: int
     elapsed_seconds: float = 0
-    previous_database_retained: str | None = None
 
 
 def database_engine(settings: ServerSettings, *, bounded: bool = False) -> AsyncEngine:
@@ -99,7 +87,6 @@ class KnowledgeBase:
         self.engine = engine
         self._embedder = embedder
         self._reranker = reranker
-        self._graph: nx.MultiDiGraph | None = None
         self._graph_queries: GraphQueries | None = None
         self._dataset: Path | None = None
         self._log: pd.DataFrame | None = None
@@ -118,25 +105,15 @@ class KnowledgeBase:
             raise ValueError("Open the knowledge base with an embedder to search the corpus")
         return await search_corpus(self.engine, self._embedder, query, filters, verdict_policy, self._reranker)
 
-    @property
-    def graph(self) -> nx.MultiDiGraph:
-        if self._graph is None:
-            raise ValueError("Open the knowledge base with its dataset to use the graph")
-        return self._graph
-
-    async def check_graph_integrity(self, graph: nx.MultiDiGraph | None = None) -> GraphCounts:
-        if self._graph_verifier is not None:
-            if graph is not None:
-                raise ValueError('A native graph cannot be checked against an in-memory replacement')
-            return await self._graph_verifier()
-        if self._dataset is None:
-            raise ValueError("Open the knowledge base with its dataset to check the graph")
-        return await check_graph_integrity(self.engine, self._dataset, self.graph if graph is None else graph)
+    async def check_graph_integrity(self) -> GraphCounts:
+        if self._graph_verifier is None:
+            raise ValueError("Open a complete paired version to check the graph")
+        return await self._graph_verifier()
 
     @property
     def graph_queries(self) -> GraphQueries:
         if self._graph_queries is None:
-            raise ValueError("Open the knowledge base with its dataset to use the graph")
+            raise ValueError("Open a complete paired version to use the graph")
         return self._graph_queries
 
     def finding_radius(self, finding: Finding, start: str | None = None, end: str | None = None) -> FindingRadius:
@@ -203,7 +180,7 @@ async def open_knowledge_base(
     settings: ServerSettings, *, dataset: Path | None = None, embedder: Embeddings | None = None,
     reranker: Reranker | None = None,
 ) -> AsyncIterator[KnowledgeBase]:
-    """With no re-ranker, search behaves as ticket 22 left it: the fused 20 are the result."""
+    """Open passage storage for building/search tests. Application graphs require a complete pair."""
     engine = database_engine(settings)
     try:
         kb = KnowledgeBase(engine, embedder, reranker)
@@ -214,10 +191,6 @@ async def open_knowledge_base(
             if fingerprints[0] != source_fingerprint(dataset):
                 raise KnowledgeBaseNotReady(STALE)
             kb._dataset = dataset
-            kb._graph, kb._log = await build_graph(engine, dataset)
-            await kb.check_graph_integrity()
-            nx.freeze(kb.graph)
-            kb._graph_queries = NetworkXQueries(kb.graph, kb._log)
         yield kb
     finally:
         await engine.dispose()
@@ -280,125 +253,25 @@ async def build_knowledge_base(
         await engine.dispose()
 
 
-async def rebuild_knowledge_base(
-    dataset: Path, server: ServerSettings, embedder: Embeddings, state_file: Path,
-    *, reader_role: str = "li_reader",
-) -> BuildReport:
-    """Publish a fresh successful build atomically. Retain the previous database for inspection.
-
-    The local state file contains no credentials. The fingerprint lives in the database itself,
-    where `check_knowledge_base` reads it. A failed new build is dropped; the prior pointer and
-    database remain usable.
-    """
-    previous = json.loads(state_file.read_text()) if state_file.exists() else {}
-    if not isinstance(previous, dict) or (previous and not isinstance(previous.get("database"), str)):
-        raise ValueError("The knowledge-base state file must name its previous database")
-    check_server(server)
-    database = create_fresh_database(server, prefix="li_kb")
-    temporary: Path | None = None
-    try:
-        report = await build_knowledge_base(dataset, database, embedder, reader_role=reader_role)
-        report = replace(report, previous_database_retained=previous.get("database"))
-        state_file.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(mode="w", dir=state_file.parent, delete=False) as handle:
-            temporary = Path(handle.name)
-            json.dump({"database": database.database, "dataset": str(dataset.resolve())}, handle)
-            handle.write("\n")
-        temporary.replace(state_file)
-        return report
-    except BaseException:
-        drop_database(database)
-        raise
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
-
-
-async def check_knowledge_base(
-    dataset: Path, state_file: Path, server: ServerSettings | None = None,
-) -> str | None:
-    """The staleness guard (T18), run at the app's startup as the read-only role.
-
-    Returns None when nothing has been built (decision 1): the app runs without a knowledge base.
-    Returns the database's name when its recorded fingerprint matches the folder. Anything else
-    raises `KnowledgeBaseNotReady` with fixed text (decision 2: a guard that cannot check refuses).
-    Causes are suppressed, because database errors can carry hosts, names and paths.
-    """
-    if not state_file.exists():
-        return None
-    try:
-        selection = json.loads(state_file.read_text(encoding="utf-8"))
-        if isinstance(selection, dict) and 'format' in selection:
-            async with open_current_knowledge_base(dataset, state_file, server=server) as kb:
-                if kb is None:
-                    return None
-                return kb.engine.url.database
-        name = selection["database"]
-        if not isinstance(name, str):
-            raise TypeError("database must be a name")
-    except (OSError, ValueError, KeyError, TypeError):
-        raise KnowledgeBaseNotReady(UNCHECKABLE) from None
-    try:
-        reader = reader_settings(replace(server or ServerSettings.from_env(), database=name))
-    except DatabaseUnavailable:
-        raise KnowledgeBaseNotReady(SETTINGS_INCOMPLETE) from None
-    try:
-        check_server(reader)
-    except DatabaseUnavailable:
-        raise KnowledgeBaseNotReady(SERVER_DOWN) from None
-    try:
-        expected = source_fingerprint(dataset)
-        async with open_knowledge_base(reader) as kb:
-            recorded = await kb.recorded_fingerprints()
-    except (OSError, SQLAlchemyError):
-        raise KnowledgeBaseNotReady(UNCHECKABLE) from None
-    if len(recorded) != 1:
-        raise KnowledgeBaseNotReady(UNCHECKABLE)
-    if recorded[0] != expected:
-        raise KnowledgeBaseNotReady(STALE)
-    return name
-
-
 @asynccontextmanager
 async def open_current_knowledge_base(
     dataset: Path, state_file: Path, *, embedder: Embeddings | None = None,
     reranker: Reranker | None = None, server: ServerSettings | None = None,
 ) -> AsyncIterator[KnowledgeBase | None]:
-    """Own the checked reader for one application lifetime; no build needs no database."""
-    if state_file.exists():
-        try:
-            selected = json.loads(state_file.read_text())
-            paired = isinstance(selected, dict) and 'format' in selected
-        except (OSError, ValueError):
-            raise KnowledgeBaseNotReady(UNCHECKABLE) from None
-        if paired:
-            from .graph_selection import read_selection
-            from .graph_version import open_version
-            from .staleness import PAIR_UNCHECKABLE
-            async with AsyncExitStack() as cleanup:
-                try:
-                    selected = read_selection(state_file)
-                    kb = await cleanup.enter_async_context(
-                        open_version(Path(selected['current']), server or ServerSettings.from_env(),
-                                     embedder=embedder, reranker=reranker))
-                except Exception:  # noqa: BLE001 - Refuse startup with a fixed, credential-safe error.
-                    raise KnowledgeBaseNotReady(PAIR_UNCHECKABLE) from None
-                yield kb
-            return
-    name = await check_knowledge_base(dataset, state_file, server)
-    if name is None:
+    """Own one checked pair for the application lifetime; no selection needs no database."""
+    if not state_file.exists():
         yield None
         return
-    try:
-        reader = reader_settings(replace(server or ServerSettings.from_env(), database=name))
-    except DatabaseUnavailable:
-        raise KnowledgeBaseNotReady(SETTINGS_INCOMPLETE) from None
-    # Only opening errors are translated. An exception in the caller's body must retain its
-    # own meaning; the context still releases the pool in all cases.
+    from .graph_selection import read_selection
+    from .graph_version import open_version
+    from .staleness import PAIR_UNCHECKABLE
+
     async with AsyncExitStack() as cleanup:
         try:
-            kb = await cleanup.enter_async_context(open_knowledge_base(
-                reader, dataset=dataset, embedder=embedder, reranker=reranker))
-        except (OSError, ValueError, SQLAlchemyError):
-            raise KnowledgeBaseNotReady(UNCHECKABLE) from None
+            selected = read_selection(state_file)
+            kb = await cleanup.enter_async_context(
+                open_version(Path(selected['current']), server or ServerSettings.from_env(),
+                             embedder=embedder, reranker=reranker))
+        except Exception:  # noqa: BLE001 - Refuse startup with a fixed, credential-safe error.
+            raise KnowledgeBaseNotReady(PAIR_UNCHECKABLE) from None
         yield kb

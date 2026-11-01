@@ -37,3 +37,4 @@ One line per run of the eval set. Target: 90% overall, 100% security.
 | 2026-10-27 22:37 | b70d0745 | 64a8bcf+changes | 21 x 3 | 100% | 100% | yes | api: T18-staleness-guard |
 | 2026-10-28 12:08 | b70d0745 | 69bee51 | 21 x 3 | 97% | 100% | yes | api: T19-graph-safety-net |
 | 2026-10-29 20:42 | fa8f3e8f | 3993679+changes | 21 x 3 | 98% | 100% | yes | api: T24 lookup account, evidence fence and persistence |
+| 2026-11-01 10:31 | 13987838 | 13f5fdd | 21 x 3 | 95% | 100% | yes | api: T49 Neo4j migration acceptance |

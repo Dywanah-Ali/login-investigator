@@ -1,0 +1,20 @@
+{
+  "current": "3d58516ccfe84f74ade0ee255607fe19",
+  "previous": "eb6c7d59d40d4a94b87633593ae8649f",
+  "readiness_seconds": 28.14,
+  "saved_investigations_reopened": 25,
+  "saved_evidence_identical": true,
+  "overview_identical": true,
+  "default_server_selection_and_memory_verified": true,
+  "readers": {
+    "build_id": "3d58516ccfe84f74ade0ee255607fe19",
+    "snapshot": ".graph-versions/3d58516ccfe84f74ade0ee255607fe19/source",
+    "lookup": true,
+    "s6_radius": true,
+    "document_self_retrieval": true
+  },
+  "provider_calls": 0,
+  "server_pid": 56794,
+  "port": 8000,
+  "legacy_recovery_retained": true
+}

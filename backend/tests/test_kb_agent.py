@@ -1,11 +1,9 @@
 """T24: the first graph tool through the agent and application lifecycle doors."""
 
-import asyncio
 import json
 import sqlite3
 from collections import Counter
 from contextlib import asynccontextmanager
-from dataclasses import replace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -17,12 +15,10 @@ from sqlalchemy.exc import DBAPIError
 
 from api.app import create_app
 from login_investigator import agent, investigations, knowledge_base
-from login_investigator.postgres import create_fresh_database, drop_database
 from tests.test_agent import FakeModel, tool_call
 from tests.test_api_startup import built as built  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
 from tests.test_api_startup import memory_path as memory_path  # noqa: PLC0414 - Explicitly expose this imported pytest fixture.
 from tests.test_api_startup import startup_settings
-from tests.test_knowledge_base import FakeEmbedder, publish
 
 
 class ObservingModel(FakeModel):
@@ -106,29 +102,6 @@ def test_every_tool_result_reaches_model_inside_an_untrusted_fence(name, args, m
         memory.conn.close()
 
 
-def test_rebuilt_dataset_is_adopted_only_on_restart(built, memory_path, fresh_database, monkeypatch):
-    dataset, state = built
-    monkeypatch.setattr(agent, "make_model", lambda: FakeModel(responses=[]))
-    settings = startup_settings(dataset, state, memory_path)
-    app = create_app(settings)
-    replacement = create_fresh_database(replace(fresh_database, database="postgres"))
-    try:
-        with TestClient(app):
-            original = app.state.knowledge_base
-            assert original.lookup_account("amelia.ward")["account"]["department"] == "IT"
-            people = dataset / "org/people.csv"
-            people.write_text(people.read_text().replace("Amelia Ward,IT,", "Amelia Ward,Operations,"))
-            asyncio.run(knowledge_base.build_knowledge_base(dataset, replacement, FakeEmbedder()))
-            publish(state, replacement)
-            assert original.lookup_account("amelia.ward")["account"]["department"] == "IT"
-        restarted = create_app(settings)
-        with TestClient(restarted):
-            assert restarted.state.knowledge_base is not original
-            assert restarted.state.knowledge_base.lookup_account("amelia.ward")["account"]["department"] == "Operations"
-    finally:
-        drop_database(replacement)
-
-
 def test_startup_failure_closes_memory_and_the_knowledge_base(built, memory_path, monkeypatch):
     dataset, state = built
     opened = []
@@ -167,35 +140,22 @@ def test_startup_failure_closes_memory_and_the_knowledge_base(built, memory_path
 def test_graph_prepared_once_reused_across_investigations_and_pool_closed(built, memory_path, monkeypatch):
     dataset, state = built
     counts = Counter()
-    real_build = knowledge_base.build_graph
-    real_check = knowledge_base.KnowledgeBase.check_graph_integrity
-    real_open = knowledge_base.open_knowledge_base
+    real_open = knowledge_base.open_current_knowledge_base
     pools = []
 
-    async def build(*args, **kwargs):
-        counts["build"] += 1
-        return await real_build(*args, **kwargs)
-
-    async def check(self, *args, **kwargs):
-        counts["check"] += 1
-        return await real_check(self, *args, **kwargs)
-
     @asynccontextmanager
-    async def observed_open(settings, **kwargs):
-        async with real_open(settings, **kwargs) as kb:
-            if kwargs.get("dataset") is not None:
-                # Public database boundary verifies the identity and transaction restriction
-                # used to prepare the graph, not just a configuration string.
-                async with kb.engine.connect() as connection:
-                    assert await connection.scalar(text("SELECT current_user")) == "li_reader"
-                    with pytest.raises(DBAPIError, match="permission denied"):
-                        await connection.execute(text("DELETE FROM people"))
-                pools.append(kb.engine.pool)
+    async def observed_open(*args, **kwargs):
+        counts["open"] += 1
+        async with real_open(*args, **kwargs) as kb:
+            assert kb is not None
+            async with kb.engine.connect() as connection:
+                assert await connection.scalar(text("SELECT current_user")) == "li_reader"
+                with pytest.raises(DBAPIError, match="permission denied"):
+                    await connection.execute(text("DELETE FROM people"))
+            pools.append(kb.engine.pool)
             yield kb
 
-    monkeypatch.setattr(knowledge_base, "build_graph", build)
-    monkeypatch.setattr(knowledge_base.KnowledgeBase, "check_graph_integrity", check)
-    monkeypatch.setattr(knowledge_base, "open_knowledge_base", observed_open)
+    monkeypatch.setattr(knowledge_base, "open_current_knowledge_base", observed_open)
     model = FakeModel(responses=[item for i in range(3) for item in (
         tool_call("lookup_account", {"account_id": "amelia.ward"}, f"lookup-{i}"),
         AIMessage("Amelia Ward belongs to IT Admins."),
@@ -203,42 +163,17 @@ def test_graph_prepared_once_reused_across_investigations_and_pool_closed(built,
     monkeypatch.setattr(agent, "make_model", lambda: model)
     app = create_app(startup_settings(dataset, state, memory_path))
     with TestClient(app) as client:
-        assert counts == {"build": 1, "check": 1}
+        assert counts == {"open": 1}
         for _ in range(3):
             case = client.post("/api/investigations", json={"question": "Whose account is amelia.ward?"}).json()
             reply = client.post(f"/api/investigations/{case['id']}/ask", json={"question": case["first_question"]})
             assert 'event: error' not in reply.text
             assert "Amelia Ward" in reply.text
-        assert counts == {"build": 1, "check": 1}
+        assert counts == {"open": 1}
         assert pools[0].checkedout() == 0
     assert pools[0].checkedin() == 0
     with pytest.raises(sqlite3.ProgrammingError, match="closed"):
         app.state.services.memory.conn.execute("SELECT 1")
-
-
-def test_integrity_failure_prevents_startup_and_disposes_pool(built, memory_path, monkeypatch):
-    dataset, state = built
-    real_build = knowledge_base.build_graph
-    real_engine = knowledge_base.database_engine
-    pools = []
-
-    async def corrupt(*args, **kwargs):
-        graph, frame = await real_build(*args, **kwargs)
-        graph.nodes["user-amelia.ward"]["department"] = "Incorrect department"
-        return graph, frame
-
-    def engine(*args, **kwargs):
-        result = real_engine(*args, **kwargs)
-        pools.append(result.pool)
-        return result
-
-    monkeypatch.setattr(knowledge_base, "build_graph", corrupt)
-    monkeypatch.setattr(knowledge_base, "database_engine", engine)
-    with pytest.raises(knowledge_base.KnowledgeBaseNotReady):
-        with TestClient(create_app(startup_settings(dataset, state, memory_path))):
-            pytest.fail("Corrupt graph reached the application")
-    assert not memory_path.exists()
-    assert pools and all(pool.checkedin() == pool.checkedout() == 0 for pool in pools)
 
 
 def test_saved_evidence_survives_close_reopen_without_source_and_stays_out_of_followup(

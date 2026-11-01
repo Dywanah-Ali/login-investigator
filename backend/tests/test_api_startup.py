@@ -5,12 +5,10 @@ The first test watches the core's seam functions, which tests elsewhere never do
 the requirement itself, and a reply cannot show it. The real functions still run; they are counted.
 """
 
-import asyncio
 import json
 import logging
-import shutil
 from collections import Counter
-from dataclasses import replace
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -25,14 +23,11 @@ from login_investigator import (
     loader,
     rules,
 )
-from login_investigator.knowledge_base import build_knowledge_base
-from login_investigator.knowledge_base.staleness import NOT_BUILT, STALE, UNCHECKABLE
+from login_investigator.knowledge_base.staleness import NOT_BUILT
 from login_investigator.postgres import (
     ServerSettings,
-    create_fresh_database,
-    drop_database,
 )
-from tests.test_knowledge_base import DATASET, FakeEmbedder, publish, sample_dataset
+from tests.test_knowledge_base import DATASET
 
 LOG_FAILED_VALIDATION = "The log failed validation. The server log lists the problems."
 
@@ -157,52 +152,17 @@ def test_the_settings_read_each_path_from_the_environment(tmp_path):
 # The staleness guard at startup (knowledge-base ticket 18). These tests build a small knowledge
 # base in real PostgreSQL with offline embeddings, exactly as door 2's tests do.
 
+
 @pytest.fixture
-def built(fresh_database, tmp_path):
-    """A dataset with the real log, built into its own database and published to a pointer file."""
-    dataset = sample_dataset(tmp_path / "dataset")
-    shutil.copy(DATASET / "logins.csv", dataset / "logins.csv")
-    database = create_fresh_database(replace(fresh_database, database="postgres"))
-    try:
-        asyncio.run(build_knowledge_base(dataset, database, FakeEmbedder()))
-        yield dataset, publish(tmp_path / "active.json", database)
-    finally:
-        drop_database(database)
+def built(paired_default, tmp_path):
+    state = tmp_path / 'selected.json'
+    state.write_text(json.dumps({'format': 'paired-v1', 'current': str(paired_default.marker), 'previous': None}))
+    return paired_default.snapshot, state
 
 
 def startup_settings(dataset, state, memory_path):
     return Settings.from_env({"LI_DATASET_DIR": str(dataset), "LI_MEMORY_PATH": str(memory_path),
                               "LI_KNOWLEDGE_BASE_STATE": str(state)})
-
-
-def test_a_stale_knowledge_base_stops_the_server_before_anything_starts(built, memory_path, tmp_path):
-    dataset, state = built
-    (dataset / "org" / "people.csv").write_text("person_id\n", encoding="utf-8")
-    app = create_app(startup_settings(dataset, state, memory_path))
-    with pytest.raises(knowledge_base.KnowledgeBaseNotReady) as caught:
-        with TestClient(app):
-            raise AssertionError("The server started on a stale knowledge base")
-    message = str(caught.value)
-    assert message == STALE
-    assert "uv run python -m scripts.build_knowledge_base" in message
-    assert str(tmp_path) not in message
-    # No earlier error, which could carry a host or a path, travels with it.
-    assert caught.value.__cause__ is None
-    assert caught.value.__context__ is None or caught.value.__suppress_context__
-    # Nothing behind the guard ran: the memory file is opened only by the services.
-    assert not memory_path.exists()
-
-
-def test_a_build_that_cannot_be_checked_stops_the_server(fresh_database, memory_path, tmp_path):
-    state = publish(tmp_path / "active.json", replace(fresh_database, database="li_kb_000000000000"))
-    app = create_app(startup_settings(DATASET, state, memory_path))
-    with pytest.raises(knowledge_base.KnowledgeBaseNotReady) as caught:
-        with TestClient(app):
-            raise AssertionError("The server started on a knowledge base it could not check")
-    assert str(caught.value) == UNCHECKABLE
-    # This one is raised while handling the database's own error, which names the database.
-    assert caught.value.__cause__ is None and caught.value.__suppress_context__
-    assert not memory_path.exists()
 
 
 def test_a_matching_knowledge_base_starts_the_server_as_before(built, memory_path):
@@ -212,7 +172,7 @@ def test_a_matching_knowledge_base_starts_the_server_as_before(built, memory_pat
         assert client.get("/api/dataset").status_code == 200
         assert client.get("/api/overview").status_code == 200
         assert isinstance(app.state.knowledge_base, knowledge_base.KnowledgeBase)
-        assert app.state.knowledge_base.engine.url.database == json.loads(state.read_text())["database"]
+        assert app.state.knowledge_base.engine.url.database == json.loads(Path(json.loads(state.read_text())["current"]).read_text())["database"]
     assert memory_path.is_file()
 
 

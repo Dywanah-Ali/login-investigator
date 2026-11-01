@@ -1858,6 +1858,14 @@ structure; do not widen the grader merely to obtain a passing run.
 **Evidence:** `2026-10-29-204751-654728-fa8f3e8f.json`, Q04 run 1. Overall 62/63 and security
 15/15 meet the agreed gates. Related earlier limitation: B-078.
 
+**T49 recurrence, 1 November 2026:** the approved live migration evaluation
+`2026-11-01-104006-806272-13987838.json` passes 60/63 overall and 15/15 security.
+All three Q04 repetitions fail Amelia compromise attribution. S6 success facts are present in
+all answers. Run 1 uses broad introductory attribution and recommends securing Amelia;
+run 2 recommends action only for other accounts; run 3 recommends only monitoring Amelia.
+These failures must not all be dismissed as formatting. Keep the scores and AUD-066 open
+for a separate substantive answer/grader review. No prompt, check or threshold changed.
+
 ### B-106 · 2026-10-30 · T24 GUI review · Account JSON displayed as one compact line
 
 **Symptom:** the author saw compact JSON under Found and requested readable indentation there
@@ -1950,6 +1958,11 @@ reader before writing the completion marker.
 T48 recurrence: the same unchanged test timed out again at five seconds; 149 passed and one
 failed in 50.20 seconds while other validation was active. No frontend code or timeout changed.
 The separate full T48 rerun passed all 150 tests in 28.27 seconds without changes.
+T49 recurrence, 1 November: 149 passed and the same test timed out at five seconds in a
+49.95-second full run. Frontend type checking ran concurrently; no Neo4j build was running.
+No frontend code or timeout changed. The separate affected file passed all eight tests in
+22.60 seconds. The full run and passing rerun remain separate evidence.
+
 
 ### B-114 · 2026-10-30 · T48 integration · Graph verification blocked the event loop
 
@@ -2126,3 +2139,156 @@ the full agreed policy. The complete Ruff check passes. Documented the safe chec
 in admin manual section 7; no runtime code or tests were altered to hide these diagnostics.
 **Lesson:** evaluate suppression necessity against the policy it is intended to suppress,
 not with a standalone unused-suppression rule.
+
+### B-126 · 2026-11-01 · T49 recovery rehearsal · Archived baseline missed startup readiness
+
+**Symptom:** the first recovery rehearsal did not reach application readiness within its
+120-second harness deadline. No Uvicorn startup line appeared. The harness stopped its own
+process and left the working pointer and memory unchanged. Two isolated evaluation builds
+were running concurrently.
+**Cause:** not yet established. A separate import-time diagnostic confirmed substantial time
+inside dependency imports before application startup, including 17.4 seconds in the psycopg
+binary import. This identifies the startup stage, not the reason for the delay.
+**Fix:** pending diagnostic completion and a controlled rehearsal. No application, database or
+Neo4j timeout has been increased. The failed log is retained at ignored
+`backend/.graph-versions/t49-server-first-attempt.log`.
+**Lesson:** measure the archived recovery environment itself. A preserved lockfile and source
+archive do not prove that the recovery process starts within an assumed window.
+
+**B-126 follow-up:** both environments imported successfully. The archived import took 92.431
+seconds; the current import took 16.502 seconds. After evaluation processes exited, sequential
+rehearsal started the archived application in 21.861 seconds and reopened saved evidence.
+The harness ceiling was increased to 300 seconds solely to measure recovery; no application
+or database timeout changed. The first failure remains a cold/concurrent-load observation.
+Its underlying cause is unproven, and warm timings must not be advertised as upper bounds.
+
+### B-127 · 2026-11-01 · T49 operator review · Replacement build command ignores dataset settings
+
+**Symptom:** source review found `build_graph_version` defaults directly to the bundled dataset,
+while the retiring build command honours `LI_DATASET_DIR`. A migration that simply removes the
+old command would lose the existing operator's dataset-selection behavior.
+**Cause:** the isolated graph command introduced its own argparse default instead of reading
+the established environment and `.env` setting.
+**Fix:** the replacement command now honours explicit option, environment, `.env`, then default.
+The exact offline disposable manual command passed with a distinct source selected through the
+environment. Its fingerprint matches that source and differs from the bundled source. Preparation
+took 192.511 seconds; the command disposed its own pair and left the working pointer unchanged.
+Evidence: `49-command-result.json`. No provider calls were made.
+**Lesson:** retiring an operator command includes its configuration contract, not only its main
+build operation. This follows the existing dataset-setting ruling; it does not reopen AUD-059's
+separate application-wide cleanup.
+
+### B-128 · 2026-11-01 · T49 standards review · Selection guide lost its working directory
+
+**Symptom:** the standards reviewer found that following admin manual section 4 from the
+repository root and then section 5 would run the selection command in the wrong directory.
+**Cause:** the final procedure rewrite removed the explicit `backend/` working-directory line
+along with an untested paid-build example.
+**Fix:** restored the explicit directory instruction before selection and restart commands.
+Final operator checks will use that directory and the documented arguments.
+**Lesson:** each manual task must state its own working directory instead of inheriting an
+unstated shell state from another task.
+
+### B-129 · 2026-11-01 · T49 standards review · Public preparation evidence included home paths
+
+**Symptom:** the reviewer found personal home-directory segments in the new preparation JSON.
+**Cause:** the report reused the private version descriptor's absolute marker/snapshot paths.
+**Fix:** publish backend-relative paths and resolve them inside the local rehearsal harness.
+Private completion markers remain ignored and unchanged. The preparer now emits relative paths.
+**Lesson:** credential-free operational metadata still needs a separate privacy check before
+being added to a repository that may become public.
+
+### B-130 · 2026-11-01 · T49 spec review · Operator guidance omitted paired lifecycle steps
+
+**Symptom:** the no-build startup instruction named preparation without selection/restart;
+the working-build guide did not explicitly omit its disposable flag; retrieval prerequisites
+still described a PostgreSQL-only run without rebuilding.
+**Cause:** replacing the builder preserved descriptions of its former publication behaviour,
+while the new preparation command intentionally does not select the application.
+**Fix:** name selection and restart in the fixed startup message, explicitly omit both offline
+and disposal flags for a retained live build, and document the evaluator's isolated pair/source
+copy and Docker prerequisite. Exact stored vectors avoid new document-embedding purchases.
+**Lesson:** operator instructions must follow the complete lifecycle across command boundaries.
+
+
+**B-130 follow-up:** the older storage-probe section also described PostgreSQL-only prerequisites
+and restart without selecting the prepared pair. It now names Neo4j, complete selection and
+immutable-snapshot checks. The probe itself already uses the public current-build seam.
+
+### B-131 · 2026-11-01 · T49 focused verification · Serving restart missed readiness
+
+**Symptom:** the first post-retirement focused run passed nine tests, including the expanded
+independent corruption verifier, but seven tests failed during their shared paired fixture's
+setup. The new serving instance did not become ready within the existing 120-second deadline.
+**Cause:** unproven. The failed build cleaned its own resources before the suppressed driver
+exception could be captured. The three retained containers used about 2.6 GiB of Docker's
+7.75 GiB allocation after failure, which does not establish memory pressure.
+**Follow-up:** a temporary external diagnostic captures the final driver class/code and
+container state before cleanup on a recurrence. Only the setup-blocked focused group is being
+retried. No production timeout or Docker setting changed. AUD-072 remains open.
+**Lesson:** retain diagnostic evidence before automatic cleanup; a passing retry alone cannot
+identify or close an intermittent service failure.
+
+
+**B-131 follow-up:** the diagnostic retry passed all 15 focused tests in 265.92 seconds.
+Both serving restarts completed within the unchanged deadlines. No diagnostic failure fired,
+so the underlying first-run cause remains unknown. The expanded independent corruption test
+already passed in the first run. The final complete-suite gate remains separate.
+
+### B-132 · 2026-11-01 · T49 activation-harness review · Recovery validation happened too late
+
+**Symptom:** the evidence-only activation harness first published the candidate pointer, then
+validated that candidate. It checked the previous marker only by substring, and a shutdown
+timeout could skip pointer restoration. No activation had run.
+**Cause:** the one-time operator harness did not yet enforce every step of the accepted plan.
+**Fix:** validate both exact marker paths, source directories and build identities through
+`open_version` before publication, then recheck the original pointer hash. Bound shutdown with
+a kill fallback and restore the original pointer in `finally`. The independent spec reviewer
+verified both fixes with zero remaining findings before any working selection change.
+**Lesson:** recovery preparation and failure cleanup are part of the activation transaction,
+including in a one-time operational script.
+
+
+### B-133 · 2026-11-01 · T49 full verification · Evaluation test still expected a legacy pointer
+
+**Symptom:** the complete backend run produced 662 passes, one failure and one teardown error
+in 874.12 seconds. The evaluation-isolation test read `pointer['database']`, which no longer
+exists in a paired selection. It failed before exercising the evaluation copy.
+**Cause:** the shared startup fixture was migrated, but this importing test retained both its
+legacy-pointer assumption and its former one-passage source assumption.
+**Fix:** give the test its own small complete paired source using the existing injected test
+embedding provider. Read the original database from that verified version. Preserve the actual
+clone, lookup/search, caller-failure cleanup, original-pointer preservation and resource-removal
+assertions. The separate offline-mode refusal test stays unchanged. This fixture supplies no
+live evaluation evidence and makes no paid calls. A targeted rerun is pending.
+**Lesson:** migrating a shared fixture requires following its importers and data assumptions;
+type checks alone cannot find a dictionary-shape mismatch.
+
+The separate teardown error recurred under AUD-061. `test_privileged_reader_is_rejected_before_any_embedding_call`
+passed, but forced deletion of its disposable database lacked permission to terminate a connection.
+After the suite exited, that exact test database had zero connections and was removed without
+forcing termination or changing privileges. The affected test is being rerun. No application
+code or service limits were changed in response to these two findings.
+
+**B-133 follow-up:** all three affected tests passed in 209.14 seconds. The corrected test
+proved actual paired cloning, lookup/search, cleanup after caller failure and preservation of
+the source selection. The privileged-reader test and teardown also passed. Both review axes
+independently cleared the test-only correction; types pass. All test-created graph resources
+are gone. The full run remains recorded as 662 passes, one fixed test failure and one recovered
+teardown error; it is not described as a wholly clean full-suite run. AUD-061 remains open.
+
+
+### B-134 · 2026-11-01 · T49 activation harness · Backend API import path was absent
+
+**Symptom:** the first activation attempt stopped at its new effective-settings guard because
+Python could not import `api.settings`. Selection had not changed and no server had started.
+**Cause:** launching a research file makes the research directory Python's first import path;
+the application command normally imports `api` from the backend working directory.
+**Fix:** explicitly place the checked backend working directory on the one-time harness's import
+path before importing application settings. The ordinary server command is unchanged.
+**Lesson:** an operator harness must reproduce the application's import context as well as its
+configuration. Keep the failed attempt distinct from actual activation evidence.
+
+**B-134 follow-up:** both reviewers cleared the correction. The guarded retry activated the
+accepted pair and passed readiness, current-version reader checks and exact reopening of all
+25 original investigations. The first attempt remains a recorded failure before selection.

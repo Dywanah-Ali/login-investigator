@@ -28,8 +28,8 @@ evaluation keeps using that default answer key and its frozen questions.
 - Python 3.12 and [uv](https://docs.astral.sh/uv/)
 - Node.js 20.19 or later, with npm
 - An OpenRouter API key for the agent, and optionally an AbuseIPDB API key
-- For the knowledge base's tests: PostgreSQL 18 from Homebrew, running as a service, with pgvector
-  (`brew install pgvector`)
+- For knowledge-base builds and integration tests: PostgreSQL 18 from Homebrew with pgvector
+  (`brew install pgvector`), plus Docker Desktop and `docker pull neo4j:2026.10.1`
 
 ## Setup
 
@@ -71,48 +71,51 @@ Files copied from v1 that the type checker flags are on a "not yet checked" list
 
 ## Build the knowledge base
 
-From `backend/`, after the PostgreSQL setup above:
+Graph queries use Neo4j Community 2026.10.1 with Python driver 6.1.0. PostgreSQL/pgvector
+owns passage content, metadata, embeddings and search. Neo4j stores passage references and
+relationships, without duplicate text. Docker Desktop and PostgreSQL must both be running.
+The serving graph rejects graph-data writes, while Community's retained administrative powers
+remain an accepted development limitation. AUD-068 gates production readiness.
+
+From `backend/`, prepare a version without selecting it:
 
 ```bash
-uv run python -m scripts.build_knowledge_base
+uv run python -m scripts.build_graph_version --report .graph-versions/prepared.json
 ```
 
-This explicitly rebuilds the organisation tables and searchable corpus in a new database. It
-uses `LI_DATASET_DIR`, or `data/datasets/default` when unset. The source files stay unchanged.
-Embeddings use OpenRouter and incur a small charge; the command reports provider usage and cost,
-elapsed time, row counts and keyword-parser evidence. Use `--report <file.json>` to save it.
-`--check-embedder` sends one short string without creating a database.
+This makes paid embedding calls. For graph/lifecycle checks only, add `--offline`; offline
+versions cannot supply live evaluation evidence. The explicit `--dataset-dir` option wins over
+`LI_DATASET_DIR` in the environment, then `.env`, then `data/datasets/default`. Source files stay
+unchanged. Each build captures an immutable snapshot and verifies both stores, source identity
+and read-only serving before writing its completion marker. No prior build is deleted.
 
-Only a successful build replaces the local, git-ignored `.knowledge-base.json` pointer. A failed
-new database is dropped. Earlier successful databases are retained for inspection, named in the
-report, and are not automatically deleted. A later explicit rebuild is needed after source files
-change.
+Use the report's build ID to select the complete version, then restart the application:
 
-Each build records a fingerprint of the dataset folder's files and its build settings. When the
-app starts, it compares that fingerprint with the folder. If anything changed, or the build cannot
-be checked, the server refuses to start and names the command to run. With no build at all, the
-app starts without a knowledge base and says so in the server log. The app does not read the
-knowledge base for answers yet. `LI_KNOWLEDGE_BASE_STATE` moves the pointer file, for the app and
-the build command alike.
+```bash
+uv run python -m scripts.select_graph_version --state-file .knowledge-base.json --version .graph-versions/BUILD_ID/complete.json
+uv run uvicorn api.app:create_app --factory --port 8000
+```
 
-The core uses one SQLAlchemy/psycopg engine shared with LangChain's chunk store. The separate
-reader can select records but cannot change them. Core tests use fake embeddings with real
-PostgreSQL and never call OpenRouter. PostgreSQL's reader account must exist for those tests.
+`BUILD_ID` is a placeholder. The previous complete pair is retained for explicit rollback.
+The running process keeps its version until restart. Login analysis, graph queries and retrieval
+all read the selected snapshot. Missing, tampered or mixed versions refuse startup. Without a
+selection, the existing non-knowledge-base application still starts. Saved investigations remain
+in SQLite. See [the admin manual](docs/admin-manual.md) for tested preparation, selection,
+rollback, recovery and Browser inspection commands.
 
-Opening the core knowledge base with `open_knowledge_base(reader, dataset=dataset_dir)`
-also builds its NetworkX graph and independently checks every node, relationship and sign-in
-timestamp against storage. `kb.finding_radius(finding, start=None, end=None)` returns joined
-account, group and asset records, device peers, and shared-address context grouped by address.
-Dates filter login evidence; omitted dates use the available log period. Results state requested
-and available periods. Permissions are a snapshot, and shared addresses do not establish exposure
-or spread. These core functions are not yet exposed as agent tools or screens.
+The core's `open_current_knowledge_base` owns the checked pair. Its named functions return plain
+domain records. `lookup_account` is already an agent tool. `finding_radius(finding, start=None,
+end=None)` returns account permissions, assets, device peers and separate shared-address context.
+Dates filter login observations; permissions remain a snapshot. Shared addresses do not prove
+exposure or spread. The remaining integration tickets and planned saved-evidence Graph tab
+remain separate. The legacy NetworkX engine and GEXF export have been retired.
 
 ## Evaluate the agent
 
 Run from `backend/`, with the OpenRouter key in `.env`. These commands call the model.
 
 ```bash
-uv run python -m evals.run --mode api                 # acceptance: 19 questions, 3 runs each
+uv run python -m evals.run --mode api                 # acceptance: 21 questions, 3 runs each
 uv run python -m evals.run --mode api --only Q09 Q16 --runs 1 --jobs 1
 uv run python -m evals.run --mode direct --only Q07 --runs 1  # cheap iteration
 ```

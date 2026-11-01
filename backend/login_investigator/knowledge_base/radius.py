@@ -3,11 +3,9 @@
 from dataclasses import dataclass
 from typing import Any, cast
 
-import networkx as nx
 import pandas as pd
 
 from login_investigator.loader import parse_window
-from login_investigator.rules import BRUTE_FORCE, PASSWORD_SPRAYING, Finding
 
 
 @dataclass(frozen=True)
@@ -63,16 +61,6 @@ class GraphWalk:
     paths: list[list[str]]
 
 
-def account_groups(graph: nx.MultiDiGraph, username: str) -> GraphWalk:
-    people = [node for node, data in graph.nodes(data=True)
-              if data["entity_type"] == "person" and data["username"].lower() == username.lower()]
-    if len(people) != 1:
-        raise ValueError("Account is absent from the organisation")
-    person = people[0]
-    groups = _targets(graph, person, "member_of")
-    return GraphWalk(groups, [[person, group] for group in groups])
-
-
 def radius_walk(radius: FindingRadius) -> GraphWalk:
     paths = {tuple(path) for account in radius.accounts
              for path in [*account.access_paths, *account.device_paths]}
@@ -99,79 +87,6 @@ def _period(log: pd.DataFrame, start: str | None, end: str | None) -> tuple[Peri
                     effective_start < first or effective_end > log_end
                     or effective_start >= log_end or effective_end <= first)
     return period, effective_start, effective_end
-
-
-def _targets(graph: nx.MultiDiGraph, source: str, relationship: str) -> list[str]:
-    return sorted(target for _, target, key in graph.out_edges(source, keys=True) if key == relationship)
-
-
-def _times(graph: nx.MultiDiGraph, source: str, target: str, relationship: str,
-           start: pd.Timestamp, end: pd.Timestamp) -> list[str]:
-    return [value for value in graph[source][target][relationship]["times"]
-            if start <= pd.Timestamp(value) < end]
-
-
-def _peers(graph: nx.MultiDiGraph, person: str, relationship: str,
-           start: pd.Timestamp, end: pd.Timestamp) -> tuple[list[str], list[list[str]], list[dict[str, Any]]]:
-    peers: set[str] = set()
-    paths: list[list[str]] = []
-    observations: list[dict[str, Any]] = []
-    for shared in _targets(graph, person, relationship):
-        subject_times = _times(graph, person, shared, relationship, start, end)
-        if not subject_times:
-            continue
-        for peer, _, key in sorted(graph.in_edges(shared, keys=True)):
-            if peer == person or key != relationship:
-                continue
-            peer_times = _times(graph, peer, shared, relationship, start, end)
-            if peer_times:
-                peers.add(peer)
-                paths.append([person, shared, peer])
-                observations.append({"shared_id": shared, "account_id": peer,
-                                     "subject_times": subject_times, "peer_times": peer_times})
-    return sorted(peers), sorted(paths), observations
-
-
-def finding_radius(graph: nx.MultiDiGraph, log: pd.DataFrame, finding: Finding,
-                   start: str | None = None, end: str | None = None) -> FindingRadius:
-    """Read permissions from the snapshot and login relationships from the requested period.
-
-    For sprays/brute force, only accounts successfully accessed by a finding address in that
-    period receive a radius. Targeted usernames alone do not establish account access. Other
-    findings name their subject accounts directly. No result labels an account compromised.
-    """
-    period, lower, upper = _period(log, start, end)
-    users = {str(user).lower() for user in finding.users}
-    if finding.rule in {BRUTE_FORCE, PASSWORD_SPRAYING}:
-        successes = log.loc[(log["outcome"] == "success") & log["source_ip"].isin(finding.ips)
-                            & (log["timestamp_utc"] >= lower) & (log["timestamp_utc"] < upper)]
-        users = {str(user).lower() for user in successes["username"]}
-    people = {data["username"].lower(): node for node, data in graph.nodes(data=True)
-              if data["entity_type"] == "person"}
-    if users - people.keys():
-        raise ValueError("Finding names an account absent from the organisation")
-    results: list[AccountRadius] = []
-    for person in sorted(people[user] for user in users):
-        group_ids = _targets(graph, person, "member_of")
-        paths = [[person, group] for group in group_ids]
-        paths += [[person, group, asset] for group in group_ids for asset in _targets(graph, group, "grants")]
-        assets = sorted({path[2] for path in paths if len(path) == 3})
-        device_ids, device_paths, _ = _peers(graph, person, "used_device", lower, upper)
-        _, network_paths, observations = _peers(graph, person, "used_address", lower, upper)
-        by_address = []
-        for network in sorted({path[1] for path in network_paths}):
-            shared_paths = [path for path in network_paths if path[1] == network]
-            by_address.append(AddressMatches(
-                dict(graph.nodes[network]), [dict(graph.nodes[path[2]]) for path in shared_paths],
-                shared_paths, [row for row in observations if row["shared_id"] == network],
-            ))
-        results.append(AccountRadius(
-            dict(graph.nodes[person]), [dict(graph.nodes[node]) for node in group_ids],
-            [dict(graph.nodes[node]) for node in assets], sorted(paths),
-            [dict(graph.nodes[node]) for node in device_ids], device_paths,
-            AddressReuse(by_address),
-        ))
-    return FindingRadius(finding.finding_id, _iso(finding.first_seen), _iso(finding.last_seen), period, results)
 
 
 @dataclass(frozen=True)

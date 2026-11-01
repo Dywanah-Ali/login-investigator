@@ -12,3 +12,4 @@ Every applicable check must pass per question. Kept separate from the Port exam.
 | 2026-10-29 15:04 | retrieval-0331ac624577 | 4674b26+changes | 5/8 | T23 first live run, re-ranker on |
 | 2026-10-29 15:15 | retrieval-813793dbc769 | 4674b26+changes | 5/8 | T23 final live run, re-ranker on, after review fixes |
 | 2026-10-29 15:18 | retrieval-69e31e22b772 | 4674b26+changes | 5/8 | T23 admin manual check, re-ranker off |
+| 2026-11-01 10:32 | retrieval-7d7cff5dcc5c | 13f5fdd | 5/8 | T49 Neo4j migration eight-question regression |

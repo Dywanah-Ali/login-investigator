@@ -1,0 +1,56 @@
+{
+  "build_id": "9469a09d54c141d793fdaf01a306007a",
+  "database": "li_kb_244a3b6c5923",
+  "version_file": "9469a09d54c141d793fdaf01a306007a/complete.json",
+  "container": "li-graph-9469a09d54c141d793fdaf01a306007a",
+  "image": "neo4j:2026.10.1",
+  "driver": "6.1.0",
+  "offline_embeddings": true,
+  "disposed": true,
+  "preparation_seconds": 192.511,
+  "lookup_median_ms": 47.936,
+  "lookup_samples_ms": [
+    1756.492063999758,
+    48.80527099885512,
+    44.08605599019211,
+    47.93583799619228,
+    44.58217299543321
+  ],
+  "container_memory": "692.9MiB / 7.752GiB",
+  "answer": {
+    "status": "found",
+    "account": {
+      "country": "GB",
+      "entity_type": "person",
+      "department": "IT",
+      "display_name": "Amelia Ward",
+      "username": "amelia.ward",
+      "person_id": "user-amelia.ward"
+    },
+    "groups": [
+      {
+        "entity_type": "group",
+        "group_id": "group-all-staff",
+        "kind": "baseline",
+        "name": "All Staff"
+      },
+      {
+        "entity_type": "group",
+        "group_id": "group-it-admins",
+        "kind": "privileged",
+        "name": "IT Admins"
+      }
+    ],
+    "paths": [
+      [
+        "user-amelia.ward",
+        "group-all-staff"
+      ],
+      [
+        "user-amelia.ward",
+        "group-it-admins"
+      ]
+    ]
+  },
+  "source_fingerprint": "c17e57cf738821fc31156cbbf6a16ea2fa6289604f3a57713fa584271278ffbe"
+}
