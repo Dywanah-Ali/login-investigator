@@ -367,7 +367,31 @@ permission boundary. The serving database's write protection is checked before p
 
 ### Run it
 
-From the repository root, first build a separate offline inspection pair:
+For everyday access, open the selected graph using these settings:
+
+| Setting | Value |
+| --- | --- |
+| Browser address to bookmark | `http://127.0.0.1:7474/browser/` |
+| Connection URI | `bolt://127.0.0.1:7687` |
+| Database | `neo4j` |
+| Usual Browser login | `li_reader` |
+| Reader password | `LI_GRAPH_READER_PASSWORD` in the main `backend/.env` |
+| Administrative login | `li_admin`, using `LI_GRAPH_ADMIN_PASSWORD` from the same file |
+
+Use this address each time. Selection and rollback move it to the selected build. Your human
+login names and configured passwords stay the same. Opening Browser requires the selected
+graph container to be running; it does not require rebuilding the graph, regenerating queries
+or starting the application backend. Section 5 explains how to start a stopped graph.
+
+To use saved inspection queries, open an existing inspection folder whose `inspection.json`
+matches the selected build. The T53 walkthrough prepared
+`backend/.graph-versions/2d1bf85ead1944709f5ab8cbd6ed4ad1/inspection-t53/` on 2 November 2026.
+Use its files with the steps below while that build is selected. If the selected build changes,
+prepare queries for the new build rather than reusing the previous build's parameters.
+
+To prepare inspection files for an existing complete pair, use the `inspect_graph` command
+below with that pair's build ID and a new output folder. Creating another graph is optional.
+If you specifically want a separate offline inspection pair, build it from the repository root:
 
 ```sh
 uv run --directory backend python -m scripts.build_graph_version --offline --report ../.graph-versions/t48-inspection-build.json

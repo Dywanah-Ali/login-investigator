@@ -181,6 +181,12 @@ stopped cleanly (exit 0) with its volume retained. Only the current pair runs; b
 stopped as it was before this work. The section 6 inspection command passed at fixed ports.
 Docker Engine 29.5.2 was used. All acceptance criteria have evidence; no GitHub push was made.
 
+2026-11-02 — Author requested an admin-manual follow-up after closure. Section 6 now starts
+with the everyday fixed-address login table and the already prepared `inspection-t53/`
+folder. Opening Browser does not require rebuilding or starting the application backend.
+Separate inspection builds are explicitly optional. Existing tested commands are unchanged;
+documentation links and the referenced inspection folder were checked. B-141 records the gap.
+
 ## Answer
 
 Stable human logins now come from the main private `.env`, while the application retains its

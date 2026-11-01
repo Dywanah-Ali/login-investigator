@@ -2393,3 +2393,12 @@ publication-failure recovery, port conflicts, rollback and missing/stopped outgo
 passed through the selection boundary. Both review axes cleared the corrections. The real
 operator rollback round trip preserved selection bytes, both protection records and both
 volumes. All 150 frontend tests passed on the recorded one-worker rerun. See T53's evidence.
+
+### B-141 · 2026-11-02 · Admin manual still led with an unnecessary inspection rebuild
+
+**Symptom:** section 6 documented the fixed address but its Run it instructions still began
+with creating a separate graph, obscuring everyday access to the selected graph.
+**Cause:** the earlier inspection-preparation workflow remained the first path after T53.
+**Fix:** lead with the stable Browser settings and existing saved queries; make a separate
+offline build optional. No commands or application behaviour changed.
+**Lesson:** operator instructions should start with the routine task, then explain preparation.
