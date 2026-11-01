@@ -367,7 +367,7 @@ questions, and the author accepts the live screen. The initiative closes there.
   `truth.json`, so the Port exam stays frozen (T06 d8). `truth.json` is the knowledge base's answer
   key. One generator writes both from one world, so they cannot disagree.
 - **The answer key** (T04 d15, T06 d2): `truth.json` holds each story S1 to S6, S6's blast radius
-  (groups held, assets reached, users sharing its device and its VPN address that week, expected
+  (groups held, assets reached, users sharing its device, expected
   citation document IDs), each twin with verdict `benign` and its clearing document ID, the MFA
   exception list, and the four absent topics (T04 d14). Gold paths and radii are written from the
   planted story, never computed afterwards as a shortest path.
@@ -536,23 +536,21 @@ questions, and the author accepts the live screen. The initiative closes there.
 - **VPN address meaning (author, 28 October 2026):** the synthetic VPN pool represents
   session-assigned addresses reused over time, following the remote-access policy. It is not a
   public-exit pool. Matching an address across different sessions establishes reuse only, not
-  shared-device use, simultaneous connectivity, exposure or spread. The author's subsequent
-  ruling retains S6's ten address-reuse matches as clearly labelled supporting context, outside
-  any exposed-account count. This distinction applies to core results, answer-key tests and
-  later agent/screen presentation, and qualifies earlier references to network peers within
-  the blast radius or peer counts. T19 aligns the answer key during implementation, preserving
-  match identities for the default period. No new telemetry is approved.
-- **Address grouping (author, 28 October 2026):** include all matching organisation addresses,
-  grouped by address. S6's default-period context contains the UK office's 43 other accounts
-  and the VPN address's ten other accounts, with the original VPN identities retained. Both
-  are supporting context outside exposure counts; overlapping groups are not additive people.
+  shared-device use, simultaneous connectivity, exposure or spread. No new telemetry is approved.
+- **Address-sharing context removed (author, 1 November 2026, T25 gate):** sharing an address
+  answers no investigation question the data supports. The attacker's address is already
+  covered by `search_logins(ip=...)` and the spray finding; co-users of office and VPN addresses
+  cannot single anyone out without allocation records (AUD-073). The radius, the answer key,
+  `find_peers` and later agent/screen presentation carry no address-sharing context. T50 removes
+  it. Supersedes the 28 October 2026 rulings that retained it as labelled supporting context.
+- **Address grouping (author, 28 October 2026):** superseded on 1 November 2026 by the removal
+  above; see [T25](issues/25-peers-and-corpus-search-tools.md).
 - **Relationship dates (author, 28 October 2026):** optional user-supplied start and end times
   filter login-based graph relationships; omitted bounds use the available log period. Follow
   the existing log tools' UTC convention (start included, end excluded). Results state the
   requested/effective period and available coverage; they must not imply complete coverage
   outside the available records. Organisation permissions remain a snapshot, not historical
-  permissions. This supersedes fixed "that week" wording for these relationships. S6's ten
-  address-reuse matches are expected for the default period; narrower requests may return fewer.
+  permissions. This supersedes fixed "that week" wording for these relationships.
 
 - **Walked in Neo4j** (T46 supersedes T02 d2), through fixed parameterised queries behind named
   core operations. Chunks remain reference nodes joined to entities by `mentions` edges; their
@@ -619,7 +617,7 @@ questions, and the author accepts the live screen. The initiative closes there.
   summary saying so, for the agent only; the core finding and the Alerts reply are unchanged),
   plus
   `investigate_alert(finding_id, start?, end?)`, `lookup_account(account_id)`,
-  `find_peers(account_id | device_id | network, start?, end?)` and
+  `find_peers(account_id | device_id, start?, end?)` and
   `search_corpus(question, doc_type, technique_id)`. No router tool, no sub-agent. All hand-written,
   parameterised, read-only. The model and agent are still created in exactly one function each.
 - **The investigation package** (T05 d2, d3): `investigate_alert` bundles playbook steps 2 to 6 into
@@ -1019,3 +1017,4 @@ them.
 | 2026-10-29 | Author approved minimal T24 browser compatibility: accept lookup_account progress, use the existing status line, and label its saved tool result | The old stream parser rejects unknown tool names. Move this one name forward from T36 so the lookup works end to end; remaining names, step stack and evidence panel stay in their later tickets |
 | 2026-10-30 | Author accepted Community's retained administrative access as a development-stage limitation so T46 may continue. Prove graph-data write prevention and build isolation; review permissions, recovery, availability, monitoring and cost before production use, including a possible Enterprise upgrade. No Neo4j selection or application migration approved | Distinguish current development from the future shared analyst service. Official documentation provides an edition-upgrade path, but an upgrade alone does not configure or prove production safeguards. PostgreSQL reader separation and fixed read-only agent tools remain unchanged |
 | 2026-10-30 | Subsequent T46 ruling: select Neo4j Community for graph queries and PostgreSQL/pgvector for passage content/search, with stable passage references in Neo4j. Prepare verified matching pairs from immutable source snapshots; adopt by restart and retain the previous complete version for rollback. Replace Gephi export with tested native Browser inspection and the author's walkthrough; preserve the in-app Graph tab and saved evidence. Approve consolidated build tickets 47–49 and their dependency chain; application coding starts separately | Author approved the design and three-ticket proposal after reviewing the security tradeoff, proof results, ownership split, rollback lifecycle and native-visualisation documentation. Supersedes T02's one-store/NetworkX choice and T08/T20's future GEXF requirement, while retaining their history. Proof establishes feasibility, not final reference-only ingestion, integrated downtime or production readiness; those remain explicit acceptance work |
+| 2026-11-01 | T25 gate: author ruled that sharing an address answers no investigation question in this app, added no allocation evidence (AUD-073, possible phase 3 feature), and removed address-sharing context everywhere: the network form of `find_peers`, the radius context, the answer key, tests and spec. T50 performs the removal and blocks T25 and T26 | Research note 25: first-party sources use the address pivot only from an attacker's address, which `search_logins` and the spray finding already cover; vendors suppress company office and VPN addresses; a pool address names one person only with an allocation record the log lacks. A ruled-useless output should not reach the model (T43). Reverses the 2026-10-28 rows retaining the ten VPN matches and adding the 43 office matches (T19 d3, d5); keeps the VPN address meaning and relationship-date rows |

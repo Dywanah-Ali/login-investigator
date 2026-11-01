@@ -99,6 +99,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-070 | Consider Pydantic Evals for evaluation orchestration | Open, future option; defer adoption pending a concrete maintenance need | Low | Author and Codex discussion, 31 October 2026; official documentation linked below |
 | AUD-071 | Inspect passage text by graph passage ID | Parked by the author; no implementation approved or added to T49 | Low | T48 learning walkthrough with the author, 31 October 2026 |
 | AUD-072 | Neo4j graph-integrity test query returned unavailable during import cleanup verification | Open intermittent observation; T49 full graph checks passed, root cause unproven | Medium | B-124; 31 October 2026 import cleanup and follow-up |
+| AUD-073 | VPN session allocation record, the missing evidence for address co-presence | Open, future idea for phase 3 (network facts); no dataset or scope change approved | Low | T25 gate session with the author, 1 November 2026; research note 25 |
 
 ### AUD-001: Rule filter
 
@@ -1399,6 +1400,23 @@ no dependency, implementation or spec change.
   and three passing affected tests. No graph service setting changed.
 - **Closure evidence:** establish the cause or disposition with reproducible evidence and
   author review. A passing rerun alone does not prove the underlying problem fixed.
+
+### AUD-073: VPN session allocation record for address co-presence
+
+- **Source:** [T25 gate session](../../.scratch/knowledge-base/issues/25-peers-and-corpus-search-tools.md),
+  question 2, author's ruling on 1 November 2026. Evidence:
+  [research note 25](../../.scratch/knowledge-base/research/25-shared-address-value.md), sections 4.2 and 5.
+- **Gap:** the log stores only `source_ip`. A session-assigned VPN pool address names one person
+  only with a time plus the gateway's allocation record (IETF RFC 6302, NIST SP 800-86). Without
+  it, "who else was on this VPN address at that moment?" cannot be answered, and co-users of a
+  pool address cannot single anyone out. The dataset's own runbook step 6 asks analysts to
+  compare session allocation times before drawing a connection.
+- **Ruling:** add nothing now. The allocation record is a possible future capability for phase 3
+  (travel and network facts), which the scope ruling of 20 October 2026 keeps outside this
+  initiative's requirements.
+- **When reopened:** agree the investigation question it serves first, then the synthetic
+  allocation log's shape, generator and answer-key changes, graph edges and eval questions, in
+  that phase's own spec. Registration authorises no dataset, spec or implementation change.
 
 ## Longer-term capabilities already named in the spec
 

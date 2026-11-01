@@ -11,7 +11,19 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
-- **Current priority, T49 closure on 1 November 2026:** [T25 account peers and corpus-search tools](issues/25-peers-and-corpus-search-tools.md).
+- **Current priority, T25 gate closed on 1 November 2026:** [T50 remove address-sharing context](issues/50-remove-address-sharing-context.md).
+  The author ruled that sharing an address answers no investigation question in this app, added
+  no allocation evidence (AUD-073) and removed address-sharing context everywhere
+  ([research note 25](research/25-shared-address-value.md)). Spec and decision log updated.
+  T50 blocks T25 and T26. T27 is unaffected; T45 still blocks T26.
+
+- **Required gate before T25, author ruling on 1 November 2026 (closed, see above):** hold T25 implementation
+  for a separate dedicated session on the investigative value of shared network-address
+  context, especially shared VPN exit addresses. Record the author's explicit retain/narrow/remove
+  ruling and any approved spec changes before building. See T25's required pre-build gate.
+  T49 remains resolved; this is a new decision gate, not a migration defect. T27 is unaffected.
+
+- **Previous priority, T49 closure on 1 November 2026:** [T25 account peers and corpus-search tools](issues/25-peers-and-corpus-search-tools.md).
   [T49](issues/49-neo4j-migration-acceptance.md) is resolved: the author accepted the measured
   switch/recovery plan, Neo4j is active, NetworkX is retired, and all 25 saved investigations
   reopen identically. Full-run findings and passing affected reruns are preserved, with clear
@@ -306,7 +318,7 @@ every later ticket; the standard models (Opus 5.5, Sol 6.1) take the rest.
 |---|---|---|
 | Strongest | 17, 19, 22, 24, 26, 27, 28, 29, 45, 46, 47, 48, 49 | Load-bearing seams: the build, graph, fusion, tools, package, resolver, playbook, eval gates, retrieval design, graph foundation and the approved migration build/lifecycle/acceptance sequence |
 | Strongest if budget allows | 30, 37, 41 | Judge design, the hardest frontend drawing, the BM25 leg and an honest on-versus-off call |
-| Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40, 44 | Standard build work on seams the strongest tickets set |
+| Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40, 44, 50 | Standard build work on seams the strongest tickets set |
 | None | 42 | The author's ticket |
 
 The line advises; it is not a gate. Each of tickets 17 to 41 carries a first acceptance criterion:
