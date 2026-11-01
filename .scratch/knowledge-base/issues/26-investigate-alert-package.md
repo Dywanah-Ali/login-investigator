@@ -2,7 +2,7 @@
 
 Type: build
 Status: ready-for-agent
-Blocked by: 13, 25, 45, 50
+Blocked by: 13, 25, 45, 50, 52
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
 
@@ -53,3 +53,7 @@ progress per internal step, so the screen can later stack the steps while they r
 
 - 2026-11-01 — T25 gate ruling: address-sharing context is removed everywhere. T50 removes it
   from the radius and answer key first, so this ticket now also waits for T50.
+
+- 2026-11-01 — Author: wait for [T52](52-agent-objectives-and-reliability-review.md), the
+  phase 0 and 1 objectives and reliability review. Carry its approved requirements into this
+  ticket before work starts; existing requirements remain in force until explicitly amended.

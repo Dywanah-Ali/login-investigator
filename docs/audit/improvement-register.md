@@ -102,6 +102,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-073 | VPN session allocation record, the missing evidence for address co-presence | Open, future idea for phase 3 (network facts); no dataset or scope change approved | Low | T25 gate session with the author, 1 November 2026; research note 25 |
 | AUD-074 | Name matching may link a passage about an office building to that office's network address | Open observation; nothing reads `mentions` links yet; no change approved | Low | T50 pre-build discussion, 1 November 2026 |
 | AUD-075 | Concurrent first use of a new SQLite memory file can hit "database is locked" in checkpointer setup | Open intermittent observation; isolated rerun passed; no change approved | Low | B-136; T50 full verification, 1 November 2026 |
+| AUD-076 | Map phase 0 and 1 agent objectives to reliability evidence | Open; decision review approved in T52, no implementation approved | Medium | Author and Codex discussion, 1 November 2026; Sentinel research |
 
 ### AUD-001: Rule filter
 
@@ -1451,6 +1452,19 @@ no dependency, implementation or spec change.
   a test that starts two first requests at once and passes repeatedly, or the author's ruling
   that the current behaviour is acceptable. Registration authorises no change.
 
+### AUD-076: Agent objectives and reliability evidence
+
+- **Source:** author-approved [T52](../../.scratch/knowledge-base/issues/52-agent-objectives-and-reliability-review.md),
+  1 November 2026, following the Sentinel research discussion.
+- **Concern:** establish whether the agent, graph, retrieval and evaluations collectively cover
+  the agreed objectives. Citation resolution and gold-ID coverage do not alone prove claim
+  support; the advisory judge's limits are an agreed tradeoff to assess, not a newly proven defect.
+- **Approved work:** a decision review and objective-to-evidence table, with bounded additions
+  proposed separately. T52 blocks T45 and T26. No implementation or evaluation-policy change yet.
+- **Closure evidence:** author-approved mapping and dispositions, approved changes recorded in
+  the spec and affected tickets, and explicit owners for every outstanding proof obligation.
+  Closing this review concern does not certify unfinished capabilities or close AUD-062/AUD-064.
+
 ## Longer-term capabilities already named in the spec
 
 These are future ideas, not approved implementation work. Each needs its own scope, design and
@@ -1607,3 +1621,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-31 | Closed AUD-012 after the author's backend-interpreter selection cleared Pylance's import warning. For AUD-013, the author chose 12 reasoned line-level BLE001 exceptions; comments only, syntax trees unchanged, lint and detection probe pass. 115 other diagnostics remain; no project-wide rule disabled. | Author confirmation and selected option; Ruff verification |
 | 2026-10-31 | Closed AUD-013 after applying the approved policy: Ruff 0.17.3 pinned, twelve style preferences relaxed, remaining intentional patterns clarified and seven cleanup items handled. Full-policy Ruff and backend types clean; backend 701 passed in 993.52 seconds, frontend 150 passed. Admin commands tested; B-125 corrected and recorded. Only the retained inspection graph remains; no test process remains. | Tooling ticket 01; admin manual section 7; author approval |
 | 2026-11-01 | Added AUD-075 from T50's full verification: concurrent first use of a new SQLite memory file hit "database is locked" in checkpointer setup once; isolated rerun passed. T50 resolved: no `used_address` edges, address context removed, pair `f937ea59…` activated; 661 backend passes, two unrelated intermittent failures (B-135, B-136) passed on rerun. Leftover test resources listed in B-135 for the author's ruling. | T50; B-135; B-136 |
+| 2026-11-01 | Added AUD-076 and opened T52 as the next objectives/reliability decision review, blocking T45 and T26. T25/T27/T51 remain independent; no implementation authorised. | Author approval; T52; Sentinel research notes |

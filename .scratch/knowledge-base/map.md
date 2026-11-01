@@ -11,7 +11,20 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
-- **Current priority, T50 resolved on 1 November 2026:** [T25 account peers and corpus-search tools](issues/25-peers-and-corpus-search-tools.md),
+- **Current priority, revised by the author on 1 November 2026:** finish
+  [T51 answer-key wording](issues/51-answer-key-address-wording.md), then take
+  [T52 objectives and reliability review](issues/52-agent-objectives-and-reliability-review.md).
+  Complete the existing answer-key cleanup and verified pair activation before reviewing the
+  objectives against that baseline. This is a work-order preference, not a new dependency.
+  T52 still blocks T45 and T26; T25 and T27 remain independently available.
+
+- **Previous priority, author ruling on 1 November 2026:** [T52 objectives and reliability review](issues/52-agent-objectives-and-reliability-review.md).
+  A Tier 3 decision ticket covering phases 0 and 1, ahead of T45 and T26 and blocking both.
+  It maps objectives to evidence and considers bounded Sentinel-inspired additions; it approves
+  no implementation or scope change by itself. T25, T27 and T51 remain independently available.
+  This explicit priority overrides the default lowest-number unblocked-ticket order.
+
+- **Previous priority, T50 resolved on 1 November 2026:** [T25 account peers and corpus-search tools](issues/25-peers-and-corpus-search-tools.md),
   now unblocked (T22, T24, T49, T50 all resolved). Its `find_peers` takes `account_id | device_id`
   only. T45 still blocks T26. [T51](issues/51-answer-key-address-wording.md), a small follow-up
   rewording two leftover address sentences in the S6 answer key with a new pair, is also open by
@@ -325,7 +338,7 @@ every later ticket; the standard models (Opus 5.5, Sol 6.1) take the rest.
 
 | Model | Tickets | Reason |
 |---|---|---|
-| Strongest | 17, 19, 22, 24, 26, 27, 28, 29, 45, 46, 47, 48, 49 | Load-bearing seams: the build, graph, fusion, tools, package, resolver, playbook, eval gates, retrieval design, graph foundation and the approved migration build/lifecycle/acceptance sequence |
+| Strongest | 17, 19, 22, 24, 26, 27, 28, 29, 45, 46, 47, 48, 49, 52 | Load-bearing seams: the build, graph, fusion, tools, package, resolver, playbook, eval gates, retrieval design, graph foundation and the approved migration build/lifecycle/acceptance sequence |
 | Strongest if budget allows | 30, 37, 41 | Judge design, the hardest frontend drawing, the BM25 leg and an honest on-versus-off call |
 | Standard | 18, 20, 21, 23, 25, 31 to 36, 38 to 40, 44, 50 | Standard build work on seams the strongest tickets set |
 | None | 42 | The author's ticket |

@@ -54,3 +54,10 @@ changed key changes the source fingerprint (T18).
 - 2026-11-01 — Opened at T50's close from the two-axis review's finding (Standards: Mysterious
   Name on `used_address_filter`; Spec: conflict with spec line "the answer key ... carry no
   address-sharing context"). See [T50 Comments](50-remove-address-sharing-context.md).
+
+- 2026-11-01 — Author prioritised completing this ticket before T52, so the objectives and
+  reliability review starts from the cleaned answer key and verified active pair. Scope and
+  acceptance criteria are unchanged; this priority ruling does not start implementation.
+
+- 2026-11-01 — Model: Claude Opus 5.5, matching the ticket's standard line. The builder named the
+  line; the author set the model with `/model` and confirmed before build work started.

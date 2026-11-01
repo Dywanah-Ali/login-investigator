@@ -2,7 +2,7 @@
 
 Type: research, then grilling
 Status: ready-for-agent
-Blocked by: none
+Blocked by: 52
 Blocks: 26, and the initiative's retrieval gate (AUD-062's closure)
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
@@ -77,3 +77,7 @@ The question has two paths, and the answer may differ for each:
 - 2026-10-29 — Author: open this as its own ticket, a decision ticket that blocks T26. T24 and
   T25 proceed meanwhile. The chat path matters because the analyst can ask anything; a user
   guide cannot guarantee how questions are asked.
+
+- 2026-11-01 — Author: wait for [T52](52-agent-objectives-and-reliability-review.md), the
+  phase 0 and 1 objectives and reliability review. Carry its approved requirements into this
+  ticket before work starts; existing requirements remain in force until explicitly amended.
