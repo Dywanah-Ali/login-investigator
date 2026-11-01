@@ -557,7 +557,11 @@ questions, and the author accepts the live screen. The initiative closes there.
   text and search metadata stay in PostgreSQL. Preserve exact IDs, records, deterministic path
   ordering and date semantics. Retire NetworkX query/export paths at T49; no second permanent
   graph engine or transient Gephi exporter is required in the selected final architecture.
-- **[review ruling 1] "Used address" edges come from the log.** No organisation table links a person
+- **No `used address` edges (author, 1 November 2026, T50):** the build draws no `used address`
+  edges, because nothing reads them once address-sharing context is removed. Network nodes stay
+  as organisation facts, with their `mentions` links. The log keeps every sign-in, so a later
+  phase can rebuild the edges from source. The superseded rule follows as history.
+- **[review ruling 1, superseded 1 November 2026] "Used address" edges come from the log.** No organisation table links a person
   to a network address; the log is already the truth for who signed in from where. The build draws
   one `used address` edge per distinct user and network address pair in the log, for addresses in
   the networks table. The row filter (for example, successful sign-ins only) is fixed in the
@@ -578,7 +582,7 @@ questions, and the author accepts the live screen. The initiative closes there.
   |---|---|---|
   | A row in an entity table | one node | the set of node IDs per type equals the set of row IDs; each node's attributes that a walk reads (sensitivity, owner, department) equal its row's values |
   | A row in a link table | one edge | the set of (source ID, target ID, type) per type equals the set read from the rows |
-  | A distinct user and address pair in the log | one `used address` edge | the set of (user, address) edges equals the set computed from the log with the same row filter |
+  | A distinct user and address pair in the log | no edge since 1 November 2026 (was one `used address` edge) | no `used address` edge exists |
   | A chunk | one node | the set of chunk node IDs equals the database's chunk IDs |
   | A chunk-to-entity link | one `mentions` edge | each chunk's `mentions` edges equal its rows in the link table, an empty set included |
 
@@ -930,7 +934,7 @@ it into tracer-bullet tickets; the order is the dependency floor, not the ticket
 | 4 | The ATT&CK fetch script and pinned version | 0 |
 | 5 | The Codex brief and the consistency script, then the corpus delivery | 0 |
 | 6 | Ingestion: chunking, embeddings, the link table, the build and read-only roles, the build command and the staleness guard | 0 |
-| 7 | The graph build with the log's `used address` edges, and its integrity check; native Neo4j inspection and the author's walkthrough after T46; T20's GEXF delivery remains historical | 0 |
+| 7 | The graph build (no `used address` edges since 1 November 2026), and its integrity check; native Neo4j inspection and the author's walkthrough after T46; T20's GEXF delivery remains historical | 0 |
 | 8 | The first knowledge-base questions with their gold IDs or expected verdicts, written before retrieval first runs (map, evaluation stance) | 0 |
 | 9 | Hybrid retrieval with fusion, filters, the re-ranker switch and the three verdicts | 0 |
 | 10 | The playbook list, the four new tools with content plus artifact, the artifact round trip | 0 |
@@ -1018,3 +1022,4 @@ them.
 | 2026-10-30 | Author accepted Community's retained administrative access as a development-stage limitation so T46 may continue. Prove graph-data write prevention and build isolation; review permissions, recovery, availability, monitoring and cost before production use, including a possible Enterprise upgrade. No Neo4j selection or application migration approved | Distinguish current development from the future shared analyst service. Official documentation provides an edition-upgrade path, but an upgrade alone does not configure or prove production safeguards. PostgreSQL reader separation and fixed read-only agent tools remain unchanged |
 | 2026-10-30 | Subsequent T46 ruling: select Neo4j Community for graph queries and PostgreSQL/pgvector for passage content/search, with stable passage references in Neo4j. Prepare verified matching pairs from immutable source snapshots; adopt by restart and retain the previous complete version for rollback. Replace Gephi export with tested native Browser inspection and the author's walkthrough; preserve the in-app Graph tab and saved evidence. Approve consolidated build tickets 47–49 and their dependency chain; application coding starts separately | Author approved the design and three-ticket proposal after reviewing the security tradeoff, proof results, ownership split, rollback lifecycle and native-visualisation documentation. Supersedes T02's one-store/NetworkX choice and T08/T20's future GEXF requirement, while retaining their history. Proof establishes feasibility, not final reference-only ingestion, integrated downtime or production readiness; those remain explicit acceptance work |
 | 2026-11-01 | T25 gate: author ruled that sharing an address answers no investigation question in this app, added no allocation evidence (AUD-073, possible phase 3 feature), and removed address-sharing context everywhere: the network form of `find_peers`, the radius context, the answer key, tests and spec. T50 performs the removal and blocks T25 and T26 | Research note 25: first-party sources use the address pivot only from an attacker's address, which `search_logins` and the spray finding already cover; vendors suppress company office and VPN addresses; a pool address names one person only with an allocation record the log lacks. A ruled-useless output should not reach the model (T43). Reverses the 2026-10-28 rows retaining the ten VPN matches and adding the 43 office matches (T19 d3, d5); keeps the VPN address meaning and relationship-date rows |
+| 2026-11-01 | T50 pre-build ruling: keep network nodes, drop `used address` edges. The build draws no such edges; the integrity check asserts none exist; network nodes stay as organisation facts with their `mentions` links | After the T25 removal nothing reads the edges; the radius was their only reader. Keep facts about the world, remove derived links nobody reads. The graph is rebuilt from source and the log keeps every sign-in, so a later phase can redraw the edges with the allocation records it would need anyway (AUD-073). Supersedes review ruling 1's edge rule and the 2026-10-25 row's edge clause; T08 d6's Graph tab loses address edges |

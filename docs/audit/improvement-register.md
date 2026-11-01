@@ -100,6 +100,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-071 | Inspect passage text by graph passage ID | Parked by the author; no implementation approved or added to T49 | Low | T48 learning walkthrough with the author, 31 October 2026 |
 | AUD-072 | Neo4j graph-integrity test query returned unavailable during import cleanup verification | Open intermittent observation; T49 full graph checks passed, root cause unproven | Medium | B-124; 31 October 2026 import cleanup and follow-up |
 | AUD-073 | VPN session allocation record, the missing evidence for address co-presence | Open, future idea for phase 3 (network facts); no dataset or scope change approved | Low | T25 gate session with the author, 1 November 2026; research note 25 |
+| AUD-074 | Name matching may link a passage about an office building to that office's network address | Open observation; nothing reads `mentions` links yet; no change approved | Low | T50 pre-build discussion, 1 November 2026 |
 
 ### AUD-001: Rule filter
 
@@ -1417,6 +1418,22 @@ no dependency, implementation or spec change.
 - **When reopened:** agree the investigation question it serves first, then the synthetic
   allocation log's shape, generator and answer-key changes, graph edges and eval questions, in
   that phase's own spec. Registration authorises no dataset, spec or implementation change.
+
+### AUD-074: Network mentions may mislink office-building passages
+
+- **Source:** [T50](../../.scratch/knowledge-base/issues/50-remove-address-sharing-context.md)
+  pre-build discussion, 1 November 2026.
+- **Observation:** `knowledge_base/mentions.py` links a passage to a network node when the
+  passage contains the network's ID, address or name. The office networks are named "UK office"
+  and "US office", which 11 and 6 corpus documents mention. A passage may mean the building or
+  the site, not the network address, yet it links to the address node.
+- **Current impact:** none observed. No code reads `mentions` links yet. The author kept network
+  nodes and their `mentions` links on 1 November 2026, so the links remain in the graph.
+- **Trigger to revisit:** when a ticket first reads `mentions` links for network nodes, or when
+  phase 3 adds network facts.
+- **Closure evidence:** an agreed meaning for an office mention, with the matcher and its tests
+  aligned, or the author's ruling that the current behaviour is acceptable. Registration
+  authorises no change.
 
 ## Longer-term capabilities already named in the spec
 

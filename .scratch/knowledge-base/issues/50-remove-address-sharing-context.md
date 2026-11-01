@@ -30,8 +30,13 @@ model. Account context, assets, device peers and the shared date handling are un
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
-- [ ] Before build work, the author rules whether network nodes and their `used_address` edges
-      stay in the graph once nothing reads them. Record the ruling here.
+- [x] Before build work, the author rules whether network nodes and their `used_address` edges
+      stay in the graph once nothing reads them. Ruled 1 November 2026: keep nodes, drop edges
+      (see Comments and the spec's decision log).
+- [ ] The graph build draws no `used_address` edges, and the peer query offers only
+      `used_device`. Network nodes and their `mentions` links are unchanged. The integrity
+      check asserts that no `used_address` edge exists, and a corruption test proves it refuses
+      a graph that has one. Organisation inspection counts are recomputed and recorded.
 - [ ] The generator no longer writes `address_reuse_context` into `truth.json`; every other part
       of the answer key is byte-identical. A test proves it.
 - [ ] The radius in `knowledge_base/radius.py` returns no address-sharing context, and its walk
@@ -58,3 +63,12 @@ model. Account context, assets, device peers and the shared date handling are un
   makes the live build stale under the T18 fingerprint, so this ticket includes a new paired
   build and activation. Flagged, not decided: whether the spec's phase 1 phrase "spread and
   shared ground" refers to addresses; check research note 01 before changing it.
+
+- 2026-11-01 — Author's pre-build ruling: keep network nodes, drop `used_address` edges.
+  Reason: after the T25 removal the radius was the edges' only reader; keep facts about the
+  world and remove derived links nobody reads. The graph is rebuilt from source and the log
+  keeps every sign-in, so a later phase can redraw the edges. Network nodes stay as
+  organisation facts with their `mentions` links (17 documents name the UK or US office).
+  Spec updated: the edge rule, the integrity table row, door 7 and a decision-log row. The
+  admin manual's Browser section still describes the purple `used_address` relationship; this
+  ticket updates it with the tested commands. Mislinking risk from name matching is AUD-074.
