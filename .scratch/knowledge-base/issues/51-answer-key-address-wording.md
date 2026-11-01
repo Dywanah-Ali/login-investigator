@@ -91,3 +91,8 @@ changed key changes the source fingerprint (T18).
   its address, as in 50-prepare; ticket-tagged test comments follow the file's style. Noticed,
   not changed: Ruff reports unused `noqa` and a blocking `open` in the research script, the
   same kind it reports in 50-prepare; research scripts sit outside the backend's lint scope.
+
+- 2026-11-01 — Resource state after close, author's go. Stopped `li-graph-f937ea59…` (the
+  rollback pair); its volume `li-graph-f937ea59…-data` and database are kept, so rollback is
+  `docker start` plus the admin manual's section 5. Running: `li-graph-2d1bf85e…` and the
+  backend on port 8000. Retained and stopped, unchanged: `3d58516c…`, `eb6c7d59…`, `05f15cfc…`.
