@@ -11,6 +11,20 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **T53 resolved, 2 November 2026, taken ahead by the author's instruction:**
+  [Stable Browser access](issues/53-stable-browser-logins.md) now uses `li_admin`/`li_reader`
+  from the main `.env` and fixed localhost ports `7474`/`7687` for the selected pair.
+  New builds remain isolated until operator selection; rollback retains volumes and protection.
+  Author accepted both logins and the fixed address. Full backend 668, frontend 150, types
+  and both review axes pass. Only `2d1bf85e…` runs; `f937ea59…` is retained and stopped.
+  T52 remains the next recorded priority. AUD-068 remains open.
+
+- **Opened 1 November 2026, author's ruling (option A):**
+  [T53 stable Browser access](issues/53-stable-browser-logins.md). Tier 2, unblocked, and
+  independent of T52. Fixed `li_admin` and `li_reader` logins from the main `.env`, and
+  `127.0.0.1:7474`/`7687` for the selected build; enforced roles stay under AUD-068. First cut as
+  T53 and T54, merged into one ticket by the author. The current priority below is unchanged.
+
 - **Current priority, T51 resolved on 1 November 2026:**
   [T52 objectives and reliability review](issues/52-agent-objectives-and-reliability-review.md),
   as the author ordered. The answer key is cleaned and pair `2d1bf85e…` is active, with T50's
@@ -116,6 +130,11 @@ value it adds to the app, not for the sake of demonstrating RAG.
   primary sources. The course's solution kits stay closed.
 
 ## Decisions so far
+
+- [T53 Stable Browser access](issues/53-stable-browser-logins.md): stable named human users,
+  separate application identity, fixed selected address, conflict refusal and recoverable
+  selection/rollback with volumes preserved. Real operator round trip, author Browser checks,
+  full regressions and independent reviews pass. Community reader convention remains explicit.
 
 - [T49 Verified Neo4j migration](issues/49-neo4j-migration-acceptance.md): working application
   selected after author acceptance, live regression gates, final checks and independent reviews.

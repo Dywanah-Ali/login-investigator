@@ -128,6 +128,7 @@ def test_browser_queries_equal_checked_core_and_reject_wrong_build(tmp_path: Pat
                 assert graph._read(FINDING, **broken)[0]['complete'] is False
             output = tmp_path / 'inspection'
             report = await prepare(version.marker, output)
+            assert report['username'] == 'li_reader'
             assert report['organisation_nodes'] == len(org_nodes)
             assert report['organisation_relationships'] == len(org_edges)
             assert (output / 'finding.cypher').read_text() == FINDING + ';\n'

@@ -505,6 +505,12 @@ timeout. Explorer code and timeouts were unchanged. B-066 retains the failures. 
 passed 149/149 tests after the backend suite and live eval finished, with no code or timeout
 changes. The cause remains unresolved.
 
+**1 November 2026, T53:** full frontend run reached 148/150; two Explorer Reset tests
+hit the unchanged five-second limit while disposable graph checks were running. No frontend
+code changed. Chart zero-size warnings were also emitted. Final one-worker rerun passed all
+150 tests in 76.49 seconds without frontend code or timeout changes. The cause remains
+unresolved. See B-066 and T53 for evidence.
+
 ### AUD-029: Scenario case identity and end-to-end evidence
 
 Author approved the report and PDF, but inspected default saved memory does not yet match the
@@ -1310,6 +1316,11 @@ Restart/rollback/recovery measurements and the earlier cold-start/readiness fail
 recorded in T49, B-126 and B-131. They establish local recovery evidence, not availability
 bounds. Community administrative powers remain accepted only for development; this gate is open.
 
+T53, 2 November 2026: stable human logins `li_admin` and `li_reader` are separate from the
+application's per-build `li_serving`. Both human users retain Community administrative powers;
+`li_reader` is read-only by convention. The server-level serving-database lock applies to all
+users, and named logins do not close this production gate. T53 records the verification.
+
 ### AUD-069: Explorer interaction timeout under concurrent validation
 
 T47's unchanged frontend suite recorded 149 passes and one five-second timeout in the valid-IP
@@ -1325,6 +1336,10 @@ T49 reproduced the same timeout on 1 November: 149 passed, one failed in 49.95 s
 Only frontend type/lint checks overlapped, not a Neo4j build. Cause remains unproven; no
 frontend or timeout change was made. The separate affected file passed all eight tests in
 22.60 seconds. B-113 preserves both results; this concern remains open.
+
+T53, 2 November: the initial full run had 148/150 passes with both invalid- and valid-IP Reset
+tests timing out. A separate one-worker full rerun passed 150/150 in 76.49 seconds without
+frontend or timeout changes. Also recorded under B-066/AUD-028; the underlying cause remains open.
 
 
 ### AUD-070: Pydantic Evals adoption path
@@ -1622,3 +1637,4 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-31 | Closed AUD-013 after applying the approved policy: Ruff 0.17.3 pinned, twelve style preferences relaxed, remaining intentional patterns clarified and seven cleanup items handled. Full-policy Ruff and backend types clean; backend 701 passed in 993.52 seconds, frontend 150 passed. Admin commands tested; B-125 corrected and recorded. Only the retained inspection graph remains; no test process remains. | Tooling ticket 01; admin manual section 7; author approval |
 | 2026-11-01 | Added AUD-075 from T50's full verification: concurrent first use of a new SQLite memory file hit "database is locked" in checkpointer setup once; isolated rerun passed. T50 resolved: no `used_address` edges, address context removed, pair `f937ea59…` activated; 661 backend passes, two unrelated intermittent failures (B-135, B-136) passed on rerun. Leftover test resources listed in B-135 for the author's ruling. | T50; B-135; B-136 |
 | 2026-11-01 | Added AUD-076 and opened T52 as the next objectives/reliability decision review, blocking T45 and T26. T25/T27/T51 remain independent; no implementation authorised. | Author approval; T52; Sentinel research notes |
+| 2026-11-02 | T53 resolved after author acceptance of named Browser logins and the fixed address. Stable human identities, separate serving identity, tested port movement/recovery, real rollback round trip and updated admin commands. Backend 668, frontend 150, types and two-axis review pass. AUD-068 remains open; frontend timeout recurrence retained under AUD-028/AUD-069, six lint warnings under AUD-009. | T53; B-137 to B-140; 53 verification and review |

@@ -1,0 +1,23 @@
+{
+  "backend": {
+    "passed": 668,
+    "seconds": 2032.92,
+    "command": "uv run --directory backend pytest -q"
+  },
+  "frontend": {
+    "passed": 150,
+    "seconds": 76.49,
+    "command": "npm test -- --maxWorkers=1"
+  },
+  "backend_types": "0 errors, 0 warnings, 0 informations",
+  "frontend_types": "passed",
+  "backend_ruff": "passed",
+  "frontend_lint_existing_warnings": 6,
+  "review_remaining_findings": {
+    "standards": 0,
+    "spec": 0
+  },
+  "docker_engine": "29.5.2",
+  "neo4j_image": "2026.10.1",
+  "neo4j_python_driver": "6.1.0"
+}

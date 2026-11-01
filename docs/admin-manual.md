@@ -167,7 +167,9 @@ application keeps its selected build until explicit selection and restart under 
 ### Before you start
 
 PostgreSQL and Docker Desktop must be running. Existing PostgreSQL builder and reader settings
-must be present in `.env`. Neo4j Community 2026.10.1 must be available locally:
+must be present in `.env`. Also set `LI_GRAPH_ADMIN_PASSWORD` and `LI_GRAPH_READER_PASSWORD`
+privately in `backend/.env` for the two human Browser logins (section 5). New builds refuse
+missing or empty passwords before creating resources. Neo4j Community 2026.10.1 must be available locally:
 
 ```
 docker pull neo4j:2026.10.1
@@ -182,7 +184,7 @@ From the repository root, exercise the complete command with offline embeddings 
 only the version this command creates:
 
 ```
-uv run --directory backend python -m scripts.build_graph_version --offline --dispose --report ../.scratch/knowledge-base/research/49-command-result.json
+uv run --directory backend python -m scripts.build_graph_version --offline --dispose --report ../.scratch/knowledge-base/research/53-command-result.json
 ```
 
 Offline embeddings test graph behaviour only. They cannot support a retrieval evaluation.
@@ -214,16 +216,24 @@ The active application pointer is never changed by this command.
 ## 5. Select, restart and roll back a paired graph version
 
 Added by T48; final development-migration procedure accepted under T49 on 1 November 2026.
+T53 adds stable human logins and a fixed selected address, verified on 2 November 2026.
 
 ### What it is for
 
 Adopt one verified source/PostgreSQL/Neo4j version on a planned restart. Saved investigations
-and report downloads remain in the same SQLite memory file. Selection does not change an
-already running process. The previous complete pair remains available for rollback.
+and report downloads remain in the same SQLite memory file. Selection moves the selected graph
+to fixed localhost ports but does not reload the backend's clients. Stop the backend before
+selecting, then restart it. The previous complete pair remains available for rollback.
 
 ### Before you start
 
 Use section 4's PostgreSQL, Docker and reader prerequisites. Run one selection command at a time.
+Set `LI_GRAPH_ADMIN_PASSWORD` and `LI_GRAPH_READER_PASSWORD` privately in `backend/.env`.
+Every new build requires both before creating resources. These create the stable `li_admin`
+and `li_reader` Browser logins; the application keeps its separate per-build `li_serving` login.
+In Community, both human logins have administrative powers. `li_reader` is read-only by
+convention through Browser read access mode, not an enforced role (AUD-068). The serving
+database's server-level read-only lock protects graph data for all users.
 Keep each retained snapshot, PostgreSQL database, graph container/volume and private `.env`
 together. Never edit a snapshot or completion marker. The default working pointer is
 `backend/.knowledge-base.json`. An old PostgreSQL-only pointer is refused; restoring one also
@@ -237,8 +247,8 @@ would delete the new version before it could be selected. The exact offline disp
 smoke check. T49's accepted working version reuses the checked original live passage vectors,
 compared byte-for-value in the preparation evidence, rather than buying them again.
 Offline vectors cannot support live evaluation evidence. Change into `backend/` before the
-commands below. Use the report's generated build ID in place of `BUILD_ID`. Validate/select the complete pair, stop the current backend with
-Ctrl-C, then restart it:
+commands below. Use the report's generated build ID in place of `BUILD_ID`. Stop the current
+backend with Ctrl-C, then validate/select the complete pair and restart it:
 
 ```sh
 LI_GRAPH_VERSION=.graph-versions/BUILD_ID/complete.json
@@ -246,8 +256,8 @@ uv run python -m scripts.select_graph_version --state-file .knowledge-base.json 
 uv run uvicorn api.app:create_app --factory --port 8000
 ```
 
-To return to the previous complete pair, validate/select it, stop the backend, then use the same
-startup command:
+To return to the previous complete pair, stop the backend, validate/select it, then use the same
+startup command. The incoming graph container must be running:
 
 ```sh
 uv run python -m scripts.select_graph_version --state-file .knowledge-base.json --rollback
@@ -255,6 +265,20 @@ uv run python -m scripts.select_graph_version --state-file .knowledge-base.json 
 
 Rollback preserves source files and SQLite history. Re-selecting the already selected version
 does not lose the rollback target. No build is automatically removed; retention remains AUD-057.
+Selection and rollback recreate serving containers while keeping their data volumes and
+read-only settings. A stopped outgoing container stays stopped. Its databases do not need to
+answer to select a healthy replacement. The incoming graph receives `http://127.0.0.1:7474/browser/` and
+`bolt://127.0.0.1:7687`; the outgoing graph receives random localhost ports. Other port holders
+cause refusal before any changes. A failed move restores the original bindings; if recovery
+itself fails, leave the backend stopped and recover the two named retained containers.
+To give an existing running complete pair its human logins without a rebuild, run once
+(repeating this reports existing users without resetting their passwords):
+
+```sh
+uv run python -m scripts.provision_browser_users --version-file "$LI_GRAPH_VERSION"
+```
+
+Then reselect that same version with the section 5 command to give it the fixed address.
 Rollback is to a pair built by the same code rules. The current integrity check refuses any graph
 with `used_address` edges (T50, 1 November 2026), so pairs built before T50, including the
 retained `3d58516c…` and `eb6c7d59…`, open only under the code as of commit `012de46` or
@@ -262,7 +286,8 @@ earlier. Rolling back to one of them therefore means two steps, not one: select 
 pair as above, and run the backend from a checkout of that earlier code. The T50 pair is
 `f937ea59…`. The T51 pair `2d1bf85e…` (1 November 2026) follows the same code rules, so
 rolling back from it to `f937ea59…` is the one-step rollback above.
-For a separate rehearsal, substitute `.graph-versions/t49/rehearsal.json` for the state file,
+For a separate rehearsal, add `--isolated` to selection and rollback, substitute
+`.graph-versions/t49/rehearsal.json` for the state file,
 port `8012` and a separate memory file. T49 used copied memory and a scripted account lookup.
 
 Both evaluation entry points prepare unique source snapshots, PostgreSQL databases, Neo4j
@@ -332,7 +357,8 @@ reached only by passage mentions, and the finding view carries no address contex
 
 ### Before you start
 
-Start Docker Desktop and PostgreSQL. Use a complete isolated pair built with the current
+Start Docker Desktop and PostgreSQL. Set the two Browser passwords in `backend/.env` as in
+section 5. Use the selected pair or a complete isolated pair built with the current
 `build_graph_version` command in section 4. Its serving container publishes HTTP and Bolt only
 on localhost. Older pairs without an HTTP binding need a fresh build for this walkthrough.
 The application selection stays unchanged. Offline embeddings are sufficient for graph inspection.
@@ -361,10 +387,16 @@ calls. Add `--finding-id F-...` to prepare just one finding. It never selects an
 ### Open or check the result
 
 Open `browser_url` from `inspection/inspection.json`. Connect to its `bolt_uri`, database `neo4j`,
-user `li_serving`. Copy the password privately from this build's `.env` file into the login form.
+user `li_reader`. Copy `LI_GRAPH_READER_PASSWORD` privately from the main `backend/.env` into
+the login form. `li_admin` uses `LI_GRAPH_ADMIN_PASSWORD` from the same file. The application
+continues using only `li_serving`. Neither human name provides enforced roles in Community;
+read-only convention and the server lock are described in section 5 (AUD-068).
 Do not paste credentials into queries, chat or screenshots. The report and saved queries contain
-no password. After a container restart, regenerate into a new output folder to refresh its
-localhost ports.
+no password. The selected pair is always at `http://127.0.0.1:7474/browser/` with Bolt port
+`7687`. The address moves only at operator selection or rollback. Isolated builds keep random
+ports; regenerate their report after restarting them. Regenerate reports after selection too,
+so their addresses match the intended build. Older complete pairs first need the section 5
+one-off provisioning command.
 
 1. Run `:access-mode read`. Run `identity.cypher` and compare both values with `inspection.json`.
 2. Open Settings with the gear icon. Set Visualization node limit to `1000` and Record limit

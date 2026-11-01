@@ -1084,6 +1084,13 @@ be too brief to read. Closure evidence: 379 full backend tests plus one added HT
 review. No cumulative list or past-tense hold implemented. Future timing changes are not implied.
 
 
+**B-066 recurrence, T53, 1 November 2026:** full frontend run had 148 passes and two
+Explorer Reset tests exceeding their unchanged five-second limit in 48.27 seconds. Graph
+integration checks were active concurrently. No frontend code changed. Chart zero-size
+warnings were also emitted. Final one-worker rerun passed 150/150 in 76.49 seconds without
+frontend code or timeout changes. AUD-028 remains open.
+
+
 ### B-067 · 2026-10-19 · Scenario acceptance evidence not yet matched to saved case
 
 **Symptom:** author confirms scenario follow-up/report/PDF, but a read-only inspection of default
@@ -2343,3 +2350,46 @@ test passed in isolation. Registered as AUD-075 so the next occurrence is recogn
 behaviour under test. Separate the two, or make setup happen once before the threads start.
 **Evidence:** full run log lines for the test, including the traceback through
 `langgraph/checkpoint/sqlite/__init__.py setup()`; isolated rerun passed.
+
+### B-137 · 2026-11-01 · T53 test assertion mistook a setting name for a secret
+
+**Symptom:** the initial T53 login test authenticated both human users and verified write
+refusal, then failed while checking the incomplete-pair command's safe error output.
+**Cause:** the test rejected the word `password`, which also occurs in the required
+environment-variable names. No credential value was exposed.
+**Fix:** check for the actual fake credential value instead. The first failed run is
+preserved as test evidence; final verification is recorded in T53.
+**Lesson:** credential-leak checks must distinguish secret values from useful setting names.
+
+### B-138 · 2026-11-01 · T53 review · Regression tests competed for working ports
+
+**Symptom:** the initial selection test used 7474/7687, preventing normal regression after
+the working graph adopted them. Found by Standards review before activation.
+**Cause:** fixed operator defaults were also hard-coded into test resource allocation.
+**Fix:** inject an isolated `GraphAddress` at the selection seam. The operator command still
+uses 7474/7687. Final verification is recorded in T53.
+**Lesson:** tests for stable service addresses must leave the real service's address alone.
+
+### B-139 · 2026-11-01 · T53 review · Unhealthy outgoing pair blocked recovery selection
+
+**Symptom:** a healthy replacement could not be selected if the outgoing pair failed integrity
+or was stopped. Found by Spec review.
+**Cause:** address movement validated the outgoing database as though it were the incoming pair.
+**Fix:** fully verify only the incoming pair. Inspect outgoing resource ownership and bindings;
+preserve stopped containers and do not require outgoing database readiness. T53 records checks.
+**Lesson:** recovery must not depend on the failed system being healthy.
+
+### B-140 · 2026-11-01 · T53 review · One restoration failure suppressed the second attempt
+
+**Symptom:** incoming restoration readiness failure prevented restoring the outgoing address.
+Found by Spec review.
+**Cause:** restoration ran two sequential calls without independent error handling.
+**Fix:** attempt both restorations in port-release order and aggregate failures into a safe
+operator error. T53 records verification.
+**Lesson:** failure recovery must attempt independent cleanup even after one step fails.
+
+**T53 final verification for B-137–B-140, 2 November 2026:** all 668 backend tests passed;
+publication-failure recovery, port conflicts, rollback and missing/stopped outgoing recovery
+passed through the selection boundary. Both review axes cleared the corrections. The real
+operator rollback round trip preserved selection bytes, both protection records and both
+volumes. All 150 frontend tests passed on the recorded one-worker rerun. See T53's evidence.

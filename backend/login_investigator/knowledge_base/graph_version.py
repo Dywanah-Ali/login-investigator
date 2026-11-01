@@ -88,6 +88,9 @@ def remove_snapshot(path: Path) -> None:
 async def build_version(dataset: Path, root: Path, server: ServerSettings,
                         embedder: Embeddings, *, offline_embeddings: bool = False) -> GraphVersion:
     """Return a complete isolated pair; never publish to the application's active pointer."""
+    from .browser_access import browser_passwords, create_browser_users
+
+    passwords = browser_passwords()
     check_server(server)
     build_id = uuid.uuid4().hex
     directory = root.resolve() / build_id
@@ -110,6 +113,7 @@ async def build_version(dataset: Path, root: Path, server: ServerSettings,
             builder = await owned_operation(service.prepare)
             await import_graph(engine, directory / 'source', builder, build_id, fingerprint)
             await verify_graph(engine, directory / 'source', builder, build_id, fingerprint)
+            await owned_operation(lambda: create_browser_users(builder, passwords))
             serving = await owned_operation(lambda: service.seal(builder))
             protection = {'before_restart': await owned_operation(lambda: check_serving_protection(serving))}
             await owned_operation(lambda: docker('restart', service.name))

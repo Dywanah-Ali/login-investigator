@@ -95,7 +95,7 @@ async def prepare_inspection(marker: Path, output: Path, finding_id: str | None 
         parameters = {'build_id': kb.build_id, 'fingerprint': descriptor['fingerprint']}
         counts = (await owned_operation(lambda: graph._read(ORGANISATION, **parameters)))[0]
         report: dict[str, object] = {
-            **parameters, 'browser_url': browser, 'bolt_uri': bolt, 'username': 'li_serving',
+            **parameters, 'browser_url': browser, 'bolt_uri': bolt, 'username': 'li_reader',
             'offline_embeddings': kb.offline_embeddings,
             'organisation_nodes': counts['node_count'], 'organisation_relationships': counts['relationship_count'],
             'findings': [],

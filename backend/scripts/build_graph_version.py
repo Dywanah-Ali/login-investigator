@@ -13,6 +13,10 @@ from dotenv import dotenv_values
 from langchain_core.embeddings import Embeddings
 
 from login_investigator.generator import DATASET_DIR, REPO_ROOT
+from login_investigator.knowledge_base.browser_access import (
+    MissingBrowserPassword,
+    browser_passwords,
+)
 from login_investigator.knowledge_base.embedding import embedding_service
 from login_investigator.knowledge_base.graph_service import IMAGE, docker
 from login_investigator.knowledge_base.graph_version import (
@@ -34,6 +38,7 @@ class OfflineEmbeddings(Embeddings):
 
 
 async def run(args: argparse.Namespace) -> dict[str, object]:
+    browser_passwords()
     server = ServerSettings.from_env()
     started = time.monotonic()
     if args.offline:
@@ -75,6 +80,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         result = asyncio.run(run(args))
+    except MissingBrowserPassword as error:
+        print(str(error), file=sys.stderr)
+        return 1
     except Exception as error:  # noqa: BLE001 - Exit with a safe message for any isolated-build failure.
         print(f'Isolated graph build failed ({type(error).__name__}). Start Docker Desktop, '
               'run docker pull neo4j:2026.10.1, and check PostgreSQL and reader settings. '

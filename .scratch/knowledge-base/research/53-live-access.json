@@ -1,0 +1,30 @@
+{
+  "build_id": "2d1bf85ead1944709f5ab8cbd6ed4ad1",
+  "browser_url": "http://127.0.0.1:7474/browser/",
+  "bolt_uri": "bolt://127.0.0.1:7687",
+  "users": {
+    "li_admin": {
+      "authentication": "passed",
+      "protection_checks": 8
+    },
+    "li_reader": {
+      "authentication": "passed",
+      "protection_checks": 8
+    }
+  },
+  "protection_record_unchanged": true,
+  "selection_and_rollback_unchanged": true,
+  "rollback_visit": {
+    "build_id": "f937ea5949f44cfb97f0f9e62920a4ee",
+    "human_user_protection_checks": {
+      "li_admin": 8,
+      "li_reader": 8
+    },
+    "fixed_address_verified": true
+  },
+  "rollback_round_trip": "passed",
+  "restored_current_build_id": "2d1bf85ead1944709f5ab8cbd6ed4ad1",
+  "both_human_logins_after_round_trip": "passed",
+  "retained_previous_stopped_cleanly": true,
+  "only_selected_graph_running": true
+}

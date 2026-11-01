@@ -53,16 +53,16 @@ class GraphService:
         self.volume_created = False
         self.container_created = False
 
-    def start(self, *, read_only: bool) -> str:
+    def start(self, *, read_only: bool, bolt_port: str = '', http_port: str = '') -> str:
         arguments = ['create', '--name', self.name,
                      '--label', 'purpose=li-graph-version', '--label', 'li.owner=' + self.name,
-                     '--publish', '127.0.0.1::7687', '--volume', self.volume + ':/data',
+                     '--publish', f'127.0.0.1:{bolt_port}:7687', '--volume', self.volume + ':/data',
                      '--env', 'NEO4J_server_memory_heap_initial__size=256m',
                      '--env', 'NEO4J_server_memory_heap_max__size=512m',
                      '--env', 'NEO4J_server_memory_pagecache_size=256m']
         if read_only:
             arguments += ['--env', 'NEO4J_server_databases_read__only=neo4j',
-                          '--publish', '127.0.0.1::7474',
+                          '--publish', f'127.0.0.1:{http_port}:7474',
                           '--env', 'NEO4J_browser_post__connect__cmd=access-mode read']
         else:
             arguments += ['--env-file', str(self.directory / 'builder' / '.env')]
