@@ -2312,10 +2312,19 @@ ruling, not removed by the builder (the manual forbids removing resources the ru
 fact; retaining the drop's error text in `cleanup.json` would make the next occurrence
 diagnosable. A test that asserts before it disposes leaves debris on failure.
 **Evidence:** full run log and isolated rerun (3 passed in 325.75 seconds) in the T50 session;
-`docker ps -a` after both runs; database list through the project's PostgreSQL settings. The
-two further databases `li_kb_0af9160cc4ed` and `li_kb_c38b82a72616` are the superseded T17 and
-T18 builds already covered by AUD-057, and the volume `li-graph-4f085e16833e4ecc9a97ecac2afcaf06-data`
-has no container or version directory; origin unknown, also for the author's ruling.
+`docker ps -a` after both runs; database list through the project's PostgreSQL settings.
+
+**B-135 follow-up, same day:** the author ruled to remove the debris and stop the retained
+versions. Container `li-graph-de432ffc…`, its volume and database `li_kb_6ccecd2520c4` were
+removed through Docker and the project's own `drop_database`. The retained pairs `3d58516c…`,
+`eb6c7d59…` and the T48 inspection `05f15cfc…` were stopped with their volumes and databases
+kept; only the working pair `f937ea59…` runs. Docker reported exit 137 for the three stops,
+meaning Neo4j did not exit within Docker's grace period and was killed; their volumes are
+intact and they start again with `docker start`. Correction: a database and a volume first
+listed as unexplained (`li_kb_c38b82a72616`, `li-graph-4f085e16…-data`) belonged to the
+isolated rerun, which was still running at the time, and it cleaned them up. One database,
+`li_kb_0af9160cc4ed`, remains unaccounted for by any retained version; it predates T49 and
+falls under AUD-057.
 
 
 ### B-136 · 2026-11-01 · T50 full verification · Concurrent investigations hit a locked SQLite memory

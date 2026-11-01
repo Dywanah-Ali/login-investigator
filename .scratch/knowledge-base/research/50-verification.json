@@ -44,9 +44,11 @@
   "backend_types": "pass", "ruff": "pass",
   "review": {"tool": "mp-code-review", "standards_fixed": 3, "standards_judgement_kept": 3, "spec_fixed": 2, "spec_author_ruling_needed": 1},
   "full_runs_wholly_clean": false,
-  "leftover_resources_for_author": [
-    "container li-graph-de432ffc826e4e4d80269da620ac2b62 (Created) and volume li-graph-de432ffc826e4e4d80269da620ac2b62-data, database li_kb_6ccecd2520c4 (B-135)",
-    "volume li-graph-4f085e16833e4ecc9a97ecac2afcaf06-data, origin unknown",
-    "databases li_kb_0af9160cc4ed and li_kb_c38b82a72616, superseded T17/T18 builds (AUD-057)"
-  ]
+  "leftover_resources": {
+    "removed_by_author_ruling": ["container li-graph-de432ffc826e4e4d80269da620ac2b62", "volume li-graph-de432ffc826e4e4d80269da620ac2b62-data", "database li_kb_6ccecd2520c4"],
+    "stopped_and_kept": ["li-graph-3d58516ccfe84f74ade0ee255607fe19", "li-graph-eb6c7d59d40d4a94b87633593ae8649f", "li-graph-05f15cfcb66b48aaa7e2c5cfddd116c3"],
+    "running": ["li-graph-f937ea5949f44cfb97f0f9e62920a4ee"],
+    "still_unaccounted": ["database li_kb_0af9160cc4ed, predates T49 (AUD-057)"],
+    "correction": "li_kb_c38b82a72616 and volume li-graph-4f085e16…-data were the isolated rerun's live resources; it removed them"
+  }
 }
