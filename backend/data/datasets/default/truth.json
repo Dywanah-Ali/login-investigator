@@ -185,8 +185,7 @@
             "asset-vpn-gateway"
           ]
         ],
-        "basis": "Planted memberships, grant plan and VPN hand-out order; shared address is context, not proof of compromise. The attacker device is unregistered and supplies no device peer edge.",
-        "used_address_filter": "Successful sign-ins only; addresses in the networks table. Optional user dates; available log period when omitted (T19)."
+        "basis": "Planted memberships, grant plan and VPN hand-out order. The attacker device is unregistered and supplies no device peer edge."
       }
     }
   },

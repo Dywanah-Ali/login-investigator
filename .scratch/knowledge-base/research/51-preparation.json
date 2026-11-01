@@ -1,0 +1,31 @@
+{
+  "ticket": "T51",
+  "previous_build": "f937ea5949f44cfb97f0f9e62920a4ee",
+  "build_id": "2d1bf85ead1944709f5ab8cbd6ed4ad1",
+  "source_fingerprint": "bc052a482f49bd0cff843e53fcec8c993abf9b8c271a793df3662a2180f69a68",
+  "provider_calls": 0,
+  "passages_compared": 320,
+  "accounts_compared": 50,
+  "findings_compared": 10,
+  "dated_radii_compared": 40,
+  "graph_counts": {
+    "nodes": {
+      "person": 50,
+      "group": 4,
+      "asset": 10,
+      "device": 53,
+      "network": 53,
+      "chunk": 320
+    },
+    "edges": {
+      "member_of": 61,
+      "grants": 10,
+      "assigned_device": 57,
+      "mentions": 257,
+      "used_device": 57
+    }
+  },
+  "working_pointer_unchanged": true,
+  "marker": ".graph-versions/2d1bf85ead1944709f5ab8cbd6ed4ad1/complete.json",
+  "preparation_and_parity_seconds": 136.932
+}

@@ -1,7 +1,7 @@
 # 51: Reword the S6 answer key's leftover address sentences
 
 Type: build
-Status: ready-for-agent
+Status: resolved
 Blocked by: 50
 Blocks: none
 Phase: 0
@@ -33,21 +33,35 @@ changed key changes the source fingerprint (T18).
 
 ## Acceptance criteria
 
-- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
+- [x] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
-      dated line under Comments records the model used.
-- [ ] `generator.py` writes the reworded `basis` and no `used_address_filter`; the key-set
+      dated line under Comments records the model used. Evidence: Comments, 1 November 2026,
+      Claude Opus 5.5.
+- [x] `generator.py` writes the reworded `basis` and no `used_address_filter`; the key-set
       assertion in `test_generator.py` is updated; every other part of `truth.json` is
       byte-identical to the T50 key, shown by the same normalised comparison T50 used.
-- [ ] The S6 radius still recomputes exactly against the key (existing tests).
-- [ ] A new paired build from the changed dataset is made, reusing the T50 pair's passage
+      Evidence: the T50 key and the regenerated key, each with `basis` and
+      `used_address_filter` deleted and keys sorted by `jq -S`, compare identical with `cmp`;
+      the `truth.json` diff is those two lines only. The test now pins the key set and the full
+      `basis` text. `test_generator` 32 passed.
+- [x] The S6 radius still recomputes exactly against the key (existing tests). Evidence:
+      `test_s6_radius_matches_the_planted_answer_key` in the full run, and 51-prepare's check of
+      groups, assets, paths and device peers against the new key.
+- [x] A new paired build from the changed dataset is made, reusing the T50 pair's passage
       vectors with no provider calls (follow `research/50-prepare.py`), selected and activated
       by restart per the admin manual; the T50 pair `f937ea59…` stays retained for rollback;
-      all saved investigations reopen identically through the normal API.
-- [ ] The eval question file is not edited; the door 6 tests pass.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, Pyright and Ruff are
+      all saved investigations reopen identically through the normal API. Evidence: build
+      `2d1bf85ead1944709f5ab8cbd6ed4ad1` ([51-preparation.json](../research/51-preparation.json)),
+      0 provider calls, parity on 320 passages, graph counts, 50 accounts, 10 findings and 40
+      dated radii; selected with `select_graph_version`, previous `f937ea59…`; backend restarted;
+      overview, alerts, listing and all 25 saved investigations byte-identical through the API.
+- [x] The eval question file is not edited; the door 6 tests pass. Evidence: the question file
+      is absent from the diff; `test_eval_retrieval` passed in the full run.
+- [x] Standing criteria (spec, Testing Decisions): the safety net passes, Pyright and Ruff are
       clean, and `mp-code-review` has run with its findings triaged. The Port's eval is not
-      required: no agent behaviour changes.
+      required: no agent behaviour changes. Evidence: backend 663 passed, 0 failed in 14 min
+      9 s; frontend 150 passed; Pyright and Ruff clean over the backend. Review triaged in
+      Comments. See [51-verification.json](../research/51-verification.json).
 
 ## Comments
 
@@ -61,3 +75,19 @@ changed key changes the source fingerprint (T18).
 
 - 2026-11-01 — Model: Claude Opus 5.5, matching the ticket's standard line. The builder named the
   line; the author set the model with `/model` and confirmed before build work started.
+
+- 2026-11-01 — Build evidence. `basis` now reads "Planted memberships, grant plan and VPN
+  hand-out order. The attacker device is unregistered and supplies no device peer edge."
+  `used_address_filter` is gone; `network_id` and `network_address` stay. The new pair was
+  prepared by [51-prepare.py](../research/51-prepare.py). Unlike T50's script, it opens the
+  previous pair through the normal checked path, because the T50 pair has no address edges.
+  Rollback to `f937ea59…` therefore needs no earlier code.
+
+- 2026-11-01 — `mp-code-review` against `676c593`, findings triaged. Spec axis: no missing
+  requirement, no scope creep, no wrong implementation. Standards axis, no hard violation;
+  five judgement calls. Fixed: the substring check on `basis` became an exact-text assertion;
+  the parity helper was renamed `parity_snapshot`. Kept: the script duplicates 50-prepare's
+  blocks (each one-time script stays self-contained as evidence); the S6 spray is picked by
+  its address, as in 50-prepare; ticket-tagged test comments follow the file's style. Noticed,
+  not changed: Ruff reports unused `noqa` and a blocking `open` in the research script, the
+  same kind it reports in 50-prepare; research scripts sit outside the backend's lint scope.

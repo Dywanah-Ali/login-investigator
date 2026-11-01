@@ -260,7 +260,8 @@ with `used_address` edges (T50, 1 November 2026), so pairs built before T50, inc
 retained `3d58516c…` and `eb6c7d59…`, open only under the code as of commit `012de46` or
 earlier. Rolling back to one of them therefore means two steps, not one: select the retained
 pair as above, and run the backend from a checkout of that earlier code. The T50 pair is
-`f937ea59…`.
+`f937ea59…`. The T51 pair `2d1bf85e…` (1 November 2026) follows the same code rules, so
+rolling back from it to `f937ea59…` is the one-step rollback above.
 For a separate rehearsal, substitute `.graph-versions/t49/rehearsal.json` for the state file,
 port `8012` and a separate memory file. T49 used copied memory and a scripted account lookup.
 

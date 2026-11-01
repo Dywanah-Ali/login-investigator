@@ -645,11 +645,8 @@ def generate(seed: int = SEED) -> World:
             "device_id": _laptop_id(target), "network_id": network,
             "network_address": VPN_POOL[target_vpn_index],
             "paths": sorted(paths),
-            "basis": "Planted memberships, grant plan and VPN hand-out order; "
-                     "shared address is context, not proof of compromise. "
+            "basis": "Planted memberships, grant plan and VPN hand-out order. "
                      "The attacker device is unregistered and supplies no device peer edge.",
-            "used_address_filter": "Successful sign-ins only; addresses in the networks table. "
-                                   "Optional user dates; available log period when omitted (T19).",
         },
     }
     truth["twins"]["B1"].update({"country": "DE", "address": "203.0.113.70",

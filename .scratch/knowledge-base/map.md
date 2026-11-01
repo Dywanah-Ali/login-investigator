@@ -11,7 +11,13 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
-- **Current priority, revised by the author on 1 November 2026:** finish
+- **Current priority, T51 resolved on 1 November 2026:**
+  [T52 objectives and reliability review](issues/52-agent-objectives-and-reliability-review.md),
+  as the author ordered. The answer key is cleaned and pair `2d1bf85e…` is active, with T50's
+  `f937ea59…` retained for rollback. T52 still blocks T45 and T26; T25 and T27 remain
+  independently available.
+
+- **Previous priority, revised by the author on 1 November 2026:** finish
   [T51 answer-key wording](issues/51-answer-key-address-wording.md), then take
   [T52 objectives and reliability review](issues/52-agent-objectives-and-reliability-review.md).
   Complete the existing answer-key cleanup and verified pair activation before reviewing the
@@ -349,6 +355,14 @@ author to confirm the model is set, and records the model used in a dated commen
 the other family from the retrieval builder) was proposed and is not ruled.
 
 ### Build tickets resolved
+
+- [51 Reword the S6 answer key's leftover address sentences](issues/51-answer-key-address-wording.md)
+  (1 November 2026): `basis` describes only what the key records; `used_address_filter` is
+  dropped; the rest of `truth.json` is identical under a normalised comparison. New pair
+  `2d1bf85e…` reuses the T50 pair's passage vectors (0 provider calls), passes full parity,
+  and is selected and activated by restart; all 25 saved investigations reopen identically.
+  Evidence: backend 663 and frontend 150 passed, clean types and lint, two-axis review triaged.
+  Model: Claude Opus 5.5.
 
 - [50 Remove address-sharing context](issues/50-remove-address-sharing-context.md)
   (1 November 2026): the graph draws no `used_address` edges and the integrity check refuses one

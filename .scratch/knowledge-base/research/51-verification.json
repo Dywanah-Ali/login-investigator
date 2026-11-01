@@ -1,0 +1,34 @@
+{
+  "ticket": "T51",
+  "date": "2026-11-01",
+  "model": "Claude Opus 5.5 (ticket line: standard; confirmed by the author)",
+  "base_commit": "676c5939f39109f604b0f1a567c97a9a73dcdda2",
+  "answer_key": {
+    "regenerated": true,
+    "changed_files": ["backend/data/datasets/default/truth.json"],
+    "removed_key": "scenarios.S6.blast_radius.used_address_filter",
+    "reworded_key": "scenarios.S6.blast_radius.basis",
+    "rest_identical": "jq -S with both keys deleted gives byte-identical output for the T50 key and the regenerated key (cmp)"
+  },
+  "generator_tests": {"passed": 32, "failed": 0, "sandbox": "enabled", "rerun_after_review": true},
+  "paired_build": {
+    "evidence": "51-preparation.json",
+    "build_id": "2d1bf85ead1944709f5ab8cbd6ed4ad1",
+    "previous_build": "f937ea5949f44cfb97f0f9e62920a4ee",
+    "provider_calls": 0,
+    "parity": "320 passages, all graph counts, 50 accounts, 10 findings' radii and walks, 40 dated radii equal"
+  },
+  "activation": {
+    "selected": "2d1bf85ead1944709f5ab8cbd6ed4ad1", "previous_retained": "f937ea5949f44cfb97f0f9e62920a4ee",
+    "restart": "carried backend (uv 80906, uvicorn 80912) identified by command and stopped with SIGINT; new backend started on port 8000; staleness guard accepted the new pair",
+    "overview_identical": true, "alerts_identical": true, "listing_identical": true,
+    "saved_investigations_reopened": 25, "saved_evidence_identical": true
+  },
+  "backend_full": {"passed": 663, "failed": 0, "seconds": 848.88, "sandbox": "disabled; the Docker socket is denied inside it"},
+  "frontend_full": {"passed": 150, "failed": 0},
+  "backend_types": "pass", "ruff_backend": "pass",
+  "ruff_research_script": "not in the backend's lint scope; same RUF100/ASYNC230 kind as 50-prepare.py (12 there, 9 here); left in the precedent's style",
+  "eval_question_file_edited": false,
+  "review": {"tool": "mp-code-review", "standards_fixed": 2, "standards_judgement_kept": 3, "spec_findings": 0},
+  "full_runs_wholly_clean": true
+}
