@@ -13,8 +13,10 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 - **Current priority, T50 resolved on 1 November 2026:** [T25 account peers and corpus-search tools](issues/25-peers-and-corpus-search-tools.md),
   now unblocked (T22, T24, T49, T50 all resolved). Its `find_peers` takes `account_id | device_id`
-  only. T45 still blocks T26. Two spec wording questions wait for the author: phase 1's "spread
-  and shared ground" (shared ground is now device only) and the draft Graph tab schema's
+  only. T45 still blocks T26. [T51](issues/51-answer-key-address-wording.md), a small follow-up
+  rewording two leftover address sentences in the S6 answer key with a new pair, is also open by
+  the author's ruling at T50's close. Two spec wording questions wait for the author: phase 1's
+  "spread and shared ground" (shared ground is now device only) and the draft Graph tab schema's
   `network` node type.
 
 - **Previous priority, T25 gate closed on 1 November 2026:** [T50 remove address-sharing context](issues/50-remove-address-sharing-context.md).

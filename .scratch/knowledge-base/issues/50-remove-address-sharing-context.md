@@ -109,7 +109,8 @@ model. Account context, assets, device peers and the shared date handling are un
   Spec axis: same answer-key wording conflict (criterion versus spec line 540, author to rule);
   rollback wording (fixed as above); K04 proof is indirect through the walk gate (accepted, the
   door 6 test is what the criterion names); counts now recorded here; the two new research
-  files are the build evidence and are kept.
+  files are the build evidence and are kept. Author's ruling on the answer-key wording, same
+  day: reword in a small follow-up, [T51](51-answer-key-address-wording.md).
 
 - 2026-11-01 — Model used: Claude Fable 5.1 (Claude Code). The builder reported the ticket's
   standard `Model:` line; the author ruled to build on Fable 5.1 instead, and to commit the
