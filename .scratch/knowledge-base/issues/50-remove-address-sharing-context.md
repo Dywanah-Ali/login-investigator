@@ -17,8 +17,10 @@ model. Account context, assets, device peers and the shared date handling are un
 
 ## Decisions implemented
 
-- Author's T25 gate rulings, 1 November 2026: sharing an address answers no investigation
-  question in this app; no allocation evidence is added (AUD-073); remove everywhere. See
+- Author's T25 gate rulings, 1 November 2026: the office/VPN co-user list adds no useful
+  evidence to the current investigation; no allocation evidence is added (AUD-073); remove
+  address-sharing context everywhere. Suspicious-address investigation remains supported by
+  `search_logins(ip=...)` and the spray finding. See
   [T25 Comments](25-peers-and-corpus-search-tools.md),
   [research note 25](../research/25-shared-address-value.md) and the spec's decision-log row of
   that date.
@@ -58,6 +60,10 @@ model. Account context, assets, device peers and the shared date handling are un
       its findings triaged. The Port's eval is not required: no agent behaviour changes.
 
 ## Comments
+
+- 2026-11-01 — Author-approved rationale clarification: the removal concerns the office/VPN
+  co-user list, not address correlation in general. Suspicious-address investigation remains
+  supported by the existing log tool and spray finding. Scope and acceptance criteria unchanged.
 
 - 2026-11-01 — Opened by the author's approval of the T25 gate edits. Changing `truth.json`
   makes the live build stale under the T18 fingerprint, so this ticket includes a new paired
