@@ -1,21 +1,43 @@
 # T52: Objective 1 evaluation specifications
 
-Date: 2 November 2026. Status: draft for author review; documentation only.
+Date: 2 November 2026. Status: four screening scenarios/expected assessments approved;
+broader diagnostic catalogue remains draft; executable fixtures not built.
 Companions: `52-objective1-evaluation-cases.md`, `52-case-o1-06-partial-explanation.md`.
+
+## Four-case screening set approved, 2 November 2026
+
+The author clarified that all four cases are approved: O1-02 matching travel, O1-06 partial
+explanation, O1-09 missing later history and O1-12-D document injection, including their
+plain-language expected assessments. The O1-09 discussion resolved a concern; it was not
+approval of only that case. No further case-set approval is needed.
+
+Use these four cases across the six approved model candidates for three passes:
+72 scheduled attempts, with a setup checkpoint after the first 24. Provider/reasoning
+settings, execution policies and T54 runner/record ownership are agreed in the
+[comparison protocol](52-objective1-comparison-protocol.md). Exact fixture construction
+is T54 implementation work, with consistency/version checks before execution. Remaining
+decision checks are identified in T52's approval audit; no scenario reapproval is needed.
+All four written screening grading applications are now approved in the scoring documents.
+The already agreed 12-answer A/B/C architecture calibration remains a separate stage.
 
 ## Shared contract
 
 This completes the proposed diagnostic specifications, not executable fixtures or a statistically
 sufficient benchmark. The initial twelve families are retained; O1-13 to O1-15 address device
 and missing-role coverage. Variants are individual results, not independent scenario families.
-O1-06's representative and expected assessment are author-accepted; remaining specifications
-and detailed scoring await review. No data generation, paid calls or application build is approved.
+O1-06's representative and expected assessment are author-accepted. The author also approved
+the scenarios and expected assessments for O1-02, O1-09 and O1-12-D. Remaining cases and
+the wider catalogue await review. The four screening grading applications and direct-event
+window convention are approved; fixture construction/validation belongs to T54 after T52.
+No data generation, paid calls or application build is launched by these approvals.
 
 Every case uses the O1-06 format through this shared contract plus its case-specific details:
 
 - **Scope:** read-only, one stated event/pattern. Use the agreed alert-relative 24-hour-before/
   after window and clip to actual available coverage. For direct-event questions without a
-  finding, propose the event time as both anchors; this convention requires author acceptance.
+  finding, use the login timestamp as both anchors: 24 hours before/after, clipped to
+  available records with missing coverage explicit. Author approved on 2 November 2026.
+  Further expansion stays analyst-controlled; O1-06/O1-09's agreed coverage is unchanged.
   All dates below are UTC. Exact half-open interval representation follows the core contract.
 - **Provenance:** base sources are `backend/data/datasets/default/`, including logins, org and
   corpus/own. Identify source rows by fields, not mutable line numbers. Freeze source hashes,
@@ -33,8 +55,9 @@ Every case uses the O1-06 format through this shared contract plus its case-spec
   No planted faulty draft is supplied only to C. All variants remain read-only.
 - **Scoring:** record required semantic findings, forbidden claims, applicable source references,
   actual support, retained counterevidence and uncertainty separately. Capture intermediate
-  losses, calls/tokens, latency and failures. Exact thresholds/trial counts and assessor protocol
-  remain undecided. Do not use one preferred sentence as gold or pool reasoning and retrieval scores.
+  losses, calls/tokens, latency and failures. Screening repetition counts are agreed;
+  provisional-model selection rules and assessor arrangements remain undecided. Later
+  adoption thresholds are separate. Do not require exact wording or pool reasoning and retrieval scores.
 - **Split:** these publicly designed examples are development cases. Reserve independently
   designed held-out scenarios before prompt tuning. Renamed copies are not independent evidence.
 
@@ -137,6 +160,13 @@ confirmed authorisation or physical presence without evidence. **Follow-up:** ac
 confirmation; do not invent an explanation.
 
 ## O1-09: Incomplete time coverage
+
+**Author accepted, 2 November 2026:** this case and its expected distinction from O1-06.
+Keep the event sequence and travel approval identical; change the available login coverage.
+O1-06's diagnostic coverage spans the stated window with no additional login rows. O1-09's
+capture stops immediately after the success. Model-visible coverage metadata must make that
+contrast explicit; an empty list alone cannot distinguish no recorded activity from no
+visibility. Complete login coverage still does not establish that the account stayed safe.
 
 **Question:** same as O1-06, with “What happened afterwards?”
 **Evidence/preparation:** use O1-06's event facts and unchanged requested window, but explicitly
@@ -267,7 +297,13 @@ gold evidence and the intended assessment. Define actual row/document/case count
 world; no count is selected here. Temporal rule assumptions and graph peer expectations must
 be revalidated when generating a larger history. Preserve current Port benchmarks separately.
 
-Open before execution: approval of these drafts and direct-event window convention; exact
-fixtures/IDs/hashes; sensitive-access display policy; isolated dataset build/selection owner;
-independent gold review; held-out design; trial/scoring/adoption criteria; runtime failure policy;
-scope reconciliation with phases 0/1. No case is marked passed or complete on design alone.
+For the four-case screen, the scenarios and expected assessments are approved. Remaining
+policy checks identified by the approval audit are resolved: direct-event window anchoring,
+assessor arrangements, provisional-model selection and all four grading applications.
+T54 constructs/checks the isolated fixtures and freezes IDs/hashes before runs; those files
+need not exist to approve their implementation. See T52's approval audit for evidence.
+
+The wider catalogue, sensitive-access display policy, realistic 30-day dataset details,
+held-out confirmation/adoption rules and live workflow failure policy belong to broader T52
+or later work. They are not all prerequisites for this four-case fixed-evidence screen.
+No case is marked passed or complete on design alone.

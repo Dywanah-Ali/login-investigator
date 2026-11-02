@@ -11,6 +11,16 @@ Opened by the author's ruling of 29 October 2026, after T23. The retrieval-desig
 T23 is significant enough for its own ticket. This is a decision ticket: it produces rulings,
 not code. Whatever it decides is built in a later ticket, or folded into T26 by ruling.
 
+## T52 scope handoff — 2 November 2026
+
+Author confirmed reliable login investigation as the sole phase-0/1 objective, with bounded
+account-impact and directly connected activity context. Standalone full inventory, exhaustive
+permission-path presentation and reverse asset exposure are deferred. This supersedes broader
+product-scope wording below. See [spec Current scope ruling](../spec.md#current-scope-ruling--t52-2-november-2026).
+Detailed criteria below carry the approved T52 boundaries. Open design decisions remain
+explicit; this reconciliation does not release T52 or authorise implementation.
+Existing source code, questions, gold and thresholds are not changed or waived by this note.
+
 ## Question
 
 How does the knowledge base find every passage a compound question needs, such as K04 ("what
@@ -61,6 +71,18 @@ The question has two paths, and the answer may differ for each:
 
 ## Acceptance criteria
 
+- [ ] Map search needs to E01–E06: activity, bounded account impact, supporting and competing
+      evidence, applicability and uncertainty. Explicitly test partial explanations, including
+      travel that does not explain separate attack activity. No standalone inventory task.
+- [ ] Record candidate, reranked, retained and model-visible evidence separately. Test loss
+      during merging and caps, not only first-hit rank. Original K04 questions/gold and
+      AUD-062 closure obligations remain unchanged.
+- [ ] Select a small E06 guidance source set for the author's review. Map proposed passages
+      to case uncertainties and record provenance and applicability. Consider existing
+      corpus sources first; previously consulting NIST SP 800-61r3 does not adopt it wholesale.
+      Obtain the author's source approval before ingestion/use, then define T26's retrieval
+      handoff. A general practice passage cannot establish that a case event occurred.
+
 - [ ] Before any work starts, the agent tells the author this ticket's `Model:` line and waits
       for the author to confirm the model is set; a dated comment records it.
 - [ ] Research uses the Perplexity and Keenable tools and checks material claims against primary
@@ -81,3 +103,7 @@ The question has two paths, and the answer may differ for each:
 - 2026-11-01 — Author: wait for [T52](52-agent-objectives-and-reliability-review.md), the
   phase 0 and 1 objectives and reliability review. Carry its approved requirements into this
   ticket before work starts; existing requirements remain in force until explicitly amended.
+
+- 2026-11-02 — Author approved T45 owning guidance-source selection and presentation for
+  review. Source approval precedes use; T26 owns integration. This adds a source-selection
+  decision to this ticket without settling its five existing retrieval decisions.

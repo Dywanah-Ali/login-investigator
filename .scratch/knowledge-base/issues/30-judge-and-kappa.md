@@ -25,6 +25,14 @@ the author.
 
 ## Acceptance criteria
 
+- [ ] Include claims about document applicability, partial explanations, bounded potential
+      access versus observed access, and uncertainty when selecting the answer sample.
+      A resolving citation is not automatically supporting evidence. Store the inspected
+      context and reasons; retain the existing advisory role and thresholds.
+- [ ] Where guidance is evaluated, assess case relevance and whether the named uncertainty
+      is addressed, separately from whether a general practice passage was cited. Source
+      approval remains T52 work; this adds no paid judge to T54 screening.
+
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
@@ -41,3 +49,8 @@ the author.
       findings triaged.
 
 ## Comments
+
+- 2026-11-02 — Author-approved ownership: T54's initial comparison runner records human
+  assessments and deterministic checks. T30 retains the advisory faithfulness judge and
+  human-agreement reporting. No paid judge is required by the initial screen or included
+  in its US$25 planning budget. Existing judge policy remains unchanged.

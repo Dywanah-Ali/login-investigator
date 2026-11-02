@@ -4,6 +4,30 @@ Date checked: 2 November 2026. Status: research-backed proposal, not a selected 
 Companion: `52-model-selection-industry-evidence.md` for security-system precedents and
 Google/Anthropic documentation. Research does not establish a universal industry standard.
 
+## Current status after author correction
+
+The earlier Sol recommendations below are historical proposals, now superseded pending
+[broad model research](52-broad-model-shortlist.md). The author requested cheaper/faster
+open-weight and proprietary candidates without requiring published success on our exact
+use case. See [research method and proposed screening](52-model-screening-evidence.md).
+No model is selected; additional screening execution remains unapproved.
+
+## Approved screening pool, 2 November 2026
+
+The author approved six candidates: Qwen3.8-27B, gpt-oss-120b, DeepSeek V4.1 Flash,
+GPT-6 Luna, Claude Haiku 5.5 and GPT-6.1 Sol. Sol is a higher-capability reference,
+not the selected winner. The exact DeepSeek served version and all provider routes
+must be verified before execution.
+
+GLM-5.3-Flash, MiniMax-M3.1-Flash and Mistral Small 4 move to reserve to limit review
+workload while retaining smaller open weights, inexpensive hosted options, proprietary
+challengers and a higher-capability reference. This is not evidence of inferior performance.
+
+Screen models using the same single-investigator setup before freezing a baseline for
+A/B/C. Four cases per model would produce 24 final answers, but that case count, repeat
+policy, settings, budget and execution remain to be agreed. Approval of this pool does
+not authorise inference calls or select a permanent production model.
+
 ## Production-selection clarification
 
 Author ruling, 2 November: use a balanced production-selection approach, weighing investigation
@@ -107,3 +131,23 @@ Using different models for each architecture initially would compare complete sy
 isolate architecture. That can be a valid later product experiment if labelled accordingly.
 The first 12 answers are scoring/runner calibration, not proof of model superiority or final
 architecture selection. Model choice, effort and cost limit await the author's ruling.
+
+## Selection resumed, 2 November 2026
+
+Official model pages rechecked: both Sol 6.1 and Sonnet 5.5 list standard text prices of
+$2 input/$10 output per million tokens. These do not establish equal investigation cost.
+Sol documents medium as default and Responses API as required for tool calling. Sonnet
+lists high as default, rejects temperature/top_p/top_k and lists retirement no sooner than
+28 September 2027. OpenRouter lists both models, but account/adapter support remains untested.
+Sources: [Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol),
+[Sonnet](https://platform.claude.com/docs/en/models/sonnet-5-5/overview),
+[OpenRouter Sol](https://openrouter.ai/openai/gpt-6.1-sol),
+[OpenRouter Sonnet](https://openrouter.ai/anthropic/claude-sonnet-5.5).
+
+Revised recommendation awaiting author choice: Sol 6.1 at medium reasoning for the provisional
+calibration baseline, superseding the earlier high-effort recommendation. Rationale: a
+capable professional-work candidate at its documented default, aligned with the author's
+balanced preference. This is a starting hypothesis, not evidence of superiority over Sonnet
+or production fitness. Keep the selected model/settings fixed across A/B/C; measured quality,
+latency and cost decide later changes. Sonnet 5.5 remains a credible alternative. No inference
+call, provider choice, adapter migration or permanent production adoption has occurred.

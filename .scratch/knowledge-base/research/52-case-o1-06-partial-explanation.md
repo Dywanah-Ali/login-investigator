@@ -107,16 +107,20 @@ unresolved and worth checking. This example stays out of agent inputs.
 - Record each required/forbidden semantic finding individually, source-reference validity,
   actual claim support, intermediate findings lost or corrected at handoff, final answer,
   calls/tokens, latency and errors. Preserve every trial; do not select the best run.
-- Use the same model version and settings, reset case memory between trials, and record
-  model-call budgets. Additional compute remains a confound until explicitly controlled.
+- For A/B/C use the same model version/settings and fresh case memory. The six-model
+  screen instead compares its approved configurations. Record actual calls/usage under
+  the approved execution policy; no screening token/call/retry caps or reservations.
+  Additional compute remains a confound until explicitly controlled.
 
-Exact trial counts, scorer protocol, independent gold review and adoption thresholds remain
-to be agreed. A passing diagnostic example is not architecture acceptance.
+Screening and twelve-answer architecture-calibration counts are agreed. Assessor arrangements,
+provisional-model selection and later adoption thresholds remain distinct open matters.
+A passing diagnostic example is not architecture acceptance.
 
 ## Approval checklist before implementation
 
 Author review of the representative scenario/expected assessment is complete. Remaining:
-verify source/fixture consistency; agree scoring and
-trial procedure; assign implementation owner and record approved spec changes. Keep original
+T54 builds and verifies source/fixture consistency under the approved record contract.
+The common scoring method, this case's anchors, trial counts and T54 ownership are agreed.
+Assessor/selection decisions still need settlement. Keep original
 B1/K07 and the existing dataset/evaluation gold unchanged. No paid evaluation or dataset
 generation is authorised by drafting this representative case.

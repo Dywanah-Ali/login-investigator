@@ -26,6 +26,10 @@ check, so screen and exam cannot disagree.
 
 ## Acceptance criteria
 
+- [ ] Resolving a label proves reference validity only. Do not label claim support as
+      verified by this check. Preserve original referenced evidence for T33/T37 and reopen;
+      later rebuilds must not substitute fresh evidence behind an existing citation.
+
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.

@@ -24,6 +24,14 @@ the step that could not run and why.
 
 ## Acceptance criteria
 
+- [ ] Required checks implement the bounded T26 investigation scope. Track empty, unavailable,
+      failed and omitted states distinctly. A failed check must not be marked complete merely
+      because prose exists; the report identifies the resulting limit.
+- [ ] Default alert/event windows and analyst-controlled expansion survive report completion
+      and follow-up. Neither the policy nor report gate silently widens collection.
+- [ ] External next-investigation recommendations remain recommendations, not tool results
+      or completed playbook checks. Test this distinction and narrow-question behaviour.
+
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.

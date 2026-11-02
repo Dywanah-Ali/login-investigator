@@ -6,8 +6,10 @@ Companion: `52-objective1-requirements.md` and the two objective 1 research note
 Expanded draft, 2 November: [full case specifications](52-objective1-case-specifications.md)
 now covers these twelve families plus three proposed device/role families, with 21 diagnostic
 examples in total and seven separate workflow proof obligations. The original list below is
-retained as the starting proposal. Only the O1-06 representative has author-accepted gold;
-the expanded specifications still await review and no fixtures have been generated.
+retained as the starting proposal. O1-02, O1-06, O1-09 and O1-12-D now have author-approved
+scenarios and expected assessments. The wider catalogue remains draft; T54 owns fixture
+construction. See T52's approval audit rather than treating this historical list as a
+request to reapprove the four screening cases.
 
 ## Purpose and boundaries
 

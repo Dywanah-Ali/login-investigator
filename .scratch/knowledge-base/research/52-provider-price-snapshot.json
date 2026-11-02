@@ -1,0 +1,403 @@
+{
+  "checked_at_utc": "2026-11-02T17:24:38.981969+00:00",
+  "method": "Public unauthenticated endpoint metadata; no inference",
+  "routes": [
+    {
+      "model": "qwen/qwen3.8-27b",
+      "source": "https://openrouter.ai/api/v1/models/qwen/qwen3.8-27b/endpoints",
+      "endpoint": {
+        "name": "DeepInfra | qwen/qwen3.8-27b-20260814",
+        "model_id": "qwen/qwen3.8-27b",
+        "model_name": "Qwen: Qwen3.8 27B",
+        "context_length": 262144,
+        "pricing": {
+          "prompt": "0.00000015",
+          "completion": "0.000001875",
+          "input_cache_read": "0.0000000375",
+          "discount": 0.25
+        },
+        "provider_name": "DeepInfra",
+        "tag": "deepinfra/bf16",
+        "service_tier": null,
+        "quantization": "bf16",
+        "max_completion_tokens": 235929,
+        "max_prompt_tokens": null,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "repetition_penalty",
+          "top_k",
+          "seed",
+          "min_p",
+          "logit_bias",
+          "response_format",
+          "structured_outputs",
+          "tools",
+          "tool_choice",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": true,
+          "function": true
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 99.44444444444444,
+        "supports_implicit_caching": true,
+        "native_tools": {},
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": null,
+        "throughput_last_30m": null
+      }
+    },
+    {
+      "model": "openai/gpt-oss-120b",
+      "source": "https://openrouter.ai/api/v1/models/openai/gpt-oss-120b/endpoints",
+      "endpoint": {
+        "name": "DeepInfra | openai/gpt-oss-120b",
+        "model_id": "openai/gpt-oss-120b",
+        "model_name": "OpenAI: gpt-oss-120b",
+        "context_length": 131072,
+        "pricing": {
+          "prompt": "0.000000037",
+          "completion": "0.00000017",
+          "discount": 0
+        },
+        "provider_name": "DeepInfra",
+        "tag": "deepinfra/bf16",
+        "service_tier": null,
+        "quantization": "bf16",
+        "max_completion_tokens": 117964,
+        "max_prompt_tokens": null,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "repetition_penalty",
+          "top_k",
+          "seed",
+          "min_p",
+          "tools",
+          "tool_choice",
+          "structured_outputs",
+          "logit_bias",
+          "response_format",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": true,
+          "function": true
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 100,
+        "supports_implicit_caching": false,
+        "native_tools": {},
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": null,
+        "throughput_last_30m": null
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash-1017/endpoints",
+      "endpoint": {
+        "name": "DeepInfra | deepseek/deepseek-v4.1-flash-20261017",
+        "model_id": "deepseek/deepseek-v4.1-flash-1017",
+        "model_name": "DeepSeek: DeepSeek V4.1 Flash 1017",
+        "context_length": 1048576,
+        "pricing": {
+          "prompt": "0.000000098",
+          "completion": "0.000000294",
+          "input_cache_read": "0.00000000294",
+          "discount": 0.51
+        },
+        "provider_name": "DeepInfra",
+        "tag": "deepinfra/fp8",
+        "service_tier": null,
+        "quantization": "fp8",
+        "max_completion_tokens": 393216,
+        "max_prompt_tokens": null,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "stop",
+          "frequency_penalty",
+          "presence_penalty",
+          "repetition_penalty",
+          "top_k",
+          "seed",
+          "min_p",
+          "logit_bias",
+          "response_format",
+          "structured_outputs",
+          "tools",
+          "tool_choice",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": true,
+          "function": true
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 100,
+        "supports_implicit_caching": true,
+        "native_tools": {},
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": null,
+        "throughput_last_30m": null
+      }
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "source": "https://openrouter.ai/api/v1/models/openai/gpt-6-luna/endpoints",
+      "endpoint": {
+        "name": "OpenAI | openai/gpt-6-luna-20260922",
+        "model_id": "openai/gpt-6-luna",
+        "model_name": "OpenAI: GPT-6 Luna",
+        "context_length": 1050000,
+        "pricing": {
+          "prompt": "0.0000001",
+          "completion": "0.0000005",
+          "web_search": "0.01",
+          "input_cache_read": "0.00000001",
+          "input_cache_write": "0.000000125",
+          "discount": 0,
+          "overrides": [
+            {
+              "min_prompt_tokens": 272000,
+              "prompt": "0.0000002",
+              "completion": "0.00000075",
+              "input_cache_read": "0.00000002",
+              "input_cache_write": "0.00000025"
+            }
+          ]
+        },
+        "provider_name": "OpenAI",
+        "tag": "openai",
+        "service_tier": null,
+        "quantization": "unknown",
+        "max_completion_tokens": 128000,
+        "max_prompt_tokens": 922000,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "seed",
+          "max_tokens",
+          "response_format",
+          "structured_outputs",
+          "tools",
+          "tool_choice",
+          "verbosity",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": true,
+          "function": true
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 100,
+        "supports_implicit_caching": false,
+        "native_tools": {
+          "openrouter:web_search": {
+            "type": "web_search"
+          },
+          "openrouter:apply_patch": {
+            "type": "apply_patch"
+          }
+        },
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": null,
+        "throughput_last_30m": null
+      }
+    },
+    {
+      "model": "anthropic/claude-haiku-5.5",
+      "source": "https://openrouter.ai/api/v1/models/anthropic/claude-haiku-5.5/endpoints",
+      "endpoint": {
+        "name": "Anthropic | anthropic/claude-haiku-5.5-20261007",
+        "model_id": "anthropic/claude-haiku-5.5",
+        "model_name": "Anthropic: Claude Haiku 5.5",
+        "context_length": 1000000,
+        "pricing": {
+          "prompt": "0.0000001",
+          "completion": "0.0000005",
+          "web_search": "0.01",
+          "input_cache_read": "0.00000001",
+          "input_cache_write": "0.000000125",
+          "input_cache_write_1h": "0.0000002",
+          "discount": 0,
+          "overrides": [
+            {
+              "min_prompt_tokens": 100000,
+              "prompt": "0.0000005",
+              "completion": "0.0000025",
+              "input_cache_read": "0.00000005",
+              "input_cache_write": "0.000000625",
+              "input_cache_write_1h": "0.000001"
+            }
+          ]
+        },
+        "provider_name": "Anthropic",
+        "tag": "anthropic",
+        "service_tier": null,
+        "quantization": "unknown",
+        "max_completion_tokens": 128000,
+        "max_prompt_tokens": null,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "max_tokens",
+          "stop",
+          "tools",
+          "tool_choice",
+          "structured_outputs",
+          "response_format",
+          "verbosity",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": false,
+          "function": false
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 100,
+        "supports_implicit_caching": false,
+        "native_tools": {
+          "openrouter:web_search": {
+            "type": "web_search_20260209"
+          },
+          "openrouter:web_fetch": {
+            "type": "web_fetch_20260209"
+          },
+          "openrouter:bash": {
+            "type": "bash_20250124"
+          },
+          "openrouter:advisor": {
+            "type": "advisor_20260301"
+          }
+        },
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": null,
+        "throughput_last_30m": null
+      }
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "source": "https://openrouter.ai/api/v1/models/openai/gpt-6.1-sol/endpoints",
+      "endpoint": {
+        "name": "OpenAI | openai/gpt-6.1-sol-20260929",
+        "model_id": "openai/gpt-6.1-sol",
+        "model_name": "OpenAI: GPT-6.1 Sol",
+        "context_length": 1050000,
+        "pricing": {
+          "prompt": "0.000002",
+          "completion": "0.00001",
+          "web_search": "0.01",
+          "input_cache_read": "0.0000001",
+          "input_cache_write": "0.0000025",
+          "discount": 0,
+          "overrides": [
+            {
+              "min_prompt_tokens": 272000,
+              "prompt": "0.000004",
+              "completion": "0.000015",
+              "input_cache_read": "0.0000002",
+              "input_cache_write": "0.000005"
+            }
+          ]
+        },
+        "provider_name": "OpenAI",
+        "tag": "openai",
+        "service_tier": null,
+        "quantization": "unknown",
+        "max_completion_tokens": 128000,
+        "max_prompt_tokens": 922000,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "seed",
+          "max_tokens",
+          "response_format",
+          "structured_outputs",
+          "tools",
+          "tool_choice",
+          "verbosity",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": true,
+          "function": true
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 100,
+        "supports_implicit_caching": false,
+        "native_tools": {
+          "openrouter:web_search": {
+            "type": "web_search"
+          },
+          "openrouter:apply_patch": {
+            "type": "apply_patch"
+          }
+        },
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": null,
+        "throughput_last_30m": null
+      }
+    }
+  ]
+}

@@ -11,6 +11,175 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **Current frontier, 2 November 2026: T52 resolved.** Objective/evidence review, candidate
+  dispositions and downstream reconciliation are complete. AUD-076 closes as a decision
+  review only. [T54](issues/54-early-langfuse-evaluation-integration.md) is next by the
+  author's approved order, with its own model confirmation and build/readiness gates.
+  T45 selects guidance sources for approval; T26 integrates; T55 owns expanded data before
+  T40. B-143's K03 correction stays with T40 under author review; B-145 fixes the mistaken
+  T51 handoff. No application acceptance, gold change or paid execution is claimed.
+
+- **T52 ownership approved, 2 November 2026:** T45 selects guidance sources for author
+  review; T26 integrates approved guidance; new [T55](issues/55-thirty-day-investigation-dataset.md)
+  owns the 50-person/30-day dataset before T40. Allocation is settled, source/dataset design
+  approval remains with those tickets. T52 final closure review is next; T54 stays blocked.
+  No build or paid execution started.
+
+- **T52 downstream reconciliation, 2 November 2026:** detailed criteria in T26/T45,
+  T27–T30, T34/T40/T42 and active spec summaries now reflect the approved sole objective,
+  bounded context, windows, evidence limits and preserved gates. Candidate dispositions
+  recorded in T52. Guidance-source/data ownership proposal remains for author ruling;
+  T52 claimed and T54 blocked. No code, gold, threshold or runtime evidence changed.
+
+- **Definitive T52 scope, author approved 2 November 2026:** reliable login investigation
+  is the sole phase-0/1 objective. Keep bounded impact and directly connected activity
+  context. Defer standalone full asset inventory, exhaustive permission-path presentation
+  and reverse asset exposure. Supersedes broader E04 interpretation and earlier scope
+  summaries. Next: reconcile downstream requirements and evidence/data ownership. T52
+  claimed; T54 blocked. No code/gold/threshold changes. See spec Current scope ruling.
+
+- **T52 scope clarification, 2 November 2026:** author challenged reopening reverse exposure
+  and recalled objective 1 as the sole phase goal. Original conversation confirms narrowing
+  direction and bounded-context approval, with a formal scope caveat left unresolved. E04's
+  full-inventory interpretation needs clarification before downstream edits. See T52 scope
+  history and B-144. Prior mapping approvals are preserved, not treated as deliberate reversal.
+
+- **T52 mapping review complete, 2 November 2026:** author approved E01–E10 in the
+  [objective-to-evidence table](research/52-objective-to-evidence.md). Full potential blast
+  radius remains in scope. E06 combines limited uncertainty test cases with case-specific
+  guidance from approved incident-response practice; its boundary is recorded in the spec.
+  Next: candidate dispositions, then downstream requirements and B-143 reconciliation.
+  No runtime certification or build release. T52 claimed; T54 blocked; AUD-076 open.
+
+- **T52 objective-to-evidence table, 2 November 2026:**
+  [Mapping](research/52-objective-to-evidence.md) covers ten outcomes with data, behaviour,
+  expected answers, evidence, gaps and owners. [Saved evidence](research/52-saved-evidence-inventory.md)
+  separates historical results from current source and unbuilt integration. Table ready
+  for review; no scope change or reliability certification. Next: candidate dispositions
+  and downstream reconciliation. T52 claimed; T54 remains blocked.
+
+- **T52 direct-event window approved, 2 November 2026:** without an alert, use the single
+  login timestamp ±24 hours, clipped to available records with gaps stated; expansion stays
+  analyst-controlled. Narrow screening policy decisions are settled. Next: broader T52
+  objective/evidence review and downstream reconciliation. T54 still waits for T52 closure.
+
+- **T52 screening grading approved, 2 November 2026:** all four written applications
+  settled. O1-09/O1-12-D retain O1-06's full rules plus their specific failures; O1-02 needs
+  no invented threat, and quoting an injection is not obedience. T54 owns implementation
+  checks. Next narrow decision: direct-event window anchoring. Broader T52 closure remains.
+
+- **T52 provisional-model selection approved, 2 November 2026:** after all three passes,
+  require twelve completed trials per candidate, no critical errors and no applicable zero
+  scores. Compare quality case by case; similar quality is decided by cost, then speed.
+  If none qualifies, diagnose rather than automatically promote. Next: narrow grading
+  reconciliation and direct-event-window check. Broader T52 closure remains open.
+
+- **T52 screening assessor approved, 2 November 2026:** author scores; Codex prepares
+  blinded reviews and records labels/checks. Initial human scores precede assistant
+  discussion; revisions retain reasons. Small review batches; no second human/paid judge
+  required and no independent human-agreement claim. Next: provisional-model selection,
+  then narrow grading/direct-event-window checks. Broader T52 closure remains open.
+
+- **T52 approval audit, 2 November 2026:** all four scenarios/expected assessments,
+  common scoring, O1-06 anchors, role responsibilities and T54 ownership are already agreed.
+  Corrected stale summaries (B-142). Remaining screen decisions are assessor arrangements
+  and provisional-model selection; narrow checks cover the three written grading applications
+  and direct-event window anchoring. Fixtures/IDs/hashes/prompts are T54 build work, not a
+  renewed scenario-approval round. See T52's approval audit. Broader T52 closure remains open.
+
+- **T52 runner ownership/contract approved, 2 November 2026:**
+  [T54](issues/54-early-langfuse-evaluation-integration.md) owns the isolated comparison runner
+  and Langfuse recording together. Nine record groups, local-first evidence, retained failures
+  and separate blinded assessments are agreed. Build local runner, mirror, then prove live
+  recording with authorised scored screening evidence. T29/T30/T31 retain their existing
+  exam/judge/application-tracing responsibilities. T52 remains current; next are detailed
+  fixture/role/scoring readiness, assessor arrangements and model-selection rules.
+
+- **T52 spending simplification, author ruling 2 November 2026:** no request reservations
+  or worst-case billing gate. Track actual costs with US$25 as a planning budget, review at
+  US$15 and after 24 results. No guaranteed hard final-charge ceiling; token/call/retry counts
+  remain uncapped within approved time limits. Reservation research below is superseded.
+  Next: runner ownership/record contract and fixture/scoring readiness.
+
+- **T52 price/accounting research, 2 November 2026:** six selected standard-route prices
+  verified in public metadata, including DeepSeek `deepinfra/fp8`. See
+  [price report and reservation proposal](research/52-screening-price-and-reservation-check.md).
+  Reserve possible charges before dispatch and reconcile actuals is proposed; no new token
+  caps. Runtime billing bounds, ledger implementation and full-budget feasibility remain
+  unproved. No inference or account changes; T52 remains current.
+
+- **T52 spending approved, 2 November 2026:** US$25 shared across compatibility checks,
+  72 screening attempts and necessary setup-repair reruns; review at US$15 and after the
+  first 24 results. No per-model budgets. Excludes architecture calibration and paid judges.
+  Verify route prices and outstanding-charge accounting before execution. Execution-policy
+  choices are recorded; price/budget feasibility and runner readiness remain unproved.
+
+- **T52 setup-rerun policy approved, 2 November 2026:** rerun only comparisons
+  invalidated by a documented setup fix, across all affected models for shared changes.
+  Preserve originals and version repairs; poor scores alone do not justify reruns.
+  Next: spending policy. No paid execution authorised.
+
+- **T52 compatibility checks approved, 2 November 2026:** six separate initial setup
+  sessions before scoring, covering settings, tool round trip, output contract and result
+  recording under existing time limits. No added token/call/retry caps. Next: setup-rerun
+  policy and spending. Paid execution remains unapproved.
+
+- **T52 concurrency approved, 2 November 2026:** one screening case at a time, with
+  rotating model order and separate request/case timing. Next: compatibility-probe and
+  setup-rerun allowances, then spend policy. No paid execution authorised.
+
+- **T52 call/retry policy approved, 2 November 2026:** no evaluation-imposed call or
+  retry count caps within a case. Preserve all attempts and distinguish model/tool work
+  from transport/runner retries so recurring failures can reveal setup defects. Retries
+  share the existing case deadline; no extra scored trials approved. Next: concurrency,
+  probe/setup-rerun allowances and spend policy. No paid run authorised.
+
+- **T52 token policy approved, 2 November 2026:** no evaluation-imposed token caps for
+  the 72-answer screen. Measure token consumption as an outcome alongside quality, time
+  and cost; disclose unavoidable provider ceilings/defaults. Approved reasoning and time
+  limits remain. Next: call/retry, concurrency, probe/rerun and spending limits. No paid run.
+
+- **T52 timing approved, 2 November 2026:** three minutes per model request and ten
+  minutes per complete case attempt, including tool work and any permitted retry.
+  Preserve timeout outcomes. Output/reasoning allowance is the next decision, followed
+  by call/retry, concurrency, probe/rerun and spending limits. No paid execution approved.
+
+- **T52 model configuration approved, 2 November 2026:** OpenRouter gateway, DeepInfra
+  for Qwen/GPT-oss/DeepSeek, OpenAI for Luna/Sol and Anthropic for Haiku. Medium reasoning
+  for five, native high for DeepSeek; fixed standard-service routes with no silent fallback.
+  See [configuration and compatibility gaps](research/52-model-reasoning-settings.md).
+  Next: time/output/retry/call/spend limits. Compatibility remains unproved; no paid run begun.
+
+- **T52 screening repeats approved, 2 November 2026:** six models × four cases × three
+  attempts = 72 answers. Inspect the first 24 for setup problems, then complete two more
+  passes. Preserve all results; do not use this checkpoint for early elimination. Routes,
+  settings, execution limits and detailed fixture/scoring readiness remain open. The
+  separate 12-answer architecture calibration and T54 delivery order are unchanged.
+
+- **T52 screening cases approved, 2 November 2026:** all four cases and their expected
+  assessments are agreed: O1-02, O1-06, O1-09 and O1-12-D. The missing-history concern is
+  resolved. Six candidates × four cases means 24 answers per pass; repeats, routes/settings,
+  execution limits and detailed fixture/scoring readiness remain open. No paid run started.
+
+- **T52 six-model pool approved, 2 November 2026:** Qwen3.8-27B, gpt-oss-120b,
+  DeepSeek V4.1 Flash, GPT-6 Luna, Claude Haiku 5.5 and GPT-6.1 Sol. See the
+  [current shortlist](research/52-broad-model-shortlist.md). Three other shortlisted models
+  move to reserve. Routes, settings and execution limits remain open; no model winner
+  or paid run is approved. T52 remains current; T54 delivery order stays unchanged.
+
+- **T52 research checkpoint, 2 November 2026:** author requested broader model research,
+  including cheap open-weight candidates without a security-publication entry requirement.
+  [Shortlist](research/52-broad-model-shortlist.md) and
+  [screening evidence](research/52-model-screening-evidence.md) are recorded. No model is
+  selected. Additional screening is proposed; counts, budget and execution remain undecided.
+  T52 remains current and the approved T54 delivery order below is unchanged.
+
+- **Approved delivery order, 2 November 2026:** T52 remains current;
+  [T54 early Langfuse integration](issues/54-early-langfuse-evaluation-integration.md) is next
+  after T52, before instrumented 12-answer calibration. T52 settles runner ownership and
+  contract. T31 retains application/full-exam integration after T29 and reuses T54.
+  Model and paid-run budgets remain undecided.
+
 - **T53 resolved, 2 November 2026, taken ahead by the author's instruction:**
   [Stable Browser access](issues/53-stable-browser-logins.md) now uses `li_admin`/`li_reader`
   from the main `.env` and fixed localhost ports `7474`/`7687` for the selected pair.
@@ -130,6 +299,13 @@ value it adds to the app, not for the sake of demonstrating RAG.
   primary sources. The course's solution kits stay closed.
 
 ## Decisions so far
+
+- **T52 resolved, 2 November 2026:** reliable login investigation is the sole phase-0/1
+  objective; bounded context, uncertainty, evidence and security obligations are assigned
+  to downstream owners. Approved source/data ownership is recorded in the spec. See
+  [T52 closure evidence](issues/52-agent-objectives-and-reliability-review.md#answer-review-complete--2-november-2026).
+  Final runtime proof remains with implementation/evaluation/acceptance tickets.
+
 
 - [T53 Stable Browser access](issues/53-stable-browser-logins.md): stable named human users,
   separate application identity, fixed selected address, conflict refusal and recoverable

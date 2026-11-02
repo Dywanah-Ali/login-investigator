@@ -21,18 +21,43 @@ time, each the recommended option; each is a row in the decisions log at the end
 author ruled on Codex's review is marked **[review ruling N]**; there are six, each a row in the
 same log.
 
+## Current scope ruling — T52, 2 November 2026
+
+**Reliable login investigation is the sole product objective for phases 0 and 1.** Explain
+an alert or login through its triggering and surrounding activity, directly connected activity,
+supporting and competing documents, and explicit uncertainty. Code owns facts, the model
+assesses, and the analyst retains the verdict and controls history expansion.
+
+Include bounded account-impact context: recorded owner/role, relevant privileged or sensitive
+access with supporting permission paths, and involved-device connections. Potential access is
+not observed access. Preserve E06's approved uncertainty handling and case-specific guidance,
+and E07–E10's workflow, evidence, security and evaluation obligations.
+
+Standalone complete reachable-asset inventory, exhaustive permission-path presentation and
+reverse exposure from a selected asset are deferred beyond this phase. Existing graph code,
+source facts and regression evidence remain reusable; this ruling does not authorise deletion.
+E04's earlier full-inventory mapping is superseded by bounded potential-impact context within
+objective 1. E05 supports login investigation, not an independent spread-investigation objective.
+
+This ruling supersedes older broad blast-radius/product-scope wording below and in child tickets.
+T52's downstream reconciliation is complete. T26/T45 own their detailed package/retrieval
+choices, T34 the author-reviewed bounded-context screen, and T55 the expanded dataset design.
+Existing question files, gold and pass thresholds remain unchanged until any specific revision
+is reviewed. Missing retrieval evidence is not waived. The 50-person/30-day target, approved
+screening policies, T54 ownership and analyst-controlled windows remain unchanged.
+
 ## Problem Statement
 
 The Login Investigator flags suspicious sign-ins with four detection rules and lets an analyst
 question an AI agent about them. The agent can see only the sign-in log and IP reputation
 lookups. When a rule fires, the analyst still has to find out by hand who the account belongs to,
-which groups it is in, which systems it can reach and how sensitive they are, who else shares its
-laptop or network address, and whether a document explains the activity away (an approved trip, a
+which relevant privileges and sensitive access it has, who else used an involved device
+in the investigation window, and whether a document explains the activity (an approved trip, a
 helpdesk ticket, a laptop handover) or makes it worse (an MFA exception, a policy breach, a known
 attack technique). Today an alert is a flagged row, not an explained risk.
 
-The analyst wants the agent to answer three questions for a flagged sign-in, with evidence they can
-check: what happened, who and what it can reach, and whether it is actually a threat (T05 R1). The
+The analyst wants a reliable login assessment with checkable evidence: what happened, why it
+is concerning, what relevant account impact is possible, and what remains uncertain (T52). The
 author wants this built so it can be inspected, repeated and handed over: every claim the agent
 makes must be traceable to a record or a passage, and every gate must be measured, not trusted.
 
@@ -40,32 +65,36 @@ makes must be traceable to a record or a passage, and every gate must be measure
 
 A knowledge base inside the app, built around a knowledge graph of the synthetic organisation with
 hybrid text retrieval over a corpus of its documents. Semantic and keyword search find candidate
-passages; the graph decides and explains what an account can reach (map, reference shape).
+passages; deterministic graph queries supply relevant account context and supporting paths.
+The model interprets the evidence; the analyst owns the verdict (P-01/P-02).
 
 From the analyst's side:
 
 - The Alerts table shows each finding's stable ID in its first column, and the Investigate button
   asks the agent about exactly that finding (T07 d7, T05 d5).
 - In the Investigator chat, the analyst asks for an investigation. Nothing runs unless asked
-  (T05 R3). The agent runs a fixed playbook in code: account context, reachable assets, peers by
-  device and network, documents that clear the activity, documents that aggravate it. While it
+  (T05 R3). The agent runs a fixed playbook in code: account context, bounded potential impact,
+  involved-device peers, clearing documents and aggravating documents. While it
   runs, the five steps stack on the screen (T07 d4).
-- The answer gives a verdict, the three blast radii as counts, the graph path one line per hop, and
-  short citation tags L (log), G (graph) and D (document) (T07 d2, d3, d6, d9).
+- The answer gives an evidence-qualified assessment, bounded impact context, supporting paths
+  one line per hop, and tags L (log), G (graph) and D (document). T34 must agree the revised
+  bounded-context presentation with the author before UI code; full-radius tiles are superseded.
 - A third column holds two tabs. **Evidence** lists every cited record and passage for the
   investigation, downloadable as JSON (T07 d1, d5). **Graph** draws only the walk the agent made,
   read-only, with a click that lights the matching evidence (T08 d1 to d8).
 - When nothing in the corpus answers a question, the agent says so, with the closest misses shown
-  (T03 d1). When a document clears the activity, the agent says the alert is benign and cites it
-  (T04 d8).
+  (T03 d1). An applicable document explains only the activity it supports; separate suspicious
+  activity and unresolved questions remain visible. The analyst retains the verdict (T52 E03).
 - The report cannot be written until every required playbook step has run, or it names the step
   that could not run and why (T05 d11).
 
 From the author's side:
 
 - One generator writes the whole synthetic world, its log and its answer key (T04 d1, d15).
-- One PostgreSQL database with pgvector holds the organisation's tables, the document chunks, their
-  vectors and their keyword index, rebuilt from the files on every build (T02 d1, d5, d6).
+- PostgreSQL with pgvector holds source tables, document chunks, vectors and keyword indexes.
+  Neo4j holds the paired graph with passage references (T46–T49). SQLite holds the case index,
+  checkpointed messages/tool artifacts and saved reports; it is more than chat history.
+  Storage migration and broader preservation work remain separate under AUD-032/AUD-065.
 - The app refuses to start on a database built from older files than the ones on disk.
 - A second eval question file measures retrieval and answers separately, with per-question hard
   gates, and the Port's eval keeps passing unchanged beside it (T06 d1 to d8).
@@ -74,12 +103,13 @@ From the author's side:
 - Langfuse mirrors traces and eval runs behind a switch; the repo stays the source of truth
   (T06 d10).
 
-**Scope (map, author's ruling 20 October 2026).** Phase 0, Foundation: graph store, synthetic data
-generator with written ground truth, text corpus, hybrid retrieval with re-ranking, the eval harness
-with its first questions, read-only agent tools over graph and corpus. Gate: the eval harness runs
-end to end, retrieval and answer layers measured separately. Phase 1, Blast radius: slice 2
-(spray-to-compromise blast radius) plus spread and shared ground. Gate: eval pass on the phase 1
-questions, and the author accepts the live screen. The initiative closes there.
+**Scope (T52, author's ruling 2 November 2026).** Phase 0 establishes the foundation for
+reliable login investigation: graph/data/corpus, retrieval, read-only tools and separate
+retrieval/answer evaluation. Phase 1 completes and accepts that same investigation objective,
+including bounded impact context, uncertainty, preserved evidence and safe presentation.
+The complete application evaluation and author's live acceptance remain required. Standalone
+full-inventory and reverse-exposure capabilities are deferred. This supersedes the original
+20 October blast-radius scope; its decision history is retained in the map and resolved tickets.
 
 ## User Stories
 
@@ -122,22 +152,22 @@ questions, and the author accepts the live screen. The initiative closes there.
 
 15. As an analyst, I want the answer to state who the account belongs to, its department and its
     privilege groups, so that I know whose account it is.
-16. As an analyst, I want the answer to say which assets the account can reach and how sensitive
-    each is, so that I can judge the damage a compromise could do.
-17. As an analyst, I want the answer to say who else shares the account's device and network
-    address that week, so that I can see where the problem may spread.
-18. As an analyst, I want the three radii (groups, assets, peers) as counts with the worst item
-    named, so that I see the scale without reading a long list.
-19. As an analyst, I want the full lists of groups, assets and peers in the evidence panel, so that
-    I can check every item when I need to.
+16. As an analyst, I want relevant privileged and sensitive access with supporting paths,
+    so that I understand potential impact without mistaking permissions for observed access.
+17. As an analyst, I want dated peers for devices involved in the suspicious activity and
+    same-source login context, so that I can identify leads without assuming common control.
+18. As an analyst, I want bounded impact context with its selection and coverage limits,
+    so that selected evidence is not presented as a complete inventory.
+19. As an analyst, I want all returned supporting evidence preserved in the evidence panel,
+    so that I can inspect the answer without requiring an exhaustive permission inventory.
 20. As an analyst, I want the graph path written one line per hop, each hop a short sentence with its
     own citation tag, so that I can read the path aloud and check each step.
-21. As an analyst, I want a clear verdict (threat, benign, or cannot tell) on one coloured surface,
-    so that my eye finds the conclusion first.
-22. As an analyst, I want a benign verdict to name the document that cleared it in a "Cleared by"
-    line, so that I can see why the alert was dismissed.
+21. As an analyst, I want a clear evidence-qualified assessment on one coloured surface,
+    so that I can find the conclusion while retaining the final verdict myself.
+22. As an analyst, I want the explanation to name its supporting document and its limits,
+    so that a partial explanation does not silently dismiss the whole investigation.
 23. As an analyst, I want the answer to say when a document makes the activity worse, such as an MFA
-    exception on a compromised account, so that I learn why the attack worked.
+    exception on a possibly compromised account, without claiming an unproved attack mechanism.
 24. As an analyst, I want an attack technique mapped from MITRE ATT&CK to be stated as "consistent
     with" until the evidence supports more, so that the agent never overstates its case.
 25. As an analyst, I want every factual claim tagged with a short citation (L1, G1, D1), so that I
@@ -175,9 +205,10 @@ questions, and the author accepts the live screen. The initiative closes there.
 38. As an analyst, I want the graph to show only the nodes and edges the walk returned, so that the
     picture never suggests a link the agent did not find.
 39. As an analyst, I want the graph laid out top to bottom in playbook order (account, groups,
-    assets, shared devices and addresses, peers), so that I read it the same way every time.
+    relevant assets, involved devices, peers), so that I read it the same way every time.
 40. As an analyst, I want shape to say type (circle person, rounded box group, square asset, diamond
-    device, pill address), so that I can tell nodes apart without reading every label.
+    device), so that I can tell nodes apart without reading every label. Removed address-sharing
+    paths are not restored by graph presentation.
 41. As an analyst, I want the account under investigation as the one dark node and restricted assets
     marked with a small red R, so that the important nodes stand out.
 42. As an analyst, I want internal assets and the many peers folded into one node with a count, so
@@ -306,6 +337,13 @@ questions, and the author accepts the live screen. The initiative closes there.
 ## Implementation Decisions
 
 ### The synthetic world and the dataset (T04)
+
+- **T52 expanded target and ownership (author, 2 November 2026):** retain 50 people and
+  target 30 days of realistic surrounding login activity, varied cases and competing
+  documents. T55 owns the separately designed dataset expansion, consistency and
+  compatibility evidence before T40 uses it. No build is authorised by assigning ownership.
+  The seven-day description below remains the implemented baseline. Exact expansion details
+  need author-approved design; frozen Port questions/gates and existing stories remain.
 
 - **One generator, extended** (T04 d1). The Port's seeded generator keeps its seed, its seven-day
   window ending 8 October 2026 09:00 UTC, its 50 users, two offices, home addresses, three decoys
@@ -446,7 +484,9 @@ questions, and the author accepts the live screen. The initiative closes there.
   roles. Neo4j uses isolated writable preparation, retired builder credentials and graph-data
   read-only serving before publication. Verify write refusal, restart persistence and builder
   separation; Community's administrative powers remain the explicit exception below.
-- **Agent memory stays in SQLite** (T02 d9; AUD-032).
+- **Case persistence stays in SQLite** (T02 d9; AUD-032): case index, checkpointed
+  messages/tool results and artifacts, and saved report JSON. PostgreSQL/Neo4j remain source
+  stores. No migration or new backup/retention guarantee is implied (AUD-065).
 - **T46 development-stage ruling, 30 October 2026:** Neo4j Community is selected for development
   under the approved migration tickets despite lacking a restricted reader identity. Its serving
   account's administrative powers are an explicitly accepted development-stage limitation,
@@ -551,6 +591,11 @@ questions, and the author accepts the live screen. The initiative closes there.
   requested/effective period and available coverage; they must not imply complete coverage
   outside the available records. Organisation permissions remain a snapshot, not historical
   permissions. This supersedes fixed "that week" wording for these relationships.
+  **T52 package override:** these are generic core defaults, not investigation defaults.
+  T26 supplies alert start minus 24 hours through alert end plus 24 hours, or timestamp
+  ±24 hours for a single login, clipped with coverage disclosed. History expansion is
+  analyst-controlled. Package peers use involved suspicious devices with their selection
+  basis recorded; the generic all-subject-device result is not automatically the package.
 
 - **Walked in Neo4j** (T46 supersedes T02 d2), through fixed parameterised queries behind named
   core operations. Chunks remain reference nodes joined to entities by `mentions` edges; their
@@ -625,9 +670,9 @@ questions, and the author accepts the live screen. The initiative closes there.
   `search_corpus(question, doc_type, technique_id)`. No router tool, no sub-agent. All hand-written,
   parameterised, read-only. The model and agent are still created in exactly one function each.
 - **The investigation package** (T05 d2, d3): `investigate_alert` bundles playbook steps 2 to 6 into
-  one package with a named section per step (account context, reachable assets, peers, clearing
-  documents, aggravating documents), each with its own verdict and citations, computed and ordered
-  in code. Spray and brute-force targets are a section of it, empty for other rules. The clearing
+  one package with a named section per step (account context, bounded potential impact,
+  involved-device peers, clearing documents, aggravating documents), each with code-built
+  facts, evidence status and citations. The model assesses; the analyst owns the verdict. Spray and brute-force targets are a section of it, empty for other rules. The clearing
   and aggravating searches are built in code from the finding's record, never from the chat
   (T05 R5).
 - **Progress per internal step** (T05 d2, T07 d4), streamed through the Port's custom stream.
@@ -641,7 +686,8 @@ questions, and the author accepts the live screen. The initiative closes there.
   forward from T36 so the phase-0 lookup works in chat. The remaining names and step stack stay
   with T36; no new screen or evidence panel is introduced.
 - **Package caps** (T05 d12): five chunks per corpus search; assets and peers paged with a
-  `truncated` flag in the content; full lists in the artifact.
+  `truncated` flag in the content; complete returned lists in the artifact. Relevance
+  selection is distinct from truncation and does not imply exhaustive reachable inventory.
 - **Citations** (T05 d6, T07 d6): short per-answer labels L, G and D, numbered per answer, resolved in
   code against the investigation's artifacts after the model answers. A label that resolves to
   nothing sends the model back once with a correction; a second failure shows the answer with the
@@ -669,6 +715,22 @@ questions, and the author accepts the live screen. The initiative closes there.
   labels, so the after-model hook reads a list rather than parsing brackets. Decided in the citation
   ticket.
 
+### Uncertainty and next-investigation guidance (T52 E06, 2 November 2026)
+
+- Distinguish empty, unavailable, failed and omitted evidence, with explicit coverage limits.
+  Test these using small controlled evaluation cases. Missing evidence does not create a
+  requirement to add every missing data source or make every investigation resolvable.
+  The separately approved 50-person/30-day target remains unchanged.
+- Ground next-investigation recommendations in case evidence and approved incident-response
+  practice. Explain which uncertainty each check addresses and distinguish external analyst
+  checks from actions available in the app. Never imply a recommended check was performed.
+- T45 selects curated guidance sources and presents them for the author's approval before
+  use; T26 integrates approved guidance. Test recommendation relevance through the existing
+  T40/T29 responsibilities, with T28 preserving check/action state and T30 advisory. Ownership
+  is approved through T52; exact sources remain a T45 decision and are not yet adopted.
+  Broad response planning and automated containment are deferred. Additional telemetry is
+  not authorised by this requirement. History expansion remains analyst-controlled.
+
 ### Security (T05 d8, project rules)
 
 - **The fence** (T05 d8): every tool result is fenced and labelled with its source and trust level in
@@ -692,7 +754,9 @@ contract moves.
 1. **Alerts.** Each alert gains `finding_id` (T05 d16). The Investigate question becomes
    `Investigate finding <finding_id>: <rule title>, <first IP> against <N accounts | first user> from
    <first_seen> to <last_seen> UTC.`, still built in the frontend (T07 contract draft).
-2. **Investigations: reopen.** Each turn gains `evidence`, `radii` and `unresolved` (T07), and `graph`
+2. **Investigations: reopen.** T52 narrows the earlier `radii` draft below to bounded
+   impact context. T34 must agree its projection and screen with the author before build;
+   the draft does not require full inventory or three exhaustive counts. Each turn gains `evidence`, `radii` and `unresolved` (T07), and `graph`
    on turns where a graph tool ran (T08). All projected from the saved artifacts, never from the
    model's text and never from a fresh walk. Shapes from the ticket drafts, trimmed to their
    decision-rich parts, with the IDs written in the T05 formats:
@@ -749,16 +813,18 @@ contract moves.
   an Evidence tab and a Graph tab, built from the Port's shell and shadcn/ui pieces (T07 d1, T08 d2).
 - **Evidence tab** (T07 d1, d5): every cited record and passage for the investigation; a click on a tag
   in the answer highlights its row; a download button for the JSON.
-- **The answer's hop lines and radii tiles** (T07 d2, d3): an indented list, one hop per line with its
-  tag; three tiles with number, worst item and a "See list" link into the panel.
+- **The answer's supporting paths and bounded impact** (T52 supersedes T07 d3's full-radius
+  presentation): one hop per line with its tag. T34 agrees the revised screen with the author
+  before UI code, including selection/coverage limits and inspectable returned evidence.
 - **The step stack** (T07 d4): five steps stack while the investigation tool runs, then collapse into
   Tools used; the Port's tools keep one status line. **Build condition:** the ticket starts with a
   short research step into how Anthropic and OpenAI document streaming progress for multi-step
   agents, and records the patterns borrowed.
 - **The visual hierarchy rule** (T07 d9), checked by the author's screenshot review in light and dark
-  mode: (1) the verdict and the "Cleared by" line are the one coloured surface, red for threat, green
-  for benign, amber for cannot tell; (2) "Not checked" and unverified citations are amber and never
-  hidden; (3) radii tiles and path block are bordered boxes without colour; (4) citation tags are
+  mode: (1) the evidence-qualified assessment and supporting explanation occupy one coloured
+  surface, with wording preserving analyst authority and partial explanations; (2) "Not checked"
+  and unverified citations are amber and never hidden; (3) context and path blocks are bordered
+  boxes without colour; (4) citation tags are
   small, monospace, in the app's calm link blue; (5) prose stays plain. No new colours.
 - **Graph tab** (T08 d1 to d8): the walk only; organisation nodes only, no document chunks; restricted
   assets one by one, the many folded with a count; the click rule of T08 d5 including the uncited
@@ -827,6 +893,72 @@ contract moves.
 - **Intervals** (T06 hand-offs): Wilson intervals computed in code in the summary.
 
 ### Langfuse (T06 d10, AUD-036)
+
+Author approved on 2 November 2026: finish T52, then T54 builds the isolated comparison
+runner and reusable Langfuse recording. T54 supports separate compatibility, six-model
+screening and A/B/C calibration modes. T29 retains the full application exams, T30 the
+advisory judge and T31 application/full-exam tracing through the same recording module.
+Experimental scores remain separate from application acceptance gates.
+
+T54 implements [T52's approved record contract](issues/52-agent-objectives-and-reliability-review.md#approved-runner-ownership-and-record-contract--2-november-2026):
+versioned test setup, exact case evidence, model configuration, per-request history,
+tool/role activity, case outcomes, resource usage/cost, assessments and recording/review
+status. Stable IDs connect each trial, request, retry, score and repair. Keep execution
+status separate from assessment; 0/1/2, N/A and unscored remain distinct, with separate
+critical-error flags. Missing usage is unknown, not zero. Preserve original failures,
+partial answers, label revisions and affected-comparison reruns.
+
+Save request starts before dispatch and outcomes incrementally; local evidence precedes
+upload. Secrets are removed before persistence and all outbound records are masked. Upload
+failures never trigger another inference. Deterministic rescoring uses saved evidence.
+Human labels return only by explicit versioned export. Blinded answer review hides model
+and architecture identity, settings, cost, timing and revealing traces; separate process
+and security review states its trace-access/blinding limits. Runtime reads no Langfuse data.
+
+For the initial model screen, the author is the primary scorer. Codex prepares blinded
+reviews, records labels and runs deterministic checks. Save initial human scores before
+assistant discussion or suggestions, and preserve revisions with their reasons. Review in
+small batches and measure effort from the first batch. No second human or paid judge is
+required, and Codex assistance is not independent human agreement. T30 remains unchanged.
+
+Provisional-model selection follows all three screening passes. Eligibility requires twelve
+completed trials, no designated critical errors and no applicable criterion scored 0.
+Scores of 1 are allowed; N/A and unscored remain distinct. Compare eligible answers case by
+case for consistent completeness, then cost and speed when quality is similar. Record the
+author's rationale. If none qualifies, diagnose failures rather than automatically promoting
+one or weakening the rubric. Preserve setup-repair history and ordinary model failures.
+This chooses the A/B/C baseline only, not a permanent model or production certification.
+
+Written grading applications for the four screening cases are approved. O1-02 rewards
+supported expected travel without requiring an invented threat. O1-09 and O1-12-D inherit
+all O1-06 criteria and critical errors, adding missing-coverage and injection obligations
+respectively. Quoting malicious instructions is not obedience. Existing 2/1/0 distinctions
+and separate critical flags apply; T54 still must implement and validate these rules.
+
+For a direct single-login question without an alert, use its timestamp as both anchors:
+24 hours before and 24 hours after. Clip to available records and disclose missing coverage;
+further expansion requires the analyst's decision. This does not change alert-relative
+windows or the approved O1-06/O1-09 diagnostic coverage.
+
+T54 checkpoints are the local runner with fake-model checks, hosted recording with a fake
+destination, then authorised live verification. A genuine scored screening result reconciled
+with its local record and inspected by the author can satisfy T54's live criterion. A
+transport probe cannot. The later twelve-answer A/B/C calibration reuses the runner after
+provisional-model selection and separate budget/readiness decisions; it need not block T54
+closure. AUD-036 still requires T31's original full-exam evidence, including retrieval fields.
+
+For the initial screen, the approved protocol is six models × four cases × three passes,
+with a setup review after 24 attempts and six separate initial compatibility sessions.
+Run one case at a time with rotating model order, fresh memory and frozen inputs/settings.
+Allow three minutes per request and ten minutes per case, including retries/backoff; no
+evaluation-imposed token/call/retry count caps. Track actual costs against US$25 as a planning
+budget, reviewing at US$15 and after 24 results. No reservations or hard final-charge
+guarantee. This budget excludes architecture calibration and paid judges. Details and the
+approved model/provider settings live in the [comparison protocol](research/52-objective1-comparison-protocol.md).
+Fixture/role/scoring/selection readiness and remaining T52 closure work still gate build;
+this design approval does not launch paid execution or adopt a production specialist.
+
+The following original requirements govern T31's application/full-exam integration:
 
 - One callback handler in the agent-building function; the two question files uploaded as datasets;
   each eval run an experiment run stamped with the same fingerprint and commit as the JSON file;
@@ -967,6 +1099,14 @@ them.
 
 | Date | Decision | Reason |
 |---|---|---|
+| 2026-11-02 | Author approved T45 selecting guidance sources for review, T26 integrating approved guidance, and separate T55 owning the 50-person/30-day dataset before T40 uses it. Source selection and dataset design still require their own review before build. | Give each part a clear owner without treating ownership approval as source adoption or implementation approval. |
+| 2026-11-02 | Downstream reconciliation applies the already-approved T52 sole objective, E01–E10 and alert/event windows to active package, presentation and evaluation requirements; applies T50 address removal and T46 native inspection. No new scope or gate ruling. T34 retains author screen approval; guidance sources and dataset ownership remain open in T52. | Prevent older full-inventory, all-history, address-peer and categorical-verdict wording from overriding approved boundaries. Preserve historical graph regressions, questions, gold and failures. |
+| 2026-11-02 | Author approved a single login's timestamp as the centre of the 24-hour-before/after window when no alert exists. Clip to available records, disclose gaps and retain analyst-controlled expansion. Alert-relative and O1-06/O1-09 diagnostic windows remain unchanged. | Give direct-event questions an explicit default without inventing coverage or reopening approved scenarios. |
+| 2026-11-02 | Author approved the remaining screening grading applications: bounded expected travel for O1-02; full O1-06 rule inheritance for O1-09/O1-12-D plus coverage/injection obligations; quotation is not obedience. | Resolve inconsistent grading without reopening approved scenarios. All four written screening rubrics are agreed; implementation validation and wider catalogue approval remain separate. |
+| 2026-11-02 | Author approved provisional-model selection after three passes: twelve completed trials, no critical errors or applicable zero scores; compare quality first, then cost and speed for similar quality. If none qualifies, diagnose rather than automatically advancing one. | Allow meaningful partial answers while rejecting failed criteria and consequential errors. Preserve case-level evidence and keep exploratory baseline selection separate from permanent adoption. |
+| 2026-11-02 | Author approved primary human scoring for the initial model screen, with Codex preparing blinded reviews, recording labels and assisting after initial scores. Preserve revisions/reasons; review in small batches. No second human or paid judge required. | Keep investigation judgment with the author and automate bookkeeping without claiming independent human agreement. T30 and later architecture-stage arrangements remain separate. |
+| 2026-11-02 | Author approved T54 owning the isolated comparison runner and early Langfuse recording, T52's nine-group record contract and three delivery checkpoints. Genuine scored screening evidence can prove live integration before A/B/C calibration. T29/T30/T31 retain application exams, advisory judge and application/full-exam tracing respectively. Screening uses the approved sequential/time-limited protocol with uncapped token/call/retry counts and US$25 actual-cost planning, without reservations. | Assign one owner to producing and recording comparison evidence; preserve failures and blinded scores without changing application acceptance gates. T52 still gates readiness; architecture execution remains separate. |
+| 2026-11-02 | Author approved splitting T31: T54 follows T52 and precedes the 12-answer calibration; T31 retains application/full-T29 integration and reuses T54 | Capture evidence from the first comparison without pulling forward the full exam dependencies. T52 settles runner ownership and contract; existing mirror safeguards remain |
 | 2026-10-25 | Spec written from the map and tickets 02 to 08 | The decision tickets were complete; the map's frontier was the spec |
 | 2026-10-25 | Six test doors, one new: the knowledge-base door in the core | Author's ruling: retrieval and the walk are plain code, checked exactly and cheaply at one door that covers the tools, the API, the eval and the export |
 | 2026-10-25 | Author's ruling: B2 makes at least 20 failures within an hour, then succeeds | T04 d8's eight failures trip no rule; its own condition says a twin must trip the rules, and the rules may not change (T05 d15) |
@@ -1025,3 +1165,7 @@ them.
 | 2026-11-01 | T50 pre-build ruling: keep network nodes, drop `used address` edges. The build draws no such edges; the integrity check asserts none exist; network nodes stay as organisation facts with their `mentions` links | After the T25 removal nothing reads the edges; the radius was their only reader. Keep facts about the world, remove derived links nobody reads. The graph is rebuilt from source and the log keeps every sign-in, so a later phase can redraw the edges with the allocation records it would need anyway (AUD-073). Supersedes review ruling 1's edge rule and the 2026-10-25 row's edge clause; T08 d6's Graph tab loses address edges |
 | 2026-11-01 | Author approved T52 as the next decision ticket to review phase 0 and 1 agent objectives and reliability evidence, blocking T45 and T26. T25, T27 and T51 remain independently available | Confirm objective coverage and assess bounded Sentinel-inspired proposals before retrieval/package decisions. No capability, scope or evaluation-policy change is approved by opening the review; approved outcomes flow to downstream build and evaluation tickets |
 | 2026-11-01 | Author revised the immediate order to T51, then T52, before T45 and T26 | Finish the approved answer-key cleanup and verified pair activation before the objectives/reliability review. Priority only; existing dependencies and scope remain unchanged |
+
+| 2026-11-02 | T52 E06: author approved honest evidence-limit reporting tested with small controlled cases, plus case-specific next-investigation guidance grounded in case facts and approved incident-response practice. Distinguish external checks from app actions; curate sources and test relevance. Broader response planning and automated containment deferred | Recognising missing evidence does not require adding every missing data source or making every case resolvable. The approved 50-person/30-day target and analyst-controlled expansion remain unchanged. Source selection and detailed ownership remain T52 reconciliation work; no build or paid run authorised |
+
+| 2026-11-02 | T52 definitive scope ruling: reliable login investigation is the sole phase-0/1 objective. Retain bounded owner/role, privileged/sensitive-access and involved-device context. Defer standalone complete asset inventory, exhaustive permission-path presentation and reverse asset exposure | Resolves the earlier narrowing discussion and supersedes E04's broader interpretation. Keep original-evidence, security, uncertainty and end-to-end proof obligations. No code deletion, gold/threshold changes or build release; T52 reconciles affected tickets before closure |

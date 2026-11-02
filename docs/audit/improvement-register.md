@@ -102,7 +102,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-073 | VPN session allocation record, the missing evidence for address co-presence | Open, future idea for phase 3 (network facts); no dataset or scope change approved | Low | T25 gate session with the author, 1 November 2026; research note 25 |
 | AUD-074 | Name matching may link a passage about an office building to that office's network address | Open observation; nothing reads `mentions` links yet; no change approved | Low | T50 pre-build discussion, 1 November 2026 |
 | AUD-075 | Concurrent first use of a new SQLite memory file can hit "database is locked" in checkpointer setup | Open intermittent observation; isolated rerun passed; no change approved | Low | B-136; T50 full verification, 1 November 2026 |
-| AUD-076 | Map phase 0 and 1 agent objectives to reliability evidence | Open; decision review approved in T52, no implementation approved | Medium | Author and Codex discussion, 1 November 2026; Sentinel research |
+| AUD-076 | Map phase 0 and 1 agent objectives to reliability evidence | Closed: T52 decision review and approved handoffs evidenced, 2 November 2026; runtime proof remains downstream | Medium | Author and Codex discussion, 1 November 2026; Sentinel research |
 
 ### AUD-001: Rule filter
 
@@ -627,6 +627,20 @@ was not on OpenRouter when checked the same day. Closure evidence: an eval run c
 models on precision at 5 and on the refusal metrics, and a spec row recording the choice.
 
 ### AUD-036: Langfuse for traces and eval results
+
+Author approved on 2 November 2026: finish T52, then T54 owns the isolated comparison runner
+and reusable Langfuse recording under T52's approved nine-group record contract. Verify the
+local runner and mirror offline before authorised compatibility/screening execution. A real
+scored screening result can prove T54's live integration; the later twelve-answer A/B/C
+calibration reuses it after provisional-model selection and separate execution decisions.
+T31 retains application/full-T29 integration. Local files stay authoritative, save before
+upload, mask outbound records and export human labels explicitly. Blinded answer review
+hides candidate/design identity and revealing metrics/traces. Runtime readiness remains
+unproved; no paid run is launched by this ownership decision.
+
+Tracking: [T54](../../.scratch/knowledge-base/issues/54-early-langfuse-evaluation-integration.md)
+owns the early portion. AUD-036 remains open for implementation evidence; screening/calibration alone
+does not satisfy its original retrieval-layer closure requirement.
 
 The author has three months of free access to Langfuse, starting 21 October 2026 and therefore
 ending around 21 January 2027. Langfuse stores traces of every agent run (tool calls, retrieval
@@ -1475,7 +1489,74 @@ no dependency, implementation or spec change.
   the agreed objectives. Citation resolution and gold-ID coverage do not alone prove claim
   support; the advisory judge's limits are an agreed tradeoff to assess, not a newly proven defect.
 - **Approved work:** a decision review and objective-to-evidence table, with bounded additions
-  proposed separately. T52 blocks T45 and T26. No implementation or evaluation-policy change yet.
+  proposed separately. T52 blocks T45 and T26. Screening execution policies are now approved
+  in T52; no application implementation or production acceptance-gate change is approved.
+- **2 November 2026 accounting follow-up:** approved US$25 screening budget, time limits
+  and no evaluation token/call/retry caps. Public
+  route prices are recorded in the [T52 price report](../../.scratch/knowledge-base/research/52-screening-price-and-reservation-check.md).
+  Request reservations were proposed, then explicitly rejected by the author as unnecessary
+  for this stage. US$25 is a planning budget, not a guaranteed final-charge ceiling.
+  Retain actual-cost reporting, unknown-charge visibility and reviews at US$15/24 results.
+  Worst-case billing bounds and reservation enforcement are not pre-run proof obligations.
+  Broader objective/reliability evidence and runner readiness remain open.
+- **2 November 2026 runner ownership:** author approved T54 building the isolated comparison
+  runner and recording module under T52's nine-group evidence contract. T29/T30/T31 retain
+  application exams, advisory judging and application/full-exam tracing. Ownership is settled;
+  fixture/role/scoring readiness, selection rules, implementation and measured results remain
+  outstanding. Neither this decision nor T54's early mirror evidence closes AUD-076/AUD-036.
+- **2 November 2026 approval audit:** B-142 records stale draft summaries that obscured
+  approved cases/counts/ownership. Corrected status wording and separated T54 implementation
+  artifacts from author decisions. Remaining screen decisions: assessors and provisional-model
+  selection; narrow checks: grading applications and direct-event anchoring. Existing scenario
+  approvals stand. The broader objective/evidence and downstream reconciliation work remains open.
+- **2 November 2026 assessor ruling:** author is primary screening scorer, with Codex
+  preparing blinded reviews and recording labels/checks. Initial human scores precede
+  assistant suggestions; revisions retain reasons. No second human/paid judge required;
+  no independent human-agreement claim. Assessor ownership is resolved, not scorer validity
+  or measured reliability. Selection rules and narrow grading/window checks remain open.
+- **2 November 2026 selection ruling:** provisional A/B/C eligibility requires twelve
+  completed screening trials, no critical errors or applicable zero scores. Compare quality,
+  then cost/speed for similar quality; diagnose if none qualifies. This settles selection
+  policy, not evidence of a winning model or production reliability. Narrow grading/window
+  checks and broader objective/evidence reconciliation remain open.
+- **2 November 2026 grading ruling:** all four written screening applications approved.
+  O1-09/O1-12-D inherit O1-06's complete rules and add their respective obligations;
+  supported travel needs no invented threat and quotation does not establish injection
+  obedience. Grading ambiguity is resolved; T54 implementation evidence, direct-event window
+  anchoring and broader objective/evidence reconciliation remain outstanding.
+- **2 November 2026 window ruling:** direct single-login questions without an alert use
+  the login timestamp ±24 hours, clipped to available records with explicit coverage gaps
+  and analyst-controlled expansion. The narrow screening policy checklist is settled.
+  Broader T52 mapping/reconciliation and T54 implementation evidence remain outstanding.
+- **2 November 2026 evidence mapping:** [objective table](../../.scratch/knowledge-base/research/52-objective-to-evidence.md)
+  and [raw-result inventory](../../.scratch/knowledge-base/research/52-saved-evidence-inventory.md)
+  distinguish intended, implemented, tested and demonstrated behaviour. Saved retrieval
+  remains 5/8; T49 Port 60/63 with Q04 attribution 0/3. T49 graph evidence predates T50.
+  Integration and phase-1 proof retain owners. B-143 tracks stale wording. Mapping exists;
+  author review, candidate dispositions and downstream reconciliation remain open.
+- **2 November 2026 mapping approval:** author reviewed and approved all ten rows E01–E10.
+  E06 adds bounded case-specific guidance and controlled uncertainty test cases, recorded
+  in the spec. Candidate dispositions, downstream reconciliation and B-143 remain open.
+  No runtime gaps or retrieval/attribution failures are closed by mapping approval.
+- **2 November 2026 definitive scope:** author confirmed reliable login investigation as
+  the sole phase-0/1 objective, retaining bounded impact context and deferring standalone
+  full inventory/exhaustive path presentation/reverse exposure. Supersedes broader E04.
+  B-144's ambiguity is resolved; B-143 and detailed downstream reconciliation remain.
+  Existing gold and runtime gaps are not waived. No storage migration is implied.
+- **2 November 2026 downstream reconciliation:** active spec and T26/T45, T27–T30,
+  T34/T40/T42 criteria now carry the sole objective, windows, bounded context and evidence
+  obligations. T52 records candidate dispositions and a concrete guidance-source/data
+  ownership proposal for author ruling. Screen/API agreement stays with T34. No runtime
+  gap closes; original K04 gold, AUD-064 calibration and AUD-066 attribution remain unchanged.
+- **2 November 2026 ownership approved:** author approved T45 guidance-source selection
+  for review, T26 integration and separate T55 dataset ownership. T40 now waits for T55.
+  Exact sources and dataset design remain review obligations before build. T52's final
+  closure review remains; no runtime gap or existing audit failure is closed.
+- **Closed, 2 November 2026:** T52's final closure table links author-approved mapping,
+  definitive dispositions, spec decisions and detailed owner criteria. T45/T26/T55 ownership
+  was explicitly approved in chat. B-143's remaining K03 review belongs to T40; B-145 corrects
+  the stale T51 assignment. This closes the review concern only. No application reliability
+  certification and no closure of AUD-062/064/066 or AUD-036 is implied.
 - **Closure evidence:** author-approved mapping and dispositions, approved changes recorded in
   the spec and affected tickets, and explicit owners for every outstanding proof obligation.
   Closing this review concern does not certify unfinished capabilities or close AUD-062/AUD-064.

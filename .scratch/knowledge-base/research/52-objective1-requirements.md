@@ -18,9 +18,10 @@ Source: author discussion in T52; research in `52-objective1-investigation-patte
   resolve uncertainty. Connections and permissions do not prove compromise or actual access.
 - Distinguish empty, unavailable, failed and omitted results.
 
-Making this the sole phase 0/1 objective remains under discussion. Full blast-radius and
-reverse-exposure scope dispositions have not been approved. Existing spec requirements
-remain until explicitly reconciled under T52.
+Author ruling, 2 November 2026: this is the sole phase-0/1 product objective. Retain the
+bounded account-impact summary; defer standalone full asset inventory, exhaustive permission-
+path presentation and reverse asset exposure. See the spec Current scope ruling. Existing
+graph capabilities remain reusable; downstream reconciliation and runtime proof are pending.
 
 ## Proposed case-file structure
 

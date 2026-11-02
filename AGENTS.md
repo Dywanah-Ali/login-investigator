@@ -30,9 +30,10 @@ initiative gets its own folder under `.scratch/`, its own map, spec and tickets,
 rigour tier it deserves. Tier 3 stays the default for anything the app will depend on.
 
 **Current initiative:** `.scratch/knowledge-base/`, a knowledge graph with RAG in its ecosystem
-that explains the threat behind a login alert. Scope is phases 0 and 1 only (foundation, then
-blast radius with spread and shared ground); later phases are planned features, not
-requirements. See its `map.md` for the frontier.
+that explains the threat behind a login alert. Scope is phases 0 and 1 only, with reliable login investigation as the sole
+product objective (T52, 2 November 2026). Retain bounded account-impact and directly connected
+activity context; standalone full asset inventory and reverse asset exposure are deferred.
+Later phases are planned features, not requirements. See its `map.md` for the frontier.
 
 ## How the bootcamp projects are used from now on (author's ruling, 20 October 2026)
 

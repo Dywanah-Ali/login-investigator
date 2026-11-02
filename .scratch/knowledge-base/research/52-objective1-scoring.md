@@ -5,7 +5,15 @@ Author approved the scoring approach: automatic factual/reference checks where p
 case-specific semantic criteria scored 0/1/2 or not applicable, and separately designated
 critical errors that cannot be compensated by other scores. The author also accepted the
 O1-06 application and incomplete-versus-critically-misleading distinction on 2 November.
-Pass/adoption thresholds and trial counts remain open.
+Screening counts are approved: six models × four cases × three passes. The separate
+A/B/C calibration has twelve answers. The author is the initial screen's primary scorer,
+with Codex preparing blinded reviews and recording labels; initial human scores precede
+Codex discussion/suggestions, and revisions retain their reasons. No second human or paid
+judge is required, and no independent human agreement is claimed. Provisional-model eligibility
+requires twelve completed trials, no designated critical errors and no applicable zero scores.
+Among eligible configurations compare quality first, then cost/speed for similar quality;
+if none qualifies, diagnose rather than automatically promoting one. Permanent-adoption
+thresholds belong to a later confirmation plan.
 
 ## Common procedure
 
@@ -28,7 +36,8 @@ Pass/adoption thresholds and trial counts remain open.
 6. Blind architecture labels and shuffle answer review order. The author approves expected
    judgments; the model judge stays advisory under T30. Resolve disputed scores against the
    evidence and preserve the original disagreement and ruling. Human-review protocol and
-   assessor calibration still need specification; no independent agreement is claimed yet.
+   assessor calibration for later stages still needs specification. The initial screen uses
+   the approved author-plus-Codex arrangement above; no independent human agreement is claimed.
 7. Report per-case criterion profiles, critical errors and trial variation. Show time, tokens,
    calls and failure/retry rates separately. Do not select best runs or equate different
    question counts/variants with independent scenario diversity.
@@ -88,9 +97,12 @@ wording. Exact scores require full answers and their evidence context.
 
 ## Remaining before execution
 
-O1-06 anchor/critical-error review is complete. Drafts now cover
+O1-06 anchor/critical-error review is complete. All four screening scenarios and their
+expected assessments are approved. Written detailed anchors now cover
 [remaining case anchors](52-objective1-scoring-anchors.md) and a
-[trial/adoption protocol](52-objective1-comparison-protocol.md). These drafts still need review.
-Assessor calibration, explicit acceptance rules and authorised fixture/runner implementation
-remain outstanding. Existing evaluation gates remain unchanged. This document is not an
+[trial/adoption protocol](52-objective1-comparison-protocol.md). The three remaining screening
+applications are now approved, including full O1-06 inheritance for O1-09/O1-12-D.
+The wider catalogue remains draft and outside this screen. Screening assessor arrangements
+and provisional-model selection rules are approved above; T54 implementation remains outstanding. Existing
+evaluation gates remain unchanged. This document is not an
 executed test or certification.

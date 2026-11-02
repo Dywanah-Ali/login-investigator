@@ -2,11 +2,16 @@
 
 Type: build
 Status: ready-for-agent
-Blocked by: 29
+Blocked by: 29, 54
 Phase: 0
 Model: standard (Opus 5.5 or Sol 6.1)
 
 ## What to build
+
+Delivery split: [T54](54-early-langfuse-evaluation-integration.md) owns the isolated comparison
+runner and early screening/calibration recording. This ticket retains application and full-exam
+integration, reusing T54 machinery.
+The criteria below apply to this remaining scope.
 
 Langfuse mirrors dev investigations and eval runs behind one switch that is off by default. The repo
 stays the source of truth: the JSON result file is written first, an upload failure is shown loudly,
@@ -43,3 +48,16 @@ and the author's labels come back only through an export script into a repo file
       findings triaged.
 
 ## Comments
+
+- Author approved on 2 November 2026: finish T52, then T54 early Langfuse evaluation
+integration, then instrumented 12-answer A/B/C calibration. T31 retains application tracing
+and full T29 exam integration, reusing T54. T52 must assign the calibration runner implementation
+owner and settle its record contract before T54 starts. Local files remain authoritative;
+results are saved before upload, masking applies throughout, and human labels return only
+through explicit export. Blinded scoring must hide revealing architecture labels and traces.
+Model choice, budgets and paid execution remain separate unresolved decisions.
+
+- 2026-11-02 — Later author ruling assigns the comparison runner and its nine-group record
+  contract to T54. Its live integration can be proved with a scored screening result before
+  architecture calibration. This ticket keeps application/full-T29 integration and reuses
+  that recording module; its original full-exam acceptance evidence remains required.

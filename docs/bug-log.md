@@ -2402,3 +2402,77 @@ with creating a separate graph, obscuring everyday access to the selected graph.
 **Fix:** lead with the stable Browser settings and existing saved queries; make a separate
 offline build optional. No commands or application behaviour changed.
 **Lesson:** operator instructions should start with the routine task, then explain preparation.
+
+### B-142 · 2026-11-02 · T52 stale draft summaries obscured recorded approvals
+
+**Symptom:** the assistant proposed defining cases/scoring again after the author had approved
+the four screening scenarios, common method and O1-06 grading. Case/scoring notes still said
+trial counts, provider settings or implementation ownership were open. One original catalogue
+still said only O1-06 had accepted gold.
+**Cause:** later decisions were added to ticket history and some status blocks without
+reconciling older current-status paragraphs. Build artifacts such as fixture hashes were also
+described as decisions that had to exist before their implementation ticket could start.
+**Fix:** audited explicit approvals, corrected current status in affected case/scoring notes,
+and recorded a precise T52 approval matrix. Separated assessor/selection decisions and narrow
+grading/window checks from already-approved scenarios and T54 implementation work. Historical
+comments remain; no scoring rule or expected answer was silently approved or changed.
+**Lesson:** distinguish a missing decision from a decision awaiting implementation, and check
+the latest explicit ruling before asking the author to decide again.
+**Found by:** author's challenge, followed by local documentation audit. Local link and
+whitespace verification; no application tests or model calls needed for these text corrections.
+
+### B-143 · 2026-11-02 · T52 · Older scope prose and acceptance pointers lag rulings
+
+**Symptom:** spec overview/stories retain address peers and one-store wording; K03 provenance
+refers to removed address context; T42 still names Gephi. Older categorical verdict language
+also needs alignment with P-02/T52.
+**Cause:** later rulings did not reconcile all earlier summaries and downstream pointers.
+**Fix:** pending T52 reconciliation under applicable approved rulings. Locations and follow-up
+are in the [mapping queue](../.scratch/knowledge-base/research/52-objective-to-evidence.md#reconciliation-queue-not-scope-decisions).
+No spec, frozen exam or acceptance gate changed in this task. AUD-076 tracks the open work.
+**Lesson:** preserve history while reconciling active summaries so stale prose cannot restore
+superseded requirements.
+**Found by:** T52 source/document audit; no runtime failure or new test claimed.
+
+### B-144 · 2026-11-02 · T52 · Mapping review did not resolve the earlier scope-narrowing discussion
+
+**Symptom:** after ten mapping approvals, the assistant proposed reviewing reverse exposure;
+the author recalled narrowing this phase to objective 1. E04 had been presented as a retained
+full asset inventory without first resolving that earlier direction.
+**Cause:** the assistant relied on handoff/spec status as the intended scope. Original chat
+supported narrowing and approved bounded impact context, but left a formal scope caveat.
+**Fix:** inspected original conversation timestamps and recorded the exact distinction in
+T52's scope-history verification. Scope clarification remains pending; no blanket sole-objective
+approval or deliberate reversal is inferred. No application or spec scope changed.
+**Lesson:** resolve conflicts between conversational direction and formal scope before asking
+for detailed mapping approval. Later assent to an assumed scope is not proof of deliberate reversal.
+**Found by:** author's challenge and original-conversation inspection.
+
+**B-144 follow-up, 2 November 2026:** author explicitly confirmed sole-objective scope and
+deferral of standalone full inventory/reverse exposure. Corrected active scope entry points,
+mapping and affected-ticket handoffs. Original review history retained. Scope ambiguity is
+resolved; detailed downstream reconciliation and B-143 cleanup remain tracked in T52.
+
+
+**B-143 reconciliation follow-up, 2 November 2026:** corrected active spec overview/stories
+and package/screen/storage wording under the existing T46/T50/T52 and P-02 rulings. Reconciled
+T26/T34/T40/T42/T45 criteria and carried evidence duties into T27–T30. T42 now names native
+Browser inspection while retaining historical T20 evidence. No runtime fix claimed. K03
+provenance remains T51 work; original questions/gold were not edited. The bounded screen/API
+revision remains explicitly subject to author agreement in T34. Verification recorded in T52.
+
+**B-144 reconciliation follow-up, 2 November 2026:** recorded candidate dispositions and
+rewrote downstream requirements around the definitive sole objective. No reverse-exposure
+redesign or full-inventory requirement reinstated. Remaining T52 source/data allocation is
+explicitly proposed rather than silently adopted.
+
+### B-145 · 2026-11-02 · T52 · K03 cleanup assigned to a closed ticket
+
+**Symptom:** downstream reconciliation assigned K03's obsolete address-reuse provenance to
+T51, leaving no active owner. **Cause:** the answer-key wording task was mistaken for exam
+provenance cleanup; T51 is resolved and explicitly preserved the question file.
+**Fix:** inspected T51 and the current K03 provenance; assigned a proposed correction to
+T40, subject to author review before changing the frozen exam. Corrected T52's closure
+record and mapping. No question/gold changed and no T51 work reopened.
+**Lesson:** check a ticket's status and explicit exclusions before assigning it remaining work.
+**Verification:** T40 criterion names K03/B-143, T51 stays resolved and the exam has no diff.

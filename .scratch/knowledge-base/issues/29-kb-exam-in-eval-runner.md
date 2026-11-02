@@ -27,6 +27,16 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
 
 ## Acceptance criteria
 
+- [ ] Carry E01–E10 into a coverage matrix linking case, collection/retrieval check,
+      interpretation check and saved evidence. Fixed-evidence T54 results cannot substitute
+      for application collection, tool execution, reopen or full-exam proof.
+- [ ] Retain exact graph regressions and frozen Port/knowledge-base questions and gold. Any
+      proposed scope-related exam revision requires an explicit author ruling before edits;
+      narrowing product scope does not waive K04 or blend screening scores into acceptance.
+- [ ] Distinguish label resolution/gold citation coverage from semantic claim support.
+      T30 remains advisory; record attribution failures such as AUD-066 without assuming
+      all are grader defects. Preserve failed, incomplete and repaired attempts.
+
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
       dated line under Comments records the model used.
@@ -52,3 +62,9 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
       findings triaged.
 
 ## Comments
+
+- 2026-11-02 — Author-approved ownership: T54 builds the isolated model/architecture
+  comparison runner and reusable recording module. T29 retains the application's Port
+  and knowledge-base acceptance exams and their existing gates. Reuse suitable recording
+  utilities without blending experimental scores into acceptance rates. No dependency
+  on T54 is added to the local exam; T31 handles its hosted integration after both exist.
