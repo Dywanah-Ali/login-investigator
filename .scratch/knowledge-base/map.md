@@ -22,9 +22,11 @@ value it adds to the app, not for the sake of demonstrating RAG.
   [T54](issues/54-early-langfuse-evaluation-integration.md) has frozen fixtures, the isolated
   runner, local evidence bundle, blinded review, selection report and Langfuse mirror, all
   tested offline with a dry-run adapter. Author rulings: fixed-evidence screening; mirror sent
-  by our own OTLP/REST code. Next: rulings on AUD-077's two items, then checkpoint 3 (paid
-  adapter docs check, compatibility sessions, screening), which needs execution authorisation.
-  T54 stays open; no paid run or live upload has happened.
+  by our own OTLP/REST code. Later the same day: the ten Docker-dependent test files passed
+  (65, one AUD-072 readiness timeout passing on rerun; B-147), and AUD-077's two items were
+  ruled (keep O1-12-D's real document name; allow gold as Langfuse expected output). Next:
+  checkpoint 3 (paid adapter docs check, compatibility sessions, screening), which needs
+  execution authorisation. T54 stays open; no paid run or live upload has happened.
 
 - **Current frontier, 2 November 2026: T52 resolved.** Objective/evidence review, candidate
   dispositions and downstream reconciliation are complete. AUD-076 closes as a decision
