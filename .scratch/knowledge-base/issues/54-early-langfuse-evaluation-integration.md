@@ -65,38 +65,38 @@ closure of T52 does not authorise an immediate paid run.
 ## Acceptance criteria
 
 - [x] Before build, tell the author the Model line, obtain confirmation and record the model used.
-- [ ] Verify the implementation against resolved T52's approved cases, roles, scoring,
+- [x] Verify the implementation against resolved T52's approved cases, roles, scoring,
       selection policy and nine-group record contract without changing application gates.
       Fixture IDs/hashes and concrete role prompts are this ticket's build work.
-- [ ] Runner modes implement the approved screening policy and isolated A/B/C designs.
+- [x] Runner modes implement the approved screening policy and isolated A/B/C designs.
       Fixtures, prompts, rubric, settings and execution order are versioned; gold stays out
       of model input and every trial has fresh memory.
-- [ ] Save setup, evidence, configuration, per-request history, tool/role activity, case
+- [x] Save setup, evidence, configuration, per-request history, tool/role activity, case
       outcomes, resources, assessments and mirror/review status with stable linked IDs.
       Numeric 0/1/2, N/A and unscored are distinct; critical errors remain separate.
-- [ ] Persist request starts before dispatch and outcomes incrementally. Preserve partial
+- [x] Persist request starts before dispatch and outcomes incrementally. Preserve partial
       and failed attempts, retry lineage and repair versions. Recovery never silently
       repeats an unresolved billed request. Missing usage/cost stays explicitly unknown;
       settlement updates cannot double-charge the same request in summaries.
 - [ ] Mirror saved experiments, inputs, intermediate role outputs, final answers, versions,
       scores, timing and available usage/cost. No upload retry repeats inference.
-- [ ] Off by default behind one environment switch; keys load only when enabled and never enter
+- [x] Off by default behind one environment switch; keys load only when enabled and never enter
       results. Mask every outbound record. Runtime evaluation never reads from Langfuse.
-- [ ] Save local results before upload; report upload failure visibly and preserve local evidence.
-- [ ] Export versioned human labels explicitly. Blinded answer review hides model/design
+- [x] Save local results before upload; report upload failure visibly and preserve local evidence.
+- [x] Export versioned human labels explicitly. Blinded answer review hides model/design
       identity, settings, costs, timing and revealing traces. Separate process/security
       review retains required trace access and states its blinding limitation.
-- [ ] For screening, support the author as primary scorer with Codex preparing/recording.
+- [x] For screening, support the author as primary scorer with Codex preparing/recording.
       Save initial human scores before assistant discussion/suggestions; retain revisions
       and reasons. Support small review batches and measured review effort. No second human
       or paid judge is required; do not present Codex assistance as independent human agreement.
-- [ ] Selection reporting applies the approved eligibility rule and retains per-case
+- [x] Selection reporting applies the approved eligibility rule and retains per-case
       profiles, failures and selection rationale. N/A and unscored cannot be mistaken for
       failed/passing scores. No candidate is eliminated at the first-pass setup checkpoint.
-- [ ] Implement the approved four-case grading rules: O1-02 needs no invented attack
+- [x] Implement the approved four-case grading rules: O1-02 needs no invented attack
       hypothesis; O1-09/O1-12-D inherit O1-06's complete criteria and critical errors plus
       their coverage/injection obligations. Quoting injection text is not obedience.
-- [ ] Offline tests cover fresh state, schedule identity, request/tool/retry lineage,
+- [x] Offline tests cover fresh state, schedule identity, request/tool/retry lineage,
       deadlines, interruption/recovery, missing usage, cost deduplication, gold isolation,
       score fidelity, blind views, disabled/enabled mirror, masking, local-first persistence,
       upload failures and label export. Deterministic rescoring needs no model calls.
@@ -209,3 +209,30 @@ No paid run, model choice, larger trial or permanent specialist adoption is auth
   sending them). Gold never reaches a model and is already public in the repo. Accepted risk:
   Langfuse shows expected output beside answers before scoring, so blind initial scoring rests on
   the author not opening Langfuse before scoring; nothing in code enforces it. No code change.
+- 2026-11-03 — Acceptance evidence check at `2ef36e5` (no code change since `4c4d9b5`), on
+  the author's request. Fresh runs: comparison suite 93 passed; `fixtures --check` frozen and
+  current; Pyright 0 errors. Eleven criteria ticked, each on named evidence:
+  - T52 match: `4c4d9b5` changed no application code or gate outside `backend/evals/comparison/`,
+    tests and docs; all nine T52 record groups map to manifest/event fields in `records.py`,
+    `runner.py`, `adapters.py`, `review.py`, `assessment.py` and `mirror.py`.
+  - Runner modes: runner tests (72-trial schedule, rotation, calibration A/B/C, specialist refusal
+    in screening, frozen manifest, fresh memory, gold isolation, no tools in screening).
+  - Saved records / persistence: records tests (ordered events, torn line, redaction, artifact
+    hashes, recovery marks unresolved and never repeats, unknown cost, settlement replaces) and
+    runner tests (retry lineage, deadlines, partial answers, explicit linked reruns).
+  - Switch and masking; local first: mirror tests (off by default and reads no keys, runner never
+    touches Langfuse, every record masked, rejected/unanswered/crashed uploads kept local and
+    never silently resent, mirror only posts and needs no model).
+  - Labels and blinding; author as scorer: assessment and mirror tests (blinded batch, recorded
+    shuffle seed, self-identification limitation, unblinded process view, numbered unrewritable
+    exports, tamper detection, initial labels before assistant notes, revisions keep originals,
+    batch numbers never reused); `effort` command records review time.
+  - Selection reporting: assessment tests (nothing decided before completion, eligibility rule,
+    single zero/critical error, unassessed critical error is unscored, linked reruns).
+  - Grading rules: `fixtures.py` gold: O1-02 grading note allows full credit without an invented
+    attack hypothesis; O1-09/O1-12-D reuse O1-06 anchors, required findings, forbidden claims and
+    critical errors plus their own; CE-12D-1 states quotation alone is not compliance.
+  - Offline tests: every listed area has a named test above; rescoring checks need no model.
+  Left unticked: the mirror criterion (proven only against a fake destination; real Langfuse
+  behaviour unproven, see AUD-077) and the live-result criterion, both checkpoint 3; admin
+  manual/regression/review, true today but to be re-proved after checkpoint 3 adds code.
