@@ -62,6 +62,14 @@ progress per internal step, so the screen can later stack the steps while they r
       author's ruling. Standalone inventory and exhaustive path presentation are deferred.
 - [ ] The clearing and aggravating searches are built from the finding's record; a test proves the
       chat text does not reach them.
+- [ ] Keep the package a thin coordinator over the same core account, graph and search
+      functions used by narrow tools. Do not duplicate retrieval logic or introduce a model
+      investigator inside the tool. No prior narrow-tool calls or model-supplied tool outputs
+      are required to assemble the package.
+- [ ] Save each internal step's inputs, outputs, evidence IDs and failure status in the artifact,
+      under existing security/persistence rules. Independently verify component behaviour and
+      package assembly/selection/caps. Use controlled missing-document and failed-step cases
+      to distinguish retrieval misses from assembly omissions; do not add new gold or thresholds.
 - [ ] Reuse the shared graph operations and retain their exact S6 regression against
       `truth.json`. Test the bounded package selection separately with supporting record/path
       IDs and stated omissions. Do not assert that a selected subset equals the full radius,
@@ -85,6 +93,12 @@ progress per internal step, so the screen can later stack the steps while they r
       findings triaged.
 
 ## Comments
+
+- 2026-11-03 — Author approved the coordinator boundary after discussing overlap with
+  narrow tools and troubleshooting. Reuse shared core functions; retain step-level evidence;
+  test components and assembly separately. T29 owns separate application evidence for collection,
+  assembly and model interpretation. See spec "Investigation coordinator boundary". Documentation
+  only; no build release, specialist adoption or T54 change.
 
 - 2026-11-01 — T25 gate ruling: address-sharing context is removed everywhere. T50 removes it
   from the radius and answer key first, so this ticket now also waits for T50.

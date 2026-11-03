@@ -30,6 +30,11 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
 - [ ] Carry E01–E10 into a coverage matrix linking case, collection/retrieval check,
       interpretation check and saved evidence. Fixed-evidence T54 results cannot substitute
       for application collection, tool execution, reopen or full-exam proof.
+- [ ] For `investigate_alert`, distinguish collection/retrieval evidence, package assembly
+      evidence and final model interpretation. Use T26's saved step inputs, outputs, evidence IDs
+      and failure states to locate a miss at its stage. Component/package checks remain with T26;
+      do not infer collection success from a plausible answer or a fixed-evidence comparison.
+      Retain existing exam gold and thresholds; any proposed changes require author approval.
 - [ ] Retain exact graph regressions and frozen Port/knowledge-base questions and gold. Any
       proposed scope-related exam revision requires an explicit author ruling before edits;
       narrowing product scope does not waive K04 or blend screening scores into acceptance.
@@ -62,6 +67,11 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
       findings triaged.
 
 ## Comments
+
+- 2026-11-03 — Author approved `investigate_alert` as a thin coordinator with independently
+  testable shared components and saved step-level evidence. T26 implements and tests the
+  components/package; this ticket evaluates the application with collection, assembly and
+  interpretation distinguishable. Documentation only; T54 scope and existing gates unchanged.
 
 - 2026-11-02 — Author-approved ownership: T54 builds the isolated model/architecture
   comparison runner and reusable recording module. T29 retains the application's Port

@@ -52,6 +52,18 @@ The question has two paths, and the answer may differ for each:
    results are merged or cut to five, and what protects it. T22's experiments showed both risks.
 5. **The keyword leg.** Whether all-terms-must-match keyword search is right for long questions,
    or whether T41's BM25 comparison settles it.
+6. **Retrieval boundaries by subject.** Decide whether MITRE ATT&CK, HR-related documents
+   and other corpus subjects need different query construction, filters, retrieval methods
+   or result formats. Separately decide whether any specialised retrievers should sit behind
+   the shared `search_corpus` tool or be exposed as separate agent tools. One agent tool does
+   not require one identical internal retrieval method. Compare the existing shared-tool
+   baseline with subject-specific alternatives rather than assuming either is superior.
+   Keep structured owner/department/group lookup through `lookup_account` distinct from
+   HR document search; its existence is not evidence for splitting document retrievers.
+   Examine both single-subject and cross-subject questions, including attack guidance plus
+   an internal exception. Consider routing errors, evidence coverage, merge/cap losses,
+   troubleshooting, evaluation and any actual access requirements. Subject filters and tool
+   names are not access controls; any required permissions must be enforced in the backend.
 
 ## Inputs (research already done, none of it adopted)
 
@@ -77,6 +89,13 @@ The question has two paths, and the answer may differ for each:
 - [ ] Record candidate, reranked, retained and model-visible evidence separately. Test loss
       during merging and caps, not only first-hit rank. Original K04 questions/gold and
       AUD-062 closure obligations remain unchanged.
+- [ ] Map each relevant document subject to its actual retrieval needs. Record separate
+      rulings for internal retriever boundaries and agent-facing tool boundaries, with
+      evidence or explicit remaining uncertainties. Include subject-specific and cross-subject
+      evaluation needs, routing and stage-level diagnostic evidence. Reuse existing evidence
+      where sufficient; no paid comparison is authorised by this criterion. Any proposed
+      tool/spec change needs author approval before adoption. Carry approved shared-core
+      boundaries into T26 without duplicating retrieval logic in `investigate_alert`.
 - [ ] Select a small E06 guidance source set for the author's review. Map proposed passages
       to case uncertainties and record provenance and applicability. Consider existing
       corpus sources first; previously consulting NIST SP 800-61r3 does not adopt it wholesale.
@@ -87,7 +106,7 @@ The question has two paths, and the answer may differ for each:
       for the author to confirm the model is set; a dated comment records it.
 - [ ] Research uses the Perplexity and Keenable tools and checks material claims against primary
       sources; findings saved as a research note in `../research/`.
-- [ ] Each of the five decisions above has a ruling recorded under the Answer, or an explicit
+- [ ] Each of the six numbered decisions above has a ruling recorded under the Answer, or an explicit
       deferral with its reason and owner ticket.
 - [ ] Any change to what a gate measures, or to the spec, is proposed first, ruled by the author,
       and recorded in the spec's decisions log.
@@ -107,3 +126,11 @@ The question has two paths, and the answer may differ for each:
 - 2026-11-02 — Author approved T45 owning guidance-source selection and presentation for
   review. Source approval precedes use; T26 owns integration. This adds a source-selection
   decision to this ticket without settling its five existing retrieval decisions.
+
+- 2026-11-03 — Author requested an explicit design review of shared versus subject-specific
+  RAG retrieval after discussing MITRE and HR examples. Added decision 6 and its acceptance
+  criterion. Distinguish internal specialised retrieval from separate agent tools and structured
+  account lookup from document search. Neither design is selected; the shared tool remains
+  the current spec baseline pending author ruling. Resolve when T45 starts, alongside its
+  existing decisions and guidance-source selection. Documentation only; no implementation,
+  gold/threshold change or T54 change authorised.

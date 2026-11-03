@@ -11,6 +11,13 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **Investigation coordinator boundary, 3 November 2026:** author approved keeping
+  `investigate_alert` thin over shared core functions, with independently testable components
+  and saved inputs/results/failures per step. [T26](issues/26-investigate-alert-package.md)
+  owns implementation and component/package checks; [T29](issues/29-kb-exam-in-eval-runner.md)
+  distinguishes collection, assembly and interpretation evidence. Spec and decisions log updated.
+  No code, exam gold/threshold or T54 changes; current frontier remains T54 with Claude.
+
 - **T54 checkpoints 1–2 built, 3 November 2026 (Claude Opus 5.5, author-confirmed).**
   [T54](issues/54-early-langfuse-evaluation-integration.md) has frozen fixtures, the isolated
   runner, local evidence bundle, blinded review, selection report and Langfuse mirror, all

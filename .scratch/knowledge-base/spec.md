@@ -676,6 +676,18 @@ full-inventory and reverse-exposure capabilities are deferred. This supersedes t
   and aggravating searches are built in code from the finding's record, never from the chat
   (T05 R5).
 - **Progress per internal step** (T05 d2, T07 d4), streamed through the Port's custom stream.
+- **Investigation coordinator boundary (author, 3 November 2026):** `investigate_alert`
+  assembles evidence through the same core functions used by the narrow tools. It does not
+  require the agent to call those tools first or feed their outputs into it. Keep search and
+  graph logic shared rather than duplicating it inside the package. Code collects and
+  combines facts; the model assesses them under P-01. Preserve each internal step's inputs,
+  outputs, evidence IDs and failure status in the saved artifact, subject to existing security
+  and persistence rules. Test component behaviour independently, then test package assembly,
+  selection and caps. Application evaluation must distinguish evidence collection/retrieval,
+  package assembly and model interpretation, so a missed document can be traced to its stage.
+  T26 owns implementation and component/package checks; T29 owns application evaluation.
+  T54's fixed-evidence comparisons do not prove this collection path. This ruling adds no
+  model role, tool, score threshold, screen or T54 implementation requirement.
 - **Content plus artifact** (T05 d4): every knowledge-base tool returns a short labelled text for the
   model and a full artifact (cited chunks with text and IDs, graph records, every recorded score,
   the verdict), saved by the checkpointer, read by the eval and the screen, never sent to the model.
@@ -1169,3 +1181,4 @@ them.
 | 2026-11-02 | T52 E06: author approved honest evidence-limit reporting tested with small controlled cases, plus case-specific next-investigation guidance grounded in case facts and approved incident-response practice. Distinguish external checks from app actions; curate sources and test relevance. Broader response planning and automated containment deferred | Recognising missing evidence does not require adding every missing data source or making every case resolvable. The approved 50-person/30-day target and analyst-controlled expansion remain unchanged. Source selection and detailed ownership remain T52 reconciliation work; no build or paid run authorised |
 
 | 2026-11-02 | T52 definitive scope ruling: reliable login investigation is the sole phase-0/1 objective. Retain bounded owner/role, privileged/sensitive-access and involved-device context. Defer standalone complete asset inventory, exhaustive permission-path presentation and reverse asset exposure | Resolves the earlier narrowing discussion and supersedes E04's broader interpretation. Keep original-evidence, security, uncertainty and end-to-end proof obligations. No code deletion, gold/threshold changes or build release; T52 reconciles affected tickets before closure |
+| 2026-11-03 | Author approved keeping `investigate_alert` as a thin coordinator over shared core functions, with independently testable components and saved inputs/results/failures per internal step. T26 implements the boundary; T29 distinguishes collection, assembly and interpretation evidence | Addresses overlap with narrow tools and makes missing evidence diagnosable. Retains the bundled tool and P-01; no duplicated retrieval logic, independent investigator inside the tool, changed exam gold/thresholds or T54 scope change. Fixed-evidence comparisons remain separate from live collection proof. Source: author agreement in read-only architecture discussion, followed by permission to update relevant documents outside T54 |
