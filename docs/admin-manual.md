@@ -573,6 +573,10 @@ uv run --locked --directory backend python -m evals.comparison checks evals/comp
 uv run --locked --directory backend python -m evals.comparison review evals/comparison/runs/screen-dry --size 6
 ```
 
+Do not open Langfuse before recording initial labels. With mirroring on, its experiment view
+shows each case's required findings and critical errors beside the answers, and nothing in the
+code hides them (author's ruling, AUD-077 item 2). Score from the blinded file only.
+
 Fill `artifacts/review/labels-batch-1.json` (the assessor's name, then a score of 0, 1, 2 or
 "n/a" with a reason per criterion, and `true` or `false` with a reason per critical error).
 Leave entries `null` to keep them unscored. An answer counts as scored only when every

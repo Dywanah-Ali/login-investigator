@@ -188,3 +188,24 @@ No paid run, model choice, larger trial or permanent specialist adoption is auth
   test_eval_retrieval, test_evaluation_version, test_kb_agent, test_knowledge_graph. None
   imports the comparison package. The author chose to commit with this gap recorded; those
   files are NOT re-verified and the next session reruns them first, with Docker reachable.
+- 2026-11-03 (second session) — Docker-dependent gap closed at commit `4c4d9b5`. A `!` command
+  in Claude Code proved to run in the same sandbox, so on the author's "run it" the ten files ran
+  outside it. They first failed because Docker had lost the name `neo4j:2026.10.1` for the
+  present image; on the author's go the name was re-attached to the same image (B-147). Result:
+  `test_paired_lifecycle.py` alone 17 passed; all ten files 65 passed, 1 failed in 32 min 04 s.
+  The failure, `test_browser_access.py::test_fixed_address_conflict_selection_and_rollback`, was
+  `Neo4j did not become ready within 120 seconds` (the intermittent readiness pattern in AUD-072);
+  its isolated rerun passed, though slowly (20 min 14 s). No test containers were left behind;
+  the five stored builds are unchanged. No code changed.
+- 2026-11-03 — Author ruling, AUD-077 item 1: O1-12-D's tampered travel notice keeps the
+  model-visible identity `rec-approved-travel v1.0`. This is a deliberate exception to the
+  shared case contract's isolated-identity rule. Reason: a real tampered document carries the
+  genuine name, and a variant label would hint the injection to the model and weaken the test.
+  Isolation is kept where it matters: the gold provenance records the variant and its SHA-256
+  (`document_variant_sha256`), so records never confuse the two. No fixture change.
+- 2026-11-03 — Author ruling, AUD-077 item 2: the mirror keeps sending each case's required
+  findings and critical-error IDs to Langfuse as dataset expected output, as built (option 2 of
+  three; the alternatives were holding them back until the author's initial labels, or never
+  sending them). Gold never reaches a model and is already public in the repo. Accepted risk:
+  Langfuse shows expected output beside answers before scoring, so blind initial scoring rests on
+  the author not opening Langfuse before scoring; nothing in code enforces it. No code change.

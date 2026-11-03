@@ -2487,3 +2487,21 @@ an existing run folder, prints `REFUSED: ... Nothing was recorded.` and exits 1.
 **Lesson:** test operator commands' refusal paths as written, not only their success paths.
 **Verification:** the repeated import and a repeated `new` both print the plain refusal with
 exit code 1; the library tests already proved nothing is recorded by a refused sheet.
+
+### B-147 · 2026-11-03 · T54 · Graph tests failed because Docker lost the Neo4j image's name
+
+**Symptom:** the ten Docker-dependent test files errored at setup with `GraphUnavailable: Neo4j
+container operation failed`, first in the sandbox, then again in an author-approved run outside
+it. Docker Desktop showed no test containers. **Cause:** two layers. Inside the sandbox, the
+Docker socket is denied, and a `!` command typed in Claude Code runs in the same sandbox. Outside
+it, `docker image inspect neo4j:2026.10.1` returned "No such image" (and HTTP 500 for the full
+`docker.io/library/` name) although `docker images` listed the image and an inspect by its ID
+`44ad2a2504fd` worked. Docker Desktop 29.5.2 with the containerd image store; why the name stopped
+resolving is not proved. The service's error text hides Docker's own message, which slowed the
+diagnosis. **Fix:** with the author's go, `docker tag 44ad2a2504fd neo4j:2026.10.1` re-attached
+the name to the same image; nothing downloaded, stored builds and Browser logins untouched.
+**Lesson:** when a graph test fails at setup, run the failing `docker` call directly before
+blaming the sandbox; stop a slow failing run early with `-x` to see the error text.
+**Verification:** inspect by name returns `sha256:44ad2a25…`; `test_paired_lifecycle.py` 17 passed
+outside the sandbox. All ten files: 65 passed, 1 readiness timeout (AUD-072 pattern) whose
+isolated rerun passed; recorded in T54.
