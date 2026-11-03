@@ -19,8 +19,13 @@ from evals.comparison.records import RunBundle
 
 SCORES = (0, 1, 2, "n/a")
 UNSCORED = "unscored"
-CITATION = re.compile(r"\[([A-Z]{1,3}-?\d+)\]")
-CHECK_VERSION = "reference-resolution/1"
+BRACKETS = re.compile(r"\[([^\[\]]*)\]")
+REF = r"[A-Z]{1,3}-?[0-9]+"
+REFERENCE = re.compile(rf"(?<![\w]){REF}(?![\w])")
+CITATION_ITEM = re.compile(rf"({REF})(?:\s*[-‐‑–−]\s*({REF}))?")
+REF_PARTS = re.compile(r"([A-Z]{1,3}-?)([0-9]+)")
+MAX_RANGE_REFS = 1000
+CHECK_VERSION = "reference-resolution/2"
 
 
 def load_gold(case_id: str, root: Path = fixtures.FROZEN) -> dict:
@@ -145,13 +150,54 @@ def profile(bundle: RunBundle, review_id: str, case_id: str) -> dict:
 
 def reference_check(answer: str, case: dict) -> dict:
     """Do the answer's bracketed citations exist in the case file? Resolution only: a resolving
-    citation is not proof that the source supports the claim."""
-    cited = sorted(set(CITATION.findall(answer)))
+    citation is not proof that the source supports the claim.
+
+    Accept whitespace, comma/semicolon groups and ascending same-prefix ranges with full
+    endpoints. Unsupported reference-like groups retain explicit references and a warning;
+    they must not silently become a clean result. Other bracketed prose is ignored.
+    """
+    occurrences: list[str] = []
+    unsupported: list[str] = []
+    for bracket in BRACKETS.finditer(answer):
+        body = bracket.group(1).strip()
+        if not REFERENCE.search(body):
+            continue
+        complete = True
+        for item in re.split(r"[,;]", body):
+            item = item.strip()
+            match = CITATION_ITEM.fullmatch(item)
+            if match is None:
+                occurrences.extend(REFERENCE.findall(item))
+                complete = False
+                continue
+            first, last = match.groups()
+            if last is None:
+                occurrences.append(first)
+                continue
+            start, end = REF_PARTS.fullmatch(first), REF_PARTS.fullmatch(last)
+            assert start is not None and end is not None
+            prefix, low_text = start.groups()
+            end_prefix, high_text = end.groups()
+            if len(low_text) > 9 or len(high_text) > 9:
+                occurrences.extend((first, last))
+                complete = False
+                continue
+            low, high = int(low_text), int(high_text)
+            if (prefix != end_prefix or not 0 <= high - low < MAX_RANGE_REFS
+                    or str(low) != low_text or str(high) != high_text):
+                occurrences.extend((first, last))
+                complete = False
+            else:
+                occurrences.extend(f"{prefix}{number}" for number in range(low, high + 1))
+        if not complete:
+            unsupported.append(bracket.group(0))
+    cited = sorted(set(occurrences))
     known = set(fixtures.evidence_refs(case))
     return {"check": "reference_resolution", "cited": cited,
             "unresolved": [ref for ref in cited if ref not in known],
-            "citation_count": len(CITATION.findall(answer)),
-            "limit": "resolution does not establish that the source supports the claim"}
+            "citation_count": len(occurrences), "unsupported_citations": unsupported,
+            "limit": "resolution does not establish that the source supports the claim; "
+                     "only reference-like square-bracket groups are inspected"}
 
 
 def run_deterministic_checks(bundle: RunBundle) -> list[dict]:

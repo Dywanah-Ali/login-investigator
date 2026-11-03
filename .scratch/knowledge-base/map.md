@@ -11,6 +11,86 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **T54 three-round screening complete, 3 November 2026:** author authorised original
+  slots 25–72, then requested housekeeping/handoff and a fresh session for blinded human
+  scoring. All 72 closed: 71 answers, one preserved `no_answer` (B-155/AUD-081, cause
+  unproven). No fourth paid round. Screen known US$0.278057; combined US$0.281197,
+  with 25 combined numeric charges unknown. Two later timeout charges settled from
+  metadata; empty/streamed-error generation lookups returned 404. All 71 answers have v2
+  reference checks: zero unresolved, eight syntax-warning answers, no quality scores.
+  485 artifact references verified; original records/files and frozen setup preserved.
+  [Completion addendum](research/54-first24-setup-checkpoint-2026-11-03.md) and
+  [final evidence](research/54-complete-screen-evidence.json). B-154 manual cost-context
+  example corrected/live-tested. AUD-080 closed for bounded parser/checkpoint disposition;
+  AUD-081 open. Next: first blinded six-answer batch and blank labels in a fresh session.
+  No selection, extra paid round, architecture calibration or live upload. T54 claimed.
+
+- **T54 parser repair verified, 3 November 2026:** author approved bounded local repair.
+  V2 checks whitespace, groups and bounded same-prefix ranges; unsupported reference-like
+  groups are visible. All 24 answers rechecked, zero unresolved references; two answers
+  retain explanatory-text syntax warnings, without scores. Original 24 v1 checks, 135-event
+  prefix and 152 other files preserved; repeat adds nothing. All 55 assessment tests covered;
+  focused types/lint clean. [Checkpoint addendum](research/54-first24-setup-checkpoint-2026-11-03.md)
+  records evidence and changed check-only package hash, with frozen manifest retained.
+  Author then approved continuation of original slots 25–72; AUD-080 closes for the
+  bounded repair with syntax warnings retained. Later rounds now running with both
+  compatibility cost bundles and the setup-review gate. No labels or live upload.
+  T54 remains claimed; final execution evidence pending.
+
+- **T54 first screening round complete, 3 November 2026:** author approved the bounded
+  first 24; all 24 final answers saved, six per case, stopped at slot 24. Two rounds remain
+  (48 answers). Setup inputs/settings/source and 24 fresh memories verified; 151 artifact
+  references checked. Two rate rejections and one timeout recovered; timeout charge settled
+  from authenticated generation metadata without inference. Known screen US$0.107868;
+  known combined US$0.111008, with missing rejection charges retained. New B-153/AUD-080:
+  parser skips spaced/grouped/ranged citations; no repair or score change made. B-152 records
+  the request/billing observation. [Checkpoint report](research/54-first24-setup-checkpoint-2026-11-03.md).
+  First blinded six-answer batch and blank labels prepared. No scores, selection, later-pass
+  execution or live upload. T54 claimed; address parser coverage at this setup checkpoint.
+
+- **T54 readiness gaps addressed, 3 November 2026:** author requested resolution. One shared
+  compatibility-only ASCII citation clarification and local upstream diagnostics repeated
+  all six configurations once in linked `compat-readiness-1`. Six tool/citation passes;
+  twelve upstream bodies confirm the approved native fields and expose actual default
+  output limits. Three combined rate-limit rejections classified under published nonbilling
+  policy; absent returned costs remain unknown. Known combined charge US$0.003140.
+  Focused tests 75 passed; focused types/lint clean. B-150/B-151/AUD-079 retain evidence and
+  limits. [Resolution report](research/54-readiness-resolution-2026-11-03.md).
+  `screen-live` prepared with 72 frozen slots and zero request events. First 24 screening
+  answers await separate paid execution go; no live Langfuse upload. T54 stays claimed.
+
+- **T54 six initial paid compatibility sessions, 3 November 2026:** author authorised the
+  bounded step. All six completed tool exchanges; five passed the literal answer contract.
+  gpt-oss used different citation brackets (B-150/AUD-079); two upstream rate limits recovered
+  with unknown charges. Known total US$0.001584. Native-settings disclosure limits remain.
+  [Live report](research/54-live-compatibility-2026-11-03.md) records checks and evidence.
+  No screening, repair rerun or live Langfuse upload. T54 stays claimed; review the contract
+  failure and mapping limits before the separate screening execution go. No graph detour.
+
+- **Testing policy revised by author, 3 November 2026:** no automatic full backend/frontend
+  run for every change. Focused tests and relevant static checks for routine work; full app
+  suites for major/cross-cutting app changes or explicit request. AGENTS.md, CLAUDE.md and
+  spec decisions log updated. B-149/AUD-078 remain an open graph rollback concern, separate
+  from the isolated T54 comparison. The optional diagnostic was interrupted to restore scope;
+  no application fix or regression pass is claimed. T54 next: bounded isolated model readiness
+  and explicit paid execution authorisation. Six-model assessment has not started.
+
+- **T54 Docker follow-up, 3 November 2026:** author updated Desktop 4.76.0 to 4.98.0;
+  Engine/CLI now 29.9.2. Original image ID and both names resolve; the failed startup test
+  and full startup file pass. Full backend run stopped at 149 passes and one rollback failure
+  with a hidden cause (B-149/AUD-078), distinct from the recovered image-name symptom.
+  Diagnostic-only focused retry is running with unchanged policies and public errors.
+  No model compatibility session, screening answer or live Langfuse upload has started.
+
+- **T54 checkpoint 3 offline adapter, 3 November 2026 (Codex, GPT-6.1 Sol confirmed).**
+  Documentation checked; OpenRouter Responses adapter, bounded paid commands, spending/setup
+  checkpoints and isolated repair execution built and fake-tested. Comparison suite 143 passed;
+  backend types/lint clean; two-axis review fixed and clear (B-148). Broader regression evidence
+  is in T54. B-147 image-name failure and the existing Explorer timeout recurred. Sole editing
+  session and US$25 planning budget confirmed; credentials configured but not authenticated.
+  T54 remains claimed. Paid compatibility, screening and live Langfuse recording still require
+  a separate explicit execution go; no paid call or live upload has occurred.
+
 - **Investigation coordinator boundary, 3 November 2026:** author approved keeping
   `investigate_alert` thin over shared core functions, with independently testable components
   and saved inputs/results/failures per step. [T26](issues/26-investigate-alert-package.md)

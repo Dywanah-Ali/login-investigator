@@ -1013,6 +1013,14 @@ Investigator tests with one worker, then rerun the full suite with bounded concu
 **Lesson:** retain a timeout failure and its rerun evidence rather than treating it as a pass.
 **Found by:** P-086 full frontend verification. Final rerun results to be appended.
 
+**3 November 2026, T54 offline adapter recurrence:** unchanged frontend full run: 149 passed,
+one five-second timeout at `explorer.test.tsx:80` (valid-IP submission and Reset), 53.36 s total.
+The focused Explorer file also had seven passes and the same timeout, 26.87 s total, while
+backend/type verification continued. Chart zero-size warnings appeared in the full run.
+Cause remains unproven. No frontend code or timeout was changed. AUD-028/AUD-069 retain it.
+Final one-worker full rerun passed all 150 tests in 277.21 s, without frontend changes.
+Chart-size warnings remained. This recovery does not establish the timeout's cause.
+
 
 **B-066 rerun evidence, 19 October 2026:** all 35 Explorer and Investigator tests passed with
 one worker, without Explorer code or timeout changes. Cause remains unconfirmed; full-suite
@@ -2505,3 +2513,232 @@ blaming the sandbox; stop a slow failing run early with `-x` to see the error te
 **Verification:** inspect by name returns `sha256:44ad2a25…`; `test_paired_lifecycle.py` 17 passed
 outside the sandbox. All ten files: 65 passed, 1 readiness timeout (AUD-072 pattern) whose
 isolated rerun passed; recorded in T54.
+
+**Recurrence, 3 November 2026, Codex checkpoint-3 intake:** read-only inspection outside the
+sandbox returned `No such image: neo4j:2026.10.1` again. Inspection by ID `44ad2a2504fd`
+still returns `sha256:44ad2a2504fd7d27df1d1e976f2d481e4266a0814d3657f2d5df62124ce657f1`.
+The earlier name repair has not proved durable. Cause remains unproven; no retag, download,
+service change or graph test was performed during intake. Reported to the author.
+
+**Offline adapter regression follow-up, same session:** full backend `pytest -q -x` outside
+the sandbox reached 137 passes, then errored in
+`test_api_startup.py::test_a_matching_knowledge_base_starts_the_server_as_before` at the
+same image-name inspect (392.02 s total). The previously successful local workaround was
+attempted after announcing it: `docker tag 44ad2a2504fd neo4j:2026.10.1`. Docker returned HTTP
+500 for its image-tag API. The name was not restored; no image download, Docker restart,
+stored-build change or application service-setting change was performed. Further environment
+repair is deferred, and the full backend regression gate remains incomplete. This is a Docker
+operation failure, not an automatic approval rejection.
+Final read-only inspection still finds the same image by ID and no running containers.
+
+**Docker investigation, 3 November 2026:** author reopened B-147 and confirmed no restart or
+settings change since the failure. Read-only checks first resolved both image ID and short name
+to the same existing image; later short-name lookups timed out or returned 404, and engine
+version/info calls also timed out. Client and server are both Engine/CLI 29.5.2, API 1.54,
+context `desktop-linux`. Version correction: the installed Docker Desktop application is
+4.76.0; the earlier 29.5.2 description named the engine/client, not the Desktop application.
+All five stored graph containers were stopped; no retag or data change in this investigation.
+Local backend logs at 13:37 UTC show a five-minute idle timer, VM stopping, short-name inspect
+404s from `com.docker.backend.apicache`, then the canonical-name inspect waking the VM.
+**Inference, not yet a root-cause conclusion:** Resource Saver/cache behaviour may explain
+the apparent missing name. Docker's official
+[Resource Saver documentation](https://docs.docker.com/desktop/use-desktop/resource-saver/)
+confirms cached image/list operations need not wake the Linux VM. Author asked whether to
+restart; advised ordinary Docker Desktop restart via Troubleshoot, with no reset, data cleanup
+or image-store switch. Waiting for author confirmation before post-restart checks. No logs
+or diagnostics were uploaded and no paid model/Langfuse operation occurred.
+
+**Author update and initial recovery checks:** the author installed the pending Docker Desktop
+update and shared the reopened dashboard. Installed application 4.98.0 and Engine/CLI 29.9.2
+(both API 1.56) verified locally. Inspect by original ID, short name and canonical
+`docker.io/library/neo4j:2026.10.1` all return the original `44ad2a2504fd…` image. All five
+stored graph containers remain stopped. No new retag, image download or store switch was
+performed by this investigation. The exact failed startup test is being retried with fake
+embeddings and an isolated temporary pair. Immediate recovery does not establish idle-cycle
+durability. Official [release notes](https://docs.docker.com/desktop/release-notes/#4760)
+describe fixes for this class of stale cached 404 after idle shutdown, but that entry also
+predates the old installed release; it is supporting context, not proof of this incident's
+specific cause or the update's causal effect. Admin manual section 4 now describes the checks.
+The exact failed startup test then passed: one test in 225.89 s. During the test, the temporary
+container was running with `OOMKilled=false`, zero restarts at the sampled instant, and normal
+Neo4j Started/Bolt messages. Forwarded-header warnings match the existing AUD-068 observation;
+the retired-credential authentication failure is an expected security check. The broader
+backend suite was started after this pass; final verification is recorded in T54.
+
+### B-149 · 2026-11-03 · T54 regression · Rollback reports an uncheckable graph pair
+
+**Symptom:** after the Desktop update, full backend verification passed 149 tests, then
+`test_fixed_address_conflict_selection_and_rollback` failed at rollback with the fixed
+`PAIR_UNCHECKABLE` message. The test call took 871.91 s; the run stopped after 1435.63 s.
+Image lookup and the complete startup test file passed. **Cause:** not yet established.
+The public selection boundary suppresses the underlying exception, so this result alone
+does not prove the previous AUD-072 readiness timeout or a Docker image-name failure.
+**Evidence:** narrow Docker event trace at
+`../.scratch/knowledge-base/research/54-docker-update-events.log`: 63 lifecycle events,
+including expected stop/recreate/start activity, zero recorded OOM events. Exit 137 following
+an explicit stop is not independently evidence of an OOM. Final Docker check found no running
+containers. **Next diagnosis:** one focused retry with a temporary pytest wrapper capturing
+the exception context chain and credential-free container state before test cleanup. Preserve
+existing readiness limits, public errors and outgoing recovery semantics. No application fix
+or policy change made yet. **Lesson so far:** a fixed public error needs private diagnostics;
+do not equate a recovered image lookup with passing every graph lifecycle operation.
+
+**Scope correction:** after the author challenged repeated whole-application testing, the
+focused diagnostic was gracefully interrupted. Pytest exited 2 after 1025.39 s (17 min 05 s),
+with partial expected-fault contexts retained in `54-rollback-diagnostic.jsonl`. It is neither
+a passing retry nor an established cause. Two diagnostic-launcher assertion-rewrite warnings
+(`langsmith`, `anyio` preimported) were retained; no application change was made. A subsequent
+Docker check found no running containers. The author changed the standing testing policy to
+focused checks for routine work, full app suites only for major/cross-cutting app changes or
+explicit request. B-149/AUD-078 remain separate, open graph concerns. No further graph repair
+is part of the isolated T54 comparison. Count correction: the initial note transcribed 73;
+the retained Docker event file has 63, with zero recorded OOM events.
+Host observation: 16 GiB RAM, roughly 12.7 GiB swap used, query reported 70% free. These do
+not establish host pressure as the cause. No memory settings were changed.
+
+### B-150 · 2026-11-03 · T54 compatibility · gpt-oss returns different citation delimiters
+
+**Symptom:** the initial paid gpt-oss session completed its tool exchange and returned colour
+code 7, but used `【CMP-1】` where the compatibility prompt explicitly required `[CMP-1]`.
+The saved `output_contract` result is false. **Cause:** model output did not follow the literal
+citation instruction. The raw provider output has those delimiters; no display transformation
+is involved. **Fix:** none applied. Preserve the failed contract and diagnose before screening;
+do not weaken the check or rerun unchanged requests to seek a favourable answer. **Evidence:**
+`backend/evals/comparison/runs/compat-live/`, trial `compat-gpt-oss-120b`, and the
+[compatibility report](../.scratch/knowledge-base/research/54-live-compatibility-2026-11-03.md).
+Two separate upstream HTTP 429 responses recovered on retry; both charges remain unknown.
+**Lesson:** successful tool transport and a correct fact do not establish output-contract
+compliance. This initial compatibility failure is not a screening score or model elimination.
+Tracking: AUD-079; T54 remains claimed.
+
+**Readiness repair:** after the author requested resolution, clarified ordinary ASCII square
+brackets in the shared compatibility-only prompt. The strict check and scored role prompts
+are unchanged. All six configurations repeated once under a separately linked setup;
+`compat-readiness-1` passes all six tool/citation contracts, including gpt-oss. Original failure
+retained. Adapter version 2 saves upstream diagnostic bodies locally, excluded from replay
+and mirror. Seventy-five focused tests and focused type/lint checks pass. Initial Ruff run
+flagged the new test import layout; fixed and rerun clean. This is one live setup success,
+not a guarantee of future citation compliance. See the
+[resolution report](../.scratch/knowledge-base/research/54-readiness-resolution-2026-11-03.md).
+
+### B-151 · 2026-11-03 · T54 readiness · Normalized null hides upstream output defaults
+
+**Symptom:** all initial Responses results reported `max_output_tokens: null`, but the
+subsequent upstream diagnostic shows actual request limits: Qwen and DeepSeek 131072,
+gpt-oss 117806 then 117775, and Luna/Haiku/Sol 65536. These differ from advertised endpoint
+ceilings. **Cause:** the gateway's normalized response does not expose every default applied
+when constructing the provider request. Our adapter omits an evaluation-imposed output cap.
+**Fix/evidence:** adapter version 2 records the documented upstream debug chunk during
+compatibility; twelve successful upstream bodies inspected and matched to hashed artifacts.
+Observed limits are listed in the T54 resolution report, separately from requested settings
+and advertised ceilings. No output cap or model setting was added by the evaluation.
+**Lesson:** a null returned field is not proof that no downstream limit exists. The observed
+request and the advertised model ceiling answer different questions. This recording gap is
+addressed; future gateway-default changes remain a disclosure limit, not a fixed model promise.
+Tracking: T54/AUD-079. No application behaviour changed.
+
+### B-152 · 2026-11-03 · T54 first screening round · Request timeout still has a billed generation
+
+**Symptom:** one screening trial hit two upstream HTTP 429 capacity rejections, then an elapsed
+180-second request timeout. A subsequent retry completed within the unchanged case allowance.
+**Cause:** capacity errors identify `engine_overloaded`; the location/cause of the timeout
+delay is unproven. No application regression is established. **Disposition:** retain all
+attempts and partials under the approved retry policy. The timed-out generation's authenticated
+metadata lookup reports a US$0.000426477 charge, `finish_reason: stop`, `cancelled: false`.
+After the runner stopped, attach the charge once through the existing `cost_settled` record.
+The two capacity errors retain unknown raw charges and documented nonbilling dispositions.
+No provider, timeout, retry policy, application code or model setting was changed.
+**Lesson:** a client deadline does not establish that upstream inference or billing stopped.
+Use the original generation ID to reconcile its charge without repeating inference.
+**Evidence:** T54's first-24 report, `screen-live` request history and hashed billing receipt.
+This is an operational comparison observation, not an approved provider-repair task.
+
+**B-152 later-round follow-up, 3 November:** rounds 2–3 recorded 18 HTTP 429 rejections,
+one streamed `rate_limit_exceeded` failure and two elapsed request timeouts. Original
+retry/case limits unchanged; all original trials closed. Two authenticated timeout receipts
+report US$0.002126992 and US$0.001812412, both cancelled true, finish fields null; costs
+settled once after runner exit, streamed usage remains unknown. Streamed error's generation
+metadata returned 404, so cost remains unknown; its saved generic `HTTP 0` text is a synthetic
+status placeholder, not a real HTTP response code. All original trials other than the
+separate B-155 empty completion produced answers. Cause/location of delays unproven; no
+provider/adapter fix or replacement run. Final checkpoint/evidence records all 96 requests.
+
+### B-153 · 2026-11-03 · T54 setup checkpoint · Reference parser skips spaced and grouped citations
+
+**Symptom:** one saved screening answer has square-bracketed evidence citations but version-1
+checks report zero citations and no unresolved reference. **Cause:** `CITATION` accepts one
+unspaced reference per pair of brackets. Spaced/grouped/ranged forms are silently ignored.
+**Reproduction:** `[D999]` flags a nonexistent reference; `[ D999 ]` and `[D1; D999]` cite
+nothing according to the checker. The real answer also uses spaces and a nonbreaking-hyphen
+range. **Fix:** none applied during paid execution. Propose an explicit lexical grammar,
+new check version and local recheck of saved answers. Preserve original checks and outputs;
+no model rerun, rubric change or score assignment is justified by this parser observation.
+**Evidence:** [offline probe](../.scratch/knowledge-base/research/54-citation-parser-probe.json)
+and [setup checkpoint](../.scratch/knowledge-base/research/54-first24-setup-checkpoint-2026-11-03.md).
+**Lesson:** zero parser findings is not evidence of complete coverage when unsupported
+syntax is silently skipped. Tracking: AUD-080; T54 remains claimed.
+
+**B-153 repair verification, 3 November:** author approved the proposed bounded repair.
+Parser/check version 2 accepts spaces, groups and bounded full-endpoint ranges. Unsupported
+reference-like groups remain explicit warnings with their readable references retained.
+Local recheck appended 24 checks, retaining all original checks, event prefix and other bundle
+files. Thirteen answers gain recognized refs; former zero-count answer now has 37 occurrences.
+Zero unresolved refs; two answers have five explanatory-text bracket warnings. This is not a
+human score or full syntax-coverage claim. All 55 assessment tests covered by the initial
+53-test run and focused follow-ups; focused types/lint clean. New command test initially
+caused an import-order lint failure, corrected before final clean checks. No paid rerun.
+Evidence: checkpoint addendum and `54-citation-parser-v2-evidence.json`. AUD-080 awaits
+checkpoint disposition. Lesson extended: unsupported syntax must stay visible independently
+of the unknown-reference count; preserve earlier checks when expanding the checker grammar.
+
+### B-148 · 2026-11-03 · T54 · Offline adapter review found failure-evidence and deadline gaps
+
+**Symptom:** a fake completed response with malformed nested output raised `AttributeError`
+instead of `AdapterError`, losing available partial text and a known charge. A non-200 HTTP
+response also discarded available usage and generation identity. Slow wire preparation could
+leave a stale timeout allowance. Linked repairs after slot 72 would first run pending original
+slots 25–72. Paid review notices were only retrospective unless the operator bounded execution.
+**Cause:** trusted nested API shapes, classification-only HTTP error handling, an allowance
+computed before preparation/persistence and a schedule runner without repair-only selection or
+spending pauses. These were found offline, before any real request.
+**Fix:** validate response output and safely extract partials; retain sanitized failure evidence,
+usage and identity; recalculate the dispatch allowance after persistence; add `--reruns-only`;
+require bounded paid runs, a completed first pass plus its review before later passes, and pause
+between trials at known combined US$15 spending. Related paid bundles share the cost check.
+**Iterations:** first adapter tests passed, then two-axis review reproduced malformed nested
+items. The first fix passed; re-review identified HTTP error telemetry and repair ordering.
+Those were fixed with additional fake regressions. Initial type checks found three test-only
+annotation errors; corrected without weakening checks. No paid request or live upload occurred.
+**Lesson:** treat provider responses as untrusted structures, preserve evidence on every exit
+path and test elapsed time after preparation, not only time spent waiting on the network.
+**Verification:** named regressions in `tests/test_comparison_openrouter.py`; final suite/type
+results are recorded in T54's checkpoint-3 offline comment. Live behaviour remains unverified.
+
+### B-154 · 2026-11-03 · T54 manual · Later-round example omitted the repair cost bundle
+
+**Symptom:** the documented slots-25–72 continuation example included `compat-live` but
+omitted `compat-readiness-1`, despite nearby prose requiring both. **Cause:** the older
+example was not reconciled with the additional paid repair bundle. **Fix:** add the second
+`--cost-run` to the example before executing continuation. **Evidence:** the authorised
+live continuation includes both bundles; its spending-context event records the combined
+compatibility charges. **Lesson:** update executable examples alongside added cost contexts;
+prose alone does not make an older command safe to copy. No budget override added.
+
+### B-155 · 2026-11-03 · T54 screening · Completed response with empty output
+
+**Symptom:** original screening slot 64 ended `no_answer` after ten HTTP 429 rejections
+and a request recorded as completed. The saved response has zero output characters, an
+empty continuation output array, no streamed usage or cost, and a generation ID. Its trial
+elapsed 310.588 seconds. **Cause:** unproven; the recorded response/metadata do not establish
+whether the provider, gateway or adapter is responsible. **Disposition:** preserve all
+attempts and the explicit `no_answer` outcome. No replacement answer, prompt/provider
+change or linked rerun authorised. Later original slots continue under the existing policy.
+Billing lookup and final evidence to follow after the runner stops. **Lesson:** request
+completion is not evidence that an analyst answer exists; preserve absence separately from
+successful request transport. Tracking: T54 / AUD-081.
+
+**B-155 final follow-up:** authenticated read-only generation metadata returned HTTP 404.
+Missing charge remains unknown; no zero invented. All 72 original trials are closed, with
+this one `no_answer` and 71 saved answers. No linked rerun or model-quality decision made.
+The final checkpoint and `54-complete-screen-evidence.json` retain operational evidence.
+AUD-081 remains open; initial blinded human scoring is next in a fresh session.

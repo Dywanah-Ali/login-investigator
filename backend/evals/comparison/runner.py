@@ -21,6 +21,7 @@ import subprocess
 import time
 import uuid
 from collections.abc import Callable
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -185,20 +186,29 @@ class Runner:
         self.case_root = case_root
         self.configs = {c["config_id"]: ModelConfig(**c) for c in bundle.manifest["configs"]}
 
-    def run(self, until_slot: int | None = None) -> dict:
+    def run(self, until_slot: int | None = None, *, stop_cost_usd: float | None = None,
+            prior_cost_usd: float = 0.0, reruns_only: bool = False) -> dict:
         """Run every slot not yet started, in order, up to `until_slot`. Anything a crash left
         open is closed first and never re-sent."""
         recovery = records.recover(self.bundle)
         started = {e["trial_id"] for e in self.bundle.events() if e["type"] == "trial_started"}
         ran = []
+        stop_reason = None
         for slot in sorted(_all_slots(self.bundle), key=lambda s: s["slot"]):
+            if reruns_only and not slot.get("rerun_of"):
+                continue
             if until_slot is not None and slot["slot"] > until_slot:
                 break
             if slot["trial_id"] in started:
                 continue
+            if (stop_cost_usd is not None
+                    and prior_cost_usd + records.resources(self.bundle)["total"]["known_cost_usd"]
+                    >= stop_cost_usd):
+                stop_reason = "spending review due before the next trial"
+                break
             self._trial(slot)
             ran.append(slot["trial_id"])
-        return {"recovery": recovery, "ran": ran}
+        return {"recovery": recovery, "ran": ran, "stop_reason": stop_reason}
 
     # --- one trial ---------------------------------------------------------------------------
 
@@ -291,8 +301,8 @@ class Runner:
                        "reasoning": config.reasoning, "sampling": config.sampling,
                        "service_tier": config.service_tier},
             reported_identity=identity, reported_settings=settings,
-            settings_note="reported settings are what the provider returned; anything not "
-                          "returned is unverified, not confirmed")
+            settings_note="reported settings are returned gateway fields; echoed or accepted "
+                          "values do not prove native application; missing values are unverified")
         return answer
 
     def _tool(self, call: dict) -> dict:
@@ -333,20 +343,33 @@ class Runner:
             if remaining <= 0:
                 raise _TrialTimeout()
             timeout = min(REQUEST_TIMEOUT_S, remaining)
+            request = ModelRequest(config, messages, timeout, tools)
+            details = self.adapter.request_details(request)
             request_id = f"{self._trial_id}-{uuid.uuid4().hex[:12]}"
             self.bundle.append("request_started", request_id=request_id, trial_id=self._trial_id,
                                role=role, attempt=attempt, parent_request_id=self._last_request,
                                retry_of=retry_of, retry_reason=reason,
                                retry_origin="runner" if retry_of else None,
-                               timeout_s=round(timeout, 3), input=input_ref)
+                               timeout_s=round(timeout, 3), input=input_ref,
+                               wire_input=(self.bundle.write_artifact(
+                                   f"wire/{request_id}.json", json.dumps(details)) if details else None))
             sent = self.clock()
+            # Wire preparation and fsyncs consume the same case deadline. Recompute after
+            # persistence so an allowance calculated before that work cannot escape it.
+            dispatch_timeout = min(REQUEST_TIMEOUT_S, self._deadline - sent)
+            if dispatch_timeout <= 0:
+                self._finish(request_id, sent, status="timeout",
+                             error="case deadline elapsed before dispatch")
+                raise _TrialTimeout()
+            request = replace(request, timeout_s=dispatch_timeout)
             try:
-                response = self.adapter.complete(ModelRequest(config, messages, timeout, tools))
+                response = self.adapter.complete(request)
             except AdapterError as error:
                 self._finish(request_id, sent, status="timeout" if error.kind == "timeout" else "error",
                              error=f"{error.kind}: {error}", usage=error.usage,
                              cost_usd=error.cost_usd, generation_id=error.generation_id,
-                             partial=error.partial_text)
+                             partial=error.partial_text, error_details=error.details,
+                             dispatch_timeout_s=dispatch_timeout)
                 if error.partial_text:
                     self._partial = error.partial_text
                 if error.kind == "permanent":
@@ -359,7 +382,7 @@ class Runner:
                 continue
             self._finish(request_id, sent, status="completed", response=response,
                          usage=response.usage, cost_usd=response.cost_usd,
-                         generation_id=response.generation_id)
+                         generation_id=response.generation_id, dispatch_timeout_s=dispatch_timeout)
             self._last_request = request_id
             if self.clock() > self._deadline:
                 self._partial = response.text  # arrived after the deadline: kept, not counted
@@ -369,12 +392,14 @@ class Runner:
     def _finish(self, request_id: str, sent: float, *, status: str,
                 response: ModelResponse | None = None, error: str | None = None,
                 usage: dict | None = None, cost_usd: float | None = None,
-                generation_id: str | None = None, partial: str = "") -> None:
+                generation_id: str | None = None, partial: str = "",
+                error_details: dict | None = None, dispatch_timeout_s: float | None = None) -> None:
         fields: dict = {"request_id": request_id, "status": status,
                         "elapsed_s": round(self.clock() - sent, 3), "usage": usage,
                         "cost_usd": cost_usd,
                         "cost_source": "response" if cost_usd is not None else None,
-                        "generation_id": generation_id, "error": error}
+                        "generation_id": generation_id, "error": error,
+                        "error_details": error_details, "dispatch_timeout_s": dispatch_timeout_s}
         if response is not None:
             fields.update(
                 model_reported=response.model_reported, provider_reported=response.provider_reported,

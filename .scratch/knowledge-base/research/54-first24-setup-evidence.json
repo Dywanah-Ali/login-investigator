@@ -1,0 +1,129 @@
+{
+  "run_id": "screen-live",
+  "stage": "first_24_setup_checkpoint",
+  "prompt_version": "28b2667c34b4",
+  "fixture_version": "f903b7f47620",
+  "trials_started": 24,
+  "trial_states": {
+    "completed": 24
+  },
+  "per_case": {
+    "O1-02": 6,
+    "O1-06": 6,
+    "O1-09": 6,
+    "O1-12-D": 6
+  },
+  "closed_requests": 27,
+  "verified_artifact_references": 151,
+  "fresh_memory_ids": 24,
+  "fixed_inputs_prompts_and_wire_settings_match": true,
+  "configured_credentials_absent": true,
+  "comparison_source_matches_manifest": true,
+  "setup_problems": [
+    {
+      "problem": "reference checker skips spaced, grouped and ranged square-bracket citations",
+      "source": "B-153 / AUD-080",
+      "status": "open; no parser, rubric, prompt or paid rerun change",
+      "evidence": "54-citation-parser-probe.json",
+      "scope": "One live answer had zero recognised citations; offline nonexistent spaced/grouped references also evade the check."
+    }
+  ],
+  "reference_resolution": {
+    "answers_checked": 24,
+    "answers_with_unresolved_refs": 0,
+    "answers_with_no_recognised_citations": 1,
+    "limit": "Existence only; not source support or answer quality."
+  },
+  "resources": {
+    "compat-live": {
+      "request_count": 14,
+      "retry_count": 2,
+      "known_cost_usd": 0.001584,
+      "unknown_cost_requests": 2,
+      "cost_complete": false,
+      "usage": {
+        "input": 3585,
+        "output": 511,
+        "reasoning": 196,
+        "cache_read": 384
+      },
+      "unknown_usage_requests": 2,
+      "unknown_usage_by_key": {
+        "input": 2,
+        "output": 2,
+        "reasoning": 2,
+        "cache_read": 2
+      }
+    },
+    "compat-readiness-1": {
+      "request_count": 13,
+      "retry_count": 1,
+      "known_cost_usd": 0.001556,
+      "unknown_cost_requests": 1,
+      "cost_complete": false,
+      "usage": {
+        "input": 3830,
+        "output": 441,
+        "reasoning": 134,
+        "cache_read": 384
+      },
+      "unknown_usage_requests": 1,
+      "unknown_usage_by_key": {
+        "input": 1,
+        "output": 1,
+        "reasoning": 1,
+        "cache_read": 1
+      }
+    },
+    "screen-live": {
+      "request_count": 27,
+      "retry_count": 3,
+      "known_cost_usd": 0.107868,
+      "unknown_cost_requests": 2,
+      "cost_complete": false,
+      "usage": {
+        "input": 94498,
+        "output": 52662,
+        "reasoning": 23481,
+        "cache_read": 512
+      },
+      "unknown_usage_requests": 3,
+      "unknown_usage_by_key": {
+        "input": 3,
+        "output": 3,
+        "reasoning": 3,
+        "cache_read": 3
+      }
+    }
+  },
+  "combined_known_cost_usd": 0.111008,
+  "request_failures": [
+    {
+      "request_id": "p1-O1-06-gpt-oss-120b-A-dfeeb6a08ecf",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null
+    },
+    {
+      "request_id": "p1-O1-06-gpt-oss-120b-A-eb61613c1327",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null
+    },
+    {
+      "request_id": "p1-O1-06-gpt-oss-120b-A-b48c991cccf0",
+      "status": "timeout",
+      "error": "timeout: OpenRouter elapsed deadline; billing may be unknown",
+      "generation_id": "gen-1793718665-OYOM8kVSLDB1pb4vqVTL"
+    }
+  ],
+  "all_human_scores_unscored": true,
+  "no_selection_or_live_upload": true,
+  "wall_elapsed_s": 1162.393,
+  "sum_trial_elapsed_s": 1139.757,
+  "blinded_batch": {
+    "file": "backend/evals/comparison/runs/screen-live/artifacts/review/batch-1.json",
+    "items": 6,
+    "labels": "all blank"
+  }
+}

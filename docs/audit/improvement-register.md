@@ -104,6 +104,90 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-075 | Concurrent first use of a new SQLite memory file can hit "database is locked" in checkpointer setup | Open intermittent observation; isolated rerun passed; no change approved | Low | B-136; T50 full verification, 1 November 2026 |
 | AUD-076 | Map phase 0 and 1 agent objectives to reliability evidence | Closed: T52 decision review and approved handoffs evidenced, 2 November 2026; runtime proof remains downstream | Medium | Author and Codex discussion, 1 November 2026; Sentinel research |
 | AUD-077 | T54 comparison runner: review concerns left open at checkpoints 1–2 | Open: both ruling items decided 3 November 2026 (keep real name; allow gold as expected output); refinements deferred; Langfuse behaviours unproven until a live upload | Medium | T54 two-axis review, 3 November 2026 |
+| AUD-078 | Fixed-address rollback can fail with a masked pair-verification error | Open observation; diagnostic-only retry, cause and relation to AUD-072 unproven | Medium | B-149; T54 post-Docker-update regression, 3 November 2026 |
+| AUD-079 | T54 initial compatibility: gpt-oss citation contract and native-settings evidence | Closed for compatibility readiness: six repaired contracts and twelve upstream bodies checked; author approved first-24 screening, 3 November 2026; disclosure limits retained | Medium | B-150/B-151; T54 live compatibility and readiness repair, 3 November 2026 |
+| AUD-080 | Screening reference parser silently skips spaced/grouped/ranged citations | Closed for bounded parser repair: v2/rechecks verified; author approved remaining 48 paid answers after checkpoint summary; two syntax warnings and lexical limits retained | Medium | B-153; T54 first-24 setup checkpoint, 3 November 2026 |
+| AUD-081 | Completed screening response had empty output and unknown streamed cost | Open observation: final 72 trials closed, slot 64 preserved as no_answer; metadata 404, cost/cause unknown; no replacement authorised | Medium | B-155; T54 third screening round, 3 November 2026 |
+
+### AUD-081: Empty completed response during the third screening round
+
+Original slot 64 records `no_answer` after ten capacity rejections and a completed response
+with empty output/continuation and unknown streamed usage/cost. B-155 preserves the
+observation. Cause remains unproven; no provider/gateway/adapter blame or application
+regression is established. Keep the original outcome and compare billing metadata after the
+runner stops. No model-quality score, automatic replacement, prompt/provider change or
+linked rerun authorised. This does not block collection of the remaining original slots.
+
+**Final evidence, 3 November:** all 72 original trials closed, 71 answers and one
+`no_answer`; no linked rerun. Authenticated metadata for the empty completion returned 404,
+so its charge remains unknown. Final evidence lives in the checkpoint completion addendum
+and `54-complete-screen-evidence.json`. Cause/disposition remain open for later review;
+there is no automatic replacement or provider/adapter change. Human scoring starts in a
+fresh session; keep operator records separate from the blinded batch.
+
+### AUD-080: Reference-resolution coverage at the first screening checkpoint
+
+All 24 first-round final answers are saved. The version-1 checker recognizes no citation
+in one answer that uses spaced/grouped/ranged square brackets. Offline reproduction:
+`[D999]` flags an unknown reference, while `[ D999 ]` and `[D1; D999]` silently produce
+zero cited/unresolved references. This is a parser gap, not a human score or evidence that
+the answer contains no citations. See B-153 and the
+[checkpoint report](../../.scratch/knowledge-base/research/54-first24-setup-checkpoint-2026-11-03.md).
+
+Proposed work under T54: settle supported lexical forms, version the parser, test missing
+and mixed references, and recheck existing answers without paid inference. Preserve earlier
+checks, original outputs, rubric and initial-human-scoring gates. No repair or later paid
+pass was silently approved by registration. Closure needs relevant parser evidence and
+author disposition; zero unresolved references alone does not establish coverage.
+
+**3 November author-approved repair:** version 2 handles whitespace, comma/semicolon
+citation groups and bounded full-endpoint ranges. Unsupported reference-like groups retain
+explicit refs and warnings. All 24 saved answers have appended v2 checks, zero unresolved;
+13 gain newly recognized refs. Two answers have five explanatory-text bracket warnings;
+these remain visible and imply no score. Original 24 v1 checks, 135-event prefix and all
+152 other bundle files hash-match baseline. Repeat appends nothing. All 55 current assessment
+tests covered; focused types/lint clean. See the checkpoint addendum and its linked v2 JSON.
+Bounded lexical repair verified; author checkpoint disposition remains outstanding. Do not
+claim universal syntax coverage, entailment or quality from these checks. The frozen manifest
+is preserved; later setup review must disclose the parser/command-only package hash change.
+The future mirror's unresolved metric alone does not communicate syntax warnings; inspect
+local checks alongside it before any authorised upload.
+
+**Author checkpoint disposition, 3 November:** after the repair/warning summary and explicit
+clarification of the paid gate, the author said “Go” for the remaining 48 answers. Close this
+bounded parser-repair/checkpoint concern with the above evidence; retained syntax warnings
+and source-support limits remain visible. Original slots 25–72 authorised with existing
+cost/setup controls. No answer-quality ruling, linked rerun or live upload authorised.
+
+### AUD-079: Initial paid compatibility needs disposition before screening
+
+Six authorised initial sessions completed; all used the tool, five met the literal answer
+contract. gpt-oss used `【CMP-1】` instead of `[CMP-1]`; B-150 retains the original failure.
+Two upstream rate-limit responses recovered but have unknown charges. Returned efforts and
+provider identities establish gateway acceptance, not independent native-setting verification.
+Haiku adaptive mapping, Qwen top_k and native effort application remain disclosure limits.
+See the [live report](../../.scratch/knowledge-base/research/54-live-compatibility-2026-11-03.md).
+No prompt/check/setting change, linked rerun, screening or live upload occurred. Resolve the
+contract disposition and review mapping limits before screening. This registration authorises
+neither weakening the output contract nor eliminating a candidate from one connection check.
+
+**Readiness resolution, 3 November:** author requested resolution. One common compatibility-only
+ASCII-bracket clarification plus local upstream diagnostics was applied to all six configurations
+in a separate, linked bundle. All six tool/citation contracts pass; twelve transformed provider
+bodies match the approved native fields, including Haiku adaptive/medium and Qwen top_k 20.
+Actual downstream output defaults are recorded (B-151). Seventy-five focused tests and type/lint
+checks pass. Known combined cost US$0.003140. Three definite upstream capacity rejections
+are nonbillable under published policy; raw missing charges are still unknown and no measured
+zero or invoice reconciliation is claimed. See the
+[resolution report](../../.scratch/knowledge-base/research/54-readiness-resolution-2026-11-03.md).
+Ready for author review, not silently closed. Screening execution and live Langfuse upload
+remain separate gates; no model selected or scored answer generated.
+
+**Author disposition:** after the resolution report and separate first-24 execution request,
+the author approved proceeding (“Approved. go ahead”). Close this compatibility-readiness
+concern on the recorded repair/evidence and execution disposition. Original citation failure,
+published-policy billing classification and missing per-request charges remain in the record.
+This closure is not screening acceptance, a model reliability result or T54 completion.
 
 ### AUD-001: Rule filter
 
@@ -493,6 +577,12 @@ isolated real API timing and dated live ruling. Further display proposals remain
 The final presence item is now accepted; the scenario and other audit findings remain separate.
 
 ### AUD-028: Explorer test timeout
+
+**3 November 2026, T54 offline adapter:** unchanged frontend full run 149/150; focused Explorer
+rerun 7/8 with the same five-second valid-IP/Reset timeout. Chart size warnings also appeared.
+No frontend or timeout change. See B-066; cause remains unproven. Backend/type checks overlapped.
+The final one-worker full rerun passed 150/150 in 277.21 s without frontend changes; the original
+failures and chart-size warnings remain recorded.
 
 One full frontend verification run timed out in the existing valid-IP/Reset Explorer test.
 The other 137 tests passed. A one-worker rerun of Explorer and Investigator passed all 35 tests
@@ -1356,6 +1446,10 @@ T53, 2 November: the initial full run had 148/150 passes with both invalid- and 
 tests timing out. A separate one-worker full rerun passed 150/150 in 76.49 seconds without
 frontend or timeout changes. Also recorded under B-066/AUD-028; the underlying cause remains open.
 
+T54, 3 November: full run 149/150 and focused Explorer 7/8, same valid-IP/Reset timeout.
+Final one-worker full rerun 150/150 in 277.21 s, no frontend changes. B-066/AUD-028 retain
+the failures, recovery and chart-size warnings. Cause remains unproven.
+
 
 ### AUD-070: Pydantic Evals adoption path
 
@@ -1512,6 +1606,33 @@ no dependency, implementation or spec change.
 - **Unproven until checkpoint 3:** whether Langfuse honours historical span timestamps, the
   long-term status of `POST /api/public/scores`, payload limits, and exact dataset endpoint
   behaviour. Only a live, authorised upload of a scored screening result proves them.
+
+- **3 November checkpoint-3 offline review:** B-148 records malformed-response evidence loss,
+  discarded HTTP-failure telemetry, stale deadline allowance, repair ordering and retrospective
+  review-point handling found and corrected before any paid call. Named fake regressions cover
+  the fixes. Native adaptive-reasoning application, endpoint availability/limits and all remote
+  Langfuse behaviours remain unverified. B-147's image-name failure also recurred at intake.
+
+### AUD-078: Masked graph-pair failure during rollback
+
+T54's post-update backend run reached 149 passes, then the existing fixed-address conflict and
+rollback test failed at `rollback_version` with the fixed `PAIR_UNCHECKABLE` error. Image
+resolution and the full startup tests passed. B-149 and the narrow Docker lifecycle trace
+retain the failure; zero OOM events were recorded in that monitoring window. This is not yet
+classified as AUD-072's readiness timeout or the earlier B-147 image-cache problem.
+
+Current action is a diagnostic-only focused retry that preserves the underlying exception
+context and safe container startup state before cleanup. No readiness limit, public error,
+outgoing recovery behaviour or application code change is approved by registration here.
+T54's full backend verification remains incomplete. Closure needs a diagnosed fix or explicit
+author disposition with evidence; a passing retry alone does not establish the cause fixed.
+
+**3 November author scope/testing ruling:** no automatic full application suites per change.
+The optional diagnostic retry was interrupted after the author challenged its scope; partial
+exception-context evidence is retained. This remains an open graph lifecycle concern, not a
+blocker inferred for the isolated fixed-evidence comparison, which does not use Neo4j.
+No root cause, graph fix, full-suite pass or production acceptance is claimed. Any further
+repair needs its own scoped work; T54 retains its relevant focused checks and live gates.
 
 ### AUD-076: Agent objectives and reliability evidence
 

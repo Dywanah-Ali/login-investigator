@@ -275,3 +275,19 @@ def test_compatibility_records_a_missing_tool_call(tmp_path):
     run.run()
     checks = [e for e in bundle.events() if e["type"] == "compatibility_checks"]
     assert len(checks) == 2 and all(c["tool_round_trip"] is False for c in checks)
+
+
+def test_compatibility_keeps_correct_fact_with_non_ascii_citation_as_failure(tmp_path):
+    def script(request, n):
+        if n == 0:
+            return ModelResponse(text="", tool_calls=[{"id": "call-1", "name": "get_record",
+                                                       "arguments": '{"ref": "CMP-1"}'}])
+        return ModelResponse(text="The colour code is **7**【CMP-1】.")
+
+    bundle, _, run = make(tmp_path, script, stage="compatibility", configs=CONFIGS[:1],
+                          cases=[], passes=1)
+    run.run()
+    checks = next(e for e in bundle.events() if e["type"] == "compatibility_checks")
+    assert checks["tool_round_trip"] is True and checks["output_contract"] is False
+    trial = next(iter(finished(bundle).values()))
+    assert "【CMP-1】" in bundle.read_artifact(trial["final_answer"])

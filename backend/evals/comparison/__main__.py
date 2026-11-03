@@ -16,9 +16,9 @@
     uv run python -m evals.comparison report RUN_DIR
     uv run python -m evals.comparison mirror RUN_DIR      # only with LI_LANGFUSE=on
 
-Only the `dry-run` adapter exists before checkpoint 3: it answers every request with a fixed text
-and costs nothing. A paid adapter is added only after its documentation and compatibility checks
-and the author's execution authorisation.
+`dry-run` answers with a fixed text and costs nothing. `openrouter` dispatch requires
+`run --execute-paid`, used only after the author's explicit execution go and readiness checks.
+Creating a run never loads model keys or sends a request.
 """
 
 from __future__ import annotations
@@ -40,6 +40,7 @@ from evals.comparison import (
     selection,
 )
 from evals.comparison.adapters import Adapter, ModelRequest, ModelResponse
+from evals.comparison.openrouter import OpenRouterAdapter
 
 RUNS = Path(__file__).parent / "runs"
 ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
@@ -63,7 +64,7 @@ class DryRunAdapter(Adapter):
                              model_reported="dry-run", provider_reported="dry-run")
 
 
-ADAPTERS = {"dry-run": DryRunAdapter}
+ADAPTERS = {"dry-run": DryRunAdapter, "openrouter": OpenRouterAdapter}
 
 
 def _adapter(name: str) -> Adapter:
@@ -100,7 +101,54 @@ def cmd_new(args) -> int:
 def cmd_run(args) -> int:
     bundle = _open(args.run_dir)
     adapter = _adapter(bundle.manifest["adapter"]["name"])
-    result = runner.Runner(bundle, adapter).run(until_slot=args.until_slot)
+    prior_cost = 0.0
+    if isinstance(adapter, OpenRouterAdapter):
+        if not args.execute_paid:
+            raise ValueError("OpenRouter dispatch requires --execute-paid after explicit execution go")
+        if args.until_slot is None:
+            raise ValueError("paid runs require --until-slot; review cost between bounded batches")
+        maximum_slot = max([s["slot"] for s in bundle.manifest["schedule"]] + [
+            e["slot"]["slot"] for e in bundle.events() if e["type"] == "rerun_scheduled"])
+        if args.until_slot < 1 or args.until_slot > maximum_slot:
+            raise ValueError("paid --until-slot must name a slot in the frozen schedule")
+        if (bundle.manifest["stage"] == "screening" and args.until_slot > 24
+                and not args.after_setup_review):
+            raise ValueError("later screening passes await the first-24 setup review")
+        if bundle.manifest["stage"] == "screening" and args.until_slot > 24:
+            closed = {e["trial_id"] for e in bundle.events()
+                      if e["type"] in ("trial_finished", "trial_interrupted")}
+            if any(s["trial_id"] not in closed for s in bundle.manifest["schedule"][:24]):
+                raise ValueError("finish the first 24 results before recording their setup review")
+        related = [_open(path) for path in args.cost_run]
+        roots = [bundle.root.resolve(), *(b.root.resolve() for b in related)]
+        if len(roots) != len(set(roots)):
+            raise ValueError("cost bundles must be distinct; do not count a run twice")
+        if any(b.manifest["adapter"]["name"] != "openrouter" for b in related):
+            raise ValueError("paid cost context cannot contain a dry run")
+        if (bundle.manifest["stage"] == "screening"
+                and not any(b.manifest["stage"] == "compatibility" for b in related)):
+            raise ValueError("paid screening requires its compatibility bundle via --cost-run")
+        prior_cost = sum(records.resources(b)["total"]["known_cost_usd"] for b in related)
+        unknown = sum(records.resources(b)["total"]["unknown_cost_requests"] for b in related)
+        print(f"Related runs: known cost US${prior_cost:.4f}; {unknown} unknown-cost request(s).")
+        from dotenv import dotenv_values
+
+        env = {**{k: v for k, v in dotenv_values(ENV_FILE).items() if v is not None}, **os.environ}
+        key = env.get("OPENROUTER_API_KEY", "")
+        if not key.strip():
+            raise ValueError("OPENROUTER_API_KEY is missing or empty")
+        adapter = OpenRouterAdapter(key)
+        bundle.append("spending_context", related_runs=[b.manifest["run_id"] for b in related],
+                      known_cost_usd=prior_cost, unknown_cost_requests=unknown,
+                      spending_review_confirmed=args.after_spending_review,
+                      setup_review_confirmed=args.after_setup_review)
+    result = runner.Runner(bundle, adapter).run(
+        until_slot=args.until_slot,
+        stop_cost_usd=(REVIEW_AT_USD if isinstance(adapter, OpenRouterAdapter)
+                       and not args.after_spending_review else None), prior_cost_usd=prior_cost,
+        reruns_only=args.reruns_only)
+    if result["stop_reason"]:
+        print(f"REVIEW POINT: {result['stop_reason']}.")
     recovery = result["recovery"]
     if recovery["unresolved_requests"] or recovery["interrupted_trials"]:
         print(f"Recovered after an interruption: {len(recovery['interrupted_trials'])} trial(s) "
@@ -136,10 +184,15 @@ def cmd_checks(args) -> int:
     bundle = _open(args.run_dir)
     results = assessment.run_deterministic_checks(bundle)
     unresolved = [r for r in results if r["unresolved"]]
+    unsupported = [r for r in results if r.get("unsupported_citations")]
     print(f"Reference checks on {len(results)} answers; {len(unresolved)} cite references that "
-          "do not exist in their case file. No model was called.")
+          f"do not exist in their case file; {len(unsupported)} contain unsupported citation "
+          "syntax requiring inspection. No model was called.")
     for result in unresolved:
         print(f"- {result['trial_id']}: {', '.join(result['unresolved'])}")
+    for result in unsupported:
+        print(f"- {result['trial_id']}: unsupported citation syntax: "
+              f"{result['unsupported_citations']!r}")
     return 0
 
 
@@ -276,7 +329,7 @@ def cmd_report(args) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m evals.comparison",
-                                     description="T54 comparison runner (offline until checkpoint 3)")
+                                     description="T54 comparison runner (dry-run or explicitly paid)")
     sub = parser.add_subparsers(dest="command", required=True)
     new = sub.add_parser("new", help="freeze a new run")
     new.add_argument("stage", choices=["compatibility", "screening"])
@@ -287,6 +340,16 @@ def main(argv: list[str] | None = None) -> int:
     run = sub.add_parser("run", help="run every trial not yet started")
     run.add_argument("run_dir")
     run.add_argument("--until-slot", type=int)
+    run.add_argument("--execute-paid", action="store_true",
+                     help="allow OpenRouter calls only after explicit execution authorisation")
+    run.add_argument("--after-setup-review", action="store_true",
+                     help="continue beyond 24 screening slots after the setup review")
+    run.add_argument("--after-spending-review", action="store_true",
+                     help="continue after the US$15 spending review")
+    run.add_argument("--cost-run", action="append", default=[],
+                     help="related paid bundle whose costs share this budget; repeat as needed")
+    run.add_argument("--reruns-only", action="store_true",
+                     help="run only explicitly linked repairs, leaving pending original slots alone")
     run.set_defaults(func=cmd_run)
     for name, func, text in (("status", cmd_status, "trial states and actual cost"),
                              ("checks", cmd_checks, "offline reference checks"),

@@ -13,10 +13,10 @@ UNVERIFIED = "requested; route and effective settings unverified until the compa
 
 SCREENING_CONFIGS = [
     ModelConfig(config_id="qwen3.8-27b", label="Qwen3.8-27B", model="qwen/qwen3.8-27b",
-                provider="deepinfra", reasoning={"enabled": True, "effort": "medium"},
+                provider="deepinfra/bf16", reasoning={"enabled": True, "effort": "medium"},
                 sampling={"temperature": 1.0, "top_p": 0.95, "top_k": 20}, notes=UNVERIFIED),
     ModelConfig(config_id="gpt-oss-120b", label="gpt-oss-120b", model="openai/gpt-oss-120b",
-                provider="deepinfra", reasoning={"effort": "medium"}, notes=UNVERIFIED),
+                provider="deepinfra/bf16", reasoning={"effort": "medium"}, notes=UNVERIFIED),
     ModelConfig(config_id="deepseek-v4.1-flash-1017", label="DeepSeek V4.1 Flash 1017",
                 model="deepseek/deepseek-v4.1-flash-1017", provider="deepinfra/fp8",
                 reasoning={"enabled": True, "effort": "high"}, notes=UNVERIFIED),

@@ -1,7 +1,7 @@
 # 54: Isolated comparison runner and early Langfuse recording
 
 Type: build
-Status: ready-for-agent
+Status: claimed
 Blocked by: 52
 Phase: 0
 Model: standard (Opus 5.5 or Sol 6.1)
@@ -114,6 +114,140 @@ No paid run, model choice, larger trial or permanent specialist adoption is auth
 
 ## Comments
 
+
+- 2026-11-03 (author testing-policy ruling) — Author rejected full backend/frontend runs
+  for every change and directed proportional testing. AGENTS.md and CLAUDE.md now require
+  focused tests for affected behaviour/seams and relevant static checks for routine work;
+  full app suites only for major/cross-cutting app changes or explicit request. The spec
+  decisions log records this procedural change. Agent-behaviour eval thresholds remain.
+  For this isolated comparison adapter, the 143 comparison tests, backend type/lint checks,
+  frozen-fixture check and two-axis review are the relevant evidence. No application graph
+  or UI code changed. B-149/AUD-078 remain separate and open; the failed full run is retained,
+  not reclassified as passing. Diagnostic-only retry interrupted after the author challenged
+  the scope; partial private diagnostics retained. No graph fix approved or built. No model
+  compatibility session, screening answer or live Langfuse upload has started. This ruling
+  does not authorise paid calls. Next is isolated comparison readiness and explicit execution go.
+- 2026-11-03 (close for fresh session) — Diagnostic interruption completed: exit 2 after
+  1025.39 s, partial evidence only. No running containers afterward. No further graph repair
+  or full-suite rerun under this isolated comparison scope. Public unauthenticated catalogue
+  reads returned HTTP 200 and exactly one matching approved provider endpoint for all six
+  configurations; saved in `research/54-public-route-preflight.json`. No inference or keys used.
+  Native output ceilings advertised: Qwen 235929, gpt-oss 117964, DeepSeek 393216, Luna/Haiku/Sol
+  128000 tokens each. These are provider ceilings, not evaluation-imposed caps or proof of
+  effective defaults; adapter still omits output caps. Runtime/native settings remain the
+  purpose of compatibility sessions. No paid call or Langfuse upload authorised or performed.
+  Next session should request one bounded execution go for the six initial compatibility
+  sessions under the settled US$25 plan; do not reopen settled model/case/scoring decisions.
+- 2026-11-03 (Codex offline build) — Author said "Ok lets go" after the stated next step
+  of finishing adapter documentation and implementing/testing offline. Proceeding on that
+  scope; paid inference and live Langfuse uploads remain unauthorised in this session.
+  OpenRouter v1 documentation completed via official Responses
+  [tool calling](https://openrouter.ai/docs/api_reference/responses/tool-calling),
+  [error handling](https://openrouter.ai/docs/api_reference/responses/error-handling),
+  [streaming](https://openrouter.ai/docs/api_reference/streaming),
+  [reasoning preservation](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens),
+  [service tiers](https://openrouter.ai/docs/guides/features/service-tiers).
+  Checked tool call IDs/output items, complete ordered reasoning replay, failed/incomplete
+  results, SSE framing, explicit standard tier (`default`) and optional usage fields.
+  Requests 2.34.2: official [timeouts](https://requests.readthedocs.io/en/latest/user/quickstart/#timeouts)
+  explain inactivity rather than total duration, so transport needs a separate elapsed deadline.
+  Context Hub lacked OpenRouter coverage as recorded below. Native adaptive-effort mapping
+  and route/settings identity remain compatibility checks, not proven by these documents.
+- 2026-11-03 — Codex: OpenRouter v1 [router metadata](https://openrouter.ai/docs/guides/features/router-metadata),
+  official docs via web; checked `X-OpenRouter-Metadata: enabled`, selected-provider fields,
+  optional pipeline/retry evidence and absent metadata on cache hits. Adapter requests and
+  retains returned metadata without inferring native settings. The response-schema URL found
+  in search (`docs/api/api-reference/responses/create-responses`) could not be fetched; no
+  claim of reviewing that schema. Official Responses guides supply the shapes used here.
+  Requests 2.34.2 [developer interface](https://requests.readthedocs.io/en/latest/api/), via
+  official web docs: checked Session `trust_env`, streaming `iter_lines` decoding, redirects
+  and default HTTPAdapter retries (zero). No package changes.
+- 2026-11-03 (Codex offline checkpoint-3 result) — Built `openrouter.py` and `http_stream.py`
+  behind the existing adapter seam. Exact credential-free wire inputs persist before dispatch;
+  Responses output items replay intact; request worker enforces elapsed deadline and stops
+  before retry; failures retain partials, known costs and sanitized provider artifacts.
+  Standard service maps to `default`; requested providers have no fallback. Qwen/gpt-oss use
+  the exact `deepinfra/bf16` routes already identified in approved T52 research, not new hosts.
+  Anthropic's adaptive intent maps to unified enabled/effort; native application remains
+  unverified. No evaluation-imposed output, retry or call count cap added.
+  CLI live runs require explicit paid flag and bound; first-pass completion/review gates later
+  screening. Related paid bundles share the US$15 pause; pauses occur between trials, so this
+  is no hard billing ceiling. Explicit linked repairs can run alone. Admin manual updated;
+  live examples tested using fake credentials/responses, not real dispatch.
+  Comparison suite: 143 passed in 122.09 s; final compatibility-record wording check: two
+  passed. Frozen fixtures current; backend Ruff clean; Pyright zero; frontend types clean.
+  [Two-axis review](../reviews/54-checkpoint3-offline-review-2026-11-03.md) has zero remaining
+  findings on either axis after B-148 fixes. Full regression results follow below. No paid
+  request, real credential authentication, live upload, application model/agent change, exam
+  gold/threshold change, commit or push. Remaining unchecked criteria stay unchecked.
+- 2026-11-03 (regression attempt) — Full backend outside sandbox, `pytest -q -x`: 137 passed,
+  one setup error in 392.02 s. `test_a_matching_knowledge_base_starts_the_server_as_before`
+  failed at `docker image inspect neo4j:2026.10.1`, the B-147 recurrence, before the comparison
+  test files. Announced and attempted the handoff's reversible retag workaround; Docker's
+  image-tag API returned HTTP 500. No Docker restart/download or stored-build change.
+  Full backend acceptance remains incomplete, not a comparison-code failure or pass.
+  An offline fixture command also hit the sandbox's uv-cache denial; the same command with
+  access to the existing cache passed. No dependency change. Frontend full/focused failures
+  and the final bounded-concurrency rerun are retained below and in B-066/AUD-028.
+- 2026-11-03 (final frontend/check state) — Initial full frontend 149/150 and focused Explorer
+  7/8 retained the known five-second Reset timeout. Final full one-worker rerun passed 150/150
+  in 277.21 s without frontend or timeout changes; chart-size warnings remain. AUD-028/AUD-069
+  and B-066 retain all iterations. Final read-only Docker inspection finds the same image by
+  ID and no running containers; the name repair failed as recorded above. No test process
+  from this session remains. Comparison/fixture/type/lint/review checks pass; full backend
+  acceptance remains incomplete at the B-147 environment failure. T54 remains claimed with
+  its three live/final criteria unticked. No paid inference or live Langfuse upload authorised.
+- 2026-11-03 (B-147 investigation) — Author reopened Docker troubleshooting. Read-only
+  checks reproduced changing short-name resolution without a retag, plus engine-call timeouts.
+  Local logs tie cached short-name 404s to the five-minute idle VM stop and show canonical-name
+  lookup waking the VM. Resource Saver/cache is a hypothesis pending controlled verification.
+  Desktop 4.76.0, Engine/CLI 29.5.2/API 1.54. Author confirmed no prior restart/settings change,
+  then asked whether to restart. Recommended ordinary Desktop restart; waiting for author to
+  confirm the engine is running before name checks and the failed test. Full details B-147.
+- 2026-11-03 (post-update Docker check) — Author installed the pending Desktop update.
+  Verified Desktop 4.98.0, Engine/CLI 29.9.2/API 1.56. Original image ID, short name and
+  canonical name all resolve to the same existing image. The previously failing
+  `test_api_startup.py::test_a_matching_knowledge_base_starts_the_server_as_before` passed
+  in 225.89 s with fake embeddings and a temporary graph. Sampled container state/logs showed
+  normal startup, no OOM kill and expected negative authentication check. No new retag,
+  image-store switch or application setting change. Admin manual section 4 includes the
+  read-only checks, tested as written. Full backend regression now running; no paid inference
+  or live Langfuse upload. Immediate recovery is not an idle-cycle durability claim.
+- 2026-11-03 (post-update full regression) — 149 passed, one failure in 1435.63 s. Full startup
+  tests passed; Browser fixed-address rollback failed at `rollback_version` with
+  `PAIR_UNCHECKABLE` (871.91 s for that call). B-149 retains this distinct observation; it is
+  not yet established as AUD-072's readiness timeout. Narrow local Docker trace captured 63
+  lifecycle events, zero OOM events; watcher stopped and final Docker check found no running
+  containers. No image lookup recurrence. Full backend acceptance remains incomplete.
+  Next is one diagnostic-only focused retry capturing suppressed exception context before
+  cleanup, without altering application code, retry policy, readiness limits or public errors.
+- 2026-11-03 — Codex diagnostic lookup: neo4j Python 6.1.0; Context Hub `neo4j/package`
+  matches the installed pin, checked scoped sessions and exception handling. Official
+  [API exception reference](https://neo4j.com/docs/api/python-driver/current/api.html)
+  is rolling 6.4; consulted only the longstanding exception code/driver-error fields.
+  Diagnostic wrapper will use Python exception context and selected non-secret fields,
+  not change driver execution or add retries. The comparison's paid execution remains gated.
+- 2026-11-03 (Codex checkpoint-3 intake) — Author confirmed GPT-6.1 Sol for this session
+  and confirmed this session is the sole editor. OpenRouter key presence checked without
+  displaying its value; author reports sufficient account credit. Author created the
+  `login-investigator-v2` Langfuse project and saved its public key, secret key and base URL
+  in ignored `backend/.env`; all three have values, not yet authenticated. `LI_LANGFUSE`
+  is not on. Author reconfirmed US$25 planning budget, reviews at US$15 and after 24 results.
+  No paid OpenRouter call or live Langfuse upload is authorised until a separate explicit
+  execution go in this session. Documentation checks and offline adapter/fake tests are allowed.
+  Startup inspection found B-147 recurring: image-name lookup fails while image-ID lookup
+  succeeds; no repair performed. No paid adapter implemented during intake.
+- 2026-11-03 — Codex: OpenRouter HTTP API v1 (existing requests lock 2.34.2);
+  get-api-docs lookup: Context Hub search for `openrouter` returned no entries, so opened
+  official [Responses overview](https://openrouter.ai/docs/api_reference/responses/overview),
+  [provider routing](https://openrouter.ai/docs/guides/routing/provider-selection) and
+  [reasoning](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens).
+  Checked: stateless full-history requests, rejection of store:true/previous_response_id,
+  provider-only routing with fallbacks disabled and require_parameters, reasoning settings
+  and billed incomplete outputs. Initial overview/tool-calling URLs with `api-reference`
+  failed; the overview resolved via the official routing page to `api_reference`.
+  This is an initial documentation check, not adapter/runtime compatibility evidence;
+  detailed tool-continuation, usage and deadline documentation remains before implementation.
 - 2026-11-02 — Author approved the delivery split and sequence above. No implementation yet.
 - 2026-11-02 — Langfuse hosted documentation; SDK version not selected. Official
   [evaluation concepts](https://langfuse.com/docs/evaluation/core-concepts) and
@@ -236,3 +370,193 @@ No paid run, model choice, larger trial or permanent specialist adoption is auth
   Left unticked: the mirror criterion (proven only against a fake destination; real Langfuse
   behaviour unproven, see AUD-077) and the live-result criterion, both checkpoint 3; admin
   manual/regression/review, true today but to be re-proved after checkpoint 3 adds code.
+
+- 2026-11-03 — Codex: author explicitly authorised the six paid compatibility sessions
+  with “Ok lets go” after the bounded next-step request. Screening and live Langfuse
+  upload remain separate gates. Existing provider/settings/budget approvals retained.
+  Frozen fixtures checked current; live bundle created at
+  `backend/evals/comparison/runs/compat-live`. Execute one slot at a time and inspect
+  saved tool/output/identity/settings/cost evidence before proceeding.
+
+- 2026-11-03 — Codex: six authorised initial paid sessions completed in `compat-live`, one
+  slot at a time. All six tool round trips passed; five output contracts passed. gpt-oss
+  returned correct fact 7 with `【CMP-1】` instead of the explicitly requested `[CMP-1]`.
+  Original failure retained as B-150/AUD-079; no favourable rerun or check/prompt change.
+  Fourteen requests, two rate-limit retries recovered, known cost US$0.001584 and two
+  unknown-cost HTTP 429 responses. Provider identities/returned settings recorded with
+  native-mapping limitations. All 64 artifact references verified; fourteen requests closed;
+  six full output replays checked; configured credentials absent from saved bundle.
+  See [live report](../research/54-live-compatibility-2026-11-03.md). Admin compatibility
+  commands now have live evidence. No application suites repeated. No screening or live
+  Langfuse upload authorised/performed; review readiness gaps before the next execution go.
+
+- 2026-11-03 — Codex readiness repair plan: author asked to resolve the reported readiness
+  gaps. Preserve `compat-live`; clarify ordinary ASCII citation delimiters in the shared
+  connection-check prompt only, without changing the literal check, scored role prompts,
+  cases, rubric or requested model settings. Capture OpenRouter's documented upstream debug
+  body locally on tool-bearing compatibility requests. Repeat all six configurations once
+  in a separately versioned bundle because the connection-check setup is shared; link it
+  to the originals and include original costs. This is a bounded compatibility repair,
+  not screening authorisation or repeated attempts to select a favourable answer.
+- 2026-11-03 — Documentation: Context Hub search `openrouter` returned no entries.
+  OpenRouter API v1 official [OpenAPI schema](https://openrouter.ai/openapi.json), fetched
+  to a temporary file: checked ResponsesRequest.debug, ChatDebugOptions.echo_upstream_body
+  and DebugEvent.debug.echo_upstream_body. The upstream body appears in an initial stream
+  chunk. Official [reasoning mapping](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens)
+  and [pricing](https://openrouter.ai/pricing) reviewed via web: native Claude adaptive
+  intent, reasoning preservation, and failed-attempt model-token billing. Actual transformed
+  requests remain to be checked. Requests 2.34.2 transport documentation from the earlier
+  checkpoint-3 note still applies; transport implementation is unchanged. Official OpenAI
+  [reasoning](https://developers.openai.com/api/docs/guides/reasoning),
+  [Luna](https://developers.openai.com/api/docs/models/gpt-6-luna) and
+  [Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol) reviewed for native medium
+  effort/standard mode/Responses tool support. Owner docs for
+  [Haiku](https://platform.claude.com/docs/en/models/haiku-5-5/overview),
+  [Qwen](https://huggingface.co/Qwen/Qwen3.8-27B) and
+  [DeepSeek](https://api-docs.deepseek.com/guides/thinking_mode/) reviewed for matching
+  controls. The generated SDK/reference URLs returned 404 on direct opening; the public
+  OpenAPI schema supplies the diagnostic contract instead. No dependency change.
+- 2026-11-03 — Additional provider documentation: DeepInfra's official
+  [reasoning contract](https://docs.deepinfra.com/chat/reasoning) accepts the `reasoning`
+  object as an alternative to `reasoning_effort`, with equivalent effort values. Its
+  [chat reference](https://docs.deepinfra.com/api-reference/chat-completions/openai-chat-completions)
+  and [overview](https://docs.deepinfra.com/chat/overview) confirm the field and describe
+  standard service when the tier is omitted. This matches the transformed Qwen/gpt-oss/
+  DeepSeek requests; it is not a request for new providers or settings.
+
+- 2026-11-03 — Codex readiness result: `compat-readiness-1` completes all six tool/citation
+  contracts under one shared clarified prompt (`28b2667c34b4`) and adapter v2. Twelve upstream
+  bodies confirm native fields, including Haiku adaptive/medium, Qwen sampling and DeepInfra
+  reasoning controls. B-151 records downstream limits hidden by normalized null fields.
+  Seventy-five focused tests passed in 39.79 s; focused Pyright clean; focused Ruff initially
+  found a test import-layout issue, corrected and rerun clean. Live evidence: 62 artifact
+  references hash-checked, thirteen requests terminal, six fresh memory IDs, six exact ordered
+  output replays and twelve upstream bodies verified, configured credentials absent.
+  Known repair charge US$0.001556; combined US$0.003140. Three combined engine_overloaded
+  HTTP 429 rejections classified under published nonbilling policy in append-only notes.
+  Raw missing costs remain unknown; no invented measured zero or account reconciliation.
+  Original failed gpt-oss answer retained; no scored role prompt/check/gold/config change.
+  [Resolution report](../research/54-readiness-resolution-2026-11-03.md) and linked JSON
+  record the evidence. Admin instructions updated and compatibility commands live-tested.
+  `screen-live` created with 72 frozen slots and zero request events, ready for a separate
+  first-24 paid execution go. No screening, labels, selection or live Langfuse upload occurred.
+  AUD-079 ready for author review; T54 remains claimed. No graph/application-suite detour.
+
+- 2026-11-03 — Author approved the first 24 paid screening answers after readiness resolution,
+  with an inspection after the first answer. Approval: “Approved. go ahead”. Use both
+  compatibility bundles in cost context; stop after slot 24 for the setup checkpoint.
+  This authorises neither later passes nor a live Langfuse upload. No settings, cases,
+  rubric or scored prompts change. Author remains the initial blinded scorer.
+
+- 2026-11-03 — Billing lookup documentation: OpenRouter API v1 official
+  [generation metadata](https://openrouter.ai/docs/api/api-reference/generations/get-generation),
+  opened via web. Checked authenticated GET `/api/v1/generation?id=...`, generation identity,
+  `total_cost`, cancellation and finish fields. Context Hub’s lack of OpenRouter coverage
+  and the existing Requests 2.34.2 documentation still apply. A read-only lookup for the
+  first screening timeout returned HTTP 200 and a reported charge; no inference repeated.
+  Save its settlement after the live runner stops to avoid concurrent bundle writers.
+
+- 2026-11-03 — First paid screening round finished: 24 final answers, six per case,
+  no manually scheduled reruns, and no slot after 24 started. Wall time 1162.393 s.
+  First-answer setup inspection passed before continuation. All case inputs/prompts/pins/
+  settings and source hashes match; 24 fresh memory IDs; 151 artifact references checked;
+  configured secrets absent. Twenty-seven request records are terminal: 24 completed,
+  two upstream 429 capacity errors and one elapsed timeout, all three recovered by policy.
+  Timeout charge US$0.000426477 obtained by authenticated generation metadata and attached
+  once after the runner stopped. Known screen cost US$0.107868; combined US$0.111008.
+  Five rejection charges across all paid bundles remain numerically unknown with policy
+  dispositions; no invoice total claimed. B-152 records the operational evidence.
+  No application suites or inference reruns for billing/checks.
+- 2026-11-03 — Setup checkpoint found B-153/AUD-080: one answer uses spaced/grouped/ranged
+  citations that the version-1 parser ignores. Offline `[ D999 ]` and `[D1; D999]` also
+  evade resolution while `[D999]` is detected. All recognized references resolve, but
+  coverage is incomplete. Original checks/outputs preserved; no parser, prompt, gold,
+  rubric or human score changed. New check version and local recheck proposed, not built.
+  First blinded batch has six answers, no detected identity mentions and blank labels.
+  [Checkpoint](../research/54-first24-setup-checkpoint-2026-11-03.md) and linked JSON retain
+  evidence. Two rounds remain, 48 answers; all human scores are unscored. No selection
+  or live Langfuse upload. Author asked to finish records and continue in a fresh session.
+  T54 stays claimed; pick up with parser coverage before a separate later-pass go.
+
+- 2026-11-03 — Author approved the proposed bounded B-153 parser repair and offline
+  recheck. Plan: reference-resolution/2 accepts whitespace, comma/semicolon groups and
+  ascending same-prefix ranges with full endpoints, using ASCII hyphen, Unicode hyphen,
+  nonbreaking hyphen, en dash or minus. Keep explicit unknown references visible even
+  inside unsupported groups; report unsupported reference-like brackets separately. Bound
+  range expansion to 1000 references and report larger, reversed, mixed-prefix or padded
+  ranges as unsupported rather than silently accepting them. Preserve original answers and
+  v1 checks; append v2 checks only. Focused assessment/dependency tests and type/lint checks,
+  then offline recheck of the 24 saved answers. No third-party API/library changes, paid
+  inference, prompt/rubric/gold/score changes or live uploads. T54 remains claimed.
+
+- 2026-11-03 — B-153 bounded repair verified: `reference-resolution/2` plus visible local
+  command warnings. All 55 current assessment tests covered by the 53-test file run and
+  focused follow-ups (two updated/new tests, then one command test); focused Ruff/Pyright
+  clean. One import-order lint iteration corrected. Offline recheck appended 24 v2 events;
+  all 24 v1 checks, original 135 events and 152 other bundle files unchanged. Recheck is
+  idempotent. Thirteen answers gain recognized references; former zero-count answer now
+  has 37 occurrences; zero unresolved references. Two answers retain five unsupported
+  status-reference brackets with explanatory prose, explicit refs checked, no score implied.
+  [Checkpoint addendum](../research/54-first24-setup-checkpoint-2026-11-03.md) and
+  [v2 evidence](../research/54-citation-parser-v2-evidence.json) record grammar, tests,
+  limits and source hash change. Frozen manifest preserved; disclose parser/command-only
+  package hash change at later setup review. Admin live command tested. No paid run,
+  prompt/rubric/gold/answer/score change or live upload. AUD-080 awaits author checkpoint
+  disposition; T54 remains claimed. Two paid rounds (48 answers) still need separate go.
+
+- 2026-11-03 — Author explicitly authorised the remaining 48 paid screening answers after
+  the parser-repair summary, retained two syntax warnings, and clarification that the 48
+  still awaited explicit go. First-24 setup checkpoint disposed to proceed with these
+  warnings retained; no scoring implication. Scope: resume original slots 25–72 in
+  `screen-live`, both compatibility bundles included in cost context, unchanged model
+  settings/prompts/cases/rubric/retries/limits, `--after-setup-review`, no spending-review
+  override. Check-only package source change is recorded by the v2 evidence and verified
+  at preflight; frozen manifest retained. No linked reruns or live Langfuse upload approved.
+  AUD-080 closes for the bounded parser repair and this checkpoint disposition, without
+  universal grammar, entailment or answer-quality claims. Record final execution evidence
+  after the runner stops; author remains initial blinded scorer. T54 stays claimed.
+
+- 2026-11-03 — Author requested stopping after round 3 and its housekeeping, with a fresh
+  session next. Clarification confirmed “round 4” means blinded human scoring, following
+  the agreed three-round screen. Finish paid slots through 72, reconcile available billing,
+  locally check saved evidence/citations, update records and write the fixed session handoff.
+  Stop before human scoring, model selection or live Langfuse upload. No extra paid round.
+
+- 2026-11-03 — Billing reconciliation documentation reuse: OpenRouter API v1 and Requests
+  2.34.2; reuse the official generation-metadata and Requests timeout/developer-interface
+  documentation checked in this ticket earlier today. Same authenticated GET
+  `/api/v1/generation?id=...`, same generation identity / total_cost / finish / cancellation
+  fields, unchanged installed Requests and transport semantics. Context Hub's previously
+  documented lack of OpenRouter coverage still applies. Read-only lookup after runner
+  exit; no inference replay. Preserve streamed-usage unknowns independently of receipts.
+
+- 2026-11-03 — Original screening collection complete. Authorised slots 25–72 ran with
+  both compatibility cost contexts and setup-review confirmation; no spending override.
+  Exit 0: all 72 original trials closed, 71 answers and one `no_answer` (slot 64;
+  B-155/AUD-081). Later-round elapsed 2847.102 s. Total screen requests 96, 24 retries:
+  72 completed transports, 20 HTTP 429, one streamed rate-limit error and three timeouts.
+  Rounds 2–3 added 18 HTTP 429, one streamed failure and two timeouts. Two new timeout
+  charges US$0.002126992 / US$0.001812412 settled once from authenticated receipts;
+  both native metadata cancelled true, finish fields null. Two other generation lookups
+  returned 404 (empty response / streamed failure); costs unknown. Screen known
+  US$0.278057, combined US$0.281197; 22 screen / 25 combined numeric charges unknown.
+  Streamed usage remains unknown for 25 screen requests. No invoice-total claim.
+- 2026-11-03 — Final local checks: 47 new v2 checks, 71 total; zero unresolved refs;
+  eight answers retain unsupported syntax warnings, without scores. All 485 event
+  artifact references verified; 159-event original prefix and all 152 original files
+  preserved; 72 fresh memories; every request matches frozen input/prompt/pins/settings.
+  No linked rerun, label, assistant note, selection or live upload. Batch 1 and labels
+  unchanged. [Checkpoint completion addendum](../research/54-first24-setup-checkpoint-2026-11-03.md)
+  and [final evidence](../research/54-complete-screen-evidence.json) retain evidence.
+  B-154 records the corrected continuation example, live-tested. Initial cache permission
+  startup failed before dispatch, then authorised execution succeeded. Temporary monitor
+  import-path issue corrected with PYTHONPATH; no application code/test-suite detour.
+  Author-requested stop: handoff then fresh-session blinded human scoring. T54 claimed.
+
+- 2026-11-03 — Author requested committing all current work locally. Reviewed/staged all
+  33 changed/new repository files; configured-secret/key-like/home-path scan clear;
+  secrets, paid run bundles and handoff remain ignored. Git identity uses handle/noreply.
+  Staged whitespace check newly includes the previously untracked raw Docker event log:
+  it reports the log's original trailing spaces. Preserve this diagnostic evidence exactly;
+  all other staged files pass the whitespace check. No application change/test rerun for
+  this commit-only action, no push. Existing quality/billing gaps remain in their records.

@@ -2,8 +2,7 @@
 
 An adapter sends one request and returns one response, or raises `AdapterError`. It never retries
 by itself: every retry is the runner's, so each attempt is recorded (T52 call/retry policy). The
-real OpenRouter adapter is added for checkpoint 3, after its documentation and compatibility
-checks; until then only the scripted fake exists, for offline tests.
+OpenRouter adapter lives in `openrouter.py`; fake models exercise this seam offline.
 """
 
 from __future__ import annotations
@@ -60,7 +59,7 @@ class AdapterError(Exception):
 
     def __init__(self, kind: str, message: str, *, partial_text: str = "",
                  usage: dict | None = None, cost_usd: float | None = None,
-                 generation_id: str | None = None):
+                 generation_id: str | None = None, details: dict | None = None):
         super().__init__(message)
         if kind not in ("transient", "permanent", "timeout"):
             raise ValueError(f"unknown adapter error kind {kind!r}")
@@ -69,11 +68,16 @@ class AdapterError(Exception):
         self.usage = usage
         self.cost_usd = cost_usd
         self.generation_id = generation_id
+        self.details = details
 
 
 class Adapter:
     name = "abstract"
     version = "0"
+
+    def request_details(self, request: ModelRequest) -> dict | None:
+        """Credential-free wire representation, when an adapter has one."""
+        return None
 
     def complete(self, request: ModelRequest) -> ModelResponse:
         raise NotImplementedError

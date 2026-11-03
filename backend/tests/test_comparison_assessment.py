@@ -10,9 +10,11 @@ from __future__ import annotations
 
 import json
 import shutil
+from types import SimpleNamespace
 
 import pytest
 
+from evals.comparison import __main__ as cli
 from evals.comparison import assessment, records, review, runner, selection
 from evals.comparison.adapters import (
     AdapterError,
@@ -148,6 +150,86 @@ def test_reference_check_finds_unresolved_citations_without_a_model(bundle):
     assert checks and all(c["unresolved"] == ["Z9"] for c in checks
                           if c["citation_count"] == 2)
     assert all("does not establish" in c["limit"] for c in checks)
+
+
+def _reference_case(*refs):
+    return {"evidence": [{"ref": ref} for ref in refs], "statuses": []}
+
+
+@pytest.mark.parametrize("text", ["[D999]", "[ D999 ]", "[D1; D999]", "[D1, D999]",
+                                "[\nD1 ;\tD999\n]"])
+def test_spaced_and_grouped_unknown_references_are_never_skipped(text):
+    result = assessment.reference_check(text, _reference_case("D1"))
+    assert result["unresolved"] == ["D999"]
+    assert result["unsupported_citations"] == []
+
+
+@pytest.mark.parametrize("dash", ["-", "‐", "‑", "–", "−"])
+def test_ranges_check_missing_interior_references_and_mixed_groups(dash):
+    result = assessment.reference_check(f"[ L1 {dash} L3 ; L4, C1 ]",
+                                        _reference_case("L1", "L3", "L4", "C1"))
+    assert result["cited"] == ["C1", "L1", "L2", "L3", "L4"]
+    assert result["unresolved"] == ["L2"]
+    assert result["citation_count"] == 5
+    assert result["unsupported_citations"] == []
+
+
+def test_original_single_references_and_occurrence_count_are_preserved():
+    result = assessment.reference_check("[D1] [D1] [CMP-1] [ordinary prose]",
+                                        _reference_case("D1", "CMP-1"))
+    assert result["cited"] == ["CMP-1", "D1"]
+    assert result["citation_count"] == 3
+    assert result["unresolved"] == result["unsupported_citations"] == []
+
+
+@pytest.mark.parametrize("body", ["D1 and D999", "D1; D999;", "D1-D9999999999",
+                                 "D999-D1", "D1-L999", "D01-D999", "D1-999",
+                                 "D1…D999", "D1-D" + "9" * 5000])
+def test_unsupported_reference_groups_are_visible_and_keep_explicit_refs(body):
+    result = assessment.reference_check(f"[{body}]", _reference_case("D1"))
+    assert result["unsupported_citations"] == [f"[{body}]"]
+    assert result["citation_count"] <= 2
+    assert result["unresolved"] or body == "D1-999"
+
+
+def test_range_expansion_has_a_documented_bound():
+    result = assessment.reference_check("[L1-L1000] [L1-L1001]", _reference_case())
+    assert result["citation_count"] == 1002
+    assert result["unsupported_citations"] == ["[L1-L1001]"]
+
+
+def test_reported_live_citation_forms_resolve_all_expanded_references():
+    refs = ["D1", "A1", "A2", "C1", *(f"L{n}" for n in range(1, 22))]
+    result = assessment.reference_check("[ D1 ] [ A1 ; A2 ] [ L1‑L20 ; L21 ; C1 ]",
+                                        _reference_case(*refs))
+    assert result["cited"] == sorted(refs)
+    assert result["citation_count"] == len(refs)
+    assert result["unresolved"] == result["unsupported_citations"] == []
+
+
+def test_v2_checks_append_without_replacing_v1_and_are_idempotent(bundle):
+    answer = next(e["final_answer"] for e in bundle.events()
+                  if e["type"] == "trial_finished" and e["trial_id"] == "p1-O1-02-m1-A")
+    old = bundle.append("deterministic_check", trial_id="p1-O1-02-m1-A",
+                        answer_sha256=answer["sha256"], check_version="reference-resolution/1",
+                        cited=[], unresolved=[])
+    before = bundle.events()
+    checks = assessment.run_deterministic_checks(bundle)
+    assert len(checks) == 24
+    assert all(c["check_version"] == "reference-resolution/2" for c in checks)
+    assert bundle.events()[:len(before)] == before
+    assert old in bundle.events()
+    assert assessment.run_deterministic_checks(bundle) == []
+
+
+def test_check_command_exposes_unsupported_syntax(monkeypatch, capsys):
+    monkeypatch.setattr(cli, "_open", lambda path: None)
+    monkeypatch.setattr(assessment, "run_deterministic_checks", lambda bundle: [
+        {"trial_id": "test", "unresolved": [], "unsupported_citations": ["[L1-3]"]}])
+    assert cli.cmd_checks(SimpleNamespace(run_dir="unused")) == 0
+    text = capsys.readouterr().out
+    assert "1 contain unsupported citation syntax" in text
+    assert "[L1-3]" in text
 
 
 # --- blinded review ----------------------------------------------------------------------------

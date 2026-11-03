@@ -214,6 +214,26 @@ Restore the unavailable service before removing those resources; retain the priv
 cleanup succeeds. Do not delete unrelated containers or databases.
 The active application pointer is never changed by this command.
 
+**Image appears present but cannot be found (B-147):** an Images-list entry can come from
+Docker Desktop's cache while its Linux engine is asleep. Check the engine and image name:
+
+```sh
+docker version --format 'client={{.Client.Version}} server={{.Server.Version}}'
+docker image inspect neo4j:2026.10.1 --format '{{.Id}}'
+docker image inspect docker.io/library/neo4j:2026.10.1 --format '{{.Id}}'
+```
+
+Both image commands should resolve to the same ID. A 404 by name while inspect by the Images
+list's exact ID succeeds can be a cache problem; it does not prove the image was deleted.
+Check running workloads before an ordinary restart through Docker Desktop → Troubleshoot →
+Restart Docker Desktop. Avoid data cleanup, factory reset, pruning or switching image stores
+as an image-name remedy. If it recurs, capture local idle/cache log entries and the Desktop
+application version separately from `docker version` (Engine/CLI). Check available Desktop
+updates, then repeat the checks and the failed test. Docker documents cached operations in
+[Resource Saver mode](https://docs.docker.com/desktop/use-desktop/resource-saver/).
+These read-only checks passed after the author's 3 November update to Desktop 4.98.0 and
+Engine/CLI 29.9.2. The original image ID and five stored containers were retained.
+
 ## 5. Select, restart and roll back a paired graph version
 
 Added by T48; final development-migration procedure accepted under T49 on 1 November 2026.
@@ -529,9 +549,11 @@ evidence bundle under `backend/evals/comparison/runs/<name>/`: a frozen `manifes
 append-only `events.jsonl` and `artifacts/`. The bundle is the original. Langfuse only ever
 receives a copy, and nothing reads back from it.
 
-Until checkpoint 3 only the `dry-run` adapter exists. It answers every request with a fixed text,
-calls no model and costs nothing. A paid adapter needs its documentation check, compatibility
-sessions and the author's execution authorisation first.
+The `dry-run` adapter answers every request with a fixed text, calls no model and costs nothing.
+Checkpoint 3 adds `openrouter`, using the Responses API with pinned providers, standard service,
+full conversation history and no evaluation-imposed output cap. Its native settings and provider
+limits still need the six compatibility sessions. No live call or upload is authorised by creating
+a run. The application's model is unchanged.
 
 ### Before you start
 
@@ -550,6 +572,14 @@ To mirror to Langfuse, add `LI_LANGFUSE=on`, `LANGFUSE_PUBLIC_KEY` and `LANGFUSE
 `backend/.env` (`LANGFUSE_BASE_URL` defaults to `https://cloud.langfuse.com`). Leave
 `LI_LANGFUSE` unset to keep mirroring off.
 
+For paid execution, `OPENROUTER_API_KEY` must have a value in `backend/.env`. Obtain the author's
+explicit execution go for the session first. Model confirmation and the US$25 planning budget
+are separate from this go. Compatibility creation and bounded live commands were exercised
+on 3 November 2026 for all six initial sessions. All tool exchanges completed; gpt-oss failed
+the citation-format check. See the [live report](../.scratch/knowledge-base/research/54-live-compatibility-2026-11-03.md).
+The shared compatibility repair and initial screening command also have live evidence.
+The later screening command also ran on 3 November; live upload examples remain unverified.
+
 ### Run it
 
 Create and run a compatibility run, then a screening run. Paths are relative to `backend/`:
@@ -566,12 +596,133 @@ the setup, then continue with the same `run` command without `--until-slot`. A r
 part-way, for any reason, resumes with the same command. Trials already started are never run
 again.
 
+After explicit execution authorisation, create the separate live compatibility bundle:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison new compatibility evals/comparison/runs/compat-live --adapter openrouter
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/compat-live --execute-paid --until-slot 1
+```
+
+Creation loads no credentials and sends nothing. The second command can spend money. Review the
+result, then increase `--until-slot` one at a time to 6. Check each session's tool round trip,
+output contract, reported identity/settings and recording. Metadata or a plausible answer does
+not prove native settings. Diagnose incompatible configurations before scoring; preserve the
+original attempts and version any repairs.
+
+The readiness repair on 3 November uses a separate bundle, `compat-readiness-1`.
+Its shared connection-check prompt explicitly requires ASCII brackets, and adapter version 2
+requests `debug.echo_upstream_body` on tool-bearing compatibility calls. The transformed
+provider body is saved under each request's `artifacts/continuations/` reference as
+`debug_events`. It is diagnostic evidence only: it is neither replayed into model input nor
+included in a Langfuse mirror. Compare those native fields with the approved configuration;
+the ordinary returned settings may merely echo gateway values.
+
+The repair's creation and first bounded execution use:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison new compatibility evals/comparison/runs/compat-readiness-1 --adapter openrouter
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/compat-readiness-1 --execute-paid --until-slot 1 --cost-run evals/comparison/runs/compat-live
+```
+
+These names already contain the recorded live evidence; do not recreate or remove them.
+For a future approved repair choose a fresh name, record its link to the original and repeat
+all configurations affected by a shared setup change. Raise the slot bound one at a time.
+Later screening must include both compatibility bundles with two `--cost-run` flags so all
+known charges share the spending check. A `billing_disposition` note can explain an error's
+documented billing treatment without changing an absent charge to a measured zero.
+
+After all six configurations pass compatibility and their settings/limits have been reviewed,
+create the live screen and begin with one trial:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison new screening evals/comparison/runs/screen-live --adapter openrouter
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/screen-live --execute-paid --until-slot 1 --cost-run evals/comparison/runs/compat-live --cost-run evals/comparison/runs/compat-readiness-1
+```
+
+Increase the bound as reviewed, to at most 24 before the setup checkpoint. The CLI requires
+`--until-slot` for paid runs and refuses later screening slots until `--after-setup-review` is
+supplied. This flag records that the review occurred; it does not perform the review.
+
+The author approved the first 24 live screening answers on 3 November. After inspecting the
+first answer's frozen input, route, recording and reference resolution, the bounded command is:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/screen-live --execute-paid --until-slot 24 --cost-run evals/comparison/runs/compat-live --cost-run evals/comparison/runs/compat-readiness-1
+```
+
+This stops at the setup checkpoint. Completion and resolving citations do not establish
+answer quality; human labels stay blank until the author scores blinded answers.
+
+Costs share one US$25 planning budget. `--cost-run` includes the compatibility bundle's known
+cost in the spending check and is required for live screening. Repeat it for other paid bundles
+sharing that budget, including any separate repair runs. The command rejects duplicate bundles.
+Unknown charges stay unknown; inspect their OpenRouter records before claiming an exact total.
+Before another command, review combined costs from all paid bundles. The runner pauses before
+the next trial once known combined spending reaches US$15. The current trial and its retries can
+cross that amount; cancellation does not establish that billing stopped. This is no hard charge
+ceiling. `--after-spending-review` permits continuing only after that spending review.
+
+After the first-24 review, the remaining two passes can use:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/screen-live --execute-paid --until-slot 72 --cost-run evals/comparison/runs/compat-live --cost-run evals/comparison/runs/compat-readiness-1 --after-setup-review
+```
+
+The corrected later-pass command ran on 3 November and stopped at slot 72 with exit 0:
+71 saved answers and one explicit `no_answer`. It includes both compatibility bundles.
+Known combined cost after two authenticated timeout settlements is US$0.281197, with
+25 numeric charges still unknown across all paid bundles. The empty response and one
+streamed rate-limit generation returned 404 on lookup; a 404 does not prove zero charge.
+All 71 answers have v2 reference checks; eight answers retain unsupported-syntax warnings.
+The author stopped here for a fresh-session blinded review. Do not rerun an empty or poor
+answer to replace its original outcome. See the final checkpoint completion addendum and
+B-155/AUD-081 for this run's limits.
+
+Do not add `--after-spending-review` unless the US$15 review has occurred. Setup repairs in the
+same bundle use explicit linked reruns; their slots follow the original schedule. For example,
+after documenting an isolated adapter repair at the first-pass checkpoint, schedule only the
+affected cells. The first linked screening rerun is slot 73:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison rerun evals/comparison/runs/screen-live p1-O1-02-qwen3.8-27b-A --reason "documented adapter fix" --repair-version repair-1
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/screen-live --execute-paid --until-slot 73 --cost-run evals/comparison/runs/compat-live --after-setup-review --reruns-only
+```
+
+`--reruns-only` skips pending original trials, so reaching slot 73 does not first spend money
+on slots 25–72. The example is a command template, not permission for that repair. Shared
+repairs must cover all affected configurations under T52's policy. Preserve repair versions
+and originals; do not rerun a poor answer merely to replace its score.
+
 Review in small batches. Each batch writes a blinded file and a blank label sheet:
 
 ```sh
 uv run --locked --directory backend python -m evals.comparison checks evals/comparison/runs/screen-dry
 uv run --locked --directory backend python -m evals.comparison review evals/comparison/runs/screen-dry --size 6
 ```
+
+On 3 November the same `checks` and `review --size 6` commands ran against `screen-live`.
+All 24 first-round final answers are saved; batch 1 has six items and blank labels.
+The [first-round checkpoint](../.scratch/knowledge-base/research/54-first24-setup-checkpoint-2026-11-03.md)
+records B-153/AUD-080: version-1 reference checks skip spaced/grouped/ranged citations.
+The author-approved local repair uses `reference-resolution/2`. Recheck saved live answers:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison checks evals/comparison/runs/screen-live
+```
+
+This command was tested on 3 November: 24 new checks, zero unresolved references, two answers
+with unsupported citation syntax. A second run produced zero new checks. Earlier checks and
+answers are preserved. The summary concerns newly appended checks only; zero new checks on
+repeat does not clear earlier warnings. Inspect `deterministic_check` events with v2 in
+`events.jsonl` for `unsupported_citations`. Two answers have explanatory prose inside five
+status-reference brackets; their explicit refs exist, but the grammar warnings remain.
+V2 accepts spaces, comma/semicolon groups and ascending same-prefix ranges with full endpoints.
+Ranges allow hyphen, Unicode hyphen, nonbreaking hyphen, en dash or minus, at most 1000 refs,
+with unpadded endpoints of at most nine digits. Other reference-like groups are flagged.
+`citation_count` counts expanded reference occurrences, including repeats; it is not a score.
+A zero unresolved count does not establish complete syntax coverage or source support.
+The recheck needs no paid inference. Original manifest/source hash remains frozen; disclose
+the parser/command-only source hash change at any later paid setup review.
 
 Do not open Langfuse before recording initial labels. With mirroring on, its experiment view
 shows each case's required findings and critical errors beside the answers, and nothing in the
@@ -641,6 +792,9 @@ skipped, failed or left unresolved, and names each record it did not mirror.
   or an unknown trial or configuration. A refused sheet records nothing. Correct the sheet and run `labels` again. A changed judgement
   is a revision with its reason, never an edited initial label.
 - `Langfuse mirroring is off`: expected while `LI_LANGFUSE` is unset. Nothing was sent.
+- Paid execution without `--execute-paid` or `--until-slot`: refused before credentials load.
+  Use them only after execution authorisation. A screen also requires its paid compatibility
+  bundle through `--cost-run`. Passing the first 24 slots requires the recorded setup review.
 - `NOT MIRRORED` with `failed`: Langfuse answered with an error, so nothing was accepted. Run
   `mirror` again later. With `unresolved`: no answer arrived, so Langfuse may hold the trace.
   Check the Langfuse project first. Use `mirror --resend-unresolved` only if the trace is

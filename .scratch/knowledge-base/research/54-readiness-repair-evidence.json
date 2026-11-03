@@ -1,0 +1,403 @@
+{
+  "date": "2026-11-03",
+  "repair_version": "readiness-1",
+  "original_run": "compat-live",
+  "run_id": "compat-readiness-1",
+  "prompt_version": "28b2667c34b4",
+  "adapter": {
+    "name": "openrouter",
+    "version": "2"
+  },
+  "verification": {
+    "artifact_references": 62,
+    "closed_requests": 13,
+    "upstream_bodies_checked": 12,
+    "exact_ordered_replays": 6,
+    "configured_credentials_absent": true
+  },
+  "original_resources": {
+    "request_count": 14,
+    "retry_count": 2,
+    "known_cost_usd": 0.001584,
+    "unknown_cost_requests": 2,
+    "cost_complete": false,
+    "usage": {
+      "input": 3585,
+      "output": 511,
+      "reasoning": 196,
+      "cache_read": 384
+    },
+    "unknown_usage_requests": 2,
+    "unknown_usage_by_key": {
+      "input": 2,
+      "output": 2,
+      "reasoning": 2,
+      "cache_read": 2
+    }
+  },
+  "repair_resources": {
+    "request_count": 13,
+    "retry_count": 1,
+    "known_cost_usd": 0.001556,
+    "unknown_cost_requests": 1,
+    "cost_complete": false,
+    "usage": {
+      "input": 3830,
+      "output": 441,
+      "reasoning": 134,
+      "cache_read": 384
+    },
+    "unknown_usage_requests": 1,
+    "unknown_usage_by_key": {
+      "input": 1,
+      "output": 1,
+      "reasoning": 1,
+      "cache_read": 1
+    }
+  },
+  "combined_known_cost_usd": 0.00314,
+  "trials": [
+    {
+      "config_id": "qwen3.8-27b",
+      "trial_id": "compat-qwen3.8-27b",
+      "tool_round_trip": true,
+      "output_contract": true,
+      "elapsed_s": 6.118,
+      "answer": "\n\nRecord CMP-1 states that the colour code is **7** [CMP-1].",
+      "known_cost_usd": 0.00026535,
+      "reported_identity": [
+        {
+          "model_reported": "qwen/qwen3.8-27b",
+          "provider_reported": "DeepInfra"
+        },
+        {
+          "model_reported": "qwen/qwen3.8-27b",
+          "provider_reported": "DeepInfra"
+        }
+      ],
+      "diagnostics": [
+        {
+          "request_id": "compat-qwen3.8-27b-a05c7ee63c99",
+          "continuation": {
+            "path": "artifacts/continuations/compat-qwen3.8-27b-a05c7ee63c99.json",
+            "sha256": "921217a46dd504afb8dda1bb21d195e5eea8fec584c538abbfba4623d1cc8428"
+          },
+          "upstream_controls": {
+            "model": "Qwen/Qwen3.8-27B",
+            "max_tokens": 131072,
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 20,
+            "reasoning": {
+              "enabled": true,
+              "effort": "medium"
+            }
+          }
+        },
+        {
+          "request_id": "compat-qwen3.8-27b-ed8660aaad7b",
+          "continuation": {
+            "path": "artifacts/continuations/compat-qwen3.8-27b-ed8660aaad7b.json",
+            "sha256": "810b5bc8b74c42997b6e0f0f9d115596f89dd00c5a1a59b2fdd11d66edac30f3"
+          },
+          "upstream_controls": {
+            "model": "Qwen/Qwen3.8-27B",
+            "max_tokens": 131072,
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 20,
+            "reasoning": {
+              "enabled": true,
+              "effort": "medium"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "config_id": "gpt-oss-120b",
+      "trial_id": "compat-gpt-oss-120b",
+      "tool_round_trip": true,
+      "output_contract": true,
+      "elapsed_s": 44.498,
+      "answer": "The colour code stated in record CMP-1 is **7** [CMP-1].",
+      "known_cost_usd": 3.4805e-05,
+      "reported_identity": [
+        {
+          "model_reported": "openai/gpt-oss-120b",
+          "provider_reported": "DeepInfra"
+        },
+        {
+          "model_reported": "openai/gpt-oss-120b",
+          "provider_reported": "DeepInfra"
+        }
+      ],
+      "diagnostics": [
+        {
+          "request_id": "compat-gpt-oss-120b-e983dda331da",
+          "continuation": {
+            "path": "artifacts/continuations/compat-gpt-oss-120b-e983dda331da.json",
+            "sha256": "cd8e26f4284be23b9f646806ea7730bfa5af949e12a545464f92becf7a7aa396"
+          },
+          "upstream_controls": {
+            "model": "openai/gpt-oss-120b",
+            "max_tokens": 117806,
+            "reasoning": {
+              "enabled": true,
+              "effort": "medium"
+            }
+          }
+        },
+        {
+          "request_id": "compat-gpt-oss-120b-ce1e19ce524f",
+          "continuation": {
+            "path": "artifacts/continuations/compat-gpt-oss-120b-ce1e19ce524f.json",
+            "sha256": "603b00fd173b7b839d2d4eb1d8f8651479eab4442b40122a3926f05ef90e0a87"
+          },
+          "upstream_controls": {
+            "model": "openai/gpt-oss-120b",
+            "max_tokens": 117775,
+            "reasoning": {
+              "enabled": true,
+              "effort": "medium"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "config_id": "deepseek-v4.1-flash-1017",
+      "trial_id": "compat-deepseek-v4.1-flash-1017",
+      "tool_round_trip": true,
+      "output_contract": true,
+      "elapsed_s": 80.231,
+      "answer": "Record [CMP-1] states that the colour code is 7.",
+      "known_cost_usd": 6.247696e-05,
+      "reported_identity": [
+        {
+          "model_reported": "deepseek/deepseek-v4.1-flash-1017",
+          "provider_reported": "DeepInfra"
+        },
+        {
+          "model_reported": "deepseek/deepseek-v4.1-flash-1017",
+          "provider_reported": "DeepInfra"
+        }
+      ],
+      "diagnostics": [
+        {
+          "request_id": "compat-deepseek-v4.1-flash-1017-63817d6ae1db",
+          "continuation": {
+            "path": "artifacts/continuations/compat-deepseek-v4.1-flash-1017-63817d6ae1db.json",
+            "sha256": "56aa36fe20775bbfb51452ee10f58bf757659cf79da63278d05e9587ff609679"
+          },
+          "upstream_controls": {
+            "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+            "max_tokens": 131072,
+            "reasoning": {
+              "enabled": true,
+              "effort": "high"
+            }
+          }
+        },
+        {
+          "request_id": "compat-deepseek-v4.1-flash-1017-f9948af65af1",
+          "continuation": {
+            "path": "artifacts/continuations/compat-deepseek-v4.1-flash-1017-f9948af65af1.json",
+            "sha256": "d358bfe0ae85001550b1007dfa011a42d15c840ff92a9fa3aa6ed2a051cddd9d"
+          },
+          "upstream_controls": {
+            "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+            "max_tokens": 131072,
+            "reasoning": {
+              "enabled": true,
+              "effort": "high"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "config_id": "gpt-6-luna",
+      "trial_id": "compat-gpt-6-luna",
+      "tool_round_trip": true,
+      "output_contract": true,
+      "elapsed_s": 7.741,
+      "answer": "The colour code is 7 [CMP-1].",
+      "known_cost_usd": 4.84e-05,
+      "reported_identity": [
+        {
+          "model_reported": "openai/gpt-6-luna",
+          "provider_reported": "OpenAI"
+        },
+        {
+          "model_reported": "openai/gpt-6-luna",
+          "provider_reported": "OpenAI"
+        }
+      ],
+      "diagnostics": [
+        {
+          "request_id": "compat-gpt-6-luna-7124a22805fa",
+          "continuation": {
+            "path": "artifacts/continuations/compat-gpt-6-luna-7124a22805fa.json",
+            "sha256": "350f6798be44e00d89aea9ca2527dcc421e1b1fdfa8aad3f2559a71c73dd68f0"
+          },
+          "upstream_controls": {
+            "model": "gpt-6-luna",
+            "max_output_tokens": 65536,
+            "store": false,
+            "service_tier": "default",
+            "reasoning": {
+              "effort": "medium",
+              "context": "all_turns",
+              "mode": "standard"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        },
+        {
+          "request_id": "compat-gpt-6-luna-d896c1336710",
+          "continuation": {
+            "path": "artifacts/continuations/compat-gpt-6-luna-d896c1336710.json",
+            "sha256": "28c91406399fdc4021c4827d0eaaf7b07f6066ab620944e71f657749382f13ec"
+          },
+          "upstream_controls": {
+            "model": "gpt-6-luna",
+            "max_output_tokens": 65536,
+            "store": false,
+            "service_tier": "default",
+            "reasoning": {
+              "effort": "medium",
+              "context": "all_turns",
+              "mode": "standard"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "config_id": "claude-haiku-5.5",
+      "trial_id": "compat-claude-haiku-5.5",
+      "tool_round_trip": true,
+      "output_contract": true,
+      "elapsed_s": 9.024,
+      "answer": "The colour code stated in record [CMP-1] is 7.",
+      "known_cost_usd": 0.0001773,
+      "reported_identity": [
+        {
+          "model_reported": "anthropic/claude-haiku-5.5",
+          "provider_reported": "Anthropic"
+        },
+        {
+          "model_reported": "anthropic/claude-haiku-5.5",
+          "provider_reported": "Anthropic"
+        }
+      ],
+      "diagnostics": [
+        {
+          "request_id": "compat-claude-haiku-5.5-f30470997374",
+          "continuation": {
+            "path": "artifacts/continuations/compat-claude-haiku-5.5-f30470997374.json",
+            "sha256": "2befa1c86cda2ecbeb722bab4fc5c81c6759ced8ed9920df8c190aa67932aaa4"
+          },
+          "upstream_controls": {
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized"
+            },
+            "model": "claude-haiku-5-5",
+            "max_tokens": 65536,
+            "output_config": {
+              "effort": "medium"
+            }
+          }
+        },
+        {
+          "request_id": "compat-claude-haiku-5.5-ef38a5ce4ce3",
+          "continuation": {
+            "path": "artifacts/continuations/compat-claude-haiku-5.5-ef38a5ce4ce3.json",
+            "sha256": "8d924c2773b118b9f6f48923a9f7837e19aede489810616548404429821995cb"
+          },
+          "upstream_controls": {
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized"
+            },
+            "model": "claude-haiku-5-5",
+            "max_tokens": 65536,
+            "output_config": {
+              "effort": "medium"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "config_id": "gpt-6.1-sol",
+      "trial_id": "compat-gpt-6.1-sol",
+      "tool_round_trip": true,
+      "output_contract": true,
+      "elapsed_s": 6.733,
+      "answer": "The colour code is 7 [CMP-1].",
+      "known_cost_usd": 0.000968,
+      "reported_identity": [
+        {
+          "model_reported": "openai/gpt-6.1-sol",
+          "provider_reported": "OpenAI"
+        },
+        {
+          "model_reported": "openai/gpt-6.1-sol",
+          "provider_reported": "OpenAI"
+        }
+      ],
+      "diagnostics": [
+        {
+          "request_id": "compat-gpt-6.1-sol-220d85dabffe",
+          "continuation": {
+            "path": "artifacts/continuations/compat-gpt-6.1-sol-220d85dabffe.json",
+            "sha256": "f20768f5f88cc6009f5fb972bf01bc6cb406817e474a42c83e5d4f447cc149a4"
+          },
+          "upstream_controls": {
+            "model": "gpt-6.1-sol",
+            "max_output_tokens": 65536,
+            "store": false,
+            "service_tier": "default",
+            "reasoning": {
+              "effort": "medium",
+              "context": "all_turns",
+              "mode": "standard"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        },
+        {
+          "request_id": "compat-gpt-6.1-sol-c5ce135f12d0",
+          "continuation": {
+            "path": "artifacts/continuations/compat-gpt-6.1-sol-c5ce135f12d0.json",
+            "sha256": "29902afc61ad7239b597460c7155824a0d667ce15757d6ac12ad7d2f5fbbf578"
+          },
+          "upstream_controls": {
+            "model": "gpt-6.1-sol",
+            "max_output_tokens": 65536,
+            "store": false,
+            "service_tier": "default",
+            "reasoning": {
+              "effort": "medium",
+              "context": "all_turns",
+              "mode": "standard"
+            },
+            "include": [
+              "reasoning.encrypted_content"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

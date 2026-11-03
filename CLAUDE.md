@@ -92,9 +92,16 @@ The bootcamp's weekly project briefs, from week 2 onward, are **inspiration, not
   comes from one place; the model and agent are created in exactly one function; data access sits
   in the core, never in routes; the API asks the core for "a dataset", not one fixed file. New
   features plug into these seams; they do not bypass them.
-- **What already works keeps working.** The backend tests, the frontend tests and the eval set are
-  the safety net under every initiative: they must pass after every change, and a change to the
-  agent's behaviour is accepted only on an eval run against the agreed thresholds.
+- **Test in proportion to the change** (author's ruling, 3 November 2026). Routine changes
+  get focused tests for affected behaviour and dependency seams, plus relevant type and lint
+  checks. Do not run the full backend and frontend suites automatically for every change or
+  ticket. Reserve full application suites for major or cross-cutting application changes, or an
+  explicit author request. Documentation, isolated evaluation tooling and local operations do
+  not trigger full application suites by default. After a fix, rerun the affected checks;
+  repeat full suites only when subsequent changes justify that same major-change scope.
+  Keep unrelated failures and flaky tests visible in the bug log and audit register under their
+  own scope; never describe an incomplete or failed suite as passing. A change to the agent's
+  behaviour is still accepted only on an eval run against the agreed thresholds.
 - **Core principles live in `PRINCIPLES.md`** at the repo root. Read it before designing or
   changing agent behaviour, tools or eval checks. Principles change only by the author's ruling.
 

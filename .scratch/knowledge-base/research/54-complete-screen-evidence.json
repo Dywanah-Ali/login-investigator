@@ -1,0 +1,3049 @@
+{
+  "run_id": "screen-live",
+  "original_event_prefix_preserved": true,
+  "original_files_preserved": 152,
+  "verified_artifact_references": 485,
+  "trial_states": {
+    "completed": 71,
+    "no_answer": 1
+  },
+  "completed_by_round": {
+    "1": 24,
+    "2": 24,
+    "3": 23
+  },
+  "per_case": {
+    "O1-02": 18,
+    "O1-06": 18,
+    "O1-09": 18,
+    "O1-12-D": 18
+  },
+  "fresh_memories": 72,
+  "frozen_inputs_and_wire_settings_match": true,
+  "check_only_source_change_recorded": true,
+  "no_human_labels_selection_or_live_upload": true,
+  "request_statuses": {
+    "completed": 72,
+    "error": 21,
+    "timeout": 3
+  },
+  "request_failures": [
+    {
+      "request_id": "p1-O1-06-gpt-oss-120b-A-dfeeb6a08ecf",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 287
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 287
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 287
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p1-O1-06-gpt-oss-120b-A-eb61613c1327",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 270
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 270
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 270
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p1-O1-06-gpt-oss-120b-A-b48c991cccf0",
+      "status": "timeout",
+      "error": "timeout: OpenRouter elapsed deadline; billing may be unknown",
+      "generation_id": "gen-1793718665-OYOM8kVSLDB1pb4vqVTL",
+      "cost_usd": null,
+      "error_details": {
+        "status": "in_progress",
+        "error": null,
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "id": "gen-1793718665-OYOM8kVSLDB1pb4vqVTL",
+            "object": "response",
+            "created_at": 1793718665,
+            "model": "openai/gpt-oss-120b",
+            "status": "in_progress",
+            "completed_at": null,
+            "output": [],
+            "error": null,
+            "incomplete_details": null,
+            "access_programs": null,
+            "tools": [],
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "max_output_tokens": null,
+            "temperature": 1,
+            "top_p": 1,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "top_logprobs": 0,
+            "max_tool_calls": null,
+            "metadata": {},
+            "background": false,
+            "previous_response_id": null,
+            "service_tier": "default",
+            "truncation": "disabled",
+            "store": false,
+            "instructions": null,
+            "text": {
+              "format": {
+                "type": "text"
+              }
+            },
+            "reasoning": {
+              "effort": "medium"
+            },
+            "safety_identifier": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": null,
+            "usage": null
+          },
+          "event": {
+            "type": "response.reasoning_text.delta",
+            "output_index": 0,
+            "item_id": "rs_tmp_urdwnkbet8e",
+            "content_index": 0,
+            "delta": " with",
+            "sequence_number": 103
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p2-O1-02-gpt-oss-120b-A-9ca5356b6802",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 306
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 306
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 306
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p2-O1-09-gpt-oss-120b-A-c6735192a4b5",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 310
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 310
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 310
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p2-O1-12-D-gpt-oss-120b-A-4419678f965f",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "SOF",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 1137
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 1137
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 1137
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p2-O1-12-D-deepseek-v4.1-flash-1017-A-82f759f6372b",
+      "status": "timeout",
+      "error": "timeout: OpenRouter elapsed deadline; billing may be unknown",
+      "generation_id": "gen-1793721325-mY8OunCM7SYiBPEPC1C8",
+      "cost_usd": null,
+      "error_details": {
+        "status": "in_progress",
+        "error": null,
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "id": "gen-1793721325-mY8OunCM7SYiBPEPC1C8",
+            "object": "response",
+            "created_at": 1793721325,
+            "model": "deepseek/deepseek-v4.1-flash-1017",
+            "status": "in_progress",
+            "completed_at": null,
+            "output": [],
+            "error": null,
+            "incomplete_details": null,
+            "access_programs": null,
+            "tools": [],
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "max_output_tokens": null,
+            "temperature": 1,
+            "top_p": 1,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "top_logprobs": 0,
+            "max_tool_calls": null,
+            "metadata": {},
+            "background": false,
+            "previous_response_id": null,
+            "service_tier": "default",
+            "truncation": "disabled",
+            "store": false,
+            "instructions": null,
+            "text": {
+              "format": {
+                "type": "text"
+              }
+            },
+            "reasoning": {
+              "effort": "high",
+              "enabled": true
+            },
+            "safety_identifier": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": null,
+            "usage": null
+          },
+          "event": {
+            "type": "response.output_text.delta",
+            "output_index": 1,
+            "item_id": "msg_tmp_sqmc8z5pjx",
+            "content_index": 0,
+            "delta": " field is",
+            "logprobs": [],
+            "sequence_number": 1620
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-06-gpt-oss-120b-A-fe54dd7539d2",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 265
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 265
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 265
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-06-deepseek-v4.1-flash-1017-A-7c76548f4308",
+      "status": "timeout",
+      "error": "timeout: OpenRouter elapsed deadline; billing may be unknown",
+      "generation_id": "gen-1793722171-K8X4vQSze6rNrDiLGtH8",
+      "cost_usd": null,
+      "error_details": {
+        "status": "in_progress",
+        "error": null,
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "id": "gen-1793722171-K8X4vQSze6rNrDiLGtH8",
+            "object": "response",
+            "created_at": 1793722171,
+            "model": "deepseek/deepseek-v4.1-flash-1017",
+            "status": "in_progress",
+            "completed_at": null,
+            "output": [],
+            "error": null,
+            "incomplete_details": null,
+            "access_programs": null,
+            "tools": [],
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "max_output_tokens": null,
+            "temperature": 1,
+            "top_p": 1,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "top_logprobs": 0,
+            "max_tool_calls": null,
+            "metadata": {},
+            "background": false,
+            "previous_response_id": null,
+            "service_tier": "default",
+            "truncation": "disabled",
+            "store": false,
+            "instructions": null,
+            "text": {
+              "format": {
+                "type": "text"
+              }
+            },
+            "reasoning": {
+              "effort": "high",
+              "enabled": true
+            },
+            "safety_identifier": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": null,
+            "usage": null
+          },
+          "event": {
+            "type": "response.reasoning_text.delta",
+            "output_index": 0,
+            "item_id": "rs_tmp_vj8wf2jrbwc",
+            "content_index": 0,
+            "delta": "\n\nLet's craft final with concise but complete. Use citations. Ensure every",
+            "sequence_number": 1105
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-938df51fcb27",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 311
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 311
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 311
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-849c392b1312",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 322
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 322
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 322
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-e4eb9c38f39f",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "SOF",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 620
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 620
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 620
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-342bd211f8a8",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 229
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 229
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 229
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-9fb875d29b23",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "SOF",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 786
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 786
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 786
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-794c5e403bac",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 242
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 242
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 242
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-cb1aad34be1d",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 487
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 487
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 487
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-a256819aef65",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "SOF",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 264
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 264
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 264
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-b1d2c086a8b6",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "SOF",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 977
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 977
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "SOF",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 977
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-09-gpt-oss-120b-A-da2acff63c27",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 290
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 290
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 290
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-12-D-gpt-oss-120b-A-c3d39c964423",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 547
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 547
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 547
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-12-D-gpt-oss-120b-A-7ddce7ee9426",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 3019
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 3019
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 3019
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-12-D-gpt-oss-120b-A-5e1980dd5c29",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 6243
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 6243
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 6243
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-12-D-gpt-oss-120b-A-a83bd67b358d",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 0)",
+      "generation_id": "gen-1793723152-oqWNN4AQnB1hIEKNprae",
+      "cost_usd": null,
+      "error_details": {
+        "status": "failed",
+        "error": {
+          "code": "rate_limit_exceeded",
+          "message": "Provider returned error"
+        },
+        "error_type": "rate_limit_exceeded",
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "id": "gen-1793723152-oqWNN4AQnB1hIEKNprae",
+            "object": "response",
+            "created_at": 1793723152,
+            "model": "unknown",
+            "status": "failed",
+            "completed_at": 1793723165,
+            "output": [],
+            "error": {
+              "code": "rate_limit_exceeded",
+              "message": "Provider returned error"
+            },
+            "incomplete_details": null,
+            "access_programs": null,
+            "tools": [],
+            "tool_choice": "auto",
+            "parallel_tool_calls": true,
+            "max_output_tokens": null,
+            "temperature": 1,
+            "top_p": 1,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "top_logprobs": 0,
+            "max_tool_calls": null,
+            "metadata": {},
+            "background": false,
+            "previous_response_id": null,
+            "service_tier": "default",
+            "truncation": "disabled",
+            "store": false,
+            "instructions": null,
+            "text": {
+              "format": {
+                "type": "text"
+              }
+            },
+            "reasoning": {
+              "effort": "medium"
+            },
+            "safety_identifier": null,
+            "prompt_cache_key": null,
+            "prompt_cache_options": null,
+            "usage": null,
+            "error_type": "rate_limit_exceeded"
+          },
+          "event": {
+            "type": "response.failed",
+            "response": {
+              "id": "gen-1793723152-oqWNN4AQnB1hIEKNprae",
+              "object": "response",
+              "created_at": 1793723152,
+              "model": "unknown",
+              "status": "failed",
+              "completed_at": 1793723165,
+              "output": [],
+              "error": {
+                "code": "rate_limit_exceeded",
+                "message": "Provider returned error"
+              },
+              "incomplete_details": null,
+              "access_programs": null,
+              "tools": [],
+              "tool_choice": "auto",
+              "parallel_tool_calls": true,
+              "max_output_tokens": null,
+              "temperature": 1,
+              "top_p": 1,
+              "presence_penalty": 0,
+              "frequency_penalty": 0,
+              "top_logprobs": 0,
+              "max_tool_calls": null,
+              "metadata": {},
+              "background": false,
+              "previous_response_id": null,
+              "service_tier": "default",
+              "truncation": "disabled",
+              "store": false,
+              "instructions": null,
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "reasoning": {
+                "effort": "medium"
+              },
+              "safety_identifier": null,
+              "prompt_cache_key": null,
+              "prompt_cache_options": null,
+              "usage": null,
+              "error_type": "rate_limit_exceeded"
+            },
+            "sequence_number": 2
+          }
+        }
+      }
+    },
+    {
+      "request_id": "p3-O1-12-D-gpt-oss-120b-A-346908b902a9",
+      "status": "error",
+      "error": "transient: OpenRouter failure (HTTP 429)",
+      "generation_id": null,
+      "cost_usd": null,
+      "error_details": {
+        "status": null,
+        "error": {
+          "message": "Provider returned error",
+          "code": 429,
+          "metadata": {
+            "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+            "provider_name": "DeepInfra",
+            "is_byok": false,
+            "provider_error_code": "engine_overloaded",
+            "limit_source": "upstream_provider_shared_pool",
+            "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+          }
+        },
+        "error_type": null,
+        "incomplete_details": null,
+        "continuation": {
+          "response": {
+            "error": {
+              "message": "Provider returned error",
+              "code": 429,
+              "metadata": {
+                "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                "provider_name": "DeepInfra",
+                "is_byok": false,
+                "provider_error_code": "engine_overloaded",
+                "limit_source": "upstream_provider_shared_pool",
+                "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+              }
+            },
+            "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+            "openrouter_metadata": {
+              "requested": "openai/gpt-oss-120b",
+              "strategy": "direct",
+              "region": "MRS",
+              "summary": "available=1",
+              "attempt": 1,
+              "is_byok": false,
+              "endpoints": {
+                "total": 26,
+                "available": [
+                  {
+                    "provider": "DeepInfra",
+                    "model": "openai/gpt-oss-120b",
+                    "selected": false
+                  }
+                ]
+              },
+              "generation_time": 6005
+            }
+          },
+          "event": {
+            "type": "transport.http_error",
+            "status": 429,
+            "body": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 6005
+              }
+            },
+            "response": {
+              "error": {
+                "message": "Provider returned error",
+                "code": 429,
+                "metadata": {
+                  "raw": "openai/gpt-oss-120b is temporarily rate-limited upstream. Please retry shortly, or add your own provider key to use your own limits: https://openrouter.ai/workspaces/default/byok",
+                  "provider_name": "DeepInfra",
+                  "is_byok": false,
+                  "provider_error_code": "engine_overloaded",
+                  "limit_source": "upstream_provider_shared_pool",
+                  "remedy_hint": "Retry shortly, add your own provider key to use your own limits (https://openrouter.ai/workspaces/default/byok), or route to another provider with provider routing: https://openrouter.ai/docs/features/provider-routing."
+                }
+              },
+              "user_id": "user_3FOxZnMo4IVw0oYPI3UMFLvxnKi",
+              "openrouter_metadata": {
+                "requested": "openai/gpt-oss-120b",
+                "strategy": "direct",
+                "region": "MRS",
+                "summary": "available=1",
+                "attempt": 1,
+                "is_byok": false,
+                "endpoints": {
+                  "total": 26,
+                  "available": [
+                    {
+                      "provider": "DeepInfra",
+                      "model": "openai/gpt-oss-120b",
+                      "selected": false
+                    }
+                  ]
+                },
+                "generation_time": 6005
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "resources": {
+    "screen-live": {
+      "request_count": 96,
+      "retry_count": 24,
+      "known_cost_usd": 0.278057,
+      "unknown_cost_requests": 22,
+      "cost_complete": false,
+      "usage": {
+        "input": 279390,
+        "output": 151362,
+        "reasoning": 67519,
+        "cache_read": 62631
+      },
+      "unknown_usage_requests": 25,
+      "unknown_usage_by_key": {
+        "input": 25,
+        "output": 25,
+        "reasoning": 25,
+        "cache_read": 25
+      }
+    },
+    "compat-live": {
+      "request_count": 14,
+      "retry_count": 2,
+      "known_cost_usd": 0.001584,
+      "unknown_cost_requests": 2,
+      "cost_complete": false,
+      "usage": {
+        "input": 3585,
+        "output": 511,
+        "reasoning": 196,
+        "cache_read": 384
+      },
+      "unknown_usage_requests": 2,
+      "unknown_usage_by_key": {
+        "input": 2,
+        "output": 2,
+        "reasoning": 2,
+        "cache_read": 2
+      }
+    },
+    "compat-readiness-1": {
+      "request_count": 13,
+      "retry_count": 1,
+      "known_cost_usd": 0.001556,
+      "unknown_cost_requests": 1,
+      "cost_complete": false,
+      "usage": {
+        "input": 3830,
+        "output": 441,
+        "reasoning": 134,
+        "cache_read": 384
+      },
+      "unknown_usage_requests": 1,
+      "unknown_usage_by_key": {
+        "input": 1,
+        "output": 1,
+        "reasoning": 1,
+        "cache_read": 1
+      }
+    }
+  },
+  "combined_known_cost_usd": 0.281197,
+  "v2_checks": 71,
+  "answers_with_unresolved_refs": 0,
+  "answers_with_unsupported_citation_syntax": 8,
+  "later_rounds_wall_elapsed_s": 2847.102,
+  "scope": "Operational and lexical evidence only. Human scoring pending; no quality conclusions.",
+  "configured_credentials_absent": true,
+  "credential_scan_files": 463
+}

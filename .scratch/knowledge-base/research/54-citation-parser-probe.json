@@ -1,0 +1,48 @@
+{
+  "check_version": "reference-resolution/1",
+  "case_id": "O1-06",
+  "scope": "Offline lexical reproduction only, no model, label or scoring-policy change.",
+  "results": {
+    "[D1]": {
+      "check": "reference_resolution",
+      "cited": [
+        "D1"
+      ],
+      "unresolved": [],
+      "citation_count": 1,
+      "limit": "resolution does not establish that the source supports the claim"
+    },
+    "[ D1 ]": {
+      "check": "reference_resolution",
+      "cited": [],
+      "unresolved": [],
+      "citation_count": 0,
+      "limit": "resolution does not establish that the source supports the claim"
+    },
+    "[D999]": {
+      "check": "reference_resolution",
+      "cited": [
+        "D999"
+      ],
+      "unresolved": [
+        "D999"
+      ],
+      "citation_count": 1,
+      "limit": "resolution does not establish that the source supports the claim"
+    },
+    "[ D999 ]": {
+      "check": "reference_resolution",
+      "cited": [],
+      "unresolved": [],
+      "citation_count": 0,
+      "limit": "resolution does not establish that the source supports the claim"
+    },
+    "[D1; D999]": {
+      "check": "reference_resolution",
+      "cited": [],
+      "unresolved": [],
+      "citation_count": 0,
+      "limit": "resolution does not establish that the source supports the claim"
+    }
+  }
+}
