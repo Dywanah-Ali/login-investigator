@@ -1,0 +1,25 @@
+{
+  "schema": "comparison-fixtures/1",
+  "fixture_version": "f903b7f47620",
+  "files": {
+    "cases/O1-02.json": "8ac13928e6270bc6f88b8415466821dd251ab5731354af5853dc86df83a32bd2",
+    "gold/O1-02.json": "690e37638d87057cf54596e161bb4afc21ce8e03510e6e11161d1e4640992b5f",
+    "cases/O1-06.json": "4b0d396915d45959aa7b548af2fdc73b52378b917c2a1cfe667836e663d5d01b",
+    "gold/O1-06.json": "a3e0082b6e95b4ab8cb776084d8e1adea1b28d127a42e010fec662c766407e76",
+    "cases/O1-09.json": "9a070c55a5e4c2049f73a92cce087febb1d7ea811c4ea8b7edfdc769443074a1",
+    "gold/O1-09.json": "94cd17026f235b3a11aea0a2be83d6e56a38d80b221f2eb6aa063790c697069d",
+    "cases/O1-12-D.json": "2c8c618b323dc484d960033daf0a941fbe46ab781fea4334fa4495b0219f31a4",
+    "gold/O1-12-D.json": "dd12ecf1185ef70fc9158abb40cff909f672ff98b8b45db8dfbadb473498aef3"
+  },
+  "sources": {
+    "corpus/own/rec-approved-travel.md": "d4239432e1697bbd1e28c39f2235630de3659b33e82d6b00dc1ff14443621f57",
+    "logins.csv": "1e15316d37dc5bb4a6603387deeb4cbbdacf5ba3b2b0b01405c387816ffeb5f0",
+    "org/assets.csv": "6a30beff243cfe2d048cfec0032cebbd5a60d1f73a74e9b13ba4f749f54c0791",
+    "org/device_assignments.csv": "8ea142d0af5c1baec72df28d9d11c038bd0eb26151abc104e4359673e04d6985",
+    "org/devices.csv": "f2572000c3167108371e44991b554574fac55d269d0c07068994d492e0d169df",
+    "org/grants.csv": "d2ec10136a7a5e686160b81238471c5aa3ee95bb141bf83a4933bb61d6dd6473",
+    "org/groups.csv": "0babc429b2cc5947085e5983cb7cd70061761880288858ed870f4956cfb77e5d",
+    "org/memberships.csv": "f049be62b9b92b0d98ad7a1274b24010673a540c064bc812fed12c603557bcb2",
+    "org/people.csv": "64415808c5222c064a7aead004b0206170d3e4153635ee311fa3a7226338c143"
+  }
+}

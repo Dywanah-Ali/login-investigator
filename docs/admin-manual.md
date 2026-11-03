@@ -17,6 +17,7 @@ command to run it in the session.
 5. [Select, restart and roll back a paired graph version](#5-select-restart-and-roll-back-a-paired-graph-version)
 6. [Inspect a paired graph in Neo4j Browser](#6-inspect-a-paired-graph-in-neo4j-browser)
 7. [Check Python code with Ruff](#7-check-python-code-with-ruff)
+8. [Run, review and mirror a model comparison](#8-run-review-and-mirror-a-model-comparison)
 
 ---
 
@@ -515,3 +516,131 @@ an intentional pattern. Setup/configuration errors return exit code 2; check the
 installation and configuration. Do not use blanket ignores or unsafe fixes to obtain a green
 result. When checking for stale suppression comments, run the full policy: enabling only
 `RUF100` can incorrectly classify comments for disabled rules as unused (B-125).
+
+## 8. Run, review and mirror a model comparison
+
+Added for T54 on 3 November 2026 (checkpoints 1 and 2).
+
+### What it is for
+
+Run T52's approved comparisons outside the working application: six compatibility sessions,
+the 72-trial model screen and, later, the twelve-answer A/B/C calibration. Each run is a local
+evidence bundle under `backend/evals/comparison/runs/<name>/`: a frozen `manifest.json`, an
+append-only `events.jsonl` and `artifacts/`. The bundle is the original. Langfuse only ever
+receives a copy, and nothing reads back from it.
+
+Until checkpoint 3 only the `dry-run` adapter exists. It answers every request with a fixed text,
+calls no model and costs nothing. A paid adapter needs its documentation check, compatibility
+sessions and the author's execution authorisation first.
+
+### Before you start
+
+Run from the repository root with the locked tools (`uv sync --locked --directory backend`).
+No database, Docker service or model key is needed. Confirm the frozen cases are current:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison.fixtures --check
+```
+
+`Fixtures are frozen and current.` means the four case files, the separate gold files and their
+manifest match a fresh build from the default dataset. Use `--write` only after an approved
+change to a case; the new fixture version then appears in every later run's manifest.
+
+To mirror to Langfuse, add `LI_LANGFUSE=on`, `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` to
+`backend/.env` (`LANGFUSE_BASE_URL` defaults to `https://cloud.langfuse.com`). Leave
+`LI_LANGFUSE` unset to keep mirroring off.
+
+### Run it
+
+Create and run a compatibility run, then a screening run. Paths are relative to `backend/`:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison new compatibility evals/comparison/runs/compat-dry --adapter dry-run
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/compat-dry
+uv run --locked --directory backend python -m evals.comparison new screening evals/comparison/runs/screen-dry --adapter dry-run
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/screen-dry --until-slot 24
+```
+
+The last command stops after the first pass (24 trials), the approved setup checkpoint. Inspect
+the setup, then continue with the same `run` command without `--until-slot`. A run that stops
+part-way, for any reason, resumes with the same command. Trials already started are never run
+again.
+
+Review in small batches. Each batch writes a blinded file and a blank label sheet:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison checks evals/comparison/runs/screen-dry
+uv run --locked --directory backend python -m evals.comparison review evals/comparison/runs/screen-dry --size 6
+```
+
+Fill `artifacts/review/labels-batch-1.json` (the assessor's name, then a score of 0, 1, 2 or
+"n/a" with a reason per criterion, and `true` or `false` with a reason per critical error).
+Leave entries `null` to keep them unscored. An answer counts as scored only when every
+criterion has a score and every critical error has been assessed. Then record it, export the
+labels and read the report:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison labels evals/comparison/runs/screen-dry evals/comparison/runs/screen-dry/artifacts/review/labels-batch-1.json
+uv run --locked --directory backend python -m evals.comparison export-labels evals/comparison/runs/screen-dry
+uv run --locked --directory backend python -m evals.comparison report evals/comparison/runs/screen-dry
+uv run --locked --directory backend python -m evals.comparison mirror evals/comparison/runs/screen-dry
+```
+
+After the author's initial labels are saved, change a judgement only by revision, record
+assistant notes, record review time, and finally record the selection. The review ID and trial
+ID below are placeholders: take real ones from the batch file and the report.
+
+```sh
+uv run --locked --directory backend python -m evals.comparison revise evals/comparison/runs/screen-dry --review-id R-0000000000 --criterion facts --score 1 --reason "omits the MFA result" --assessor author
+uv run --locked --directory backend python -m evals.comparison note evals/comparison/runs/screen-dry --review-id R-0000000000 --text "Support may deserve 1" --assistant codex
+uv run --locked --directory backend python -m evals.comparison effort evals/comparison/runs/screen-dry --batch 1 --reviewer author --minutes 25 --answers 6
+uv run --locked --directory backend python -m evals.comparison select evals/comparison/runs/screen-dry --chosen gpt-oss-120b --rationale "complete profiles on all four cases; cheaper than the other eligible model" --author author
+```
+
+Use `select --none --rationale "<diagnosis>"` when no model qualifies. For a documented setup
+fix, schedule linked reruns and run them; `trace` shows one trial's full, unblinded record for
+process and security review:
+
+```sh
+uv run --locked --directory backend python -m evals.comparison rerun evals/comparison/runs/screen-dry p1-O1-06-gpt-oss-120b-A --reason "case fence fixed" --repair-version repair-1
+uv run --locked --directory backend python -m evals.comparison run evals/comparison/runs/screen-dry
+uv run --locked --directory backend python -m evals.comparison trace evals/comparison/runs/screen-dry p1-O1-06-gpt-oss-120b-A
+```
+
+### Open or check the result
+
+`status` (also printed after `run`) shows trial states, known cost, the number of requests
+with unknown cost and retries. It prints a REVIEW POINT at US$15 known spending and once the
+first 24 results exist. Unknown cost is never shown as zero.
+
+The blinded batch is `artifacts/review/batch-<n>.json`. It shows the question, the case file,
+the answer and the assessor-only anchors, and hides the model, design, settings, cost and
+timing. The review-to-trial mapping is `artifacts/review/identity-map.json`: do not open it while
+scoring. `blinding_limitations` lists answers that name a model or vendor in their own text.
+
+`report` prints each model's status: `pending_run` until every scheduled trial has run,
+`pending_scoring` while any completed answer has an unscored criterion, `not_eligible` with
+its reasons, or `eligible`. It ranks nothing. Record the selection with its rationale.
+
+Label exports are `artifacts/exports/labels-v<n>.json`. They are numbered, never rewritten,
+and checked against the log on every export. `mirror` prints how many records were sent,
+skipped, failed or left unresolved, and names each record it did not mirror.
+
+### When it refuses
+
+- `holds no run`: the path has no `manifest.json`. Check the path relative to `backend/`.
+- `already holds a run`: a manifest is never overwritten. Choose a new run folder.
+- `Fixtures are NOT current`: a case's source data or builder changed. Find out why before
+  rewriting; a changed case needs the author's approval and a new fixture version.
+- `REFUSED: ... Nothing was recorded.`: label errors (`n/a cannot excuse it`, `already has an
+  initial label`, an unknown review ID), an assistant note before the author's initial labels,
+  or an unknown trial or configuration. A refused sheet records nothing. Correct the sheet and run `labels` again. A changed judgement
+  is a revision with its reason, never an edited initial label.
+- `Langfuse mirroring is off`: expected while `LI_LANGFUSE` is unset. Nothing was sent.
+- `NOT MIRRORED` with `failed`: Langfuse answered with an error, so nothing was accepted. Run
+  `mirror` again later. With `unresolved`: no answer arrived, so Langfuse may hold the trace.
+  Check the Langfuse project first. Use `mirror --resend-unresolved` only if the trace is
+  missing, because a second copy would duplicate it.
+- After an interruption, `run` reports trials marked interrupted and requests marked
+  unresolved with unknown cost. They are never re-sent. A rerun is only an explicit, versioned
+  repair under the approved setup-rerun policy.

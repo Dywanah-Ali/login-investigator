@@ -2476,3 +2476,14 @@ T40, subject to author review before changing the frozen exam. Corrected T52's c
 record and mapping. No question/gold changed and no T51 work reopened.
 **Lesson:** check a ticket's status and explicit exclusions before assigning it remaining work.
 **Verification:** T40 criterion names K03/B-143, T51 stays resolved and the exam has no diff.
+
+### B-146 · 2026-11-03 · T54 · A refused label sheet printed a Python traceback
+
+**Symptom:** testing the admin manual's `labels` command, importing the same label sheet twice
+was correctly refused, but the operator saw a Python traceback instead of a plain message.
+**Cause:** the command line passed `AssessmentError` through unhandled; the library refusal
+was right, only its presentation was wrong. **Fix:** the command catches assessment refusals and
+an existing run folder, prints `REFUSED: ... Nothing was recorded.` and exits 1.
+**Lesson:** test operator commands' refusal paths as written, not only their success paths.
+**Verification:** the repeated import and a repeated `new` both print the plain refusal with
+exit code 1; the library tests already proved nothing is recorded by a refused sheet.

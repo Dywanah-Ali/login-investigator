@@ -64,7 +64,7 @@ closure of T52 does not authorise an immediate paid run.
 
 ## Acceptance criteria
 
-- [ ] Before build, tell the author the Model line, obtain confirmation and record the model used.
+- [x] Before build, tell the author the Model line, obtain confirmation and record the model used.
 - [ ] Verify the implementation against resolved T52's approved cases, roles, scoring,
       selection policy and nine-group record contract without changing application gates.
       Fixture IDs/hashes and concrete role prompts are this ticket's build work.
@@ -136,3 +136,55 @@ No paid run, model choice, larger trial or permanent specialist adoption is auth
   24 hours before/after, clipped to available records with missing coverage stated. No change
   to alert-relative or O1-06/O1-09 windows. Narrow screening policy checks are settled;
   broader T52 closure still blocks build.
+- 2026-11-03 — Model line told to the author (standard: Opus 5.5 or Sol 6.1). Author
+  confirmed Claude Opus 5.5 for this build session. Build started under `/implement T54`.
+- 2026-11-03 — Author ruling: screening trials run in fixed-evidence mode. The complete
+  model-visible case file goes in the investigator's first message; no tools are offered in
+  scored screening or A/B/C trials. Records mark the mode `fixed_evidence`, so no screening
+  result is presented as tool or retrieval evidence. The tool request/result/final-answer
+  round trip is exercised only in the six compatibility sessions. Injection obedience in
+  O1-12-D is assessed from claimed actions and stated conclusions under the approved rubric.
+- 2026-11-03 — Checkpoint 1 built (`backend/evals/comparison/`): frozen fixtures with separate
+  gold, run bundle, rotated runner with recorded retries/deadlines/recovery, A/B/C designs,
+  compatibility tool loop, labels, blinded batches, label sheets and selection report.
+  71 offline tests, clean types and lint; a dry-run adapter exercised every command at no cost.
+- 2026-11-03 — Langfuse documentation check (get-api-docs). Context Hub `langfuse/observability`
+  covers SDK v3.14.5 (March 2026) and is stale for Cloud v4. Official docs consulted:
+  [OpenTelemetry integration](https://langfuse.com/integrations/native/opentelemetry),
+  [v4 migration](https://langfuse.com/integrations/native/opentelemetry/migration-to-v4),
+  [OTel experiments](https://langfuse.com/integrations/native/opentelemetry/experiments.md),
+  [public API](https://langfuse.com/docs/api-and-data-platform/features/public-api.md) and
+  OpenAPI spec mirrors. Behaviour checked: legacy ingestion for traces/observations sunsets on
+  Cloud on 16 November 2026; traces go to `POST /api/public/otel/v1/traces` (OTLP HTTP/JSON or
+  protobuf, Basic auth, `x-langfuse-ingestion-version: 4`) with `langfuse.observation.*` and
+  `langfuse.experiment.*` attributes on every span; re-sending a span ID can create duplicates,
+  so each trial must be exported once; scores go to the Scores API with an idempotent ID;
+  datasets via `POST /api/public/v2/datasets` and `POST /api/public/dataset-items` (upsert by
+  item ID). Not established by the docs: whether historical span timestamps are honoured, the
+  long-term status of `POST /api/public/scores`, payload limits. Only a live upload proves them.
+- 2026-11-03 — Author ruling: the mirror sends saved records itself as OTLP HTTP/JSON plus
+  REST calls through the existing `requests` dependency, not through the Langfuse SDK. Every
+  timestamp and ID comes from the run bundle; each trial's trace is sent once, tracked locally.
+  Checkpoint 2 test points approved: the mirror against a fake destination, and label export.
+- 2026-11-03 — Checkpoint 2 built: `mirror.py` (OTLP/JSON traces with experiment links,
+  dataset and items, idempotent scores, send-once status per trial, masking `mask-1`, switch
+  `LI_LANGFUSE`), numbered label exports with drift checks, and operator commands for labels,
+  revisions, notes, effort, reruns, selection, trace view and mirror. Admin manual section 8
+  added; every command run as written on fresh dry runs, refusals included (B-146 fixed).
+- 2026-11-03 — Two-axis review. Fixed: unassessed critical errors now count as unscored, not
+  absent, in eligibility and in the assistant-note gate; critical flags are initial-once with
+  explicit revisions; repeated offline checks are not re-recorded; batch numbers are never
+  reused after a crash and the review mapping lives in the event log; interrupted trials are
+  mirrored; usage fields a provider omits stay unknown; the code-version record covers the
+  core, data and locks; O1-12-D gold gained its Alternatives addition (fixture version
+  `f903b7f47620`); missing commands added. Open items, including two that need the author's
+  ruling, are in AUD-077. Checkpoint 3 not started: no paid adapter, no live upload.
+- 2026-11-03 — Verification at commit. Comparison suite 93 passed; Pyright 0 errors; Ruff
+  clean on the whole backend; frontend 150 passed and typecheck clean. Full backend suite
+  (sandboxed): 724 passed, 6 failed, 31 errors. All 37 come from one cause: the sandbox
+  denies the Docker socket, so Neo4j test containers cannot start (`GraphUnavailable: Neo4j
+  container operation failed`). Affected files: test_paired_lifecycle, test_graph_version,
+  test_graph_verification, test_native_inspection, test_api_startup, test_browser_access,
+  test_eval_retrieval, test_evaluation_version, test_kb_agent, test_knowledge_graph. None
+  imports the comparison package. The author chose to commit with this gap recorded; those
+  files are NOT re-verified and the next session reruns them first, with Docker reachable.

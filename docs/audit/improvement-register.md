@@ -103,6 +103,7 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-074 | Name matching may link a passage about an office building to that office's network address | Open observation; nothing reads `mentions` links yet; no change approved | Low | T50 pre-build discussion, 1 November 2026 |
 | AUD-075 | Concurrent first use of a new SQLite memory file can hit "database is locked" in checkpointer setup | Open intermittent observation; isolated rerun passed; no change approved | Low | B-136; T50 full verification, 1 November 2026 |
 | AUD-076 | Map phase 0 and 1 agent objectives to reliability evidence | Closed: T52 decision review and approved handoffs evidenced, 2 November 2026; runtime proof remains downstream | Medium | Author and Codex discussion, 1 November 2026; Sentinel research |
+| AUD-077 | T54 comparison runner: review concerns left open at checkpoints 1–2 | Open: two items need the author's ruling; refinements deferred; Langfuse behaviours unproven until a live upload | Medium | T54 two-axis review, 3 November 2026 |
 
 ### AUD-001: Rule filter
 
@@ -1481,6 +1482,28 @@ no dependency, implementation or spec change.
   a test that starts two first requests at once and passes repeatedly, or the author's ruling
   that the current behaviour is acceptable. Registration authorises no change.
 
+### AUD-077: T54 comparison runner, open review concerns
+
+- **Source:** the two-axis review of T54 checkpoints 1–2, 3 November 2026. Findings fixed in
+  T54 are recorded there and in B-146; this entry keeps what was not fixed.
+- **Needs the author's ruling:**
+  1. O1-12-D's injected travel notice keeps the model-visible identity
+     `rec-approved-travel v1.0`, although its content differs. The shared case contract says
+     variant documents have isolated identities and provenance. The variant hash is recorded
+     only in the gold provenance. Keeping the original label may be intended realism, because
+     a tampered document would look like the real one.
+  2. The mirror sends each case's required findings and critical-error IDs to Langfuse as the
+     dataset item's expected output. Gold never reaches a model, and the fixtures are committed
+     to a public repository, but gold is described as assessor-only.
+- **Deferred refinements (judgement calls, no behaviour defect):** SHA-256 helpers and event
+  filters repeated across modules; event types and statuses as bare strings; per-trial runner
+  state kept on the runner object; `bundle.events()` re-reads the whole log on every call,
+  which is fine at 72 trials but grows with larger runs; fake clock and adapter live in the
+  production adapters module.
+- **Unproven until checkpoint 3:** whether Langfuse honours historical span timestamps, the
+  long-term status of `POST /api/public/scores`, payload limits, and exact dataset endpoint
+  behaviour. Only a live, authorised upload of a scored screening result proves them.
+
 ### AUD-076: Agent objectives and reliability evidence
 
 - **Source:** author-approved [T52](../../.scratch/knowledge-base/issues/52-agent-objectives-and-reliability-review.md),
@@ -1718,4 +1741,5 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-10-31 | Closed AUD-013 after applying the approved policy: Ruff 0.17.3 pinned, twelve style preferences relaxed, remaining intentional patterns clarified and seven cleanup items handled. Full-policy Ruff and backend types clean; backend 701 passed in 993.52 seconds, frontend 150 passed. Admin commands tested; B-125 corrected and recorded. Only the retained inspection graph remains; no test process remains. | Tooling ticket 01; admin manual section 7; author approval |
 | 2026-11-01 | Added AUD-075 from T50's full verification: concurrent first use of a new SQLite memory file hit "database is locked" in checkpointer setup once; isolated rerun passed. T50 resolved: no `used_address` edges, address context removed, pair `f937ea59…` activated; 661 backend passes, two unrelated intermittent failures (B-135, B-136) passed on rerun. Leftover test resources listed in B-135 for the author's ruling. | T50; B-135; B-136 |
 | 2026-11-01 | Added AUD-076 and opened T52 as the next objectives/reliability decision review, blocking T45 and T26. T25/T27/T51 remain independent; no implementation authorised. | Author approval; T52; Sentinel research notes |
+| 2026-11-03 | Added AUD-077 from T54's two-axis review of checkpoints 1–2: two items need the author's ruling (injected document identity, gold as Langfuse expected output), refinements deferred, Langfuse behaviours unproven until a live upload. Review correctness findings fixed in T54. | T54 comments; B-146 |
 | 2026-11-02 | T53 resolved after author acceptance of named Browser logins and the fixed address. Stable human identities, separate serving identity, tested port movement/recovery, real rollback round trip and updated admin commands. Backend 668, frontend 150, types and two-axis review pass. AUD-068 remains open; frontend timeout recurrence retained under AUD-028/AUD-069, six lint warnings under AUD-009. | T53; B-137 to B-140; 53 verification and review |

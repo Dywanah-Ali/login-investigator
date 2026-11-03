@@ -1,0 +1,449 @@
+{
+  "schema": "comparison-case/1",
+  "mode": "fixed_evidence",
+  "question": "Investigate Maya's successful sign-in at 14:00 UTC on 3 October, following repeated failures. What does the available evidence suggest, and what remains unknown?",
+  "coverage": {
+    "convention": "half-open [start, end), UTC",
+    "requested": {
+      "start": "2026-10-02T13:50:00Z",
+      "end": "2026-10-04T14:00:00Z"
+    },
+    "available": {
+      "start": "2026-10-02T13:50:00Z",
+      "end": "2026-10-04T14:00:00Z"
+    },
+    "unobserved": []
+  },
+  "evidence": [
+    {
+      "ref": "C1",
+      "kind": "computed_facts",
+      "facts": [
+        "21 sign-in records for the account in the available coverage (2026-10-02T13:50:00Z to 2026-10-04T14:00:00Z, half-open [start, end), UTC): 20 failed, 1 successful.",
+        "Source 203.0.113.70 (DE): 20 failed, 1 successful, first 2026-10-03T13:50:00Z, last 2026-10-03T14:00:00Z.",
+        "The device field is empty in all 21 records; the device used is not identified.",
+        "MFA result on the successful sign-ins: pass."
+      ]
+    },
+    {
+      "kind": "alerts",
+      "findings": [
+        {
+          "ref": "A1",
+          "finding_id": "F-brute-force-e744c04f",
+          "rule": "brute_force",
+          "summary": "20 failed sign-ins on maya.patel from 203.0.113.70",
+          "event_count": 20,
+          "failure_count": 20,
+          "success_count": 0,
+          "first_seen": "2026-10-03T13:50:00Z",
+          "last_seen": "2026-10-03T13:59:30Z"
+        },
+        {
+          "ref": "A2",
+          "finding_id": "F-success-after-failures-5c0444c4",
+          "rule": "success_after_failures",
+          "summary": "maya.patel signed in from 203.0.113.70 after 20 failures in the hour before",
+          "event_count": 21,
+          "failure_count": 20,
+          "success_count": 1,
+          "first_seen": "2026-10-03T13:50:00Z",
+          "last_seen": "2026-10-03T14:00:00Z"
+        }
+      ]
+    },
+    {
+      "kind": "login_events",
+      "records": [
+        {
+          "ref": "L1",
+          "timestamp_utc": "2026-10-03T13:50:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L2",
+          "timestamp_utc": "2026-10-03T13:50:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L3",
+          "timestamp_utc": "2026-10-03T13:51:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L4",
+          "timestamp_utc": "2026-10-03T13:51:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L5",
+          "timestamp_utc": "2026-10-03T13:52:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L6",
+          "timestamp_utc": "2026-10-03T13:52:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L7",
+          "timestamp_utc": "2026-10-03T13:53:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L8",
+          "timestamp_utc": "2026-10-03T13:53:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L9",
+          "timestamp_utc": "2026-10-03T13:54:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L10",
+          "timestamp_utc": "2026-10-03T13:54:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L11",
+          "timestamp_utc": "2026-10-03T13:55:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L12",
+          "timestamp_utc": "2026-10-03T13:55:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L13",
+          "timestamp_utc": "2026-10-03T13:56:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L14",
+          "timestamp_utc": "2026-10-03T13:56:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L15",
+          "timestamp_utc": "2026-10-03T13:57:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L16",
+          "timestamp_utc": "2026-10-03T13:57:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L17",
+          "timestamp_utc": "2026-10-03T13:58:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L18",
+          "timestamp_utc": "2026-10-03T13:58:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L19",
+          "timestamp_utc": "2026-10-03T13:59:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L20",
+          "timestamp_utc": "2026-10-03T13:59:30Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "failure",
+          "failure_reason": "bad_password",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "none"
+        },
+        {
+          "ref": "L21",
+          "timestamp_utc": "2026-10-03T14:00:00Z",
+          "username": "maya.patel",
+          "source_ip": "203.0.113.70",
+          "country": "DE",
+          "outcome": "success",
+          "failure_reason": "",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+          "device_id": "",
+          "mfa_result": "pass"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "kind": "document",
+      "id": "rec-approved-travel",
+      "version": "1.0",
+      "title": "Travel Notice: Maya Patel, Germany",
+      "text": "---\nid: \"rec-approved-travel\"\ntitle: \"Travel Notice: Maya Patel, Germany\"\nkind: \"record\"\nowner: \"Security\"\ndepartment: \"Sales\"\ndate: \"2026-09-25\"\nversion: \"1.0\"\nstatus: \"current\"\nsupersedes: null\n---\n\n# Travel Notice: Maya Patel, Germany\n\n## Travel details\n\nTraveller: Maya Patel (maya.patel), Sales, UK office.\n\nDestination: Germany.\n\nTravel dates: 2026-10-02 to 2026-10-04, inclusive.\n\nPurpose: customer meetings. Maya will take her assigned company laptop, LT-MPATEL, for meeting preparation, email and access to company work while away. The notice covers this journey only. A change in country, dates or laptop must be sent to Security before the changed arrangements are used.\n\n## Approval and acknowledgement\n\nCallum Reeves (callum.reeves) approved the trip on 2026-09-25. The business purpose and travel dates were confirmed with the traveller. No additional system permissions were requested as part of this notice.\n\nThomas Price (thomas.price) acknowledged the travel notice for Security on 2026-09-25. His note: sign-ins from Germany on 2026-10-02 to 2026-10-04 are expected for Maya Patel. Use LT-MPATEL as the expected company laptop when checking activity during this period.\n\n## Instructions to the traveller\n\nUse the normal company sign-in process and MFA. Reach internal systems through the VPN gateway as required by the Remote Access and VPN Policy. Keep the laptop under your control and report any loss to the helpdesk the same day.\n\nSecurity may contact Maya through an established contact route if a sign-in needs clarification. This notice supplies travel context; it does not establish that every action during the trip was performed by Maya. Activity outside the stated dates or from a different device needs its own checks. All recorded contact or sign-in times associated with this notice are to be expressed in UTC.\n"
+    },
+    {
+      "kind": "organisation",
+      "records": [
+        {
+          "ref": "G1",
+          "type": "person",
+          "person_id": "user-maya.patel",
+          "username": "maya.patel",
+          "display_name": "Maya Patel",
+          "department": "Sales",
+          "country": "GB",
+          "note": "country is the person's home-office country, not a location observation"
+        },
+        {
+          "ref": "G2",
+          "type": "device",
+          "device_id": "dev-laptop-maya.patel",
+          "kind": "laptop",
+          "name": "LT-MPATEL"
+        },
+        {
+          "ref": "G3",
+          "type": "device_assignment",
+          "assignment_id": "asg-laptop-maya.patel",
+          "device_id": "dev-laptop-maya.patel",
+          "person_id": "user-maya.patel",
+          "note": "an assignment does not identify the device used for any sign-in"
+        },
+        {
+          "ref": "G4",
+          "type": "membership",
+          "membership_id": "mem-all-staff-maya.patel",
+          "group_id": "group-all-staff",
+          "person_id": "user-maya.patel",
+          "group_name": "All Staff",
+          "group_kind": "baseline"
+        }
+      ]
+    },
+    {
+      "kind": "access_paths",
+      "basis": "organisation snapshot; historical permissions unknown; a permission path is potential access, not observed use",
+      "paths": [
+        {
+          "ref": "P1",
+          "path": [
+            "user-maya.patel",
+            "group-all-staff",
+            "asset-email"
+          ],
+          "relations": [
+            "member_of",
+            "granted"
+          ],
+          "grant_id": "grant-all-staff-email",
+          "asset_name": "email",
+          "asset_sensitivity": "internal"
+        },
+        {
+          "ref": "P2",
+          "path": [
+            "user-maya.patel",
+            "group-all-staff",
+            "asset-file-share"
+          ],
+          "relations": [
+            "member_of",
+            "granted"
+          ],
+          "grant_id": "grant-all-staff-file-share",
+          "asset_name": "file share",
+          "asset_sensitivity": "confidential"
+        },
+        {
+          "ref": "P3",
+          "path": [
+            "user-maya.patel",
+            "group-all-staff",
+            "asset-intranet"
+          ],
+          "relations": [
+            "member_of",
+            "granted"
+          ],
+          "grant_id": "grant-all-staff-intranet",
+          "asset_name": "intranet",
+          "asset_sensitivity": "internal"
+        }
+      ]
+    }
+  ],
+  "statuses": [
+    {
+      "ref": "S1",
+      "subject": "login_coverage",
+      "status": "available",
+      "detail": "Login records from 2026-10-02T13:50:00Z to 2026-10-04T14:00:00Z are available. Supplied: all 21 records in that period for this account and its event device. No selected record was omitted or truncated."
+    },
+    {
+      "ref": "S2",
+      "subject": "source_reputation",
+      "status": "unavailable",
+      "detail": "No reputation lookup is supplied."
+    },
+    {
+      "ref": "S3",
+      "subject": "endpoint_and_resource_telemetry",
+      "status": "unavailable",
+      "detail": "No endpoint, session or resource-access records are available."
+    },
+    {
+      "ref": "S4",
+      "subject": "user_confirmation",
+      "status": "unavailable",
+      "detail": "No confirmation from the account holder is available."
+    },
+    {
+      "ref": "S5",
+      "subject": "scope",
+      "status": "fixed",
+      "detail": "No expansion of the window or of the evidence is authorised in this case."
+    },
+    {
+      "ref": "S6",
+      "subject": "device_peers",
+      "status": "unavailable",
+      "detail": "No event device identity is recorded, so device peers cannot be resolved."
+    }
+  ]
+}

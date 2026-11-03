@@ -36,3 +36,7 @@ build/
 
 # Isolated graph versions, immutable snapshots and private serving credentials.
 .graph-versions/
+
+# T54 comparison run bundles: local authoritative evidence, including private identity maps for
+# blinded review. Kept out of git until the author decides what to publish.
+backend/evals/comparison/runs/

@@ -11,6 +11,14 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **T54 checkpoints 1–2 built, 3 November 2026 (Claude Opus 5.5, author-confirmed).**
+  [T54](issues/54-early-langfuse-evaluation-integration.md) has frozen fixtures, the isolated
+  runner, local evidence bundle, blinded review, selection report and Langfuse mirror, all
+  tested offline with a dry-run adapter. Author rulings: fixed-evidence screening; mirror sent
+  by our own OTLP/REST code. Next: rulings on AUD-077's two items, then checkpoint 3 (paid
+  adapter docs check, compatibility sessions, screening), which needs execution authorisation.
+  T54 stays open; no paid run or live upload has happened.
+
 - **Current frontier, 2 November 2026: T52 resolved.** Objective/evidence review, candidate
   dispositions and downstream reconciliation are complete. AUD-076 closes as a decision
   review only. [T54](issues/54-early-langfuse-evaluation-integration.md) is next by the
