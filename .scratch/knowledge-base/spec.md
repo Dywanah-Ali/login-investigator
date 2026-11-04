@@ -906,6 +906,18 @@ contract moves.
 
 ### Langfuse (T06 d10, AUD-036)
 
+**T56 scope settled, author ruling 4 November 2026:** retain a compact summary of the
+shortlist, reasons and limitations; remove detailed local experiment results only after
+checking that summary during implementation. This supersedes earlier full-result retention
+for the temporary comparison. Keep decision/audit history; hosted Langfuse records are
+outside the local cleanup. Retain reusable model-calling and answer/timing/reported-cost
+recording basics, not the old comparison workflow wholesale. Define future cases, scoring
+and model roles later, including possible two-model designs. Replace the custom uploader
+in T56 with a small official SDK foundation for configuration, secret filtering and client
+lifecycle, verified locally with synthetic data and a fake destination. Application tracing
+and operational evaluations stay in T29/T30/T31. The separate implementation go was subsequently given through `$implement`; implementation
+follows the settled T56 scope. No paid comparison or live upload is included.
+
 **Post-upload foundation, author ruling 4 November 2026:** after the familiarisation
 comparison upload, replace temporary evaluation-platform integration code with the bare
 minimum foundation for later operational agent evaluation. Prefer the official Langfuse
@@ -1150,6 +1162,7 @@ them.
 
 | Date | Decision | Reason |
 |---|---|---|
+| 2026-11-04 | T56 scope settled through three author choices: summary only for old results; reusable model-calling and answer/timing/cost-recording basics; small locally tested official Langfuse SDK foundation built in T56. Check summary before removing detailed local results; retain decision/audit history. Future cases, scoring and model roles belong to later comparison design. Author explicitly holds implementation until a separate go. | Preserve useful mechanisms without carrying the temporary experiment forward as infrastructure. Supersedes earlier full-result retention for local comparison artifacts. |
 | 2026-11-02 | Author approved T45 selecting guidance sources for review, T26 integrating approved guidance, and separate T55 owning the 50-person/30-day dataset before T40 uses it. Source selection and dataset design still require their own review before build. | Give each part a clear owner without treating ownership approval as source adoption or implementation approval. |
 | 2026-11-02 | Downstream reconciliation applies the already-approved T52 sole objective, E01–E10 and alert/event windows to active package, presentation and evaluation requirements; applies T50 address removal and T46 native inspection. No new scope or gate ruling. T34 retains author screen approval; guidance sources and dataset ownership remain open in T52. | Prevent older full-inventory, all-history, address-peer and categorical-verdict wording from overriding approved boundaries. Preserve historical graph regressions, questions, gold and failures. |
 | 2026-11-02 | Author approved a single login's timestamp as the centre of the 24-hour-before/after window when no alert exists. Clip to available records, disclose gaps and retain analyst-controlled expansion. Alert-relative and O1-06/O1-09 diagnostic windows remain unchanged. | Give direct-event questions an explicit default without inventing coverage or reopening approved scenarios. |

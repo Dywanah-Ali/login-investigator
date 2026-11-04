@@ -1,4 +1,4 @@
-"""OpenRouter Responses adapter for T54, independent of the application's model seam.
+"""OpenRouter Responses adapter for future comparisons, independent of the application's model seam.
 
 One invocation means one HTTP POST. No SDK retries, output caps, provider fallback or remote
 conversation state. The runner owns retries and saves each attempt. Full output items are
@@ -31,8 +31,6 @@ def request_body(request: ModelRequest) -> dict:
         if config.provider != "anthropic" or reasoning.get("enabled") is not True:
             raise ValueError("adaptive reasoning is only configured for Anthropic")
         reasoning.pop("mode")
-    if config.model in ("openai/gpt-6-luna", "openai/gpt-6.1-sol"):
-        reasoning.update(mode="standard", context="all_turns")
     items = []
     for message in request.messages:
         role = message["role"]
@@ -144,7 +142,7 @@ def _error_kind(data: dict, status: int = 0) -> str:
 
 
 def _failure_details(response: dict, event: dict, key: str) -> dict:
-    # Full provider artifacts stay local: the mirror drops `continuation` recursively.
+    # Provider diagnostics are local response context; never automatically exported.
     return redact({"status": response.get("status"), "error": response.get("error"),
                    "error_type": response.get("error_type"),
                    "incomplete_details": response.get("incomplete_details"),
@@ -195,7 +193,7 @@ class OpenRouterAdapter(Adapter):
                 failure_event = event
                 if isinstance(event.get("debug"), dict):
                     # Upstream inputs are local diagnostic evidence, never replayed as output
-                    # or exported by the mirror (which excludes continuation recursively).
+                    # or automatically exported to telemetry.
                     debug_events.append(redact(event["debug"], [self._api_key]))
                 kind = event.get("type")
                 if kind == "response.output_text.delta":

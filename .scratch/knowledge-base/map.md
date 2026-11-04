@@ -11,13 +11,28 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **T56 implemented, 4 November 2026:** compact summary retained; detailed local runs,
+  fixed comparison workflow and custom uploader retired. Reusable request/record basics
+  and Langfuse 5.1.0 SDK foundation locally verified: 56 focused passes, clean types/lint,
+  zero remaining findings on both review axes. Full backend run was unnecessary for this
+  scope and stopped at 148 passes; frontend full run had nine timeouts, with all 72 tests
+  in affected files passing on one-worker rerun. B-161 retains the unresolved timing cause.
+  No live upload or model call; operational integration remains T29/T30/T31.
+
+- **T56 scope agreed, 4 November 2026:** retain a compact shortlist/reasons/limitations
+  summary, remove detailed local comparison results after checking it, retain reusable
+  model-calling and answer/timing/cost-recording basics, and replace the custom uploader
+  with a small locally tested official SDK foundation. Later comparison design and
+  operational evaluation remain separate. Author subsequently gave the go through `$implement`; T56 is now resolved
+  with focused evidence and explicit broad-suite limits recorded above.
+
 - **T54 resolved by author, 4 November 2026:** comparison upload/familiarisation accepted
   after visual walkthrough of traces, answers, scores/reasons, metadata, cases and experiment.
   Local receipts: 72 trial traces and 1,099 scores accepted, no failed/unresolved latest
   statuses. No model rerun or automated read-back. Combined-experiment grouping and the
   small cost discrepancy remain accepted limitations for this learning exercise; no repair.
   Post-upload retirement/minimal foundation is separate [T56](issues/56-minimal-evaluation-foundation.md),
-  ready for scope agreement, not started. Operational evaluation remains T29/T30/T31.
+  scope agreed; implementation authorised through `$implement`. Operational evaluation remains T29/T30/T31.
 
 - **T54 familiarisation upload complete, 4 November 2026:** Japan-region Langfuse
   accepted one dataset, four cases, 72 trial records and 1,099 scores (426 assistant
@@ -441,6 +456,10 @@ value it adds to the app, not for the sake of demonstrating RAG.
   primary sources. The course's solution kits stay closed.
 
 ## Decisions so far
+
+- [T56](issues/56-minimal-evaluation-foundation.md) resolved: retain a compact historical
+  summary and reusable calling/recording basics; replace temporary comparison integration
+  with a small, locally tested official SDK foundation. Full application integration later.
 
 - **T54 closure, 4 November 2026:** author accepted the comparison upload as a Langfuse
   familiarisation exercise. [T54 Answer](issues/54-early-langfuse-evaluation-integration.md#answer)

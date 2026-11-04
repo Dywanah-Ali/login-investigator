@@ -2802,3 +2802,42 @@ accepted T54 as complete. B-156's bounded assistant-display correction and B-157
 payload timestamps are accepted with focused tests. Human-only selection remains deferred.
 B-158's small settlement omission is retained without repair. This is learning-exercise
 acceptance; operational evaluation work remains separate.
+
+### B-159 · 2026-11-04 · T56 cleanup · Stale redaction test reference
+
+- Symptom: focused run had 50 passes and one failure because a test accessed `records.REDACTED`.
+- Cause: secret filtering moved to the shared `evals.privacy` module; the test used the old
+  internal constant rather than checking the saved output contract.
+- Fix: assert the literal `[REDACTED]` in the saved event. No production secret was exposed.
+- Lesson: persistence tests should assert visible redaction behavior, not helper placement.
+- Verification: affected focused rerun recorded in T56.
+
+### B-160 · 2026-11-04 · T56 review · Escaped and short secrets survived filtering
+
+- Symptom: both review axes reproduced a configured secret surviving JSON-encoded SDK
+  attributes; the shared helper also excluded secrets shorter than eight characters.
+- Cause: literal replacement happened after serialization, and an inherited length filter
+  discarded short configured values. Saved serialized requests shared the first weakness.
+- Fix: recursively decode JSON strings before filtering, redact every nonempty configured
+  secret, and cover saved request/answer plus actual SDK output/metadata export boundaries.
+- Iterations: the first expanded test incorrectly decoded raw input as JSON; corrected to
+  assert raw input separately from structured output and metadata. The local smoke response
+  initially used a partial-batch shape and produced a misleading SDK error log despite zero
+  rejections; corrected fake response to HTTP 202 with `message: Accepted`.
+- Lesson: verify the actual serialized/exported form and the provider's real response contract.
+- No live upload occurred; probes used synthetic secrets only. Focused evidence is in T56.
+
+### B-161 · 2026-11-04 · T56 full verification · Unchanged frontend tests timed out
+
+- Symptom: full frontend run completed with 141 passes and nine 5-second timeouts across
+  Explorer (3), Overview (1), Alerts (2), and Investigator (3). Overview also emitted
+  zero-width/height chart warnings from the test environment.
+- Cause: unproven. Backend verification ran concurrently; resource contention is a hypothesis,
+  not an established root cause. Earlier timeout history is AUD-028/AUD-069.
+- Disposition: no frontend code or timeout configuration changed. Rerun only affected files
+  with one worker; retain the failed full result regardless of rerun outcome.
+- Lesson: a passing rerun cannot erase a failed full-suite result or establish its cause.
+
+- B-161 follow-up: the four affected files passed with one worker, 72/72 in 99.44 seconds.
+  The original full run remains 141 passed / 9 timeouts. No frontend edits or timeout
+  changes; root cause remains unproven.

@@ -59,7 +59,7 @@ def test_secrets_are_removed_before_anything_reaches_disk(tmp_path, monkeypatch)
     on_disk = (tmp_path / "run" / "events.jsonl").read_text()
     assert "real-key-value-123456" not in on_disk and "abc.def" not in on_disk
     assert "sk-or-v1-0123456789abcdefghij" not in (tmp_path / "run" / artifact["path"]).read_text()
-    assert records.REDACTED in on_disk
+    assert "[REDACTED]" in on_disk
 
 
 def test_artifacts_are_referenced_by_path_and_hash(tmp_path):
@@ -77,10 +77,8 @@ def test_recovery_marks_unfinished_requests_unresolved_and_never_repeats_them(tm
     bundle.append("request_finished", request_id="r1", status="completed", cost_usd=0.01)
     bundle.append("request_started", request_id="r2", trial_id="t1")  # crash here
     report = records.recover(bundle)
-    assert report == {"unresolved_requests": ["r2"], "interrupted_trials": ["t1"]}
-    state = records.trial_states(bundle)
-    assert state["t1"] == "interrupted"
-    assert records.recover(bundle) == {"unresolved_requests": [], "interrupted_trials": []}
+    assert report == {"unresolved_requests": ["r2"]}
+    assert records.recover(bundle) == {"unresolved_requests": []}
     resources = records.resources(bundle)
     assert resources["requests"]["r2"]["cost_usd"] is None
     assert resources["requests"]["r2"]["status"] == "unresolved"

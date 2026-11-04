@@ -8,9 +8,10 @@ Model: standard (Opus 5.5 or Sol 6.1)
 
 ## What to build
 
-Delivery split: [T54](54-early-langfuse-evaluation-integration.md) owns the isolated comparison
-runner and early screening/calibration recording. This ticket retains application and full-exam
-integration, reusing T54 machinery.
+Delivery split: [T54](54-early-langfuse-evaluation-integration.md) completed the temporary
+comparison and Langfuse familiarisation. [T56](56-minimal-evaluation-foundation.md) owns its
+retirement and a small official SDK foundation. This ticket retains application and full-exam
+integration, building on that foundation rather than inheriting the temporary comparison schema.
 The criteria below apply to this remaining scope.
 
 Langfuse mirrors dev investigations and eval runs behind one switch that is off by default. The repo

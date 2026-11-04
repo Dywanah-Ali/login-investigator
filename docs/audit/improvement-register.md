@@ -112,6 +112,23 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-083 | Langfuse score retries lack stable timestamps | Closed for bounded saved-timestamp correction by tests and author acceptance, 4 November 2026; no remote reconciliation required | Medium | B-157; current official Langfuse score-update guidance |
 | AUD-084 | Familiarisation mirror omits later billing settlements | Recorded/deferred by learning-only scope; US$0.004366 known difference, no repair or re-upload | Low | B-158; author experiment screenshot, 4 November 2026 |
 
+### T56 verification follow-up, 4 November 2026
+
+The unnecessary full backend run was stopped at 148 passes without a complete result.
+Its test graph containers were cleaned up; older stopped containers were untouched.
+T56 closes on focused checks and clean reviews, not a full application-suite claim.
+
+B-160: escaped and short known secrets in the shared evaluation filter were identified by
+both review axes and repaired within T56, with export/persistence regressions. No live data
+was sent. B-161: nine unchanged frontend test timeouts in the explicitly requested full run
+are tracked with AUD-028/AUD-069; chart-dimension warnings also remain visible. Cause is
+unproven; no unrelated UI fix or timeout relaxation is included. All four affected files
+passed with one worker (72/72, 99.44 seconds); the failed full run is retained.
+
+T56 retention ruling: detailed local comparison run bundles were deliberately removed after
+checking the compact shortlist summary. Earlier artifact references in audit entries are
+historical provenance. Hosted Langfuse data and the audit decisions remain unchanged.
+
 ### AUD-084: Later billing adjustments are absent from mirrored comparison cost
 
 B-158: author's experiment screen shows US$0.273691, exactly the original response-cost

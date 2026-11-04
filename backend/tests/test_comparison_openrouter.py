@@ -13,20 +13,11 @@ from dataclasses import replace
 
 import pytest
 
-from evals.comparison import __main__ as cli
-from evals.comparison import (
-    http_stream,
-    mirror,
-    openrouter,
-    plans,
-    records,
-    roles,
-    runner,
-)
-from evals.comparison.adapters import AdapterError, ModelRequest
+from evals.comparison import http_stream, openrouter
+from evals.comparison.adapters import AdapterError, ModelConfig, ModelRequest
 
 KEY = "fake-openrouter-key-only-for-tests"
-CONFIG = plans.SCREENING_CONFIGS[-1]
+CONFIG = ModelConfig('test', 'Test', 'openai/gpt-6.1-sol', 'openai', {'effort': 'medium'})
 
 
 def request(config=CONFIG, messages=None, tools=None):
@@ -61,25 +52,6 @@ class FakeTransport:
             self.closed = True
 
 
-@pytest.mark.parametrize("config", plans.SCREENING_CONFIGS, ids=lambda c: c.config_id)
-def test_each_requested_configuration_has_no_caps_fallback_or_remote_memory(config):
-    original = config.to_dict()
-    body = openrouter.request_body(request(config))
-    assert config.to_dict() == original
-    assert body["model"] == config.model
-    assert body["provider"] == {"only": [config.provider], "order": [config.provider],
-                                "allow_fallbacks": False, "require_parameters": True}
-    assert body["service_tier"] == "default" and body["store"] is False
-    assert body["reasoning"]["effort"] == config.reasoning["effort"]
-    assert not {"max_output_tokens", "max_tokens", "max_completion_tokens", "previous_response_id",
-                "models", "max_tool_calls"} & body.keys()
-    for name, value in config.sampling.items():
-        assert body[name] == value
-    if config.provider == "anthropic":
-        assert body["reasoning"] == {"enabled": True, "effort": "medium"}
-    if config.config_id in ("gpt-6-luna", "gpt-6.1-sol"):
-        assert body["reasoning"]["mode"] == "standard"
-        assert body["reasoning"]["context"] == "all_turns"
 
 
 def test_unapproved_service_and_fallback_settings_are_refused():
@@ -88,26 +60,8 @@ def test_unapproved_service_and_fallback_settings_are_refused():
             openrouter.request_body(request(config))
 
 
-def test_upstream_debug_is_requested_only_for_tool_compatibility():
-    assert "debug" not in openrouter.request_body(request())
-    body = openrouter.request_body(request(tools=[roles.COMPATIBILITY_TOOL]))
-    assert body["debug"] == {"echo_upstream_body": True}
 
 
-def test_upstream_debug_is_saved_redacted_and_never_replayed_as_model_input():
-    debug = {"echo_upstream_body": {"reasoning_effort": "medium", "secret": KEY}}
-    fake = FakeTransport([{"debug": debug},
-                          {"type": "response.completed", "response": completed()}])
-    response = openrouter.OpenRouterAdapter(KEY, transport=fake).complete(
-        request(tools=[roles.COMPATIBILITY_TOOL]))
-    assert response.continuation is not None
-    assert response.continuation["debug_events"] == [
-        {"echo_upstream_body": {"reasoning_effort": "medium", "secret": "[REDACTED]"}}]
-    body = openrouter.request_body(request(messages=[
-        {"role": "assistant", "content": response.text, "continuation": response.continuation}]))
-    assert body["input"] == completed()["output"]
-    assert "debug_events" not in json.dumps(body) and KEY not in json.dumps(response.continuation)
-    assert mirror.mask({"continuation": response.continuation, "cost": 0.001}) == {"cost": 0.001}
 
 
 @pytest.mark.parametrize("data", [completed(status="failed", error={"code": "invalid_request"}),
@@ -161,40 +115,6 @@ def test_negative_nonfinite_and_boolean_usage_is_not_used_as_a_number():
     assert response.cost_usd is None
 
 
-def test_tool_round_trip_replays_ordered_reasoning_opaque_fields_and_call_ids(tmp_path):
-    output = [{"type": "reasoning", "id": "rs-1", "encrypted_content": "opaque-data",
-               "signature": "sig", "summary": [], "content": []},
-              {"type": "function_call", "id": "fc-1", "call_id": "call-1", "name": "get_record",
-               "arguments": '{"ref":"CMP-1"}'}]
-    calls = []
-
-    def transport(url, key, body, timeout):
-        calls.append(body)
-        assert key == KEY
-        assert body["tools"] == [{"type": "function", **roles.COMPATIBILITY_TOOL["function"]}]
-        if len(calls) == 1:
-            assert len(body["input"]) == 2
-            data = completed(output=output)
-        else:
-            assert body["input"][2:4] == output
-            assert body["input"][4] == {"type": "function_call_output", "call_id": "call-1",
-                                        "output": json.dumps({"ref": "CMP-1", "text":
-                                                               roles.COMPATIBILITY_RECORDS["CMP-1"]})}
-            data = completed(output=[{"type": "message", "role": "assistant", "content": [
-                {"type": "output_text", "text": "The colour code is 7 [CMP-1]."}]}])
-        yield {"type": "response.completed", "response": data}
-
-    adapter = openrouter.OpenRouterAdapter(KEY, transport=transport)
-    bundle = runner.new_run(tmp_path / "run", stage="compatibility", configs=[CONFIG],
-                            case_ids=[], passes=1, designs=["compat"], adapter=adapter,
-                            experiment_id="fake-openrouter")
-    runner.Runner(bundle, adapter).run()
-    checks = next(e for e in bundle.events() if e["type"] == "compatibility_checks")
-    assert checks["tool_round_trip"] and checks["output_contract"]
-    assert len(calls) == 2
-    starts = [e for e in bundle.events() if e["type"] == "request_started"]
-    assert [json.loads(bundle.read_artifact(e["wire_input"]))["body"] for e in starts] == calls
-    assert KEY not in "".join(p.read_text() for p in bundle.root.rglob("*") if p.is_file())
 
 
 @pytest.mark.parametrize("event,kind", [
@@ -326,20 +246,6 @@ def test_elapsed_deadline_stops_silent_worker_and_leaves_no_background_process(m
     assert {p.pid for p in multiprocessing.active_children()} == before
 
 
-def test_creating_live_manifest_does_not_load_keys_and_dispatch_requires_execution_flag(
-        tmp_path, monkeypatch, capsys):
-    import dotenv
-
-    def forbidden(*args, **kwargs):
-        pytest.fail("must not load credentials or call transport")
-
-    monkeypatch.setattr(dotenv, "dotenv_values", forbidden)
-    monkeypatch.setattr(openrouter.OpenRouterAdapter, "complete", forbidden)
-    path = str(tmp_path / "live-plan")
-    assert cli.main(["new", "compatibility", path, "--adapter", "openrouter"]) == 0
-    assert cli.main(["run", path]) == 1
-    assert "--execute-paid" in capsys.readouterr().err
-    assert records.RunBundle.open(tmp_path / "live-plan").events() == []
 
 
 def test_missing_key_prevents_dispatch():
@@ -373,130 +279,22 @@ def test_failure_details_keep_reason_but_remove_echoed_key():
     assert "server_error" in json.dumps(caught.value.details)
 
 
-@pytest.mark.parametrize("preparation_s,expected_calls", [(590, 1), (610, 0)])
-def test_slow_wire_preparation_consumes_case_deadline(tmp_path, monkeypatch, preparation_s,
-                                                    expected_calls):
-    from tests.test_comparison_runner import answer, finished, make
-
-    bundle, adapter, run = make(tmp_path, answer(), configs=[CONFIG], cases=["O1-02"], passes=1)
-
-    def slow_details(request):
-        adapter.clock.advance(preparation_s)
-        return {"fake": "wire body"}
-
-    monkeypatch.setattr(adapter, "request_details", slow_details)
-    run.run()
-    assert len(adapter.requests) == expected_calls
-    if expected_calls:
-        assert adapter.requests[0].timeout_s == 10
-        event = next(e for e in bundle.events() if e["type"] == "request_finished")
-        assert event["dispatch_timeout_s"] == 10
-    else:
-        assert next(iter(finished(bundle).values()))["status"] == "timeout"
-        assert next(e for e in bundle.events() if e["type"] == "request_finished")["status"] == "timeout"
 
 
-def test_spending_pause_happens_before_next_trial(tmp_path):
-    from evals.comparison.adapters import ModelResponse
-    from tests.test_comparison_runner import make
-
-    bundle, adapter, run = make(tmp_path, lambda r, n: ModelResponse(text="Answer", cost_usd=15),
-                                configs=[CONFIG], cases=["O1-02", "O1-06"], passes=1)
-    result = run.run(stop_cost_usd=15)
-    assert len(adapter.requests) == 1 and result["stop_reason"]
-    assert len(records.trial_states(bundle)) == 1
 
 
-def test_live_run_needs_bound_and_first_pass_review_before_loading_keys(tmp_path, monkeypatch):
-    import dotenv
-
-    def forbidden(*args, **kwargs):
-        pytest.fail("must not load credentials")
-
-    monkeypatch.setattr(dotenv, "dotenv_values", forbidden)
-    path = str(tmp_path / "screen")
-    assert cli.main(["new", "screening", path, "--adapter", "openrouter"]) == 0
-    assert cli.main(["run", path, "--execute-paid"]) == 1
-    assert cli.main(["run", path, "--execute-paid", "--until-slot", "72"]) == 1
-    assert records.RunBundle.open(tmp_path / "screen").events() == []
 
 
-def test_related_run_cost_is_included_in_spending_pause(tmp_path):
-    from tests.test_comparison_runner import answer, make
-
-    bundle, adapter, run = make(tmp_path, answer(), configs=[CONFIG], cases=["O1-02"], passes=1)
-    result = run.run(stop_cost_usd=15, prior_cost_usd=15)
-    assert result["stop_reason"] and adapter.requests == []
-    assert records.trial_states(bundle) == {}
 
 
 def test_model_protocol_mapping_survives_configuration_rename():
     renamed = replace(CONFIG, config_id="renamed-condition")
     assert openrouter.request_body(request(renamed))["reasoning"] == {
-        "effort": "medium", "mode": "standard", "context": "all_turns"}
+        "effort": "medium"}
 
 
-def test_live_manual_workflow_uses_only_fake_keys_and_fake_responses(tmp_path, monkeypatch):
-    import dotenv
-
-    from evals.comparison.adapters import ModelResponse
-
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(dotenv, "dotenv_values", lambda *a: {"OPENROUTER_API_KEY": KEY})
-    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
-    sent = []
-
-    def fake_complete(self, request):
-        sent.append(request)
-        if request.tools and request.messages[-1]["role"] != "tool":
-            return ModelResponse(text="", tool_calls=[{"id": "fake-call", "name": "get_record",
-                                                       "arguments": '{"ref":"CMP-1"}'}],
-                                 cost_usd=0.001)
-        return ModelResponse(text="The colour code is 7 [CMP-1].", cost_usd=0.001)
-
-    monkeypatch.setattr(openrouter.OpenRouterAdapter, "complete", fake_complete)
-    compat = "evals/comparison/runs/compat-live"
-    screen = "evals/comparison/runs/screen-live"
-    assert cli.main(["new", "compatibility", compat, "--adapter", "openrouter"]) == 0
-    assert cli.main(["run", compat, "--execute-paid", "--until-slot", "1"]) == 0
-    assert len(sent) == 2
-    # Complete compatibility with the same documented bound mechanism, still fake.
-    assert cli.main(["run", compat, "--execute-paid", "--until-slot", "6"]) == 0
-    assert len(sent) == 12
-    assert cli.main(["new", "screening", screen, "--adapter", "openrouter"]) == 0
-    assert cli.main(["run", screen, "--execute-paid", "--until-slot", "1", "--cost-run", compat]) == 0
-    assert len(sent) == 13
-    assert cli.main(["run", screen, "--execute-paid", "--until-slot", "72", "--cost-run", compat,
-                     "--after-setup-review"]) == 1
-    assert len(sent) == 13
-    assert cli.main(["run", screen, "--execute-paid", "--until-slot", "24", "--cost-run", compat]) == 0
-    assert cli.main(["run", screen, "--execute-paid", "--until-slot", "72", "--cost-run", compat,
-                     "--after-setup-review"]) == 0
-    assert len(sent) == 84
-    bundle = records.RunBundle.open(tmp_path / screen)
-    event = next(e for e in bundle.events() if e["type"] == "spending_context")
-    assert event["known_cost_usd"] == pytest.approx(0.012)
-    assert event["unknown_cost_requests"] == 0
-    assert cli.main(["run", screen, "--execute-paid", "--until-slot", "1",
-                     "--cost-run", compat, "--cost-run", compat]) == 1
-    compat_bundle = records.RunBundle.open(tmp_path / compat)
-    original = compat_bundle.manifest["schedule"][0]["trial_id"]
-    runner.schedule_rerun(compat_bundle, original, reason="fake repair", repair_version="fake-1")
-    assert cli.main(["run", compat, "--execute-paid", "--until-slot", "7"]) == 0
-    assert len(sent) == 86
 
 
-def test_screening_repair_does_not_dispatch_unstarted_later_passes(tmp_path):
-    from tests.test_comparison_runner import answer, make
-
-    bundle, adapter, run = make(tmp_path, answer())
-    run.run(until_slot=24)
-    original = bundle.manifest["schedule"][0]["trial_id"]
-    linked = runner.schedule_rerun(bundle, original, reason="fake adapter fix", repair_version="v2")
-    result = run.run(until_slot=73, reruns_only=True)
-    assert result["ran"] == [linked] and len(adapter.requests) == 25
-    assert len(records.trial_states(bundle)) == 25
-    assert bundle.manifest["schedule"][24]["trial_id"] not in records.trial_states(bundle)
 
 
 def test_router_metadata_records_selected_provider_without_inventing_missing_identity():
