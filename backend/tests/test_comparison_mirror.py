@@ -151,6 +151,45 @@ def test_labels_go_out_as_idempotent_scores_with_n_a_distinct(bundle):
     assert not [c for c in again.calls if c[0] == mirror.SCORES_PATH]
 
 
+def test_assistant_scores_keep_their_provenance_and_do_not_replace_human_scores(bundle):
+    item = review.prepare_batch(bundle, size=1, seed=1)["items"][0]
+    for kind, assessor, value in (("human", "author", 2), ("assistant", "Codex", 1)):
+        assessment.record_label(
+            bundle, review_id=item["review_id"], case_id=item["case_id"], criterion="facts",
+            score=value, excerpt="", evidence_ref="L1", reason="recorded judgment",
+            assessor=assessor, assessor_type=kind)
+        assessment.record_critical(
+            bundle, review_id=item["review_id"], case_id=item["case_id"], error_id="CE-06-1",
+            present=False, excerpt="", reason="not observed", assessor=assessor,
+            assessor_type=kind)
+    fake = FakeLangfuse()
+    mirror.mirror(bundle, fake)
+    scores = {p["name"]: p for path, p, _ in fake.calls if path == mirror.SCORES_PATH}
+    assert scores["criterion.facts"]["value"] == "2"
+    assert scores["assistant.criterion.facts"]["value"] == "1"
+    assert scores["criterion.facts"]["id"] != scores["assistant.criterion.facts"]["id"]
+    assert "assistant assessment by Codex" in scores["assistant.criterion.facts"]["comment"]
+    assert scores["assistant.critical.CE-06-1"]["value"] == 0
+    assert scores["critical.CE-06-1"]["id"] != scores["assistant.critical.CE-06-1"]["id"]
+
+
+def test_score_retry_on_another_day_keeps_saved_timestamp_and_identity(bundle):
+    item = review.prepare_batch(bundle, size=1, seed=1)["items"][0]
+    assessment.record_label(
+        bundle, review_id=item["review_id"], case_id=item["case_id"], criterion="facts",
+        score=1, excerpt="", evidence_ref="L1", reason="missing detail", assessor="Codex",
+        assessor_type="assistant")
+    failed = FakeLangfuse({mirror.SCORES_PATH: 503})
+    mirror.mirror(bundle, failed)
+    before = [p for path, p, _ in failed.calls if path == mirror.SCORES_PATH]
+    bundle.clock = lambda: 2_000_000_000
+    retried = FakeLangfuse()
+    mirror.mirror(bundle, retried)
+    after = [p for path, p, _ in retried.calls if path == mirror.SCORES_PATH]
+    assert after == before
+    assert after[0]["timestamp"]
+
+
 # --- send once, local first ----------------------------------------------------------------------
 
 def test_each_trace_is_sent_once(bundle):

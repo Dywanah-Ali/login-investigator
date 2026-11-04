@@ -11,6 +11,51 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **T54 resolved by author, 4 November 2026:** comparison upload/familiarisation accepted
+  after visual walkthrough of traces, answers, scores/reasons, metadata, cases and experiment.
+  Local receipts: 72 trial traces and 1,099 scores accepted, no failed/unresolved latest
+  statuses. No model rerun or automated read-back. Combined-experiment grouping and the
+  small cost discrepancy remain accepted limitations for this learning exercise; no repair.
+  Post-upload retirement/minimal foundation is separate [T56](issues/56-minimal-evaluation-foundation.md),
+  ready for scope agreement, not started. Operational evaluation remains T29/T30/T31.
+
+- **T54 familiarisation upload complete, 4 November 2026:** Japan-region Langfuse
+  accepted one dataset, four cases, 72 trial records and 1,099 scores (426 assistant
+  criteria, 602 critical decisions, 71 reference checks). Zero failed/unresolved latest
+  transfer statuses; no inference rerun. Assistant provenance preserved. Focused mirror
+  tests 20 passed; types/lint and two-axis review clean. Local receipt under
+  `screen-live/artifacts/assistant-assessment/familiarisation-upload-receipt.json`.
+  No automated remote read-back. Author subsequently accepted the walkthrough; T54 resolved.
+  Agreed bounded retirement/minimal foundation is carried in T56.
+
+- **Langfuse scope corrected by author, 4 November 2026:** current comparison upload
+  is solely familiarisation. Model selection is ad hoc, possibly repeated after tools.
+  Reuse existing connector with minimal truthful display changes. Drop automated remote
+  read-back/reconciliation and permanent comparison operations; simple visual inspection
+  suffices for learning. Operational Langfuse evals/tracing come later with running v2
+  under T29/T30/T31. This supersedes earlier proposed hardening/pilot requirements.
+
+- **Author shortlist decision, 4 November 2026:** GPT-6 Luna and GPT-6.1 Sol remain
+  the shortlist, representing two tiers. After tools are built, assess one direct Anthropic
+  and one direct open-source challenger per tier: four future challengers total. Exact
+  models remain undecided; match each challenger to its respective tier. Original scores,
+  Luna's two zero-bearing answers and numerical gates remain visible. This does not
+  choose a single A/B/C baseline, permanent model or new paid execution. See the
+  [recorded ruling](research/52-objective1-comparison-protocol.md#author-shortlist-ruling--4-november-2026).
+
+- **T54 assessment ownership revised, 4 November 2026:** author delegated assessment
+  of all 71 saved answers to Codex. Blinded assistant scoring against frozen anchors;
+  six criteria and critical flags retain evidence/reasons and assistant provenance.
+  Initial human scoring waived for this screen only; no independent human validation.
+  Original blank human sheets remain. No paid inference or live upload authorised.
+  All 71 assessed: 426 criterion labels, 602 critical flags, zero human labels; no
+  designated critical error observed. Scores saved before identity grouping. Separate
+  [assessment report](research/54-assistant-screening-assessment-2026-11-04.md) records results;
+  GPT-6.1 Sol alone meets numeric screen rule under assistant scores, without selection
+  or application acceptance. B-156/AUD-082: human-only report/mirror omit these scores.
+  Author subsequently chose the two-tier shortlist above and reduced the current upload
+  to familiarisation. Consumer improvements are limited to what that display actually needs.
+
 - **T54 three-round screening complete, 3 November 2026:** author authorised original
   slots 25–72, then requested housekeeping/handoff and a fresh session for blinded human
   scoring. All 72 closed: 71 answers, one preserved `no_answer` (B-155/AUD-081, cause
@@ -396,6 +441,12 @@ value it adds to the app, not for the sake of demonstrating RAG.
   primary sources. The course's solution kits stay closed.
 
 ## Decisions so far
+
+- **T54 closure, 4 November 2026:** author accepted the comparison upload as a Langfuse
+  familiarisation exercise. [T54 Answer](issues/54-early-langfuse-evaluation-integration.md#answer)
+  records evidence and retained limitations. [T56](issues/56-minimal-evaluation-foundation.md)
+  carries the agreed separate retirement/minimal-foundation direction; no operational
+  integration or automatic model-adoption acceptance follows from T54 closure.
 
 - **T52 resolved, 2 November 2026:** reliable login investigation is the sole phase-0/1
   objective; bounded context, uncertainty, evidence and security obligations are assigned

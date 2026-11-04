@@ -23,6 +23,7 @@ import json
 import os
 from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any, Protocol
 
 from evals.comparison import assessment, fixtures, records, review
@@ -235,14 +236,19 @@ def build_trace(bundle: RunBundle, trial_id: str, dataset_id: str | None) -> dic
 
 
 def build_scores(bundle: RunBundle) -> list[dict]:
-    """Latest human label per criterion and critical flag, with idempotent IDs, plus the
-    reference check. History stays local; Langfuse shows the current label."""
+    """Latest labels per assessor type, with assistant scores identified separately.
+
+    History stays local. Saved event times make retry payloads stable across upload dates.
+    """
     trials = review.identity_map(bundle)
     latest: dict[tuple[str, str], dict] = {}
     for event in bundle.events():
-        if event["type"] in ("label", "critical_flag") and event.get("assessor_type") == "human":
+        if event["type"] in ("label", "critical_flag") and event.get("assessor_type") in (
+                "human", "assistant"):
             name = (f"criterion.{event['criterion']}" if event["type"] == "label"
                     else f"critical.{event['error_id']}")
+            if event["assessor_type"] == "assistant":
+                name = f"assistant.{name}"
             latest[(event["review_id"], name)] = event
         elif event["type"] == "deterministic_check":
             latest[(event["trial_id"], "check.unresolved_references")] = event
@@ -251,7 +257,9 @@ def build_scores(bundle: RunBundle) -> list[dict]:
         trial = trials.get(key, key)
         trace = trace_id(bundle, trial)
         score: dict[str, Any] = {"id": _hex(f"{trace}|{name}", 32), "traceId": trace,
-                                 "name": name, "environment": "experiment"}
+                                 "name": name, "environment": "experiment",
+                                 "timestamp": datetime.fromtimestamp(
+                                     event["at"], timezone.utc).isoformat()}
         if event["type"] == "label":
             score.update(dataType="CATEGORICAL", value=str(event["score"]),
                          comment=f"{event['reason']} (rubric {event['rubric_version']}, "
@@ -262,7 +270,12 @@ def build_scores(bundle: RunBundle) -> list[dict]:
         else:
             score.update(dataType="NUMERIC", value=len(event["unresolved"]),
                          comment="bracketed references not found in the case file; resolution "
-                                 "does not establish support")
+                                 "does not establish support; "
+                                 f"{len(event.get('unsupported_citations', []))} unsupported "
+                                 "citation group(s) retained in local checks")
+        if event["type"] in ("label", "critical_flag"):
+            score["comment"] = (f"{event['assessor_type']} assessment by {event['assessor']}: "
+                                f"{score['comment']}")
         scores.append(mask(score))
     return scores
 

@@ -724,9 +724,48 @@ A zero unresolved count does not establish complete syntax coverage or source su
 The recheck needs no paid inference. Original manifest/source hash remains frozen; disclose
 the parser/command-only source hash change at any later paid setup review.
 
-Do not open Langfuse before recording initial labels. With mirroring on, its experiment view
-shows each case's required findings and critical errors beside the answers, and nothing in the
-code hides them (author's ruling, AUD-077 item 2). Score from the blinded file only.
+**Latest scope correction, 4 November:** the current comparison upload is solely for
+learning Langfuse. Reuse the existing connector with minimal truthful display changes.
+Automated remote read-back/reconciliation and a permanent model-comparison operating
+workflow are not required. Simple visual inspection is enough for this exercise. Real
+operational tracing/evaluations belong to later running-app integration.
+
+**Familiarisation upload, 4 November:** from the `backend` directory, the existing
+connector sends the saved comparison without running a model:
+
+```sh
+LI_LANGFUSE=on .venv/bin/python -m evals.comparison mirror evals/comparison/runs/screen-live
+```
+
+This command enables Langfuse for that process only; `.env` stays unchanged. Use the keys
+and regional address already configured there. Assistant scores have the `assistant.` name
+prefix and identify the assessor in their comments. Saved score timestamps remain stable.
+Human score names stay separate; reference-check comments retain syntax-warning counts.
+This upload is solely familiarisation. Inspect it in the Langfuse interface; no automated
+remote read-back or permanent comparison operating workflow is required. Request acceptance
+is not a claim that the author has inspected the display. On 4 November the transfer completed with all 72 trial records and 1,099 scores
+accepted, zero failed/unresolved latest statuses. The stock command was interrupted during
+score transfer after traces completed; a temporary process-local requests Session helper
+resumed the same CLI and completed it faster. The helper adds no new persistent interface.
+The original command remains valid; its saved transfer statuses skip accepted records.
+Author completed the visual walkthrough and accepted familiarisation on 4 November.
+Open the configured Japan-region Langfuse project
+and look for `t54-20261103/screen-live` or traces named `t54-screening`.
+
+**Current screen exception, 4 November:** the author delegated all 71 assessments to
+Codex. Read the [assistant assessment report](../.scratch/knowledge-base/research/54-assistant-screening-assessment-2026-11-04.md)
+and `screen-live/artifacts/assistant-assessment/summary.json`. All scores are explicitly
+`assessor_type=assistant`; original human sheets remain blank. The generic human workflow
+below remains available, but do not import assistant judgments through `labels`, which would
+record them as human. Official selection reports still consume human scores only. The familiarisation connector
+now includes assistant scores explicitly (B-156/AUD-082); use the assistant report for the
+comparison interpretation.
+No live upload or new inference is authorised by the scoring delegation.
+
+For blind assessment, use the supplied case evidence and assessor-only gold anchors.
+Those expected findings are the marking guide. Keep candidate identity, configuration,
+cost, timing and revealing traces hidden until initial scores are saved. Langfuse exposes
+identity as well as expected findings, so it is not the initial blinded scoring surface.
 
 Fill `artifacts/review/labels-batch-1.json` (the assessor's name, then a score of 0, 1, 2 or
 "n/a" with a reason per criterion, and `true` or `false` with a reason per critical error).

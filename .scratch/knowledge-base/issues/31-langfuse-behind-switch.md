@@ -61,3 +61,15 @@ Model choice, budgets and paid execution remain separate unresolved decisions.
   contract to T54. Its live integration can be proved with a scored screening result before
   architecture calibration. This ticket keeps application/full-T29 integration and reuses
   that recording module; its original full-exam acceptance evidence remains required.
+
+- 2026-11-04 — Author clarified that T54's ad hoc model-comparison upload is only for
+  learning Langfuse, not a routine operational workflow or operational-integration proof.
+  Real evaluation/tracing work comes with fully implemented running v2 under T29/T30/T31.
+  No operational requirements or implementation are silently established by the temporary
+  comparison workflow. Automated comparison remote reconciliation was explicitly dropped.
+
+- 2026-11-04 — T54 resolved after author accepted the visual familiarisation walkthrough.
+  Its current custom connector is temporary. Separate T56 carries the approved retirement
+  and minimal SDK-based foundation, exact scope before build. T31's later operational
+  evaluation/tracing must follow the settled agent evaluation scope rather than inheriting
+  the ad hoc comparison design. No operational acceptance or T31 implementation claimed.

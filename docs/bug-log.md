@@ -2742,3 +2742,63 @@ Missing charge remains unknown; no zero invented. All 72 original trials are clo
 this one `no_answer` and 71 saved answers. No linked rerun or model-quality decision made.
 The final checkpoint and `54-complete-screen-evidence.json` retain operational evidence.
 AUD-081 remains open; initial blinded human scoring is next in a fresh session.
+
+### B-156 · 2026-11-04 · T54 assessment · Human-only consumers omit delegated assistant scores
+
+**Symptom:** after the author delegated all 71 answer assessments to Codex, the saved
+426 assistant labels and 602 critical flags are correctly exported but are ignored by
+`assessment.profile` and `mirror.build_scores` for semantic scoring. Official selection
+therefore remains pending human scoring and mirror payloads omit assistant semantic scores.
+**Cause:** these consumers intentionally filter `assessor_type == human` under the earlier
+human-first protocol. The revised assessor requirement has no corresponding consumer mode.
+**Disposition:** no application/runner change. Preserve truthful assistant provenance and
+blank human sheets; provide the separate assistant report/summary. Do not relabel scores as
+human. Any adapter/gate change needs explicit scope and focused evidence before a live upload.
+**Lesson:** changing assessment ownership requires downstream provenance-aware consumption,
+not just recording different scorer names. Tracking: AUD-082; T54 remains claimed.
+
+### B-157 · 2026-11-04 · T54 mirror · Score retries omit a stable timestamp
+
+**Symptom:** offline source inspection shows `mirror.build_scores` sends stable score IDs
+and names but no timestamp. Repeating an upload on a later date can create another score
+under the currently documented Langfuse matching rules. No live duplicate observed.
+**Cause:** original fake destination assumed ID alone established score idempotency; current
+Langfuse documentation requires matching ID, name and timestamp calendar date.
+**Disposition:** recorded during integration planning, no code changed. Proposed repair:
+use a stable saved assessment/check timestamp, preserve scorer identity in score names/IDs,
+and verify same-day/cross-day retry payloads before any authorised live upload.
+**Evidence:** `backend/evals/comparison/mirror.py:237`; official
+[score API guidance](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)
+and [update rules](https://langfuse.com/faq/all/tracing-data-updates), checked 4 November 2026.
+**Lesson:** fake tests must enforce actual remote deduplication keys rather than an assumed
+ID-only contract. Tracking: AUD-083. Live behaviour remains unverified.
+
+**B-156 bounded familiarisation update, 4 November:** author limited work to learning
+Langfuse. Existing connector now includes assistant labels and critical flags with separate
+names/IDs and explicit scorer comments. Two new regressions plus the focused mirror suite
+pass (20); types/lint and two-axis review clean. Official selection remains human-only and
+is deliberately outside this exercise. Live transfer started; display inspection pending.
+
+**B-157 bounded update, 4 November:** score payloads now use saved event timestamps.
+Focused regression confirms retrying on a different clock date keeps the entire score
+payload stable. No automated remote reconciliation built. No live duplicate was observed
+or induced; the change is a small payload correction within the familiarisation upload.
+
+### B-158 · 2026-11-04 · T54 familiarisation · Mirrored costs omit later settlements
+
+**Symptom:** author's Langfuse experiment screenshot shows US$0.273691; local known cost
+after billing settlements is US$0.278057, a US$0.004366 difference. **Cause:**
+`mirror.build_trace` takes generation cost only from `request_finished.cost_usd`, ignoring
+three later `cost_settled` events. The displayed amount equals the original-response sum.
+**Disposition:** recorded during author-led visual walkthrough. No backfill/re-upload or
+connector repair; current upload is only familiarisation and temporary code is due for
+retirement/minimal replacement. Preserve local billing evidence; neither amount represents
+a complete invoice because some request charges remain unknown. **Lesson:** later billing
+adjustments need to reach any operational cost view designed to include them. Tracking:
+AUD-084; operational scope/requirements remain undecided.
+
+**4 November familiarisation acceptance:** author inspected the uploaded display and
+accepted T54 as complete. B-156's bounded assistant-display correction and B-157's stable
+payload timestamps are accepted with focused tests. Human-only selection remains deferred.
+B-158's small settlement omission is retained without repair. This is learning-exercise
+acceptance; operational evaluation work remains separate.

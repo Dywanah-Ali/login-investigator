@@ -1,9 +1,60 @@
 # T52: Proposed trial and architecture decision protocol
 
+> **Superseding author ruling, 4 November 2026:** Codex assesses all 71 saved
+> screening answers as the primary assistant assessor. Initial human scoring is waived
+> for this screen. Preserve blinded identities, frozen anchors, per-score evidence/reasons
+> and revisions. Use `assessor_type=assistant`; do not claim human validation. Existing
+> human-only selection/mirror consumers remain separate. Later stages/T30 are unchanged.
+> Historical author-first instructions below record the earlier procedure.
+
 Date: 2 November 2026. Status: staged comparison plan.
 The A/B/C comparison structure, common rubric and 12-answer calibration stage are agreed.
 The author approved calibration first on 2 November. The 189-answer exploratory stage,
 eligibility rules, budgets and implementation details remain proposals.
+
+## Familiarisation scope correction — 4 November 2026
+
+**Author scope correction, 4 November 2026:** pre-live model comparison is temporary,
+ad hoc model-selection work, possibly repeated once after tools are built. It is not a
+routine operational task. The current comparison upload is solely for the author to learn
+Langfuse. Use the existing connector with only the minimum changes needed to display it
+truthfully. Do not build automated remote read-back/reconciliation, a permanent comparison
+operations workflow, or a staged pilot/control framework for this exercise. Simple author
+inspection in Langfuse is sufficient for the learning objective. Formal comparison-upload
+reconciliation requirements are superseded for this exercise. Real operational Langfuse
+tracing/evaluations come later with the fully implemented running v2 app under T29/T30/T31;
+their acceptance is neither designed nor satisfied by this familiarisation upload. Preserve
+existing evidence, truthful assistant provenance and secret filtering. Luna/Sol shortlist
+and deferred tier-matched challengers remain. Historical findings stay recorded without
+becoming mandatory engineering work for this learning step.
+
+## Author shortlist ruling — 4 November 2026
+
+The current shortlist is **GPT-6 Luna and GPT-6.1 Sol**, representing two separate
+comparison tiers. The author chose to retain both after reviewing quality and observed
+cost differences. This is a shortlist decision, not permanent adoption or a claim that
+both passed the completed screen. Luna's two zero-bearing answers and all original
+scores remain unchanged; Sol alone meets the original numerical screening rule under
+the assistant assessment. No threshold or gold is weakened retroactively.
+
+After the tools are built, assess four direct challengers, matched to these tiers:
+
+| Comparison tier | OpenAI shortlist | Anthropic challenger | Open-source challenger |
+|---|---|---|---|
+| GPT-6 Luna tier | GPT-6 Luna | One direct challenger, to be selected later | One direct challenger, to be selected later |
+| GPT-6.1 Sol tier | GPT-6.1 Sol | One direct challenger, to be selected later | One direct challenger, to be selected later |
+
+There are two Anthropic and two open-source candidates in total. Select direct challengers
+within each respective tier rather than treating a mixed-tier result as a capability-matched
+contest. Exact models, versions, providers, tier-fit evidence and the later assessment setup
+remain to be agreed when the tools are ready. The four challengers are not selected now.
+The later assessment should exercise the built tools; the completed fixed-evidence screen
+remains historical evidence and is not reclassified as a tool-enabled test.
+
+No single A/B/C baseline is selected by this ruling. The previous single-model-selection
+step remains pending, with this two-model shortlist now the author-approved direction.
+No additional inference, model change, paid run, architecture calibration or live upload
+is authorised by this planning decision. Existing later-stage execution decisions remain.
 
 ## Approved delivery order
 

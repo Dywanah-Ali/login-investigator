@@ -1,11 +1,27 @@
 # 54: Isolated comparison runner and early Langfuse recording
 
 Type: build
-Status: claimed
+Status: resolved
 Blocked by: 52
 Phase: 0
 Model: standard (Opus 5.5 or Sol 6.1)
 Rigour: Tier 3
+
+## Current author scope correction — 4 November 2026
+
+**Author scope correction, 4 November 2026:** pre-live model comparison is temporary,
+ad hoc model-selection work, possibly repeated once after tools are built. It is not a
+routine operational task. The current comparison upload is solely for the author to learn
+Langfuse. Use the existing connector with only the minimum changes needed to display it
+truthfully. Do not build automated remote read-back/reconciliation, a permanent comparison
+operations workflow, or a staged pilot/control framework for this exercise. Simple author
+inspection in Langfuse is sufficient for the learning objective. Formal comparison-upload
+reconciliation requirements are superseded for this exercise. Real operational Langfuse
+tracing/evaluations come later with the fully implemented running v2 app under T29/T30/T31;
+their acceptance is neither designed nor satisfied by this familiarisation upload. Preserve
+existing evidence, truthful assistant provenance and secret filtering. Luna/Sol shortlist
+and deferred tier-matched challengers remain. Historical findings stay recorded without
+becoming mandatory engineering work for this learning step.
 
 ## What to build
 
@@ -78,8 +94,9 @@ closure of T52 does not authorise an immediate paid run.
       and failed attempts, retry lineage and repair versions. Recovery never silently
       repeats an unresolved billed request. Missing usage/cost stays explicitly unknown;
       settlement updates cannot double-charge the same request in summaries.
-- [ ] Mirror saved experiments, inputs, intermediate role outputs, final answers, versions,
-      scores, timing and available usage/cost. No upload retry repeats inference.
+- [x] Familiarisation mirror accepted saved cases, trial/request records, answers, versions,
+      scores, timing and original-response usage/cost. No model rerun. Later cost settlements
+      are omitted (B-158/AUD-084), accepted as a learning-exercise limitation on 4 November.
 - [x] Off by default behind one environment switch; keys load only when enabled and never enter
       results. Mask every outbound record. Runtime evaluation never reads from Langfuse.
 - [x] Save local results before upload; report upload failure visibly and preserve local evidence.
@@ -100,10 +117,12 @@ closure of T52 does not authorise an immediate paid run.
       deadlines, interruption/recovery, missing usage, cost deduplication, gold isolation,
       score fidelity, blind views, disabled/enabled mirror, masking, local-first persistence,
       upload failures and label export. Deterministic rescoring needs no model calls.
-- [ ] An authorised scored screening result is visible remotely and reconciles locally;
-      record the author's inspection. A transport probe alone is not live evaluation evidence.
-- [ ] Update the admin manual and test its commands. Standing regression, type-check and
-      two-axis review requirements pass.
+- [x] Author inspected actual saved answers, scores/reasons, metadata, cases and the linked
+      experiment in Langfuse and accepted familiarisation as complete on 4 November.
+      Automated remote reconciliation was explicitly removed from this exercise's scope.
+- [x] Admin manual updated and upload command exercised; resumed transfer exited 0.
+      Focused mirror tests 20 passed, types/lint/whitespace clean, two-axis review zero findings.
+      No full application suites required for this isolated change under the current policy.
 
 ## Remaining ownership
 
@@ -560,3 +579,182 @@ No paid run, model choice, larger trial or permanent specialist adoption is auth
   it reports the log's original trailing spaces. Preserve this diagnostic evidence exactly;
   all other staged files pass the whitespace check. No application change/test rerun for
   this commit-only action, no push. Existing quality/billing gaps remain in their records.
+
+- 2026-11-04 — Author explicitly delegated all 71 answer assessments to Codex because
+  70+ human assessments are impractical. Supersedes the initial human-first procedure
+  for this screen. Keep frozen gold/rubric and blind candidate identities; save all six
+  scores and designated critical flags as assistant assessments, with evidence/reasons.
+  Preserve original human sheets and revisions. No independent human validation is claimed.
+  No paid inference, candidate selection, architecture run or live upload authorised by
+  this delegation. Existing human-only consumer limitations will be reported separately.
+
+- 2026-11-04 — Completed all 71 blinded assistant assessments: 426 criterion labels,
+  602 designated critical flags, zero human labels, no designated critical error observed.
+  Scores/checkpoint were saved before identities were joined for comparison. All judgments
+  retain excerpts/evidence/reasons; original human sheets remain blank. Versioned export
+  includes all 1,028 assistant events. See [assessment report](../research/54-assistant-screening-assessment-2026-11-04.md).
+  GPT-6.1 Sol alone meets the existing numerical rule under this assistant assessment;
+  no model-adoption/selection ruling or application acceptance is claimed. B-156/AUD-082
+  records human-only profile/mirror consumer limits and the reporting-policy/prompt caveat.
+  No paid call, new answer, live upload, application code or full-suite detour. Local helper
+  initially used system Python without pandas; rerun in backend virtual environment before
+  scoring. Two excerpt typos were rejected before writes and corrected; no partial profiles
+  or silent revisions. Data/provenance/preservation verification follows in the report.
+
+- 2026-11-04 — Final assessment verification passed: 71 unique complete profiles,
+  426 labels and 602 flags match authoritative events; 489 referenced artifacts hash-match.
+  All 463 baseline files checked; only append-only events and the expanded identity-map
+  convenience copy changed. Original event prefix, manifest, requests, answers and blank
+  human sheet preserved. Export verifies; all 71 assessment files match the pre-identity
+  checkpoint. Offline probes confirm human-only consumer gap. `git diff --check` passes.
+  Summary: 24 answers have at least one zero, 47 have none, 19 receive all twos. No
+  designated critical error found. Evidence is local; no inference/upload/selection event.
+
+- 2026-11-04 — Author decided the shortlist is GPT-6 Luna and GPT-6.1 Sol, representing
+  two tiers. After tools are built, assess two Anthropic and two open-source models:
+  one direct challenger from each family in each respective tier. Exact models remain
+  undecided until that later assessment is planned. Retaining Luna is an explicit shortlist
+  decision, not a passing result; its two zero-bearing answers and original thresholds
+  remain unchanged. Spec/map/protocol reconciled. No single architecture baseline,
+  permanent adoption, paid run, new model configuration or live upload selected here.
+
+- 2026-11-04 — Integration planning only: checked current Langfuse public HTTP API docs,
+  [score creation/update](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk),
+  [score data model](https://langfuse.com/docs/evaluation/scores/data-model), and
+  [public API](https://langfuse.com/docs/api-and-data-platform/features/public-api) via web.
+  No Langfuse SDK is used by this mirror. Confirmed score types/API source and current
+  write/read routes. Stable ID alone is insufficient: update matching also uses name and
+  timestamp calendar date; B-157/AUD-083 records omitted timestamp in current payloads.
+  Proposed sequence: assessor-aware local reports/payloads, stable score timestamps and
+  scorer-aware identities, bounded one-trial upload selection, offline fake round-trip and
+  focused checks/review, separate author go for one genuine saved-result live pilot, remote
+  read-back/author screen inspection, then agreed remaining historical-run upload and final
+  reconciliation. All 72 outcomes remain in history, including the empty response; shortlist
+  is separate from the original screening eligibility. No new inference/code/upload here.
+  Desired display includes assistant provenance/reasons, syntax warnings, known-versus-unknown
+  costs and fixed-evidence mode. Existing v4 HTTP transport/local-first/masking rulings stay.
+
+- 2026-11-04 — Author rejected the proposed automated remote read-back check and the
+  framing of ad hoc comparison as routine operations. Current upload is solely to learn
+  Langfuse. Superseding scope recorded above and in spec/protocol/map. Use existing mirror,
+  minimal truthful display changes and simple visual inspection. Earlier multi-stage pilot,
+  full remote reconciliation and permanent selection/reporting work are not required here.
+  Real operational tracing/evaluation remains later T29/T30/T31 work. No code/upload in
+  this clarification; no assessment evidence changed.
+
+- 2026-11-04 — Author approved a separate, bounded retirement review after the comparison
+  upload has served its Langfuse familiarisation purpose. Review the temporary comparison
+  runner, model-selection reports and comparison-specific upload logic for archival or
+  removal. Retain connection/settings/secret-filtering components only where the later
+  operational integration needs them. Preserve the comparison results, original evidence
+  and decisions as historical records. Account for the possible later comparison after
+  tools are built before deciding what to retire. This records the cleanup direction;
+  exact files and timing are settled in that review, with no deletion or refactor now.
+
+- 2026-11-04 — Author refined the post-upload direction: once the comparison upload is
+  finished, replace the temporary evaluation-platform integration code with the bare
+  minimum foundation needed for later operational agent evaluation. This goes beyond
+  merely retaining the existing custom connector. Prefer the official Langfuse SDK for
+  capabilities it already provides; keep application-specific code only where needed.
+  Define the exact minimal foundation in the bounded post-upload work, rather than
+  carrying forward comparison-specific machinery or prebuilding an evaluation platform.
+  Agree the agent evaluation scope before expanding that foundation into the full
+  operational evaluation integration. Preserve historical comparison evidence and
+  decisions, and account for the possible later model assessment when retiring tooling.
+  This supersedes treating the current custom HTTP connector as the required foundation.
+  No code replacement, dependency change or deletion takes place before the upload here.
+
+- 2026-11-04 — Author returned to continue the agreed familiarisation upload. Minimal
+  `mirror.py` change includes saved assistant labels/critical flags with separate names/IDs
+  and assessor comments; human labels remain separate. Saved score timestamps avoid using
+  upload date, and existing reference-check comments expose unsupported-syntax counts.
+  No selector, remote read-back, selection-report expansion, SDK replacement or new inference.
+  Reused prior model confirmation; original paid-run source manifest and evidence unchanged.
+  Documentation: requests 2.34.2 / current Langfuse HTTP score API; Context Hub fetched
+  `langfuse/observability` (SDK v3.14.5, community, 10 March 2026), which does not match this
+  HTTP integration. Reused official score/data-model/public-API pages checked earlier today:
+  categorical strings, boolean 0/1, timestamps, source attribution and supported POST route.
+  No SDK dependency added. Focused mirror tests: 20 passed in 17.35 s; backend-context
+  Pyright has zero errors/warnings; Ruff and whitespace checks pass. Initial root-context
+  Pyright missed backend environment settings; rerun from backend is clean. A process-list
+  check was sandbox-denied; no process inventory was needed. Two-axis review against HEAD
+  `aa1734b`, limited to mirror and its tests, returned zero findings on each axis.
+  Prepared payload: 426 assistant criteria, 602 critical decisions, 71 reference checks.
+  Existing configured Japan-region destination and credentials found without printing keys;
+  `.env` switch remains off, command enables it for the upload process only. Live transfer
+  started via existing `mirror` command; first dataset, four cases and initial traces accepted.
+  Final transfer result/author visual inspection remain pending.
+
+- 2026-11-04 — Upload performance: all 72 trace POSTs and four cases were accepted, then
+  the stock command sent scores one at a time with new HTTP connections. Stopped only
+  after traces were complete, during the score phase, and resumed the same CLI through
+  `/tmp/t54-upload-connection-reuse.py` using a process-local requests Session. Accepted
+  traces are skipped; the interrupted score is retried with its same name/ID/saved timestamp.
+  No permanent transport framework or remote read-back was added. Context Hub
+  `requests/package`, version 2.34.2 (matches installed), checked Session connection reuse,
+  context-manager cleanup and post JSON semantics. Temporary helper invokes the existing
+  mirror command only and closes the pooled connection on exit. This is not operational
+  evaluation infrastructure and need not be retained after familiarisation. No transfer
+  error reported so far; remaining score transfer continues.
+
+- 2026-11-04 — Familiarisation upload completed, resumed CLI exit 0. Local POST receipts
+  show one dataset, four case items, all 72 trial traces and 1,099 scores accepted: 426
+  assistant criterion scores, 602 critical-error decisions and 71 reference checks.
+  Zero failed/unresolved latest statuses; no new model request. The original empty response
+  remains an outcome. Receipt: `screen-live/artifacts/assistant-assessment/familiarisation-upload-receipt.json`.
+  Initial stock command was interrupted during score transfer after all traces were accepted;
+  process-local connection reuse completed the remainder using stable IDs/timestamps and
+  skipped accepted traces. No remote GET/read-back/reconciliation system was used.
+  Author visual inspection remains pending; open Japan-region Langfuse, look for
+  `t54-20261103/screen-live` or traces named `t54-screening`. Upload acceptance does not
+  certify operational evaluation integration. After the walkthrough, perform the agreed
+  bounded retirement/minimal-foundation work; no SDK replacement done in this upload.
+
+- 2026-11-04 — Author-led visual walkthrough confirms Tracing shows 72 roots and 96
+  generation observations, the inspected Haiku round-3 O1-12-D answer, all six criterion
+  scores of 2, false critical-error decisions and readable assessor/reason comments.
+  Attributes show model/provider, case, pass, fixed-evidence mode and original versions.
+  Dataset UI shows four cases and one linked experiment; experiment overview is visible.
+  This is observation of supplied screens, not a blanket final author acceptance.
+  Experiment cost US$0.273691 omits three later local settlements (known total US$0.278057,
+  difference US$0.004366): B-158/AUD-084, recorded only. No cost repair/re-upload or remote
+  read-back machinery. Red experiment error count 4 is visible; exact aggregation meaning
+  is not established from that overview. Local outcomes remain 71 completed, one no_answer;
+  do not call this four wrong answers or four failed original trials without evidence.
+
+- 2026-11-04 — Author said “lets close up the upload to langfuse subject. i think we
+  are done for this one” after inspecting the actual interface. Familiarisation accepted;
+  T54 resolved under the reduced learning-only scope. The four-row experiment view groups
+  all models under one experiment and must not be interpreted as six models all receiving
+  a displayed score. This grouping limitation and the small billing discrepancy are retained;
+  no re-upload or view redesign requested. Post-upload retirement/minimal-foundation direction
+  is carried separately in [T56](56-minimal-evaluation-foundation.md), not silently implemented.
+
+## Answer
+
+Resolved by the author's explicit acceptance on 4 November 2026. The ad hoc comparison
+and its Langfuse upload served model shortlisting and familiarisation. The author inspected
+72 root trials/96 request observations in Tracing, one Haiku answer and all its scores/reasons,
+metadata, four dataset cases and the linked experiment. Local POST receipts show one dataset,
+four cases, 72 traces and 1,099 scores accepted, with zero failed/unresolved latest statuses.
+No model was run again for upload. Assistant provenance is explicit; the original records remain.
+
+Evidence: `screen-live/artifacts/assistant-assessment/familiarisation-upload-receipt.json`,
+20 focused mirror tests passing, clean backend-context Pyright/Ruff/whitespace checks,
+zero findings on both review axes, and author-supplied screens/walkthrough in this session.
+No automated remote read-back was built, by author ruling. This closes familiarisation,
+not operational evaluation integration or a permanent model/adoption decision.
+
+The author shortlisted Luna and Sol. Scores/failures and the original no-answer remain.
+Known limitations: combined-experiment view is not a per-model comparison; its error count
+4 was not diagnosed; mirrored US$0.273691 excludes three later local billing settlements
+(known local US$0.278057); some charges remain unknown; one assistant scored the answers.
+No repair is required for this accepted learning exercise. AUD-036 and later T29/T30/T31
+operational work remain separate. Agreed code retirement/minimal SDK-based foundation is
+tracked in T56, with exact scope agreed before build and historical evidence preserved.
+
+- 2026-11-04 — Author requested committing all current session work locally. Reviewed
+  pending mirror/test changes, assessment/shortlist/scope records, T54 closure and T56.
+  Configured-secret/key-shaped/home-path scan is clear. Ignored credentials, raw run
+  bundles and handoff remain local. Reuse already-passing focused checks; no application
+  changes since that verification. Commit-only work; no push authorised or performed.

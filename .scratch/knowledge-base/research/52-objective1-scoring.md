@@ -1,5 +1,12 @@
 # T52: Answer scoring
 
+> **Superseding author ruling, 4 November 2026:** Codex assesses all 71 saved
+> screening answers as the primary assistant assessor. Initial human scoring is waived
+> for this screen. Preserve blinded identities, frozen anchors, per-score evidence/reasons
+> and revisions. Use `assessor_type=assistant`; do not claim human validation. Existing
+> human-only selection/mirror consumers remain separate. Later stages/T30 are unchanged.
+> Historical author-first instructions below record the earlier procedure.
+
 Date: 2 November 2026.
 Author approved the scoring approach: automatic factual/reference checks where possible,
 case-specific semantic criteria scored 0/1/2 or not applicable, and separately designated

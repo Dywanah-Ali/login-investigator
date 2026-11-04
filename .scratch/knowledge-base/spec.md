@@ -906,6 +906,28 @@ contract moves.
 
 ### Langfuse (T06 d10, AUD-036)
 
+**Post-upload foundation, author ruling 4 November 2026:** after the familiarisation
+comparison upload, replace temporary evaluation-platform integration code with the bare
+minimum foundation for later operational agent evaluation. Prefer the official Langfuse
+SDK where it supplies the needed platform capabilities. The current custom HTTP connector
+is not a required architecture. Define the exact minimal foundation in bounded post-upload
+work; expand it only after the agent evaluation scope is agreed. Preserve comparison
+evidence/decisions and consider the possible later comparison when retiring tooling.
+
+**Author scope correction, 4 November 2026:** pre-live model comparison is temporary,
+ad hoc model-selection work, possibly repeated once after tools are built. It is not a
+routine operational task. The current comparison upload is solely for the author to learn
+Langfuse. Use the existing connector with only the minimum changes needed to display it
+truthfully. Do not build automated remote read-back/reconciliation, a permanent comparison
+operations workflow, or a staged pilot/control framework for this exercise. Simple author
+inspection in Langfuse is sufficient for the learning objective. Formal comparison-upload
+reconciliation requirements are superseded for this exercise. Real operational Langfuse
+tracing/evaluations come later with the fully implemented running v2 app under T29/T30/T31;
+their acceptance is neither designed nor satisfied by this familiarisation upload. Preserve
+existing evidence, truthful assistant provenance and secret filtering. Luna/Sol shortlist
+and deferred tier-matched challengers remain. Historical findings stay recorded without
+becoming mandatory engineering work for this learning step.
+
 Author approved on 2 November 2026: finish T52, then T54 builds the isolated comparison
 runner and reusable Langfuse recording. T54 supports separate compatibility, six-model
 screening and A/B/C calibration modes. T29 retains the full application exams, T30 the
@@ -927,11 +949,28 @@ Human labels return only by explicit versioned export. Blinded answer review hid
 and architecture identity, settings, cost, timing and revealing traces; separate process
 and security review states its trace-access/blinding limits. Runtime reads no Langfuse data.
 
-For the initial model screen, the author is the primary scorer. Codex prepares blinded
-reviews, records labels and runs deterministic checks. Save initial human scores before
-assistant discussion or suggestions, and preserve revisions with their reasons. Review in
-small batches and measure effort from the first batch. No second human or paid judge is
-required, and Codex assistance is not independent human agreement. T30 remains unchanged.
+For the initial model screen, Codex is the primary assistant assessor (author's revised
+ruling, 4 November 2026). Assess all 71 saved answers against the frozen six criteria and
+critical-error rules, keeping candidate identities hidden until scores are saved. Record
+scores explicitly as assistant assessments, with excerpts, evidence and reasons; preserve
+revisions. The author is not required to score the answers. No independent human validation
+or agreement is claimed. Original blank human sheets remain intact. This supersedes the
+2 November author-first scoring procedure for this screening run only. Rubric, gold,
+application acceptance gates, T30 and later architecture-stage arrangements remain unchanged.
+Existing human-only selection/mirror views must not relabel assistant scores as human;
+assistant assessment evidence is reported separately until any adaptation is authorised.
+
+**Current shortlist, author ruling 4 November 2026:** retain GPT-6 Luna and GPT-6.1 Sol
+as two distinct comparison tiers. After the tools are built, assess one direct Anthropic
+challenger and one direct open-source challenger in each tier: four future challengers
+in total, exact models to be selected later. Match challengers to their respective tier.
+This shortlist does not make Luna a screen pass: its two zero-bearing answers and all
+frozen scores/thresholds remain. No single A/B/C baseline, permanent adoption, new paid
+run or live upload is chosen by this ruling. Later model/setup/execution decisions remain.
+See the [shortlist ruling](research/52-objective1-comparison-protocol.md#author-shortlist-ruling--4-november-2026).
+
+The numerical screening rule below remains the historical eligibility evidence; it does
+not exclude Luna from the author's revised shortlist or certify its unresolved failures.
 
 Provisional-model selection follows all three screening passes. Eligibility requires twelve
 completed trials, no designated critical errors and no applicable criterion scored 0.
@@ -1116,6 +1155,10 @@ them.
 | 2026-11-02 | Author approved a single login's timestamp as the centre of the 24-hour-before/after window when no alert exists. Clip to available records, disclose gaps and retain analyst-controlled expansion. Alert-relative and O1-06/O1-09 diagnostic windows remain unchanged. | Give direct-event questions an explicit default without inventing coverage or reopening approved scenarios. |
 | 2026-11-02 | Author approved the remaining screening grading applications: bounded expected travel for O1-02; full O1-06 rule inheritance for O1-09/O1-12-D plus coverage/injection obligations; quotation is not obedience. | Resolve inconsistent grading without reopening approved scenarios. All four written screening rubrics are agreed; implementation validation and wider catalogue approval remain separate. |
 | 2026-11-02 | Author approved provisional-model selection after three passes: twelve completed trials, no critical errors or applicable zero scores; compare quality first, then cost and speed for similar quality. If none qualifies, diagnose rather than automatically advancing one. | Allow meaningful partial answers while rejecting failed criteria and consequential errors. Preserve case-level evidence and keep exploratory baseline selection separate from permanent adoption. |
+| 2026-11-04 | After the comparison upload, replace temporary evaluation-platform integration code with a minimal foundation for later operational agent evaluation. Prefer official SDK capabilities; expand only after evaluation scope is agreed. Exact foundation is bounded post-upload work; preserve historical evidence and account for possible later comparison. | Avoid making ad hoc comparison infrastructure or the custom HTTP connector the default operational architecture. |
+| 2026-11-04 | Author clarified comparison is ad hoc pre-live model selection. Current Langfuse upload is for familiarisation only; drop automated read-back/reconciliation and permanent comparison operations. Use existing connector with minimal necessary changes and simple visual inspection. Operational Langfuse evals come later with running v2 under T29/T30/T31. | Keep effort proportional to the learning purpose. Historical evidence/security/provenance remain; this exercise does not establish production integration. |
+| 2026-11-04 | Author shortlisted GPT-6 Luna and GPT-6.1 Sol as two tiers. After tools are built, assess one direct Anthropic and one direct open-source challenger in each tier. Exact challengers and later setup remain undecided; no single A/B/C baseline or new execution authorised. | Compare appropriate challengers within each tier while retaining quality/cost choice. Luna's recorded failures and original numerical gates remain unchanged. |
+| 2026-11-04 | Author delegated all 71 screening assessments to Codex because individual human review is impractical. Use blinded assistant scores with evidence/reasons and explicit provenance; preserve human sheets and frozen rubric. Supersedes initial human-first scoring for this screen only. | Complete the authorised review without inventing human validation or changing application gates; human-only selection/mirror consumers remain separate. |
 | 2026-11-02 | Author approved primary human scoring for the initial model screen, with Codex preparing blinded reviews, recording labels and assisting after initial scores. Preserve revisions/reasons; review in small batches. No second human or paid judge required. | Keep investigation judgment with the author and automate bookkeeping without claiming independent human agreement. T30 and later architecture-stage arrangements remain separate. |
 | 2026-11-02 | Author approved T54 owning the isolated comparison runner and early Langfuse recording, T52's nine-group record contract and three delivery checkpoints. Genuine scored screening evidence can prove live integration before A/B/C calibration. T29/T30/T31 retain application exams, advisory judge and application/full-exam tracing respectively. Screening uses the approved sequential/time-limited protocol with uncapped token/call/retry counts and US$25 actual-cost planning, without reservations. | Assign one owner to producing and recording comparison evidence; preserve failures and blinded scores without changing application acceptance gates. T52 still gates readiness; architecture execution remains separate. |
 | 2026-11-02 | Author approved splitting T31: T54 follows T52 and precedes the 12-answer calibration; T31 retains application/full-T29 integration and reuses T54 | Capture evidence from the first comparison without pulling forward the full exam dependencies. T52 settles runner ownership and contract; existing mirror safeguards remain |

@@ -108,6 +108,72 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-079 | T54 initial compatibility: gpt-oss citation contract and native-settings evidence | Closed for compatibility readiness: six repaired contracts and twelve upstream bodies checked; author approved first-24 screening, 3 November 2026; disclosure limits retained | Medium | B-150/B-151; T54 live compatibility and readiness repair, 3 November 2026 |
 | AUD-080 | Screening reference parser silently skips spaced/grouped/ranged citations | Closed for bounded parser repair: v2/rechecks verified; author approved remaining 48 paid answers after checkpoint summary; two syntax warnings and lexical limits retained | Medium | B-153; T54 first-24 setup checkpoint, 3 November 2026 |
 | AUD-081 | Completed screening response had empty output and unknown streamed cost | Open observation: final 72 trials closed, slot 64 preserved as no_answer; metadata 404, cost/cause unknown; no replacement authorised | Medium | B-155; T54 third screening round, 3 November 2026 |
+| AUD-082 | Assistant scores are omitted by human-only selection and Langfuse consumers | Closed for bounded familiarisation display by author acceptance, 4 November 2026; broader selection reporting remains deferred | Medium | B-156; T54 assistant assessment |
+| AUD-083 | Langfuse score retries lack stable timestamps | Closed for bounded saved-timestamp correction by tests and author acceptance, 4 November 2026; no remote reconciliation required | Medium | B-157; current official Langfuse score-update guidance |
+| AUD-084 | Familiarisation mirror omits later billing settlements | Recorded/deferred by learning-only scope; US$0.004366 known difference, no repair or re-upload | Low | B-158; author experiment screenshot, 4 November 2026 |
+
+### AUD-084: Later billing adjustments are absent from mirrored comparison cost
+
+B-158: author's experiment screen shows US$0.273691, exactly the original response-cost
+sum. Local billing includes three later settlements, raising known cost to US$0.278057.
+Current mirror ignores settlement events. Retain observation for eventual operational cost
+requirements; no repair, remote reconciliation or re-upload is requested for familiarisation.
+Unknown charges remain unknown; no invoice-total claim. Temporary comparison integration
+will be reviewed/replaced under the agreed post-upload direction.
+
+### AUD-083: Stable score timestamps for Langfuse retries
+
+**Closure disposition, 4 November:** author accepted familiarisation after the visual
+walkthrough. Close this bounded concern on the implemented correction, 20 focused tests,
+clean static/review checks and acceptance. Broader operational requirements remain separate;
+no human validation, remote duplicate experiment or full reconciliation claim.
+
+**Bounded implementation, 4 November:** score payloads now contain saved event timestamps.
+Focused cross-day retry regression passes; no automated remote read-back or duplicate trial
+was built. Included in 20 passing mirror tests and clean static/two-axis review evidence.
+
+**Subsequent author disposition, 4 November:** comparison upload is a learning exercise.
+Do not turn this entry into a mandatory comparison operations project or automated remote
+reconciliation requirement. Preserve the observation. Only minimal truthful display changes
+are in the immediate path; broader work is deferred to relevant future operational scope.
+
+B-157: current score payloads have stable IDs/names but omit timestamps. Current official
+Langfuse guidance requires the same ID, name and calendar-date timestamp for updates.
+Cross-day retries could duplicate scores. This is an offline contract gap, not an observed
+live duplicate. Proposed bounded repair uses saved event time and scorer-aware identities,
+with focused retry tests and later remote reconciliation. No implementation/upload approved
+by registration. Close on contract-correct payloads, focused evidence and author disposition.
+
+### AUD-082: Assistant-assessment consumers after the scoring ownership change
+
+**Closure disposition, 4 November:** author accepted familiarisation after the visual
+walkthrough. Close this bounded concern on the implemented correction, 20 focused tests,
+clean static/review checks and acceptance. Broader operational requirements remain separate;
+no human validation, remote duplicate experiment or full reconciliation claim.
+
+**Bounded implementation, 4 November:** familiarisation connector now sends assistant
+criteria/flags under separate `assistant.` names/IDs and identifies the scorer in comments.
+Human judgments remain separate. Twenty focused mirror tests pass; types/lint/two-axis
+review clean. Live upload underway; author visual inspection remains pending. Selection
+report expansion is deliberately deferred under the author's learning-only scope.
+
+**Subsequent author disposition, 4 November:** comparison upload is a learning exercise.
+Do not turn this entry into a mandatory comparison operations project or automated remote
+reconciliation requirement. Preserve the observation. Only minimal truthful display changes
+are in the immediate path; broader work is deferred to relevant future operational scope.
+
+Author delegated all 71 T54 answer assessments to Codex on 4 November. Six criteria and
+all designated critical flags are saved as assistant events; original human sheets remain
+blank. The standard selection profile and Langfuse score builder only consume human events.
+See B-156 and the [assessment report](../../.scratch/knowledge-base/research/54-assistant-screening-assessment-2026-11-04.md).
+This is a requirement/integration gap, not evidence that the original human-first workflow
+was broken. Versioned export includes assistant events correctly. Keep the assistant summary
+separate; never relabel as human or claim human validation. No build/upload authorised here.
+Closure needs a scoped provenance-aware consumer change and focused checks, or an explicit
+author disposition to retain the separate workflow. Single-assessor calibration and possible
+model/style bias remain limitations. The prompt does not explicitly require injection reporting,
+while the frozen gold invokes existing reporting policy; nine omissions score partial usefulness,
+not obedience. That limits capability attribution; no prompt/gold repair is authorised.
 
 ### AUD-081: Empty completed response during the third screening round
 
@@ -1582,6 +1648,13 @@ no dependency, implementation or spec change.
 
 ### AUD-077: T54 comparison runner, open review concerns
 
+**4 November familiarisation disposition:** author visually inspected the accepted upload,
+including original trial times, scores/comments, four cases and linked experiment. T54 is
+resolved under the reduced learning-only scope. The accepted POST routes worked for this
+payload; this does not prove arbitrary payload limits or future endpoint behaviour. Earlier
+refinements remain parked, and no operational integration acceptance is claimed. See T56
+for the separate retirement/minimal-foundation work.
+
 - **Source:** the two-axis review of T54 checkpoints 1–2, 3 November 2026. Findings fixed in
   T54 are recorded there and in B-146; this entry keeps what was not fixed.
 - **Needs the author's ruling:**
@@ -1874,3 +1947,17 @@ that these issues were fixed. Historical pending acceptance notes below are supe
 | 2026-11-03 | Added AUD-077 from T54's two-axis review of checkpoints 1–2: two items need the author's ruling (injected document identity, gold as Langfuse expected output), refinements deferred, Langfuse behaviours unproven until a live upload. Review correctness findings fixed in T54. | T54 comments; B-146 |
 | 2026-11-03 | AUD-077 items 1 and 2 ruled by the author: keep O1-12-D's real document name as a recorded exception; allow gold as Langfuse expected output with blind-scoring risk accepted. AUD-072 gained a T54 readiness-timeout recurrence. | T54 comments; B-147 |
 | 2026-11-02 | T53 resolved after author acceptance of named Browser logins and the fixed address. Stable human identities, separate serving identity, tested port movement/recovery, real rollback round trip and updated admin commands. Backend 668, frontend 150, types and two-axis review pass. AUD-068 remains open; frontend timeout recurrence retained under AUD-028/AUD-069, six lint warnings under AUD-009. | T53; B-137 to B-140; 53 verification and review |
+
+| 2026-11-04 | Author delegated 71 screening assessments to Codex. All 426 labels and 602 critical flags saved with assistant provenance; blind checkpoint precedes identity grouping. Added AUD-082/B-156 for human-only selection/mirror consumers and retained single-assessor/reporting-policy limits. | T54; assistant assessment report and verification JSON |
+
+| 2026-11-04 | Author shortlisted Luna and Sol as separate tiers, with one Anthropic and one open-source direct challenger per tier to assess after tools are built. Original failures/gates remain; exact future candidates and execution undecided. AUD-082 consumer gap remains open. | T54; spec; comparison protocol shortlist ruling |
+
+| 2026-11-04 | Added AUD-083/B-157 during integration planning: score payloads omit stable timestamps needed by current remote deduplication rules. No code or live upload. | T54 mirror source; official Langfuse score API documentation |
+
+| 2026-11-04 | Author reduced current comparison upload to Langfuse familiarisation, dropped automated remote read-back/reconciliation and rejected routine comparison operations. AUD-082/083 retained with bounded/deferred dispositions; operational work remains later. | Author scope correction; T54/spec |
+
+| 2026-11-04 | Familiarisation upload completed: local receipts show 72 trial records and 1,099 scores accepted; no failed/unresolved latest statuses or new inference. Minimal assistant-score/timestamp corrections tested; no remote read-back system. Author visual inspection pending; later operational integration remains separate. | T54; local familiarisation-upload receipt |
+
+| 2026-11-04 | Recorded author-visible cost discrepancy as AUD-084/B-158: mirror omits three later settlements. Small known difference retained locally; no familiarisation repair/re-upload. | Author experiment screenshot; local cost events and mirror source |
+
+| 2026-11-04 | Author accepted Langfuse familiarisation and T54 resolved. AUD-082/083 close for bounded implemented corrections; AUD-084 and other retained observations are not reopened for repair. Separate T56 carries approved retirement/minimal-foundation direction. | T54 Answer; visual walkthrough; T56 |
