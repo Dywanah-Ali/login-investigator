@@ -111,6 +111,46 @@ useful product or maintenance improvement. Low means refinement. Unranked means 
 | AUD-082 | Assistant scores are omitted by human-only selection and Langfuse consumers | Closed for bounded familiarisation display by author acceptance, 4 November 2026; broader selection reporting remains deferred | Medium | B-156; T54 assistant assessment |
 | AUD-083 | Langfuse score retries lack stable timestamps | Closed for bounded saved-timestamp correction by tests and author acceptance, 4 November 2026; no remote reconciliation required | Medium | B-157; current official Langfuse score-update guidance |
 | AUD-084 | Familiarisation mirror omits later billing settlements | Recorded/deferred by learning-only scope; US$0.004366 known difference, no repair or re-upload | Low | B-158; author experiment screenshot, 4 November 2026 |
+| AUD-085 | Include failed attempts in device-use evidence | Approved direction, deferred to T55's 30-day expansion; current graph remains success-only | Medium | Author ruling, 8 November 2026; T45 verification; T55 |
+| AUD-086 | Preserve investigation obligations and lifecycle across the new agent workflow | Open design handoff observations; architecture council found no P0/P1 blocker | Medium | T45 five-persona architecture review, 8 November 2026 |
+
+### AUD-086: T45 orchestration handoff observations
+
+8 November 2026 ticket publication: author approved the seven-slice breakdown. Ownership is now
+recorded in T57–T60 and revised T25/T26/T28, with consumer handoffs in T27/T29/T36/T40/T41.
+T26 owns shared full-procedure obligations, T60 their activation and public streaming/writer/
+reopen integration, T59 task-local cancellation and validated responses, and T28 final report
+completion. T57/T25 own capability scope/source contracts. T29 retains application proof.
+This resolves the ownership gap only. All runtime observations remain open, with no new review
+round or proof programme; the earlier two-forthcoming-tickets wording is superseded.
+
+8 November 2026 follow-up: author approved explicit full/narrow parent mode before dispatch.
+T45's obligation mapping and spec/T26/T28 handoffs now supersede tool-choice-only activation.
+This settles that design direction; classification/enforcement proof and final ownership
+remain with implementation handoff. Other lifecycle/stream/evidence observations stay open.
+
+The single [architecture council review](../../.scratch/knowledge-base/reviews/45-architecture-council-2026-11-08.md)
+returned GO for the approved design direction with no demonstrated P0/P1 blocker. These are
+inferred integration risks and unfinished responsibilities, not reproduced application bugs:
+
+- Preserve full-investigation activation before model-selected tasks; use the one core
+  procedure definition for required-work dispatch/completion/reporting. T45 reconciles
+  T26/T28 and the forthcoming orchestration-ticket ownership before build release.
+- Explicitly route public answer text separately from internal research output. Current
+  streaming filters by node name model, which is insufficient as a future role boundary
+  without checking nested stream configuration. Preserve history/report/offline reopening.
+- Scope completion/evidence to the active request and answer. Retain writer ownership until
+  cancelled child work stops; do not attach late/resumed results to unrelated later work.
+- Preserve partial evidence and honest required-check failures. Checkpoints alone do not
+  establish either evidence fidelity or semantic completeness. AUD-062 retains retrieval
+  coverage and AUD-065 retains its existing evidence/storage scope; no storage migration.
+
+Disposition: ownership is assigned to the seven approved build slices above and existing
+evaluation owners. Closure still requires the recorded ownership/design disposition and
+relevant focused implementation evidence under existing contracts. The council's proposed
+fake-worker checks illustrate existing obligations, not additional gates or a new proof suite.
+No numeric-limit approval tour, extra review round, implementation or live experiment is
+authorised by registration. Preserve the GO's design-only limitation.
 
 ### T56 verification follow-up, 4 November 2026
 
@@ -128,6 +168,20 @@ passed with one worker (72/72, 99.44 seconds); the failed full run is retained.
 T56 retention ruling: detailed local comparison run bundles were deliberately removed after
 checking the compact shortlist summary. Earlier artifact references in audit entries are
 historical provenance. Hosted Langfuse data and the audit decisions remain unchanged.
+
+### AUD-085: Failed-attempt device associations
+
+- Source: author ruling during T45, 8 November 2026. Current graph builder and independent
+  verifier include only successful sign-ins in used_device. This is a deliberate existing
+  construction rule, not a newly established implementation bug.
+- Approved direction: include failures with known nonempty devices during
+  [T55's 30-day expansion](../../.scratch/knowledge-base/issues/55-thirty-day-investigation-dataset.md).
+  Preserve outcome/time distinctions; neither failed nor successful observations establish the
+  physical operator or authentication to the device. assigned_device remains separate.
+- Status: deferred to T55; no data, graph or application change now. Exact representation,
+  query/checker changes and compatibility remain pre-build work.
+- Closure: accepted T55 evidence for failure-only and mixed-outcome associations, source/graph
+  consistency and affected expectations, with no silent frozen-gold change.
 
 ### AUD-084: Later billing adjustments are absent from mirrored comparison cost
 
@@ -1243,6 +1297,43 @@ intermittent cleanup concern remains open.
 
 ### AUD-062: Compound retrieval question loses the MFA exception register
 
+8 November 2026 implementation ownership: T58 owns combined candidate/ranking records,
+T25 purpose-aware searches and exact reading, T26 code-built baseline preservation, T59 research
+selection and T60 actual chat delivery. T29 proves both approved paths; T40/T41 retain expanded
+coverage and comparisons. Ticket publication is not retrieval success; this entry stays open.
+
+**Current closure rule, author approved 8 November 2026:** T45 revises candidate-stage
+acceptance to the approved graph/corpus pipeline, separately for the original analyst question
+and applicable same-case code-built investigation baseline. Each path must admit both original
+K04 gold passages in its actual candidate pools and preserve them through delivered evidence;
+the application path must deliver them to chat and satisfy existing answer/citation rules.
+Retain regression evidence on other questions, original graph gold/gates, source bindings and
+recorded execution settings. No gold-informed hints, cross-path pooling or later recovery that
+hides a baseline miss. Raw-question corpus-only fused top 20 remains a diagnostic, not an
+additional release condition. This explicitly supersedes the old closure condition quoted
+in the historical entries below. No run has proved the new paths; AUD-062 remains open.
+
+Decision source: [T45 approved acceptance paths](../../.scratch/knowledge-base/issues/45-compound-question-retrieval-design.md#retrieval-acceptance-paths--approved-8-november-2026).
+Spec/T26/T29/T40/T41 handoffs updated. Historical K04 failures are not relabelled as passes.
+
+- 8 November 2026 — T45 author approved four purpose-specific documentary search interfaces,
+  internal graph-linked discovery and combining/deduplicating graph/corpus candidates before
+  common reranking. Five passages per search stays, without a second five-passage cut on combined
+  responses. These are design rulings only. Candidate admission, preservation/recovery and
+  fallback policies remain open; no retrieval run, original-gold change or closure evidence.
+
+Initial research completed 7 November 2026:
+[Perplexity findings with primary-source checks](../../.scratch/knowledge-base/research/45-security-investigation-initial-2026-11-07.md).
+Research distinguishes discovery, retention and interpretation; shared versus specialised
+retrieval remains undecided. External benchmarks do not close this local evidence gap.
+
+7 November 2026: author prioritised T45 before T25 as well as T26, to settle retrieval
+responsibilities and tool boundaries before implementing the search tool. Initial research
+is authorised through Perplexity, focused on security investigations and verified primary
+sources. [Research brief](../../.scratch/knowledge-base/research/45-security-investigation-brief-2026-11-07.md).
+The entry remains open; neither research nor the sequencing change supplies retrieval closure
+evidence or changes the original questions, gold or thresholds.
+
 T22's first live run misses one of K04's two required passages. The runbook ranks 9; the MFA
 exception register ranks 115 in an exact dense diagnostic. The keyword leg yields no candidates
 because the full question's terms are combined with AND. Its graph records and paths pass.
@@ -1725,6 +1816,14 @@ No root cause, graph fix, full-suite pass or production acceptance is claimed. A
 repair needs its own scoped work; T54 retains its relevant focused checks and live gates.
 
 ### AUD-076: Agent objectives and reliability evidence
+
+- **7 November 2026 preservation follow-up:** B-163 records the briefing that presented
+  approved T52 requirements as new proposals. Author approved the
+  [Investigator contract](../investigator-contract.md) as their concise authoritative home,
+  with stable IDs, original decision links and explicit separation of approval from proof.
+  AGENTS.md and CLAUDE.md now require it at session start and before investigator work;
+  T45 references the relevant IDs. This preserves T52's closed decision review and does not
+  close any implementation/evaluation gap or reopen its requirements.
 
 - **Source:** author-approved [T52](../../.scratch/knowledge-base/issues/52-agent-objectives-and-reliability-review.md),
   1 November 2026, following the Sentinel research discussion.

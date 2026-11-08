@@ -26,6 +26,16 @@ world only after this ticket supplies accepted consistency and compatibility evi
 
 ## Acceptance criteria
 
+- [ ] Author ruling, 8 November 2026: extend used_device to include both successful and failed
+      sign-in records with a known nonempty device identity as part of this dataset expansion.
+      Carry the change through graph construction, independent integrity verification, dated
+      relationship queries and affected evidence/truth checks. Design the representation so
+      outcomes remain distinguishable or resolvable from source records; failed attempts must
+      not become claims of successful access, physical-human use or authentication to the device.
+      Keep assigned_device separate and missing device IDs unlinked. Demonstrate a failure-only
+      account/device pair and mixed outcomes in the requested window. Reconcile affected graph
+      expectations explicitly; no silent rewrite of frozen questions/gold or gate relaxation.
+
 - [ ] Record an author-approved design covering date range, surrounding activity, case/document
       changes, generator/truth ownership and preservation of existing stories before build.
       Propose any necessary gold/question revision separately; none is implied by this ticket.
@@ -43,6 +53,12 @@ world only after this ticket supplies accepted consistency and compatibility evi
       the standing spec rules before acceptance. Keep evidence on this ticket.
 
 ## Comments
+
+- 2026-11-08 — Author approved broadening used_device to cover failed attempts as well as
+  successful sign-ins, scheduled with the planned seven-to-thirty-day expansion. T45 verified
+  that the current builder and independent checker filter to success only. This is a future
+  semantic/build change, not a claim of current support. Exact representation and compatibility
+  belong in this ticket's pre-build design; no immediate graph/data rebuild authorised.
 
 - 2026-11-02 — Author approved the allocation in chat: T45 selects guidance sources for
   review, T26 integrates approved guidance, and a separate ticket owns this dataset. This

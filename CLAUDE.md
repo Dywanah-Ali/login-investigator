@@ -18,7 +18,14 @@ stays frozen: **never change anything in that folder.** Read from it; copy out o
 3. The current initiative's spec is the source of truth for its scope. Read only the section the
    next step needs. The Port's history is in `.scratch/v2-port/` and `docs/migration-brief.md`;
    read it only when a question is about how the Port was built.
-4. Tell the author in one line where we are and what comes next, then wait for their go.
+4. Read the [Investigator contract](docs/investigator-contract.md) in full at session start.
+   It is the authoritative concise record of approved phase 0/1 investigator behaviour.
+   Before investigator planning, research, implementation or review, identify the relevant
+   contract IDs and distinguish inherited requirements from open design choices. Tickets
+   reference those IDs; do not seek approval again for settled requirements. Approval of a
+   requirement never implies implementation or verification. Follow its source links when
+   interpretation is needed; only an explicit author ruling changes a requirement.
+5. Tell the author in one line where we are and what comes next, then wait for their go.
 
 ## Current stage
 

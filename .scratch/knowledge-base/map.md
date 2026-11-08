@@ -11,6 +11,287 @@ value it adds to the app, not for the sake of demonstrating RAG.
 
 ## Notes
 
+- **Current frontier, T45 resolved, 8 November 2026:** author requested closure after the
+  approved seven-slice ticket handoff. [T45 Answer](issues/45-compound-question-retrieval-design.md#answer--design-and-handoff-complete-8-november-2026)
+  records all six rulings and design/ownership evidence. T57 is now dependency-unblocked as
+  the first ticket in the approved chain; implementation still awaits its build release/model
+  selection. AUD-062/AUD-086 and runtime proof stay open. No new design review is required.
+  Earlier claimed/closure-pending notes below are retained as history.
+
+- **Latest frontier, approved ticket handoff, 8 November 2026:** author approved and published
+  four new build tickets T57–T60, with T25/T26/T28 reconciled. See the ownership table below.
+  The earlier fixed two-ticket split is superseded. T45 remains claimed and unchanged under
+  to-tickets' parent-preservation rule; formal design-ticket closure is the next administrative
+  step, not another architecture review. No application build, live run, commit or push authorised.
+  After T45 closure and build release, T57 is the first ticket in this approved implementation
+  chain. Other independent work such as T27/T55 is not silently reprioritised.
+
+### Approved implementation handoff — 8 November 2026
+
+| Ticket | Delivers | Blocking tickets still unfinished |
+| --- | --- | --- |
+| [57](issues/57-scoped-activity-and-account-evidence.md) | Scoped activity/account/connected evidence and shared contracts; takes peers from T25 | 45 |
+| [58](issues/58-combined-document-retrieval.md) | Combined graph/corpus ranking and overflow/size handling | 57 |
+| [25](issues/25-peers-and-corpus-search-tools.md) | Four documentary purposes, exact reading and approved-source catalogue | 58 |
+| [26](issues/26-investigate-alert-package.md) | Shared core procedure and deterministic baseline package | 25, 57 |
+| [59](issues/59-bounded-research-worker.md) | Isolated bounded research and validated evidence responses | 25, 57 |
+| [60](issues/60-investigator-workflow-integration.md) | Parent workflow, chat, public streaming and saved-investigation compatibility | 26, 59, 27 |
+| [28](issues/28-playbook-enforced.md) | Final completion-before-report gate | 60 |
+
+T26 and T59 can proceed independently after prerequisites. T29 remains the phase-0 gate after
+T28/T44; all phase-1 gates stay. T27 owns citations, T36 the later step-stack screen, T55 the
+expanded dataset, and T30/T39/T40/T41/T42 retain their evaluation responsibilities. No acceptance
+claim follows from the handoff. All seven build slices are Tier 3, proof type AI judgement.
+See the spec's approved ownership section for boundary details and implementation-policy owners.
+
+### Earlier frontier history
+
+- **Latest T45 frontier, author ruling 8 November 2026:** all five closing design decisions
+  are approved. Ticket planning moves to a fresh session using to-tickets. Choose the appropriate
+  ticket count, superseding the earlier fixed two-ticket split. Reconcile T25/T26/T28 and
+  evaluation ownership before creating new tickets. T45 remains claimed; no build authorised.
+
+- **T45 closing decision 5 accepted, 8 November 2026:** select targeted chat examples for
+  compound requests, material ambiguity and narrow follow-ups, and research examples for
+  bounded tool work, missing/failed retrieval and supporting/competing evidence responses.
+  Final wording follows contracts; existing evaluations assess value without leaking evaluation
+  answers into prompts. All five closing design decisions are settled. Next: reconcile the two
+  implementation tickets with T25/T26/T28 and evaluation owners. T45 remains claimed.
+
+- **T45 closing decision 4 accepted, 8 November 2026:** retain PostgreSQL keyword search
+  initially and test the approved focused searches. T41 owns the BM25 comparison; scoring
+  changes alone do not fix restrictive matching. Failed acceptance checks require resolution
+  before acceptance, not deferral to T41. Next: final decision on prompt examples, then
+  implementation-ticket ownership. No code or live runs.
+
+- **T45 closing decision 3 accepted, 8 November 2026:** assess original analyst-question
+  and applicable code-built case paths separately against admitted candidates and delivered
+  evidence in the approved pipeline. Keep original questions/gold and answer/graph/security
+  gates. Legacy raw-query corpus-only top 20 is a diagnostic, not an additional release gate.
+  Spec/T26/T29/T40/T41 and AUD-062 updated. Historical failures remain; no new pass or closure.
+  Next: decision 4, keyword-search disposition. No eval files, application code or live runs.
+
+- **T45 closing decision 2 accepted, 8 November 2026:** selected investigation sections of
+  the three existing runbooks are approved with an extensible source catalogue. New supported
+  runbooks use content review/registration/indexing, not new tools/agents; guidance eligibility
+  does not change mandatory procedure. T45/spec/T26 updated; source-selection criterion has
+  approval and handoff evidence. Next: decision 3, retrieval acceptance paths with original
+  K04 gold preserved. No source edits, ingestion or application code.
+
+- **T45 closing decision 1 accepted, 8 November 2026:** establish explicit full/narrow mode
+  before dispatch; the core procedure supplies full-investigation obligations independently
+  of model-selected tasks/tools. Code-built baseline searches remain. Spec/T26/T28 updated;
+  T45 maps inherited evidence areas to tasks. Concrete templates belong to implementation.
+  Next, one item at a time: approved investigation-guidance sources, then gate-path, keyword
+  disposition and prompt examples. No code or runtime verification.
+
+- **T45 architecture council complete, 8 November 2026:** five independent personas and
+  parent Judge returned GO for the approved design, no demonstrated P0/P1 blocker. Single
+  review saved in reviews/45-architecture-council-2026-11-08.md; lower integration observations
+  retained in AUD-086. Research and review criteria have file evidence. T45 remains claimed;
+  next is consolidated closure/ownership work and the two build-ticket handoffs, not another
+  review or numeric-limit approval tour. No implementation/runtime proof implied.
+
+- **T45 orchestration approved, 8 November 2026:** explicit LangGraph parent workflow,
+  code-owned checks/assembly, isolated create_agent research workers and parent conversation
+  persistence. Deep Agents not adopted. Future specialist extensibility accepted as a design
+  property, not additional build scope. Next: the agreed single architecture council review,
+  then remaining T45 closure/ownership work. No application code or inference authorised.
+
+- **T45 LangGraph research completed, 8 November 2026:** consolidated brief and focused
+  findings saved under research/45-langgraph-orchestration*. Recommended for author ruling:
+  thin explicit parent workflow, isolated per-invocation research, code-owned checks and
+  evidence assembly, normal chat clarification and existing persistence. Current installed
+  versions match lock; documentation/source inspection only, no runtime proof. Next is one
+  architecture decision before the agreed review, not another numeric-limit discussion.
+
+- **T45 discussion depth corrected, 8 November 2026:** author stopped the fine-detail
+  approval loop, explicitly including graph scan limits/overflow. No further per-limit
+  questions. Consolidate routine budgets/failure handling as implementation responsibilities;
+  ask only material architecture/scope/behaviour questions. Next: one bounded architecture
+  consolidation, then the agreed scoped LangGraph research and review. Existing requirements
+  and open verification dependencies remain; no implementation authorised.
+
+- **T45 controlled splitting approved, 8 November 2026:** for verified oversized passages,
+  score all temporary source-linked pieces, use the maximum score for the parent and count
+  it once in admission/final selection. Deliver the original prepared passage and conditions.
+  Piece/work limits, token measurement and validation remain open; no batching or build.
+  Next: graph scan/work boundaries and overflow outcomes, followed by reranker-off/failure
+  policy and bounded recovery. Retain the unresolved numeric input dependencies.
+
+- **T45 input checks drafted, 8 November 2026:** separate query size, each query/passage
+  pair, whole request and returned-score validation. Official OpenRouter SDK schema was
+  inspected at a fixed commit; it declares neither truncation controls nor processed-text
+  coverage receipts. Tokenizer compatibility and runtime limits remain dependencies.
+  Numeric guardrails and splitting/batching policies remain open; no live inference.
+
+- **T45 revised input-size direction accepted, 8 November 2026:** keep the approved
+  candidate counts; distinguish query/passage, actual request and downstream chat limits.
+  Next: define separate guards using verified endpoint behaviour. OpenRouter's exact
+  truncation/request controls remain unverified. No numeric, splitting or batching ruling.
+
+- **T45 focused overflow research, 8 November 2026:** author requested primary-source
+  guidance before choosing overflow handling. The initial stop-and-narrow-search proposal
+  is withdrawn: Cohere's model context applies per query/document pair, not the combined
+  candidate pool. Separate that from request limits and downstream chat context. See
+  research/45-reranking-input-overflow-2026-11-08.md. Approved candidate counts stand;
+  overflow handling and numeric limits remain open. No implementation or spec change.
+
+- **Session frontier, 8 November 2026:** author approved 20 additional unique graph passages
+  alongside up to 20 corpus candidates, at most 40 before input-size checks. Five final passages
+  per search stays. Next: input-size/scan limits, overflow/failure and reranker-off handling,
+  then bounded recovery. Read the current handoff; do not reopen settled route/ranking/count
+  rulings. T45 remains design-only and claimed.
+
+- **Graph overflow ordering approved, 8 November 2026:** use exact query-semantic ordering
+  inside the eligible linked subset only when it exceeds the graph allowance; otherwise admit
+  all eligible items that fit. Final combined reranking remains. T45 proposes 20 additional
+  unique graph passages alongside up to 20 corpus candidates; this numeric proposal is not
+  yet approved. Scan/text/request budgets and failure policies remain open.
+
+- **Candidate volume measured, 8 November 2026:** offline reconstruction found 40 documents,
+  320 passages and 257 mentions links. Single-account linked sets peak at 15 passages; devices
+  at 5, assets at 36. Many accounts/devices have none. Saved profile and source hashes in
+  research/45-candidate-volume-profile-2026-11-08.json. No relevance test, serving snapshot
+  verification or 30-day capacity proof. Next: graph overflow ordering, then provisional limits.
+
+- **Separate candidate allowances approved, 8 November 2026:** retain bounded corpus
+  admission plus bounded additional unique graph passages before shared reranking. No reserved
+  final slots. New graph/scan/text limits and graph ordering remain open; offline corpus/link
+  profiling is the next evidence step, without inference or source changes.
+
+- **Combined candidate ranking approved, 8 November 2026:** source-bound graph/corpus
+  passages are combined and deduplicated before common reranking; keep route provenance,
+  five results per search and no second combined five-passage cut. No fixed final route slots.
+  Next: admission limits/order, evidence recovery and reranker-off/failure rules. No gate closure
+  or implementation release.
+
+- **Internal graph-linked discovery approved, 8 November 2026:** no separate documentary
+  graph-search tool. The four searches use permitted mentions routes internally; code obtains
+  validated task-relevant identities and submits predefined Cypher. T45 records candidate-route
+  tracking, deduplication and preservation obligations. Next: graph/corpus candidate ranking and
+  selection, with no new fusion algorithm or thresholds yet adopted.
+
+- **Four documentary interfaces defined logically, 8 November 2026:** T45 gives each search
+  its model-selected refinements and evidence obligations, with trusted task/subject/time/source
+  context supplied by code. Shared receipts preserve source identity, retrieval uncertainty and
+  missing work. Next: exact-reference reading and graph-linked discovery exposure, then execution
+  budgets. No code/schema changes; legacy reconciliation remains deferred.
+
+- **Documentary search split approved, 8 November 2026:** four model-visible search purposes:
+  threat knowledge, organisation rules, case-specific context and investigation practice.
+  Shared retrieval internals and exact reader; no per-file-kind or storage split. T45 now has
+  an initial corpus mapping with overlap/authority limits. Guidance adoption remains open.
+  Next: typed inputs and evidence obligations for these four searches.
+
+- **Documentary interface drafted, 8 November 2026:** T45 separates relevant-passage
+  discovery, direct entity-linked passage discovery and exact version-bound reading/context.
+  Graph references resolve to PostgreSQL text from the same paired build; mentions/ranking
+  are not support or completeness guarantees. Five-per-search/no-second-cap preserved;
+  graph-list/context-read budgets remain open. Next: decide subject-specific versus common
+  model-visible retrieval interfaces from actual evidence needs.
+
+- **Device-use expansion approved for T55, 8 November 2026:** used_device will include
+  failed attempts as well as successes with known devices during the planned 30-day expansion.
+  Outcome distinctions, dated provenance and separate assigned_device meaning remain explicit.
+  T55 carries graph/query/checker and affected expectation changes; current graph unchanged.
+  T45 resumes documentary evidence design with this future capability clearly distinguished.
+
+- **Account/access and connections drafted, 8 November 2026:** T45 separates recorded
+  account context and relevant permission paths from same-source and involved-device activity.
+  Graph meaning checked: used_device edges represent successful sign-ins only; dated links
+  do not prove simultaneous use. Required failed-attempt context must come from logs or remain
+  explicitly incomplete. Next: documentary discovery/exact reading and graph-to-passage joins.
+
+- **Activity interface drafted with RAG/graph grounding, 8 November 2026:** author asked
+  that planned tools respect those architectures. T45 separates exact activity, bounded
+  history and coverage operations; log facts remain distinct from graph links and passages.
+  Preserve paired build identity, graph snapshot/date limits and graph-reference-to-passage
+  resolution. Existing tool reconciliation stays deferred. Next: account/access and connected
+  activity interfaces, then documentary retrieval. Open activity details remain recorded.
+
+- **Planned capability grouping drafted, 8 November 2026:** T45 organises the eleven
+  evidence tasks into activity evidence, account/access context, connected activity and
+  documentary evidence. These are design families, not a final four-tool count or an adopted
+  single-retriever strategy. Next: activity interface and code-owned scope/coverage rules;
+  supporting required capabilities remain to be mapped. Legacy reconciliation stays deferred.
+
+- **Tool-design order corrected, 8 November 2026:** design research capabilities, boundaries,
+  contracts and execution rules from approved tasks first. Reconcile legacy tools only after
+  the planned tool design is complete. Earlier discovery/reputation placement as the immediate
+  next step is superseded; existing capability mapping is historical. Next: planned capability
+  boundaries, without starting from current tool names.
+
+- **Existing tools may be redesigned, 8 November 2026:** author permits repurposing,
+  combining, replacing or removing current tool interfaces to serve the new investigator.
+  T45's capability map is an inventory, not a promise to preserve legacy tools. Approved
+  outcomes/security/gates remain; no implementation release. Design discovery and reputation
+  placement from the new workflow rather than existing tool names.
+
+- **Research-only retrieval approved, 8 November 2026:** chat has no direct investigative
+  lookup tools; research handles model-initiated evidence gathering. Code retains identity
+  resolution and required-check enforcement. Spec's older shared-exposure wording reconciled.
+  T45 maps eleven evidence tasks to existing/planned core capabilities; exact adapters,
+  discovery/reputation placement and full-procedure dispatch remain open before final allowlists.
+
+- **T45 response contract consolidated, 8 November 2026:** the
+  [current response design](issues/45-compound-question-retrieval-design.md#response-contract-consolidated-design-8-november-2026)
+  starts with author-confirmed request alignment: exact request ID, one final result per task,
+  every assigned subject accounted for, original focus/time/scope preserved. It separates
+  code-owned evidence/receipts/completion from research observations and defines evidence
+  variants, gaps, validation and the approved limit rule. Earlier drafts are history.
+  Execution boundaries, source-binding adapters and required-work definitions remain open;
+  no runtime proof or implementation release. Next: permitted tools and follow-up authority.
+
+- **Evidence limits ruled, 8 November 2026:** retain five passages per search; no second
+  five-passage cut on the combined research response. Deduplicate identical evidence with
+  source-version identity and task attribution preserved. Context/search budgets remain open.
+  Resume T45's small response example separating code-owned data from research observations.
+
+- **Contract research checkpoint, 8 November 2026:** author requested scoped research into
+  two-agent request/response patterns before extending T45's provisional response contract.
+  Prefer investigation/evidence-gathering examples, use general delegation patterns where
+  needed, and compare findings with both contract drafts. This is separate from the later
+  LangGraph orchestration research. No build or requirement changes.
+  [Research now saved](research/45-two-agent-contracts-2026-11-08.md): six primary sources,
+  including Microsoft DTDA's planner/executor contracts. Discuss model-output versus
+  code-assembled evidence ownership and incomplete outcomes before freezing the response.
+
+- **T45 planning/build split, 8 November 2026:** author reaffirmed T45 as decisions only.
+  Finish contracts and execution boundaries, conduct scoped LangGraph orchestration research
+  against that design, settle orchestration, then run the agreed roast-technical review.
+  Define two additional implementation tickets after review, provisionally research agent and
+  investigator orchestration. Reconcile T25's tool interfaces and T26's deterministic package
+  ownership before creating them. T45 remains claimed and blocks T25/T26; no build release.
+
+- **T45 request-contract definitions consolidated, 8 November 2026:** author agreed the
+  chat/research role split, six intents and evidence mappings, batching, subjects and timing,
+  then delegated routine field/value completion. The [ticket's consolidated request design](issues/45-compound-question-retrieval-design.md#request-contract-consolidated-design-8-november-2026)
+  now records task values, compatibility, requiredness and missing-value rules separately from
+  historical comments. Response/evidence contract, cross-batch reuse, execution limits and
+  original retrieval decisions remain open. Prompt examples have their own discussion; run
+  roast-technical once the design is concrete, before implementation. No application code,
+  source ingestion, runtime proof or gate change. T45 remains claimed and blocks T25/T26.
+
+- **Investigator contract established, 7 November 2026:** author approved a concise
+  [authoritative record](../../docs/investigator-contract.md) of existing phase 0/1 requirements.
+  Both session instruction files require reading it; tickets cite stable IC IDs. T52 remains
+  the decision history. Requirements are approved, not automatically implemented or verified.
+  T45 remains the frontier and must discuss mechanisms without reopening this baseline.
+
+- **T45 initial research complete, 7 November 2026:** Perplexity discovery followed by
+  primary-source checks on security investigations. [Findings](research/45-security-investigation-initial-2026-11-07.md)
+  distinguish finding, preserving and interpreting evidence, and retain study limitations.
+  Next: author discussion of mixed threat/policy evidence needs, then tool/retrieval boundaries.
+  T45 remains claimed and blocks T25/T26. No design adopted or gate changed.
+
+- **Current priority, 7 November 2026: T45 initial research authorised.** Author placed
+  T45 before T25 because retrieval decisions may change the search-tool interface.
+  Perplexity research must focus on security investigations, primary-source evidence,
+  competing explanations and preserving cross-subject evidence. Model gate confirmed;
+  T45 claimed. Research informs later author rulings, not automatic architecture adoption.
+  [Brief](research/45-security-investigation-brief-2026-11-07.md). T56 remains resolved.
+
 - **T56 implemented, 4 November 2026:** compact summary retained; detailed local runs,
   fixed comparison workflow and custom uploader retired. Reusable request/record basics
   and Langfuse 5.1.0 SDK foundation locally verified: 56 focused passes, clean types/lint,

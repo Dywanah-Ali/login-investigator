@@ -2841,3 +2841,32 @@ acceptance; operational evaluation work remains separate.
 - B-161 follow-up: the four affected files passed with one worker, 72/72 in 99.44 seconds.
   The original full run remains 141 passed / 9 timeouts. No frontend edits or timeout
   changes; root cause remains unproven.
+
+### B-162 · 2026-11-07 · T45 research · Malformed retry after research transport failure
+
+- Symptom: initial Perplexity research failed with a streaming network error. A retry
+  then began with `undefined` instead of the full research scope.
+- Cause: research-worker orchestration relied on cross-call prompt storage that was absent.
+  The transport failure's underlying cause is unknown and is separate from the malformed retry.
+- Fix: terminated the malformed local cell and sent a self-contained, bounded request.
+  The corrected response is saved and selected claims checked against primary sources.
+- Verification: raw response and limitations are preserved beside the T45 research note.
+  No result from the malformed request supports the findings. No application code changed.
+- Lesson: check a stored request exists before reuse, or send the complete request explicitly.
+  Local cancellation does not prove remote execution or billing stopped.
+
+### B-163 · 2026-11-07 · T45 briefing · Approved investigation requirements reopened
+
+- Symptom: the post-research briefing proposed approving competing evidence, applicability,
+  preservation, uncertainty and separate evaluation again, although T52 had settled them.
+- Cause: the briefing did not reconcile each recommendation against T52's accepted mapping
+  and handoffs. The approvals were present; the assistant treated them as open design choices.
+- Fix: checked T52/T54/T56, corrected the research note and T45 comments. At the author's
+  request, consolidated existing requirements in `docs/investigator-contract.md`, linked
+  sources and stable IDs, and made reading it mandatory in both session instruction files.
+  The spec incorporates it; future tickets reference it rather than seek approval again.
+- Verification: requirement sources, links, instruction-file parity and whitespace checked.
+  No application behaviour changed or new proof claimed.
+- Lesson: start from approved requirements and propose only unresolved mechanisms. A closed
+  decision ticket is not proof of implementation, but unfinished implementation does not
+  make the requirement undecided again.

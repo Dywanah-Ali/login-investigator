@@ -1,0 +1,289 @@
+{
+  "method": "Offline reconstruction using repository read_chunks/find_mentions. No database, embeddings, ranking, inference or source changes.",
+  "scope": "Working default source files, not a verified running graph snapshot; no purpose/date filters; single-entity direct mentions. Character sizes are not token counts.",
+  "documents": 40,
+  "passages": 320,
+  "mention_links": 257,
+  "passages_by_kind": {
+    "attack": 201,
+    "email": 16,
+    "guidance": 11,
+    "meeting": 23,
+    "policy": 37,
+    "record": 10,
+    "register": 6,
+    "runbook": 16
+  },
+  "passage_characters": {
+    "count": 320,
+    "min": 139,
+    "median": 678,
+    "p95_nearest_rank": 1869,
+    "max": 2134
+  },
+  "entity_link_counts": {
+    "person": {
+      "count": 50,
+      "min": 0,
+      "median": 1,
+      "p95_nearest_rank": 9,
+      "max": 15,
+      "zero_links": 24,
+      "over_5": 5,
+      "over_10": 1,
+      "over_20": 0
+    },
+    "group": {
+      "count": 4,
+      "min": 4,
+      "median": 6,
+      "p95_nearest_rank": 14,
+      "max": 14,
+      "zero_links": 0,
+      "over_5": 2,
+      "over_10": 1,
+      "over_20": 0
+    },
+    "asset": {
+      "count": 10,
+      "min": 0,
+      "median": 11,
+      "p95_nearest_rank": 36,
+      "max": 36,
+      "zero_links": 1,
+      "over_5": 5,
+      "over_10": 5,
+      "over_20": 1
+    },
+    "device": {
+      "count": 53,
+      "min": 0,
+      "median": 0,
+      "p95_nearest_rank": 3,
+      "max": 5,
+      "zero_links": 47,
+      "over_5": 0,
+      "over_10": 0,
+      "over_20": 0
+    },
+    "network": {
+      "count": 53,
+      "min": 0,
+      "median": 0,
+      "p95_nearest_rank": 0,
+      "max": 13,
+      "zero_links": 51,
+      "over_5": 2,
+      "over_10": 1,
+      "over_20": 0
+    }
+  },
+  "largest_entities": {
+    "person": [
+      {
+        "id": "user-thomas.price",
+        "passages": 15,
+        "documents": 12,
+        "characters": 11131
+      },
+      {
+        "id": "user-joseph.burton",
+        "passages": 10,
+        "documents": 8,
+        "characters": 5892
+      },
+      {
+        "id": "user-ruby.stevens",
+        "passages": 9,
+        "documents": 7,
+        "characters": 5813
+      },
+      {
+        "id": "user-amelia.ward",
+        "passages": 6,
+        "documents": 5,
+        "characters": 5871
+      },
+      {
+        "id": "user-isabel.knight",
+        "passages": 6,
+        "documents": 6,
+        "characters": 2883
+      }
+    ],
+    "group": [
+      {
+        "id": "group-all-staff",
+        "passages": 14,
+        "documents": 12,
+        "characters": 11558
+      },
+      {
+        "id": "group-it-admins",
+        "passages": 6,
+        "documents": 4,
+        "characters": 8394
+      },
+      {
+        "id": "group-finance-approvers",
+        "passages": 4,
+        "documents": 3,
+        "characters": 5694
+      },
+      {
+        "id": "group-hr-data-owners",
+        "passages": 4,
+        "documents": 3,
+        "characters": 5694
+      }
+    ],
+    "asset": [
+      {
+        "id": "asset-email",
+        "passages": 36,
+        "documents": 22,
+        "characters": 36167
+      },
+      {
+        "id": "asset-identity-provider",
+        "passages": 16,
+        "documents": 14,
+        "characters": 16312
+      },
+      {
+        "id": "asset-intranet",
+        "passages": 15,
+        "documents": 12,
+        "characters": 14603
+      },
+      {
+        "id": "asset-file-share",
+        "passages": 12,
+        "documents": 11,
+        "characters": 13332
+      },
+      {
+        "id": "asset-vpn-gateway",
+        "passages": 11,
+        "documents": 7,
+        "characters": 11392
+      }
+    ],
+    "device": [
+      {
+        "id": "dev-meeting-room-pc",
+        "passages": 5,
+        "documents": 5,
+        "characters": 3203
+      },
+      {
+        "id": "dev-laptop-maya.patel",
+        "passages": 4,
+        "documents": 3,
+        "characters": 3283
+      },
+      {
+        "id": "dev-laptop-james.carter",
+        "passages": 3,
+        "documents": 2,
+        "characters": 2312
+      },
+      {
+        "id": "dev-laptop-oliver.hayes",
+        "passages": 3,
+        "documents": 1,
+        "characters": 2188
+      },
+      {
+        "id": "dev-laptop-replacement-james.carter",
+        "passages": 2,
+        "documents": 2,
+        "characters": 1860
+      }
+    ],
+    "network": [
+      {
+        "id": "net-uk-office",
+        "passages": 13,
+        "documents": 11,
+        "characters": 7652
+      },
+      {
+        "id": "net-us-office",
+        "passages": 6,
+        "documents": 6,
+        "characters": 3975
+      },
+      {
+        "id": "net-cloud-egress",
+        "passages": 0,
+        "documents": 0,
+        "characters": 0
+      },
+      {
+        "id": "net-corporate-proxy",
+        "passages": 0,
+        "documents": 0,
+        "characters": 0
+      },
+      {
+        "id": "net-home-adam.fraser",
+        "passages": 0,
+        "documents": 0,
+        "characters": 0
+      }
+    ]
+  },
+  "source_sha256": {
+    "backend/data/datasets/default/corpus/attack/M1018.md": "e9dd54e4667f4876a82b1dd031817ee88df384d909a8ae085959c27b9a694a81",
+    "backend/data/datasets/default/corpus/attack/M1027.md": "2231d4dd0d5154a9035a199ddb9495d9c3e291321b305a7c23acbab43bb9c095",
+    "backend/data/datasets/default/corpus/attack/M1032.md": "07c18405efd0b7666b1920eb83a108252ed76c2af63966934f4af64496a789f1",
+    "backend/data/datasets/default/corpus/attack/M1036.md": "80fd5177f0f110cfd982bd0cc2b6cd3df04b8672076ab1b0e433154cd82e89ed",
+    "backend/data/datasets/default/corpus/attack/T1021.md": "5f677051f3b9ef92cf4a96b9c4e13f3f9792e2a02c86f80500b809adb4f3a4e3",
+    "backend/data/datasets/default/corpus/attack/T1078.002.md": "9e95d20e7a6d8f17bfe3c6abbe7be9b8b4de7b2163cace2037be7bce50b4e932",
+    "backend/data/datasets/default/corpus/attack/T1078.md": "180d97bf6ecff61aa08db8625adb90c77d6ec2ba04e601d53e305dd5567929c4",
+    "backend/data/datasets/default/corpus/attack/T1110.001.md": "521c95844c343ff9e3c796fa9644777d57fe4718775d3d275ca32d99cb7a6d75",
+    "backend/data/datasets/default/corpus/attack/T1110.002.md": "e87cb96661e43b0b988c11e8dab8a0ae14fb1000c29c92e7cdb8f5a25d14cf93",
+    "backend/data/datasets/default/corpus/attack/T1110.003.md": "0ffff28cb5f2530692280ed189413459e9d85830cd5ee7d1eb335f8bcc19e579",
+    "backend/data/datasets/default/corpus/attack/T1110.004.md": "f189a1e7ac737aa80eb50081a3532d19f06f3c7ae0e03c354ae4387d4f05b5ed",
+    "backend/data/datasets/default/corpus/attack/T1110.md": "2daa7c68f496e1b6bbac05fb455c5c8a5a08607260297732a7fc0b584e8f53de",
+    "backend/data/datasets/default/corpus/attack/T1621.md": "3f32cd82d21519124d830debd870ca492f3b1d1634a16fcf735108feb8f820bb",
+    "backend/data/datasets/default/corpus/own/eml-helpdesk-hours.md": "a27955c32d7902acbf75aa4c93df7eadf1960cf9364165c0c9dcbac50c001624",
+    "backend/data/datasets/default/corpus/own/eml-helpdesk-self-service.md": "ac078aa9e135f584bfd8e29a9cf1eda159daf29c7d57f3fcfc79a6b2f4668684",
+    "backend/data/datasets/default/corpus/own/eml-mfa-rollout.md": "437ff7056b129b7fcc1d971a56e7ec3af32dff4671ad2d5e27a8d627f5959616",
+    "backend/data/datasets/default/corpus/own/eml-office-move.md": "ff3bc6f47a9c58739c31dbd64f149b12fad7339b9d08434ffe94bf426a6bec77",
+    "backend/data/datasets/default/corpus/own/eml-phishing-awareness.md": "e3f0dea66047dc2c82fbdc343646217c7df7c465fa1d7231f8e810693a160bda",
+    "backend/data/datasets/default/corpus/own/gde-incident-communication.md": "166ef393fe1a45334bbfe2ab7ac3840d693093a0206970c9841be085099935ca",
+    "backend/data/datasets/default/corpus/own/gde-new-starter.md": "8b047d27495cce3e1ea1822ebe7d896d3edf0386561bdba856ab640be8622fe2",
+    "backend/data/datasets/default/corpus/own/mtg-change-board-2026-09-24.md": "b955bb086663d30f7436776c6e0ca89ea9134243e8e46901d0a6f08331b3a9b4",
+    "backend/data/datasets/default/corpus/own/mtg-security-2026-09-08.md": "47b11ef6dd878318588321a4cbcecc0bffaed8d5ed05f9ffbdb4294fc6d7f5a0",
+    "backend/data/datasets/default/corpus/own/mtg-security-2026-09-15.md": "9993316240bb3cda2d66a315c04f65783c4cf77a798ec2e2feb5c92b94e35ce6",
+    "backend/data/datasets/default/corpus/own/mtg-security-2026-09-22.md": "e38c367f8874757d64702187236a7df76a3a874512e5443e7d69c3a82fe1b2d2",
+    "backend/data/datasets/default/corpus/own/mtg-security-2026-09-29.md": "e4c643e9e19aa56b83c7a1fd273d00ba6637c11640dac42f1718778b17a99123",
+    "backend/data/datasets/default/corpus/own/pol-acceptable-use.md": "c268d236a6053ffaae39d682c146244bbbd5651a4f2fc578b840f19982cafe4e",
+    "backend/data/datasets/default/corpus/own/pol-access-control.md": "5f197693a142c10d868e3baabc9b13e6e74842bd760474931639d90c23d9825a",
+    "backend/data/datasets/default/corpus/own/pol-mfa.md": "3545f1e2bb03df7f04f05d98965025614d04657231e30711a2095dff923b64b7",
+    "backend/data/datasets/default/corpus/own/pol-password-2024.md": "1e888c05ff9641f7e0c424ec566243a64827a28e59256317c9ad9d3e925a52d6",
+    "backend/data/datasets/default/corpus/own/pol-password.md": "92ca0f1479933da50575b9ea016dfb9ce0aeba37fcdfa01910b7655291d9350e",
+    "backend/data/datasets/default/corpus/own/pol-remote-access.md": "95719aafb5d60b0cf93ca207e00832f2cd50b6f79f93b3281ca5aac5c663d351",
+    "backend/data/datasets/default/corpus/own/rec-approved-travel.md": "d4239432e1697bbd1e28c39f2235630de3659b33e82d6b00dc1ff14443621f57",
+    "backend/data/datasets/default/corpus/own/rec-helpdesk-reset.md": "9f9dc47434865b4d2f9144ff4c0457aae1acc3b16950d25aa68699adf5dff983",
+    "backend/data/datasets/default/corpus/own/rec-laptop-handover.md": "86fb18f9ca96b39dbf98bf87d3d09e33c28bd0e539e6121ea851cc50e92833cf",
+    "backend/data/datasets/default/corpus/own/reg-mfa-exceptions.md": "2b698d6d1e304fe7c73d083a42f5aff7a96b0aceed0c56407d8251065b76901c",
+    "backend/data/datasets/default/corpus/own/reg-shared-devices.md": "96617ea9de0b48a8f0f19d81aba0af6793841c17649d2a4ce0b0ec9964721902",
+    "backend/data/datasets/default/corpus/own/run-compromised-account-response.md": "37fbd342ddbac06717c657b63838ef7afcd5d17c86eb2eda71e0405160089d48",
+    "backend/data/datasets/default/corpus/own/run-device-onboarding.md": "91f8e627c3c62e3ba734096224b9ade89e4dc555e74e8952ce6a8b29e9574398",
+    "backend/data/datasets/default/corpus/own/run-new-country-sign-in.md": "9f89127a38712550b4db6343a558b2b8430ae7c042c4c8444027771c1b261bbc",
+    "backend/data/datasets/default/corpus/own/run-password-spray-response.md": "990922ade30c246c6e5b2e97c606f80e26c4e123b309115d3faa2555feaa0d06",
+    "backend/data/datasets/default/org/assets.csv": "6a30beff243cfe2d048cfec0032cebbd5a60d1f73a74e9b13ba4f749f54c0791",
+    "backend/data/datasets/default/org/device_assignments.csv": "8ea142d0af5c1baec72df28d9d11c038bd0eb26151abc104e4359673e04d6985",
+    "backend/data/datasets/default/org/devices.csv": "f2572000c3167108371e44991b554574fac55d269d0c07068994d492e0d169df",
+    "backend/data/datasets/default/org/grants.csv": "d2ec10136a7a5e686160b81238471c5aa3ee95bb141bf83a4933bb61d6dd6473",
+    "backend/data/datasets/default/org/groups.csv": "0babc429b2cc5947085e5983cb7cd70061761880288858ed870f4956cfb77e5d",
+    "backend/data/datasets/default/org/memberships.csv": "f049be62b9b92b0d98ad7a1274b24010673a540c064bc812fed12c603557bcb2",
+    "backend/data/datasets/default/org/networks.csv": "aad9c0ff38c751a3aef5ef6d4c5480f1a902174d0b304711bb940ce17a7901b8",
+    "backend/data/datasets/default/org/people.csv": "64415808c5222c064a7aead004b0206170d3e4153635ee311fa3a7226338c143",
+    "backend/login_investigator/knowledge_base/chunking.py": "13fe2a9bae7118ed85abe0089b3e578128a10b75d8e7a850c4741138d1b4bdb3",
+    "backend/login_investigator/knowledge_base/mentions.py": "12a163716e63ae809e62173128b87d75059233ea989a8473a041fe3fc0594768"
+  }
+}

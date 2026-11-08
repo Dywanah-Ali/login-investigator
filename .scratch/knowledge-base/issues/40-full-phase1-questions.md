@@ -44,6 +44,9 @@ line and gold IDs or an expected verdict.
 - [ ] Preserve original questions/gold/gates. Propose any necessary revision individually
       for author approval before changing them. Keep exact graph tests even where the
       product answer presents bounded context. K04's missing MFA evidence stays a failure.
+      Apply the already-approved T45 8 November candidate-stage revision: measure each actual
+      pipeline path separately; retain corpus-only fused top 20 as a diagnostic. This is the
+      explicit exception to the earlier candidate-stage rule, not permission for other changes.
 - [ ] Test bounded guidance against approved sources and the uncertainty in each case;
       distinguish external analyst checks from available app actions and performed checks.
 - [ ] The 50-person/30-day dataset target remains approved but unbuilt;
@@ -66,6 +69,11 @@ line and gold IDs or an expected verdict.
       findings triaged.
 
 ## Comments
+
+- 2026-11-08 — Approved T45 split retains this ticket's expanded application coverage and
+  T55 dependency. Consume T57–T60/T25/T26 stage and scope records through T29. Include the
+  approved role-example/classification and supporting/competing evidence behaviours in existing
+  coverage mapping; first identify overlap. No new campaign, gold rewrite or threshold change.
 
 - 2026-10-26, author's S4 ruling: S4 is intentionally unresolved. When evaluating it, accept that the unusual successful Russian-source sign-in warrants investigation, while authorisation, compromise, Olivia's physical location, who completed MFA and the attack mechanism remain unknown. Do not demand confirmed compromise or a named MFA attack; do not treat this evidence limit as a fifth absent topic or a new retrieval verdict. See the spec and T12.
 

@@ -49,6 +49,11 @@ check, so screen and exam cannot disagree.
 
 ## Comments
 
+- 2026-11-08 — Approved T45 ticket split: this ticket remains the sole citation resolver owner.
+  Align evidence adapters with T57's shared source-bound contract; T60 integrates this resolver
+  against actual worker/package evidence. Existing independent build prerequisites remain.
+  T60 proves original-evidence reopen compatibility; T33/T35 retain presentation/download scope.
+
 - 2026-10-30 — Author-approved architecture review: hold integration with saved graph evidence
   until T46 settles the foundation and contract impact. If migration is chosen, T46 must add
   the required migration blockers before it closes.

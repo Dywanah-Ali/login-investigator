@@ -1,26 +1,28 @@
-# 25: Peers and corpus search as tools
+# 25: Search and read documentary evidence
 
 Type: build
+Proof type: AI judgement
+Rigour: Tier 3
 Status: ready-for-agent
-Blocked by: 22, 24, 49, 50
+Blocked by: 22, 24, 45, 49, 50, 58
 Phase: 0
 Model: standard (Opus 5.5 or Sol 6.1)
 
 ## What to build
 
-The analyst asks "who else uses this laptop?" or "what does our policy say about MFA exceptions?",
-and the agent answers through `find_peers` or `search_corpus`. Both follow the tracer bullet of
-ticket 24: typed, read-only, fenced, short content for the model and a full artifact.
+The researcher retrieves threat knowledge, organisation rules, case context or approved
+investigation practice through four purpose-specific interfaces over T58's shared retrieval.
+An exact-reference reader returns identified source content and necessary context without
+substituting a similar or newer document. This slice is verifiable through the core/tool
+boundary before T59's worker and T60's public chat integration.
 
-## Decisions implemented
+## Approved ownership — 8 November 2026
 
-- T05 d1 (`find_peers(account_id | device_id)` and
-  `search_corpus(question, doc_type, technique_id)`; the `network` form was removed by the
-  author's gate ruling of 1 November 2026), T05 d4 (content plus artifact), T05 d12
-  (package caps: five chunks per search, peers paged with a `truncated` flag, full lists in the
-  artifact), T03 d6 (the model picks typed options; code builds the filter; the model never writes
-  one), T03 d1 (the verdict travels with the chunks).
-- User stories 8, 17, 28. Spec door 3.
+The author approved the seven-slice to-tickets plan. T57 takes peer/account/activity evidence;
+this ticket owns documentary interfaces, purpose eligibility, exact reading and the approved
+source catalogue. It consumes T58 ranking and T57 shared contracts. IC-05–07 and IC-09–11 are
+inherited. T45 remains the parent design; no application build is authorised by this handoff.
+Historical references below to the old combined peer/corpus scope are superseded by this split.
 
 ## Required pre-build gate
 
@@ -42,28 +44,65 @@ removal; this ticket now waits for T50. See the three dated Comments below.
 
 ## Acceptance criteria
 
-- [x] Complete the separate shared-address value-review session and record the author's scope
-      ruling before any T25 implementation. Done 1 November 2026: remove everywhere; see Comments.
-
-- [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
-      asks the author to set that model. The build starts only after the author confirms, and a
-      dated line under Comments records the model used.
-- [ ] `find_peers` returns the users sharing a device with an account or device, from the graph,
-      paged with a `truncated` flag; the full list is in the artifact. It has no network form
-      and returns no address-sharing context (author, 1 November 2026).
-- [ ] Optional `start` and `end` filter login-based relationships through T19's shared core.
-      Omitted bounds use the available log period; results state period and coverage. Tests
-      cover explicit and omitted dates. Organisation permissions remain a snapshot.
-- [ ] `search_corpus` takes typed options, builds the filter in code, and returns the verdict with up
-      to five chunks; the artifact records every score.
-- [ ] Both are in the one tool tuple and their results are fenced.
-- [ ] Agent tests use the fake model.
-- [ ] The Port's eval passes.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+- [x] Shared-address value review completed on 1 November 2026: remove address-sharing
+      context everywhere. The historical ruling remains below; T50 performed its removal.
+- [ ] Before build, record the model selected under this ticket's Model line and the map's
+      guidance, with the author's confirmation. Ticket planning is not build release.
+- [ ] Expose the four documentary purposes through centrally registered, research-only tools.
+      Bind each operation to trusted task, subject, applicability time and source context.
+      Typed model refinements cannot enlarge permissions, add subjects or change required work.
+- [ ] Consume T58's paired-build search, five-result limit and stage receipts. Preserve corpus
+      and graph routes internally, every recorded score, purpose overlap, historical applicability, necessary
+      conditions and competing material. No duplicate ranking implementation or combined-five cap.
+- [ ] Implement the extensible approved-source catalogue for the three runbook versions and exact
+      investigation sections selected in T45. Enforce mixed-content exclusions, prerequisites
+      and source-version approval on search and exact reading. Existing corpus presence is not
+      approval. New supported runbooks use content registration, not new tools or agents.
+      Source eligibility cannot add mandatory procedure steps. Do not rewrite or ingest sources
+      merely to complete this interface; any real source write follows its separate approval.
+- [ ] Exact reads use code-issued source/section references and snapshot-bound continuations.
+      Support passage, section and outline scopes where the source representation permits them;
+      missing context is explicit. No arbitrary paths/URLs, guessed section identity or silent
+      latest-version substitution. Distinguish prepared passage text from source-document text.
+- [ ] Preserve returned original content, source identity, task attribution and code-owned receipts.
+      Keep empty, irrelevant/uncalibrated, failed, unavailable, denied and truncated outcomes
+      distinct. Outline metadata is not substantive case evidence. Fencing applies to all results.
+- [ ] Verify each purpose and exact reading through the core/tool boundary, including cross-purpose
+      policy/exception retrieval, changed or missing versions, forbidden sections, stale
+      continuations, unavailable source context and malicious source instructions. Keep original
+      gold and record actual model delivery separately from saved artifacts for T29.
+- [ ] Define and test bounded exact-read/context policies within the approved guarantees;
+      material scope/gate changes need author ruling, routine numeric values do not.
+      Document and test catalogue registration/operator tasks when introduced.
+- [ ] Agent plumbing tests use a fake model; the existing Port evaluation gate passes when
+      the changed behaviour is integrated. T29 retains knowledge-base application acceptance.
+- [ ] Apply the current proportional-testing and proof rules: focused affected-behaviour tests,
+      relevant types/lint, one scoped review and applicable existing agent evaluations. Fake-model
+      tests prove plumbing; evaluation proves model behaviour. Older standing safety-net wording
+      does not require full suites after every edit or an extra review campaign. Record third-party
+      documentation/version checks and test any changed admin commands.
 
 ## Comments
+
+- 2026-11-08 — Author approved moving peer retrieval to T57 and making T25 the documentary
+  interface/catalogue/reader owner over T58. T59 consumes these tools; T26 uses the same core
+  for baseline searches. Existing commentary is retained as decision history.
+
+- 2026-11-08 — Author approved research-only exposure of investigative retrieval tools in
+  T45. The earlier criterion placing these tools in the one tuple now means central registration
+  with research-role exposure, not direct chat access. Final interfaces and per-task restrictions
+  remain blocked by T45; no build release.
+
+- 2026-11-08 — Author approved keeping T45 as decisions only, followed by scoped LangGraph
+  orchestration research and the agreed design review before two additional build tickets are
+  defined. This ticket retains peer/search tool ownership pending explicit reconciliation.
+  The proposed research-agent ticket consumes shared tool/core capabilities rather than
+  duplicating them. Final tool exposure and dependencies must be reconciled before build.
+
+- 2026-11-07 — Author approved T45 before T25 to settle compound and cross-subject
+  retrieval responsibilities before building the search tool interface. T45 now blocks
+  this ticket. Its rulings must be reconciled here before implementation; no tool split,
+  retrieval policy or separate peer-tool implementation is approved by this sequencing change.
 
 - 2026-10-26, consequence of the author's ruling at ticket 11: `device_id` is empty on attacker rows
   and on employee sign-ins from a phone. `find_peers` never treats an empty device as shared, so two

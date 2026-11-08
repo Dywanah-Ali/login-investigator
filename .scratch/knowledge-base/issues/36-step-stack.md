@@ -43,6 +43,12 @@ quick tools keep their single status line.
 
 ## Comments
 
+- 2026-11-08 — Approved T45 split: T60 owns minimal public streaming/tool-name compatibility
+  required by the new workflow before phase-0 acceptance. This supersedes this ticket's ownership
+  of all remaining name compatibility. T36 still owns the later step event/stack presentation,
+  its API contract and author-approved screen design. Consume T26 step receipts through T60;
+  do not leak worker internals or duplicate parent lifecycle handling.
+
 - 2026-10-29: author approved bringing `lookup_account` name support forward into T24 to keep
   its chat stream working. It uses the existing single status line. This ticket still owns
   the remaining new tool names and the investigation step stack.

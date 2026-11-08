@@ -49,8 +49,12 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
 - [ ] Check kinds `retrieval`, `cites`, `verdict` and `playbook` are deterministic; `judge` is marked
       so rescoring skips it. The judge itself is ticket 30.
 - [ ] A runner test proves which checks each question's gold items select.
-- [ ] Retrieval gate: every gold chunk ID among the 20 fused candidates and among the chunks the
-      model received; the first-gold rank recorded.
+- [ ] Implement T45's author-approved 8 November acceptance paths separately: unchanged analyst
+      question and the applicable same-case code-built baseline. Every gold passage must enter
+      an actual admitted pool in its path and survive delivery, including chat's interpretation
+      input on the application path. Record route/first-gold ranks, retained/delivered identities
+      and execution settings. No cross-path pooling or gold-informed query hints. Retain raw
+      corpus-only top 20 as a diagnostic, not an additional gate. Historical failures remain.
 - [ ] Answer gate: every label resolves and every gold ID is cited, through ticket 27's resolver.
       Say-no questions are graded from the artifacts first, then the wording.
 - [ ] Process gates: `playbook_status` on every threat question; a canary in a log field and one in a
@@ -67,6 +71,21 @@ first questions pass end to end. This is phase 0's gate, and every phase 1 ticke
       findings triaged.
 
 ## Comments
+
+- 2026-11-08 — Approved seven-slice handoff: T57/T58/T25 prove evidence capabilities,
+  T26 package/baseline assembly, T59 worker behaviour, T60 application delivery/lifecycle and
+  T28 report completion. This ticket retains phase-0 acceptance for both original analyst-question
+  and applicable same-case baseline paths, classified separately through collection, assembly
+  and interpretation. Consume actual candidate/delivery receipts and T26's shared procedure.
+  T28 transitively blocks on T60; T44 still precedes this gate. No circular dependency on this
+  ticket for earlier component completion and no duplicate paid campaign are introduced.
+  Classifier quality, semantic applicability, prompt examples and injection resistance require
+  existing evaluation evidence; fake-model plumbing tests do not establish them.
+
+- 2026-11-08 — Author approved the explicit T45 candidate-stage gate revision, while preserving
+  original questions/gold and answer/graph/security requirements. Both new paths need their own
+  evidence; a successful package does not establish application answer quality. No duplicate
+  full-suite/paid campaign mandate or live run is added. AUD-062 is still open.
 
 - 2026-11-03 — Author approved `investigate_alert` as a thin coordinator with independently
   testable shared components and saved step-level evidence. T26 implements and tests the

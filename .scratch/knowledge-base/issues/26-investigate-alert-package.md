@@ -1,8 +1,10 @@
 # 26: The investigation tool and its package
 
 Type: build
+Proof type: AI judgement
+Rigour: Tier 3
 Status: ready-for-agent
-Blocked by: 13, 25, 45, 50, 52
+Blocked by: 13, 25, 45, 50, 52, 57
 Phase: 0
 Model: strongest (Fable 5.1 or Astra)
 
@@ -17,6 +19,17 @@ explicit; this reconciliation does not release T52 or authorise implementation.
 Existing source code, questions, gold and thresholds are not changed or waived by this note.
 
 ## What to build
+
+T45 ruling, 8 November 2026: full-investigation activation is retained parent workflow state
+established before research dispatch, not inferred only from a model's call to this tool.
+The shared core procedure supplies required obligations. Preserve this package's code-built
+baseline clearing/aggravating searches and shared retrieval core; research follow-ups supplement
+the baseline. The T45 full-procedure obligation table maps the inherited evidence requirements.
+Author-approved ownership, 8 November 2026: this ticket owns the single shared procedure
+definition and deterministic package. T57 supplies activity/account/connected evidence, T25
+supplies documentary interfaces over T58, T59 supplies supplementary research, T60 activates
+and enforces the procedure before dispatch, and T28 consumes it at the report gate. No
+duplicate playbook or implementation authorisation follows from this handoff.
 
 The analyst asks the agent to investigate a finding by its ID, and `investigate_alert` runs playbook
 steps 2 to 6 in code and returns one package: account context, bounded potential impact,
@@ -36,6 +49,20 @@ progress per internal step, so the screen can later stack the steps while they r
 - User stories 9, 15 to 19, 22, 23. Spec doors 2 and 3.
 
 ## Acceptance criteria
+
+- [ ] Own the one core procedure definition used by T60 activation/enforcement, T28 report
+      completion and T29 evaluation. Compose trusted T57/T25 task obligations; do not duplicate
+      the procedure in model prompts, hooks or workers. Expose code-derived required work and
+      status through the shared contract before parent integration.
+- [ ] Verify the package from a resolved finding or login event through collection, baseline
+      search and assembled evidence, without requiring prior model-selected tools. T57 owns
+      reusable deterministic relevance/device rules and exact identity; this ticket selects
+      and records their procedure use. Code-built baseline misses remain visible after research.
+
+- [ ] Preserve the code-built baseline's own candidate and delivered-evidence records under
+      T45's approved 8 November path-specific gate. Later research recovery must not hide a
+      baseline package miss. Use independently resolved case identity, not expected passages
+      as query inputs; preserve original gold and source bindings. T29 owns application proof.
 
 - [ ] Before any build work starts, the builder tells the author this ticket's `Model:` line and
       asks the author to set that model. The build starts only after the author confirms, and a
@@ -57,9 +84,9 @@ progress per internal step, so the screen can later stack the steps while they r
 - [ ] Account context includes recorded owner/role and relevant privileged or sensitive
       access with supporting paths. Missing role evidence is explicit. Role is not a
       behavioural baseline; permissions never imply observed asset access.
-- [ ] Before build, record the deterministic relevance/device-selection rules and package
-      input/output shape under Answer, aligned with T45. Any new scope choice needs the
-      author's ruling. Standalone inventory and exhaustive path presentation are deferred.
+- [ ] Before build, record the package input/output shape and use of T57
+      deterministic relevance/device-selection rules under Answer, aligned with T45. Any new
+      scope choice needs the author's ruling. Standalone inventory and exhaustive path presentation are deferred.
 - [ ] The clearing and aggravating searches are built from the finding's record; a test proves the
       chat text does not reach them.
 - [ ] Keep the package a thin coordinator over the same core account, graph and search
@@ -77,22 +104,45 @@ progress per internal step, so the screen can later stack the steps while they r
 - [ ] Caps hold: five chunks per search; selected impact and peer evidence is paged with
       `truncated` flags and its complete returned lists preserved in the artifact. Distinguish
       relevance selection from truncation. Full returned evidence is not a promise of full
-      reachable inventory. T45 tests that required evidence survives selection and caps.
+      reachable inventory. T45 defines preservation requirements and downstream verification
+      ownership; implementation/evaluation tickets test that required evidence survives selection and caps.
 - [ ] Empty, unavailable, failed and omitted checks remain distinct in content and artifacts.
       Tests include controlled missing coverage and failed checks without inventing telemetry.
 - [ ] Bounded next-investigation guidance names the uncertainty addressed, its case evidence
       and approved practice source, and distinguishes external checks from app actions.
-      T45 selects sources for author approval; this ticket integrates only approved guidance.
+      T45's 8 November approved source table defines the initial three-runbook passage set and
+      its mixed-content restrictions. Consume the extensible approved-source catalogue with
+      T25 as catalogue/reader owner and T58 as ranking owner. T59 supplies later supplementary
+      research, not a dependency of baseline assembly. Adding supported runbooks must not
+      require new tool/agent branches. Source eligibility does not change mandatory procedure steps.
       Recommendations must never be recorded as completed checks.
 - [ ] Each internal step emits start, end or error through the Port's custom stream; a test proves
       the order. The API event itself ships in ticket 36.
 - [ ] Parallel tool calls stay on.
 - [ ] Agent tests use the fake model; the Port's eval passes.
-- [ ] Standing criteria (spec, Testing Decisions): the safety net passes, new Python files are clean
-      under the type checker, and the two-axis code review (`mp-code-review`) has run with its
-      findings triaged.
+- [ ] Apply the current proportional-testing and proof rules: focused affected-behaviour tests,
+      relevant types/lint, one scoped review and applicable existing agent evaluations. Fake-model
+      tests prove plumbing; evaluation proves model behaviour. Older standing safety-net wording
+      does not require full suites after every edit or an extra review campaign. Record third-party
+      documentation/version checks and test any changed admin commands.
 
 ## Comments
+
+- 2026-11-08 — Author approved T26 ownership of the shared core procedure and deterministic
+  package in the seven-slice plan. T28 no longer builds a second procedure definition.
+  T60 owns activation/integration; T29 owns application proof. IC-01–11 remain inherited.
+
+- 2026-11-08 — Author approved research-only exposure of investigative retrieval tools in
+  T45. Code still enforces required checks through shared core functions. This does not move
+  deterministic package duties into model judgement. Full-procedure dispatch and final interface
+  ownership remain T45 decisions before build; no direct chat retrieval exception is implied.
+
+- 2026-11-08 — Author approved keeping T45 as decisions only, followed by scoped LangGraph
+  orchestration research and the agreed design review before two additional build tickets are
+  defined. This ticket retains deterministic package ownership pending explicit reconciliation.
+  The proposed orchestration ticket must coordinate this capability without duplicating it or
+  transferring factual/check duties to model judgement. Final responsibilities and dependencies
+  must be reconciled before build; this note does not adopt a new coordinator architecture.
 
 - 2026-11-03 — Author approved the coordinator boundary after discussing overlap with
   narrow tools and troubleshooting. Reuse shared core functions; retain step-level evidence;
